@@ -47,6 +47,7 @@ npm run i18n:check
 | What the keynote is about: the Platform repos and site | [knowledge/platform.md](knowledge/platform.md) |
 | The talk script, beat by beat (work here first) | [script/script.md](script/script.md) |
 | Draft story of the talk (not binding) | [knowledge/talk-notes.md](knowledge/talk-notes.md) |
+| Public industry numbers to compare against | [knowledge/benchmarks.md](knowledge/benchmarks.md) |
 | English and Spanish text | [conventions.md](conventions.md#text-and-languages) |
 | Inspiration sites, with The Monolith Project as the main art reference | [references.md](references.md) |
 
