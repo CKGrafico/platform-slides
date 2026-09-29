@@ -100,6 +100,34 @@ html.cursor-hidden * {
   vector-effect: non-scaling-stroke;
 }
 
+/* Start screen only. The engine hides it once the show moves. */
+.language-switch {
+  position: absolute;
+  right: calc(var(--stage-x) + var(--stage-w) * 0.04);
+  bottom: calc(var(--stage-y) + var(--stage-h) * 0.05);
+  display: flex;
+  gap: calc(var(--su) * 1);
+  pointer-events: auto;
+}
+
+.language-switch button {
+  width: calc(var(--su) * 14);
+  padding: calc(var(--su) * 0.8) 0;
+  font: 500 calc(var(--su) * 1.6) / 1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.language-switch button[aria-pressed='true'] {
+  color: var(--fg);
+  border-color: var(--fg);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

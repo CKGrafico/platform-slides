@@ -13,6 +13,7 @@ import { DomSceneHost } from './DomSceneHost'
 import { useEnvironment } from './environment'
 import { autoHideCursor } from './fullscreen'
 import { bindInput } from './input'
+import { LanguageSwitch } from './LanguageSwitch'
 import { Layer } from './layers-component'
 import { Presentation } from './presentation'
 import type { ShowDef } from './types'
@@ -110,7 +111,9 @@ export function Keynote({ show, actors }: { show: ShowDef; actors: ActorDef[] })
         <Layer name="narrative">
           <DomSceneHost part="dom" />
         </Layer>
-        <Layer name="overlay" />
+        <Layer name="overlay">
+          <LanguageSwitch />
+        </Layer>
         {DebugPanel && debugOpen ? (
           <Layer name="debug">
             <Suspense fallback={null}>

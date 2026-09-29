@@ -18,7 +18,7 @@
   gap: calc(var(--su) * 3);
   /* A fixed box: both languages must fit it. */
   width: calc(var(--su) * 80);
-  height: calc(var(--su) * 20);
+  height: calc(var(--su) * 26);
   overflow: hidden;
 }
 

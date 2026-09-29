@@ -21,9 +21,9 @@ Each beat has the same fields:
 | # | Part | Beats | Status |
 |---|---|---|---|
 | 1 | Cover | 1 | draft |
-| 2 | About me | 1 | needs content |
+| 2 | About me | 1 | draft |
 | 3 | The state of AI | 3 | draft |
-| 4 | AI maturity levels | 2 | needs level descriptions |
+| 4 | AI maturity levels | 2 | draft |
 | 5 | From GitHub Actions to Agentic Workflows | 6 | from notes |
 | 6 | The problems | 3 | from notes |
 | 7 | The change of mind and the real case | 3 | from notes |
@@ -42,103 +42,117 @@ Each beat has the same fields:
 ### 1.1 Title
 
 - **Goal:** set the promise of the talk in one line.
-- **On screen:** the title, the speaker's name, Plain Concepts. Nothing else.
+- **On screen:** the title, "Quique Fdez Guerra", Plain Concepts. The language buttons (English, Español) sit in a corner while the room fills. They disappear on the first key press.
 - **Say:** nothing, or one sentence while people sit down.
 - **Bridge:** the cover holds until the speaker starts.
-- **Open:**
-  - Keep "From issue to production with GitHub Agentic Workflows", or a shorter title? The title could also be a question.
-  - Is the talk in Spanish, English, or both at different events? The web supports both.
+- **Open:** keep "From issue to production with GitHub Agentic Workflows", or a shorter title? The first known venue is NetCoreConf.
 
 ## 2. About me
 
 ### 2.1 Who is speaking
 
 - **Goal:** give the audience a reason to trust the speaker on this topic, in under a minute.
-- **On screen:** to decide.
-- **Say:** to decide.
+- **On screen:** name and role, then a few facts that appear one by one.
+- **Say:**
+  - Quique Fdez Guerra, Director of Engineering and Operations at Plain Concepts, in Barcelona.
+  - Works on helping technical organisations scale with AI and autonomous systems.
+  - More than ten years on stage: NetCoreConf, DotNetSpain, Vue.js Amsterdam, Google DevFest, Agent Conf 2026 in Warsaw, and local meetups.
+  - Google Developer Expert in Web Technologies from 2019 to 2023.
+  - Today: agentic workflows and loop engineering in real teams.
 - **Bridge:** from "who I am" to "where AI is today".
 - **Open:**
-  - Name, role, and team at Plain Concepts.
-  - Two or three facts that make you credible on agents and platform work.
+  - Which two or three facts to keep. Too many facts slow the start.
   - One human or funny detail, if you want one.
-  - Does this beat mention the Platform team already, or keep it for part 7?
+  - Mention the Platform team here, or keep it for part 7?
 
 ## 3. The state of AI
 
-The source is the speaker's earlier slide "The Evolution of AI", with **Prompts** added between Copilots and Skills.
+The source is the speaker's earlier slide "The Evolution of AI", with **Prompts** added between Copilots and Skills. The screen shows no dates. The order tells the story, and exact dates would only start a debate.
 
 ### 3.1 The timeline
 
 - **Goal:** everyone in the room shares the same map of how we got here.
-- **On screen:** a timeline that grows one step at a time.
+- **On screen:** a line that grows one step at a time.
 
-| When | Step | Line |
+| # | Step | Line |
 |---|---|---|
-| Late 2022 | Models | Conversational AI goes mainstream |
-| Early 2023 | Copilots | AI enters everyday workflows |
-| 2023 | **Prompts** (new) | to write |
-| Early 2024 | Skills | Capabilities become reusable blocks |
-| Mid 2024 | Agents | AI plans, uses tools, and acts |
-| Late 2025 | Guardrails | Safety and reliability become essential |
-| Early 2026 | Harnesses | Systems orchestrate models, tools, and memory |
-| Mid 2026 | Loop engineering | Autonomous work becomes continuous |
-| Mid 2026 | Autonomous loops | Loops coordinate and improve together |
-| Future | ? | The next paradigm is still unknown |
+| 1 | Models | Conversational AI goes mainstream |
+| 2 | Copilots | AI enters everyday workflows |
+| 3 | **Prompts** (new) | Prompting becomes a craft |
+| 4 | Skills | Capabilities become reusable blocks |
+| 5 | Agents | AI plans, uses tools, and acts |
+| 6 | Guardrails | Safety and reliability become essential |
+| 7 | Harnesses | Systems orchestrate models, tools, and memory |
+| 8 | Loop engineering | Autonomous work becomes continuous |
+| 9 | Autonomous loops | Loops coordinate and improve together |
+| 10 | ? | The next paradigm is still unknown |
 
-- **Say:** a few words per step, not a lecture. The pace speeds up as the dates get closer together: four years at the start, a few months at the end.
+- **Say:** a few words per step, not a lecture. The steps come faster and faster, the way they did in real life: years at the start, months at the end.
 - **Bridge:** to 3.2.
-- **Open:**
-  - The line for Prompts. A proposal: "Prompting becomes a craft."
-  - The dates. "Skills, early 2024" can be challenged: reusable skills as we use them now (packaged instructions plus tools) are closer to late 2025. Do you want dates that are exact, or dates that tell the story? If they tell the story, say so on stage, or drop the dates and keep only the order.
+- **Open:** the Spanish lines must take the same space as the English ones. Write both together when the text is final.
 
 ### 3.2 What the timeline really shows
 
 - **Goal:** the timeline is not a list of products. It shows one direction.
-- **On screen:** the timeline stays. The steps group into two halves.
-- **Say:** a proposal for the reading:
-  - The first half (Models, Copilots, Prompts, Skills, Agents) is about **making the model more capable**.
-  - The second half (Guardrails, Harnesses, Loop engineering, Autonomous loops) is about **building a system around the model**.
+- **On screen:** the line stays. The steps split into two halves.
+- **Say:**
+  - The first half, from Models to Agents, is about **making the model more capable**.
+  - The second half, from Guardrails to Autonomous loops, is about **building a system around the model**.
   - That second half is what this talk is about.
 - **Bridge:** "Where are we in that system? Where is your team?"
-- **Open:** do you agree with this two-halves reading? It sets up the thesis of the talk from the start: "we engineer a system where AI is one component" and "more autonomy needs better structure".
+- **Open:** agree with this two-halves reading? It sets up the thesis early: "we engineer a system where AI is one component" and "more autonomy needs better structure".
 
 ### 3.3 Where this talk sits
 
-- **Goal:** point at the part of the timeline the talk will cover.
-- **On screen:** Guardrails, Harnesses, and Loops light up. The rest dims.
-- **Say:** "Today I am going to talk about this part: what it takes, in practice, to go from agents to loops that work on their own."
+- **Goal:** point at the part of the line the talk covers.
+- **On screen:** Guardrails, Harnesses, and the two loop steps light up. The rest dims.
+- **Say:** "Today I talk about this part: what it takes, in practice, to go from agents to loops that work on their own."
 - **Bridge:** to maturity levels.
 - **Open:** keep this beat, or merge it into 3.2?
 
 ## 4. AI maturity levels
 
-The source is the speaker's "Five levels of AI maturity" (an inverted pyramid) from the SDLC maturity app. The app needs a login, so the level descriptions are not in this file yet.
+The source is the speaker's "Five levels of AI maturity" from the Plain Concepts SDLC maturity app. The levels are an inverted pyramid: level 1 at the narrow bottom, level 5 at the wide top.
 
 ### 4.1 The five levels
 
 - **Goal:** give the audience a way to place their own team.
-- **On screen:** five levels, from the bottom up.
+- **On screen:** the pyramid builds from the bottom up, one level per step. Each level shows its name and one line. The full characteristics are too much text for a screen. Keep them for the speaker.
 
-| Level | Name | What it means |
-|---|---|---|
-| 1 | No AI | to write |
-| 2 | Exploratory | to write |
-| 3 | Structured | to write |
-| 4 | Scaled | to write |
-| 5 | Governed & Optimized | to write |
+| Level | Name | One line on screen | What the speaker can add |
+|---|---|---|---|
+| 1 | No AI | No AI in the workflow yet | Everything is manual. The team may know the tools but does not use them. Risk: falling behind. |
+| 2 | Exploratory | Individual, informal use | People use AI on their own, with no standards and no visibility. Risk: shadow AI, IP exposure, quality that depends on who prompts. |
+| 3 | Structured | First rules and approved tools | Guidelines and review standards exist, with some logging. Risk: rules on paper, applied differently by each team. |
+| 4 | Scaled | Consistent practice, measured | Same standards across teams, metrics for adoption, quality, and risk, AI in onboarding. Risk: metrics that count activity, not quality. |
+| 5 | Governed & Optimized | A managed engineering capability | Governance inside the workflows, automated quality checks, improvement driven by measured outcomes, clear ownership. Risk: governance slows teams, or complacency. |
 
-- **Say:** one sentence per level. Ask the room where they are, by a show of hands.
+- **Say:** one sentence per level. Ask the room where they are, with a show of hands. Most rooms answer 2 or 3.
 - **Bridge:** to 4.2.
 - **Open:**
-  - The description, signals, and examples for each level. Paste them from the app, or tell me what each level means.
-  - Why an inverted pyramid? One reading: each level is wider because it covers more of the organisation. If that is the meaning, say it on stage.
+  - The app says "within the account vertical". On a public stage, say "across the organisation" or "across teams".
+  - Why an inverted pyramid? One reading: each level covers more of the organisation, so it gets wider. Say it on stage if that is the meaning.
 
-### 4.2 The link between the two maps
+### 4.2 Level 5 is the map of this talk
 
-- **Goal:** join the timeline and the maturity levels, so they are one idea and not two slides.
-- **Say:** a proposal: most teams use tools from the second half of the timeline (agents) with the maturity of level 2 (exploratory). The gap between the two is where things break. The rest of the talk is the path we took to close that gap on a real team.
+- **Goal:** join the timeline and the maturity levels into one idea, and turn level 5 into the plan for the rest of the talk.
+- **On screen:** the four characteristics of level 5 separate from the pyramid and stay on screen as four empty slots.
+- **Say:**
+  - Most teams use tools from the second half of the timeline, such as agents, with the maturity of level 2. That gap is where things break.
+  - Level 5 has four characteristics. Each one is something we had to build:
+
+| Level 5 characteristic | What we built | Part of the talk |
+|---|---|---|
+| Governance integrated into engineering workflows | the Harness: rules, skills, and conventions that every agent runs inside | Pillar 1 |
+| Automated compliance and quality checks for AI output | deterministic steps outside the agent, CI, and a merge gate that decides on evidence | Pillar 2, and probably pillar 3 |
+| Continuous improvement driven by measured outcomes | Project Health: delivery and agent metrics from GitHub | probably pillar 4 |
+| A managed capability with clear ownership | the Platform team runs it as a product | part 7 |
+
+  - "The rest of this talk is how a team of fewer than three people got there."
 - **Bridge:** to part 5, the empty screen with one GitHub Action.
-- **Open:** is Platform at level 5 today, or at level 4 on the way to 5? The claim must match what the metrics show.
+- **Open:**
+  - Does this mapping match how you see pillars 3 and 4? It would answer the question of the two missing pillars.
+  - Can we say Platform is at level 5? The metrics support "on the way": about 70% of agent runs succeed, and bot autonomy is between 6% and 50% per repo. A safer line: "Platform works with level 5 practices, and measures how far it still has to go."
 
 ## 5. From GitHub Actions to Agentic Workflows
 
@@ -214,3 +228,5 @@ From [platform.md](../knowledge/platform.md). Check the "Verify before you prese
 | 2026-09-29 | Script before web. Content first. |
 | 2026-09-29 | Structure starts with cover, about me, state of AI, maturity levels. |
 | 2026-09-29 | Prompts added to the AI timeline between Copilots and Skills. |
+| 2026-09-29 | No dates on the AI timeline. The order tells the story. |
+| 2026-09-29 | The web runs in English and Spanish. Language buttons on the start screen, and the L key at any time. Both languages take the same space. |
