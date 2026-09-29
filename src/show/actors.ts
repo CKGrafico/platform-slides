@@ -3,7 +3,7 @@
  * Parts move them in their choreography files, never here.
  */
 import { smoothstep } from '@/animation/progress'
-import { artOf, createBall, createCore } from '@/art/elements'
+import { artOf, createBall, createCore, createMoon } from '@/art/elements'
 import { createOrbitLine } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { defineActor } from '@/world/actors'
@@ -55,7 +55,7 @@ const tasks = TASKS.map((name, i) =>
   defineActor({
     id: `task.${name}`,
     // A moon: a small, smooth sphere. Deterministic pieces never change shape.
-    create: () => createBall({ radius: 0.2 }).object,
+    create: () => createMoon({ radius: 0.2 }).object,
     // A small bounded sway around the angle the choreography sets, so a cube
     // never shows a single flat face. Ambient: inner only, a few degrees.
     ambient: (o, time) => {

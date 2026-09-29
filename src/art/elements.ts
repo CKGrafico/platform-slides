@@ -9,6 +9,8 @@
  */
 import {
   BoxGeometry,
+  CanvasTexture,
+  SRGBColorSpace,
   type BufferAttribute,
   Group,
   Mesh,
@@ -110,6 +112,47 @@ export function createCore(options: { radius?: number; outline?: OutlineOptions 
   }
   el.object.userData.dispose = el.dispose
   return el
+}
+
+let craters: CanvasTexture | null = null
+
+/** A shared, seeded crater map: darker hollows with a light rim. Multiplies the moon color. */
+function craterTexture(): CanvasTexture {
+  if (craters) return craters
+  const size = 512
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size / 2
+  const ctx = canvas.getContext('2d')!
+  ctx.fillStyle = '#ffffff'
+  ctx.fillRect(0, 0, size, size / 2)
+  let seed = 11
+  const rand = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296)
+  for (let i = 0; i < 26; i++) {
+    const x = rand() * size
+    const y = (0.15 + rand() * 0.7) * (size / 2)
+    const r = 6 + rand() * rand() * 34
+    ctx.beginPath()
+    ctx.ellipse(x, y, r, r * 0.9, 0, 0, Math.PI * 2)
+    ctx.fillStyle = 'rgba(120, 112, 150, 0.55)'
+    ctx.fill()
+    ctx.lineWidth = Math.max(1.5, r * 0.18)
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)'
+    ctx.beginPath()
+    ctx.arc(x - r * 0.12, y - r * 0.12, r, Math.PI * 0.9, Math.PI * 1.9)
+    ctx.stroke()
+  }
+  craters = new CanvasTexture(canvas)
+  craters.colorSpace = SRGBColorSpace
+  return craters
+}
+
+/** A deterministic piece: a small smooth moon with craters. */
+export function createMoon(options: { radius?: number; color?: ColorRepresentation; outline?: OutlineOptions } = {}) {
+  const { radius = 0.2, color = palette.surface, outline } = options
+  const material = createToonMaterial({ color })
+  material.map = craterTexture()
+  return assemble('moon', new SphereGeometry(radius, 32, 24), material, { width: 2.5, ...outline })
 }
 
 /** An event or a work item. The blue ball is the issue. */
