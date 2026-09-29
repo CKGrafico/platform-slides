@@ -28,12 +28,12 @@ Each beat has the same fields:
 | 6 | The problems | 3 | from notes |
 | 7 | The change of mind and the real case | 3 | from notes |
 | 8 | Our runtime | 3 | from notes |
-| 9 | Pillar 1: Harness | 3 | from notes |
-| 10 | Pillar 2: Deterministic vs agentic | 3 | from notes |
-| 11 | Pillar 3 | ? | missing |
-| 12 | Pillar 4 | ? | missing |
-| 13 | From issue to production | ? | missing |
-| 14 | Closing | ? | missing |
+| 9 | Pillar 1: Agent Harness | 5 | draft |
+| 10 | Pillar 2: Agentic Workflows | 7 | draft |
+| 11 | Pillar 3: Project Health | 4 | draft |
+| 12 | Pillar 4: Foundations | 5 | draft |
+| 13 | From issue to production | 1 | draft |
+| 14 | Closing | 1 | draft |
 
 ---
 
@@ -143,15 +143,14 @@ The source is the speaker's "Five levels of AI maturity" from the Plain Concepts
 
 | Level 5 characteristic | What we built | Part of the talk |
 |---|---|---|
-| Governance integrated into engineering workflows | the Harness: rules, skills, and conventions that every agent runs inside | Pillar 1 |
-| Automated compliance and quality checks for AI output | deterministic steps outside the agent, CI, and a merge gate that decides on evidence | Pillar 2, and probably pillar 3 |
-| Continuous improvement driven by measured outcomes | Project Health: delivery and agent metrics from GitHub | probably pillar 4 |
+| Governance integrated into engineering workflows | rules and skills every agent runs inside, and one method for how we work | Agent Harness, Foundations |
+| Automated compliance and quality checks for AI output | hard guardrails in CI, deterministic steps outside the agent, a merge gate that decides on evidence | Foundations, Agentic Workflows |
+| Continuous improvement driven by measured outcomes | delivery and agent metrics from GitHub | Project Health |
 | A managed capability with clear ownership | the Platform team runs it as a product | part 7 |
 
   - "The rest of this talk is how a team of fewer than three people got there."
 - **Bridge:** to part 5, the empty screen with one GitHub Action.
 - **Open:**
-  - Does this mapping match how you see pillars 3 and 4? It would answer the question of the two missing pillars.
   - Can we say Platform is at level 5? The metrics support "on the way": about 70% of agent runs succeed, and bot autonomy is between 6% and 50% per repo. A safer line: "Platform works with level 5 practices, and measures how far it still has to go."
 
 ## 5. From GitHub Actions to Agentic Workflows
@@ -189,27 +188,90 @@ From the notes, sections 18 to 22.
 - **8.2 OpenCode as the one runtime.**
 - **8.3 Forge as the AI gateway, with one key per project.**
 
-## 9. Pillar 1: Harness
+## The four pillars
 
-From the notes, sections 23 to 29.
+The four pillars are the four Platform repositories. Each one carries a part of the system:
 
-- **9.1 What the Harness is and what it holds.**
-- **9.2 Reduce the decision space.** "Solve this issue" against "Solve this issue, and here is how this project works."
-- **9.3 The same Harness locally and in the cloud.** Key line candidate: "We cannot make an agent deterministic, but we can make each run look much more like the last one."
+| # | Pillar | What it is, in one line |
+|---|---|---|
+| 1 | **Agent Harness** | how an agent works inside a repo: rules, skills, commands, an agent team. The same locally and in the cloud |
+| 2 | **Agentic Workflows** | how work runs on its own: one router, deterministic steps outside the agent, and the agent only where it must reason |
+| 3 | **Project Health** | how we know it works: delivery and agent metrics, measured honestly |
+| 4 | **Foundations** | the way of working under all of it: a clear method for the use case, a clear stack, linting, testing, and hard guardrails |
 
-## 10. Pillar 2: Deterministic vs agentic
+The earlier idea "deterministic vs agentic" is not a pillar of its own. It lives inside pillar 2.
 
-From the notes, sections 30 to 39.
+## 9. Pillar 1: Agent Harness
 
-- **10.1 Two kinds of work.** What needs intelligence and what does not.
-- **10.2 Pulling pieces out of the agent.** The huge AGENT box loses labels, assignment, and comments one by one. A strong visual moment.
-- **10.3 Back to GitHub Actions.** The circle closes. The hybrid workflow. Fewer tokens, fewer errors, fewer humans.
+From the notes, sections 23 to 29, and `agent-harness` in [platform.md](../knowledge/platform.md).
 
-## 11 to 14. Missing
+- **9.1 The problem.** Even with a controlled runtime, the agent behaves differently in each repo. Most repos have no `AGENTS.md`, no architecture an agent can read, and no defined way to pick up a task. So agents improvise.
+- **9.2 What the Harness holds.** Rules, conventions, architecture, skills (which to use and which not to use), commands, an agent team, how to test, how to make PRs, how to deploy. It installs with one command and updates without losing local edits.
+- **9.3 Reduce the decision space.** "Solve this issue" against "Solve this issue, and here is how this project works."
+- **9.4 Rules in code, not in prose.** About 12 unsafe actions are blocked at the tool call, such as `git push --force` or pushing to the default branch. The plugin's reasoning: prose is a weak enforcer when nobody is watching.
+- **9.5 The same Harness locally and in the cloud.** The developer's OpenCode and the cloud job's OpenCode read the same Harness. Key line candidate: "We cannot make an agent deterministic, but we can make each run look much more like the last one."
+- **Open:** keep 9.4? It is a strong fact, but it overlaps with Foundations (hard guardrails). One option: show it here as a teaser, and pay it off in pillar 4.
 
-- **Pillar 3** and **Pillar 4**: to define.
-- **From issue to production:** the full path, end to end.
-- **Closing:** back to the title, and the thesis: GitHub Agentic Workflows is the entry point, not the whole solution. The solution is the system built around it.
+## 10. Pillar 2: Agentic Workflows
+
+From the notes, sections 30 to 39, and `agentic-workflows` in [platform.md](../knowledge/platform.md).
+
+- **10.1 Two kinds of work.** What needs intelligence (understand, decide, implement, reason about failures) and what does not (labels, assignment, fixed comments, status).
+- **10.2 Pulling pieces out of the agent.** The huge AGENT box loses labels, assignment, and comments one by one, until only reasoning is left. A strong visual moment.
+- **10.3 Back to GitHub Actions.** The circle closes: the talk started with GitHub Actions and comes back to it. The hybrid workflow alternates deterministic steps and agent steps. Fewer tokens, fewer errors, fewer humans.
+- **10.4 One router.** One event in, exactly one route out, at most one worker. An idle run costs about 10 seconds. The site calls it the determinism ladder: "The model is the last resort, not the engine."
+- **10.5 The agent cannot write.** It runs read-only. Every write is a request, checked against an allowlist, and applied by the framework.
+- **10.6 The pipeline.** Triage, refine, implement, merge gate, release, plus a weekly audit and housekeeping. The merge gate decides on evidence. Its first version auto-merged 31% of verdicts while it found zero defects, so it was redesigned.
+- **10.7 Silence was the real problem.** Not bad decisions: work that stopped and nobody noticed. Housekeeping retries stalled work and keeps one "Needs a human" issue.
+- **Open:** this pillar is long. Which beats are core and which can go? A proposal: keep 10.2, 10.3, 10.4, and 10.6, and fold the rest into what the speaker says.
+
+## 11. Pillar 3: Project Health
+
+From `project-health` in [platform.md](../knowledge/platform.md).
+
+- **11.1 Autonomy you cannot measure is only a claim.** If no human reviews every change, the system needs another way to know that it works.
+- **11.2 What it measures.** DORA delivery metrics from GitHub, plus agent runs, tokens, and time. No database and no service to run: JSON and a static site.
+- **11.3 Honest numbers.** It collects 3 of the 5 DORA metrics and refuses to fake the other 2. Tokens are shown as a floor. A missing value never counts as zero. It removed 140 "agent runs" that never ran an agent. Site line: "a missing metric is a fact about the data".
+- **11.4 What it shows today.** 723 agent runs in August and September across 4 repos, about 70% successful, about 2.09 billion tokens, about 107 hours of agent time. 58 of 237 issues closed by the bot.
+- **Open:** which numbers go on screen. They age fast, so refresh them the week before the talk.
+
+## 12. Pillar 4: Foundations
+
+From `Foundations` in [platform.md](../knowledge/platform.md) and the site "How we work".
+
+- **12.1 Agents amplify what a team already has.** The DORA 2025 finding. Good practice gets faster, bad practice gets faster too. So the method comes before the agents.
+- **12.2 A clear method for the use case.** Three phases, split by who is allowed to start a change: discovery (decide what to build), foundations (build the app and its guardrails), maintenance mode (anyone in the business files a request, agents do the rest). Outcomes belong to the business, means belong to engineering.
+- **12.3 A clear stack.** One reference architecture for frontend and backend, one theme, few shared packages. Agents do better when there is one obvious way to do each thing.
+- **12.4 Hard guardrails.** A guardrail is a constraint that fails the build, not a rule in a document: linting, layering checks, tests, spec checks, human checkpoints on auth, migrations, CI config, and tokens.
+- **12.5 You cannot skip to autonomy.** Phase 2 exists to make phase 3 safe.
+- **Open:**
+  - Foundations is also the name of phase 2 of the method. That is useful: "the pillar Foundations is what makes the phase Foundations possible". Or is it confusing on stage?
+  - The order of the pillars. The current order is 1 Harness, 2 Agentic Workflows, 3 Project Health, 4 Foundations. Foundations last works as a reveal: under everything we showed, there is a method. The other option is Foundations first, as the base. The reveal is stronger for a talk.
+
+## 13. From issue to production
+
+- **Goal:** one issue travels the whole system, and each pillar lights up as it takes part.
+- **On screen:** the full system from the previous parts, with one issue moving through it.
+- **Say:** a proposal for the path:
+  1. Someone in the business files an issue. They have never opened the repo.
+  2. Triage checks it. Refine turns it into a sized story. (Agentic Workflows)
+  3. The implement worker opens OpenCode with the Harness and makes one PR. (Agent Harness)
+  4. CI runs the linting, tests, and guardrails. (Foundations)
+  5. The merge gate decides on evidence and merges. (Agentic Workflows)
+  6. It reaches production. Project Health counts it. (Project Health)
+- **Bridge:** to the closing.
+- **Open:** a real issue from a Platform repo as the example, with its real times? It would be more convincing than an invented one. Choose one whose repo name can appear on a public stage.
+
+## 14. Closing
+
+- **Goal:** the thesis, in one or two lines the audience remembers.
+- **Say:** candidates from the notes:
+  - "GitHub Agentic Workflows is the entry point, not the whole solution. The solution is the system around it."
+  - "We engineer a system where AI is one component."
+  - "More autonomy does not need less structure. It needs better structure."
+  - "The model can change. The provider can change. The system around them stays."
+- **On screen:** back to the title. Back to the timeline and its "?". Back to level 5, now with its four slots filled by the four pillars.
+- **Open:** which single line closes the talk.
 
 ## Numbers we can use
 
@@ -229,4 +291,5 @@ From [platform.md](../knowledge/platform.md). Check the "Verify before you prese
 | 2026-09-29 | Structure starts with cover, about me, state of AI, maturity levels. |
 | 2026-09-29 | Prompts added to the AI timeline between Copilots and Skills. |
 | 2026-09-29 | No dates on the AI timeline. The order tells the story. |
+| 2026-09-29 | The four pillars are the four repos: Agent Harness, Agentic Workflows, Project Health, Foundations. "Deterministic vs agentic" lives inside Agentic Workflows. |
 | 2026-09-29 | The web runs in English and Spanish. Language buttons on the start screen, and the L key at any time. Both languages take the same space. |
