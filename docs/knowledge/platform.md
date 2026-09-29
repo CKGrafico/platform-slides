@@ -115,7 +115,7 @@ The keynote may use or break from this identity. That is a design decision for l
 
 ### Lessons with numbers
 
-- 58 of 237 issues closed since 1 August, across four consumer repos, were closed by the bot. Autonomy ranged from 6% to 50% per repo. The main problem was never bad decisions. It was silence: work that stopped and nobody noticed. (`Agentic-Workflows/README.md`)
+- The README says 58 of 237 issues closed since 1 August were closed by the bot, with autonomy from 6% to 50% per repo. That range cannot be reproduced now: do not put it on a slide. The current figure is about 1 in 4 issues closed by the bot (19% to 40% per repo), and 82% of issues closed by a pull request were closed by one an agent wrote. See [our-numbers.md](our-numbers.md). The main problem was never bad decisions. It was silence: work that stopped and nobody noticed. (`Agentic-Workflows/README.md`)
 - The first merge gate auto-merged 31% of terminal verdicts while it found zero defects. It was redesigned to decide on evidence. (`Agentic-Workflows/loops/workflows/agent-merge-gate.md`)
 - The new owner-path rule, replayed on 18 gated PRs, caught exactly the 3 that needed an owner. The old rule caught none. (same file)
 - One issue of 13,398 characters and 92 work units burned 17 minutes and 2.4M tokens twice, with no result. A size gate now refuses it in 10 seconds. (`Agentic-Workflows/loops/workflows/agent-refine.md`)

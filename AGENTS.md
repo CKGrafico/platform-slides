@@ -43,6 +43,8 @@ You must use this skill for all visual work in this repository: slide layout, st
 
 The inspiration sites are in `docs/references.md`. The Monolith Project is the main art reference.
 
+The art direction of this keynote is decided: read `docs/art/art-direction.md` (the style bible) and `docs/art/elements.md` (what each element means) before any visual work, and follow both. Do not give an element a new meaning.
+
 ## Motion and 3D skills
 
 These skills are in `.claude/skills/`. Use each one when the work matches it:
