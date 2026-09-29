@@ -30,8 +30,8 @@ Each beat has the same fields:
 | 8 | Our runtime | 3 | from notes |
 | 9 | Pillar 1: Agent Harness | 5 | draft |
 | 10 | Pillar 2: Agentic Workflows | 7 | draft |
-| 11 | Pillar 3: Project Health | 4 | draft |
-| 12 | Pillar 4: Foundations | 5 | draft |
+| 11 | Pillar 3: Foundations | 5 | draft |
+| 12 | Pillar 4: Project Health | 4 | draft |
 | 13 | From issue to production | 1 | draft |
 | 14 | Closing | 1 | draft |
 
@@ -196,10 +196,12 @@ The four pillars are the four Platform repositories. Each one carries a part of 
 |---|---|---|
 | 1 | **Agent Harness** | how an agent works inside a repo: rules, skills, commands, an agent team. The same locally and in the cloud |
 | 2 | **Agentic Workflows** | how work runs on its own: one router, deterministic steps outside the agent, and the agent only where it must reason |
-| 3 | **Project Health** | how we know it works: delivery and agent metrics, measured honestly |
-| 4 | **Foundations** | the way of working under all of it: a clear method for the use case, a clear stack, linting, testing, and hard guardrails |
+| 3 | **Foundations** | the way of working under all of it: a clear method for the use case, a clear stack, linting, testing, and hard guardrails |
+| 4 | **Project Health** | how we know it works: delivery and agent metrics, measured honestly |
 
 The earlier idea "deterministic vs agentic" is not a pillar of its own. It lives inside pillar 2.
+
+**Why this order.** It follows the life of one change. First, how the agent thinks inside a repo (Harness). Then, how the work runs on its own (Agentic Workflows). Then, what stops a bad change before production (Foundations). Last, how we know the whole thing works (Project Health). Measurement last also closes the loop: it is the "continuous improvement driven by measured outcomes" of maturity level 5, and it leads straight into the final path from issue to production.
 
 ## 9. Pillar 1: Agent Harness
 
@@ -223,30 +225,28 @@ From the notes, sections 30 to 39, and `agentic-workflows` in [platform.md](../k
 - **10.5 The agent cannot write.** It runs read-only. Every write is a request, checked against an allowlist, and applied by the framework.
 - **10.6 The pipeline.** Triage, refine, implement, merge gate, release, plus a weekly audit and housekeeping. The merge gate decides on evidence. Its first version auto-merged 31% of verdicts while it found zero defects, so it was redesigned.
 - **10.7 Silence was the real problem.** Not bad decisions: work that stopped and nobody noticed. Housekeeping retries stalled work and keeps one "Needs a human" issue.
-- **Open:** this pillar is long. Which beats are core and which can go? A proposal: keep 10.2, 10.3, 10.4, and 10.6, and fold the rest into what the speaker says.
+- **Decided:** 10.2, 10.3, 10.4, and 10.6 are on-screen beats. 10.1, 10.5, and 10.7 are spoken only, inside the beats around them.
 
-## 11. Pillar 3: Project Health
-
-From `project-health` in [platform.md](../knowledge/platform.md).
-
-- **11.1 Autonomy you cannot measure is only a claim.** If no human reviews every change, the system needs another way to know that it works.
-- **11.2 What it measures.** DORA delivery metrics from GitHub, plus agent runs, tokens, and time. No database and no service to run: JSON and a static site.
-- **11.3 Honest numbers.** It collects 3 of the 5 DORA metrics and refuses to fake the other 2. Tokens are shown as a floor. A missing value never counts as zero. It removed 140 "agent runs" that never ran an agent. Site line: "a missing metric is a fact about the data".
-- **11.4 What it shows today.** 723 agent runs in August and September across 4 repos, about 70% successful, about 2.09 billion tokens, about 107 hours of agent time. 58 of 237 issues closed by the bot.
-- **Open:** which numbers go on screen. They age fast, so refresh them the week before the talk.
-
-## 12. Pillar 4: Foundations
+## 11. Pillar 3: Foundations
 
 From `Foundations` in [platform.md](../knowledge/platform.md) and the site "How we work".
 
-- **12.1 Agents amplify what a team already has.** The DORA 2025 finding. Good practice gets faster, bad practice gets faster too. So the method comes before the agents.
-- **12.2 A clear method for the use case.** Three phases, split by who is allowed to start a change: discovery (decide what to build), foundations (build the app and its guardrails), maintenance mode (anyone in the business files a request, agents do the rest). Outcomes belong to the business, means belong to engineering.
-- **12.3 A clear stack.** One reference architecture for frontend and backend, one theme, few shared packages. Agents do better when there is one obvious way to do each thing.
-- **12.4 Hard guardrails.** A guardrail is a constraint that fails the build, not a rule in a document: linting, layering checks, tests, spec checks, human checkpoints on auth, migrations, CI config, and tokens.
-- **12.5 You cannot skip to autonomy.** Phase 2 exists to make phase 3 safe.
-- **Open:**
-  - Foundations is also the name of phase 2 of the method. That is useful: "the pillar Foundations is what makes the phase Foundations possible". Or is it confusing on stage?
-  - The order of the pillars. The current order is 1 Harness, 2 Agentic Workflows, 3 Project Health, 4 Foundations. Foundations last works as a reveal: under everything we showed, there is a method. The other option is Foundations first, as the base. The reveal is stronger for a talk.
+- **11.1 Agents amplify what a team already has.** The DORA 2025 finding. Good practice gets faster, bad practice gets faster too. So the method comes before the agents.
+- **11.2 A clear method for the use case.** Three phases, split by who is allowed to start a change: discovery (decide what to build), foundations (build the app and its guardrails), maintenance mode (anyone in the business files a request, agents do the rest). Outcomes belong to the business, means belong to engineering.
+- **11.3 A clear stack.** One reference architecture for frontend and backend, one theme, few shared packages. Agents do better when there is one obvious way to do each thing.
+- **11.4 Hard guardrails.** A guardrail is a constraint that fails the build, not a rule in a document: linting, layering checks, tests, spec checks, human checkpoints on auth, migrations, CI config, and tokens.
+- **11.5 You cannot skip to autonomy.** Phase 2 exists to make phase 3 safe.
+- **Decided:** no wordplay on "Foundations" as both the pillar and phase 2 of the method. Name the three phases once, in 11.2, and move on.
+
+## 12. Pillar 4: Project Health
+
+From `project-health` in [platform.md](../knowledge/platform.md).
+
+- **12.1 Autonomy you cannot measure is only a claim.** If no human reviews every change, the system needs another way to know that it works.
+- **12.2 What it measures.** DORA delivery metrics from GitHub, plus agent runs, tokens, and time. No database and no service to run: JSON and a static site.
+- **12.3 Honest numbers.** It collects 3 of the 5 DORA metrics and refuses to fake the other 2. Tokens are shown as a floor. A missing value never counts as zero. It removed 140 "agent runs" that never ran an agent. Site line: "a missing metric is a fact about the data".
+- **12.4 What it shows today.** Our percentages next to the industry's: agent run success, the share of issues the bot closes, lead times. No project names and no exact counts. The numbers are being prepared.
+- **Open:** which three numbers go on screen. Refresh them the week before the talk.
 
 ## 13. From issue to production
 
@@ -260,7 +260,8 @@ From `Foundations` in [platform.md](../knowledge/platform.md) and the site "How 
   5. The merge gate decides on evidence and merges. (Agentic Workflows)
   6. It reaches production. Project Health counts it. (Project Health)
 - **Bridge:** to the closing.
-- **Open:** a real issue from a Platform repo as the example, with its real times? It would be more convincing than an invented one. Choose one whose repo name can appear on a public stage.
+- **Decided:** use a real issue with its real times, but show no project or repo names. Label it "a real issue from one of our apps".
+- **Open:** pick the issue.
 
 ## 14. Closing
 
@@ -275,7 +276,13 @@ From `Foundations` in [platform.md](../knowledge/platform.md) and the site "How 
 
 ## Numbers we can use
 
-From [platform.md](../knowledge/platform.md). Check the "Verify before you present" list there first.
+Rules for numbers on stage:
+
+- No project names, repo names, or people. Say "our apps" or "one of our apps".
+- Prefer percentages, medians, and ratios over exact counts. Exact counts age fast and invite debate.
+- Show each of our numbers next to a public number from the industry, with its source, so the audience can compare.
+
+From [platform.md](../knowledge/platform.md). Check the "Verify before you present" list there first. The anonymised percentages and the public comparisons are in progress.
 
 - 58 of 237 issues closed by the bot since 1 August, across four repos.
 - 723 agent runs measured in August and September, about 70% succeeded.
@@ -292,4 +299,6 @@ From [platform.md](../knowledge/platform.md). Check the "Verify before you prese
 | 2026-09-29 | Prompts added to the AI timeline between Copilots and Skills. |
 | 2026-09-29 | No dates on the AI timeline. The order tells the story. |
 | 2026-09-29 | The four pillars are the four repos: Agent Harness, Agentic Workflows, Project Health, Foundations. "Deterministic vs agentic" lives inside Agentic Workflows. |
+| 2026-09-29 | Pillar order: Agent Harness, Agentic Workflows, Foundations, Project Health. It follows the life of one change. |
+| 2026-09-29 | Numbers on stage: no project names, percentages over exact counts, each one next to a public industry figure. |
 | 2026-09-29 | The web runs in English and Spanish. Language buttons on the start screen, and the L key at any time. Both languages take the same space. |
