@@ -56,3 +56,41 @@ export const SLOT_ANGLES = [0.62, 0.86, 1.1, 1.34].map((f) => f * Math.PI)
 
 /** Scale of the core when part 10 starts (what part 9 leaves). Part 10 grows it from here. */
 export const CORE_SCALE_BEFORE_P10 = 1
+
+// ---- part 5: from GitHub Actions to Agentic Workflows -------------------------------------
+
+type V3 = readonly [number, number, number]
+
+/** GitHub Actions, alone in the void (5.1). */
+export const GA_POS: V3 = [-3.8, -0.7, 0.4]
+/** The straight line of moons it unfolds into (5.2). Index 0 is the head, where GitHub Actions ends up. */
+export const LINE_Y = -0.7
+export const LINE_Z = 0.4
+export const LINE_X = [-7.2, -6.3, -5.4, -4.5, -3.6, -2.7, -1.8]
+/** Near the core the line curves onto the core's orbit (5.3). The last two moons move here. */
+export const LINE_BENT: V3[] = [
+  [-2.62, -0.42, 0.42],
+  [-1.5, -0.08, 0.5],
+]
+/** The file leaves the orbit here (5.4), passes the compiler ring (5.5), and comes out as the lock file. */
+export const MD_OUT: V3 = [2.5, 0.3, 0.5]
+export const COMPILER_POS: V3 = [3.6, 0.3, 0.5]
+export const LOCK_POS: V3 = [4.9, 0.3, 0.5]
+/** Where the compiled workflow docks, above the implementation core (5.7, and the vertical axis of part 8). */
+export const LOCK_DOCK: V3 = [0, 2.3, 0]
+/** The shell of small moons around the lock file: six from the compiler, then "our changes". */
+export const SHELL_RADIUS = 0.56
+export const SHELL_DIRS: V3[] = [
+  [0, 1, 0.15],
+  [0.87, 0.5, 0.2],
+  [0.87, -0.5, 0.2],
+  [0, -1, 0.15],
+  [-0.87, -0.5, 0.2],
+  [-0.87, 0.5, 0.2],
+  [0.35, 0.2, 0.92],
+]
+/** The triage cluster: a second small core with its own orbit (5.7). */
+export const TRIAGE_POS: V3 = [4.4, 1.2, -1.2]
+export const TRIAGE_ORBIT = { radius: 0.95, tilt: 0.3 }
+/** Core scale while it is the implementation core (5.3 to part 9). */
+export const CORE_SCALE_AGENT = 0.8

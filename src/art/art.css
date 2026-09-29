@@ -321,3 +321,19 @@ body,
 .slot-label.art-label {
   font-size: calc(var(--su) * 2.2);
 }
+
+/* Labels that start at their anchor (to the right of it), or end at it (to the left). */
+.label-left.art-label {
+  transform: translate(0, -50%);
+  text-align: left;
+}
+
+.label-right.art-label {
+  transform: translate(-100%, -50%);
+  text-align: right;
+}
+
+/* Names of the big elements of the system. */
+.p05-name.art-label {
+  font-size: calc(var(--su) * 2.5);
+}

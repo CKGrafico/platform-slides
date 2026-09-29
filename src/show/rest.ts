@@ -9,7 +9,19 @@ import { hidden } from '@/art/motion'
 import { defineChoreography } from '@/world/actors'
 
 /** Art elements (moons, cores, balls, rings) that are not on the cover. */
-const HIDDEN = [/^tl\.step\./, /^tl\.ring$/, /^tl\.moon\./, /^task\./]
+const HIDDEN = [
+  /^tl\.step\./,
+  /^tl\.ring$/,
+  /^tl\.moon\./,
+  /^task\./,
+  /^ga$/,
+  /^evt\./,
+  /^step\./,
+  /^md$/,
+  /^compiler$/,
+  /^shell\./,
+  /^core\.triage$/,
+]
 
 export const restMoves = defineChoreography('rest', (tl, cast) => {
   for (const id of cast.ids()) {
