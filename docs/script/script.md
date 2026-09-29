@@ -212,7 +212,7 @@ From the notes, sections 23 to 29, and `agent-harness` in [platform.md](../knowl
 - **9.3 Reduce the decision space.** "Solve this issue" against "Solve this issue, and here is how this project works."
 - **9.4 Rules in code, not in prose.** About 12 unsafe actions are blocked at the tool call, such as `git push --force` or pushing to the default branch. The plugin's reasoning: prose is a weak enforcer when nobody is watching.
 - **9.5 The same Harness locally and in the cloud.** The developer's OpenCode and the cloud job's OpenCode read the same Harness. Key line candidate: "We cannot make an agent deterministic, but we can make each run look much more like the last one."
-- **Open:** keep 9.4? It is a strong fact, but it overlaps with Foundations (hard guardrails). One option: show it here as a teaser, and pay it off in pillar 4.
+- **Open:** keep 9.4? It is a strong fact, but it overlaps with Foundations (hard guardrails). One option: show it here as a teaser, and pay it off in pillar 3.
 
 ## 10. Pillar 2: Agentic Workflows
 
