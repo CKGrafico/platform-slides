@@ -207,7 +207,7 @@ We can also customise how workflows are generated and run. But one problem remai
 
 ## Pillar 1: the Harness
 
-### 23–24. What it is and what it holds
+### 23-24. What it is and what it holds
 
 We made a Harness for Platform. It lives apart from the applications. It defines how we expect an agent to work in Platform, so each repo does not invent its own way to use AI.
 
@@ -221,7 +221,7 @@ The goal is not full determinism. That would be a false promise: an LLM is not d
 
 Instead of "Solve this issue", we give: "Solve this issue. This is how this project works. These are the rules, the tools, the skills, the architecture. This is how to test, how to make PRs, how to deploy. Do not do these things."
 
-### 26–27. The same behaviour locally and in the cloud
+### 26-27. The same behaviour locally and in the cloud
 
 The Harness also works locally. A developer opens the project with OpenCode, and the local agent uses the same rules.
 
@@ -247,7 +247,7 @@ Candidate key lines:
 
 ## Pillar 2: deterministic vs agentic
 
-### 30–32. Two kinds of operation
+### 30-32. Two kinds of operation
 
 With the Harness in place, we looked at what the agent really does, and found that it did too much. An agent can run almost any tool, so it is tempting to give it everything: read the issue, analyse code, add and remove labels, comment, assign, change code, run tests, create the PR.
 
@@ -288,14 +288,14 @@ Issue created
  -> Agent: reason about the result
 ```
 
-### 36–39. Why this design is better
+### 36-39. Why this design is better
 
 - **Less behaviour complexity.** It looks more complex, but now we know exactly what can vary and what cannot. Labels, assignment, environment setup, and permissions always work the same way. Implementation strategy, code changes, and reasoning can vary. Uncertainty sits only where it adds value.
 - **Fewer tokens.** Less agent work means less context, fewer tokens, lower cost.
 - **Fewer errors.** No need to ask an agent "please add this label". Run an operation we know works. Fewer unnecessary decisions for the model means fewer places for surprises.
 - **Fewer humans.** This looks like a paradox. We do not remove humans by adding more AI. We remove humans by giving each part of the system the right level of determinism: deterministic software for deterministic work, agents for work that needs intelligence. Together, the whole system becomes much easier to trust.
 
-## Where the story stands (sections 40–46)
+## Where the story stands (sections 40-46)
 
 The path so far:
 
