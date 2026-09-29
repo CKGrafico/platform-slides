@@ -28,6 +28,9 @@ const HIDDEN = [
   /^forge$/,
   /^model\./,
   /^runner$/,
+  /^cmd\./,
+  /^laptop$/,
+  /^core\.laptop$/,
 ]
 
 export const restMoves = defineChoreography('rest', (tl, cast) => {

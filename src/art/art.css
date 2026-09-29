@@ -380,3 +380,10 @@ body,
   -webkit-text-stroke: calc(var(--su) * 0.5) var(--c-outline);
   paint-order: stroke fill;
 }
+
+/* A caption that quotes a prompt: in the label face. */
+.art-caption--mono {
+  font-family: var(--font-label);
+  font-weight: 600;
+  letter-spacing: 0;
+}

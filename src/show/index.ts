@@ -19,17 +19,19 @@ import { changeOfMind } from './parts/07-change-of-mind'
 import { changeOfMindMoves } from './parts/07-change-of-mind/choreography'
 import { runtime } from './parts/08-runtime'
 import { runtimeMoves } from './parts/08-runtime/choreography'
+import { harnessChapter } from './parts/09-harness'
+import { harnessMoves } from './parts/09-harness/choreography'
 import { agenticWorkflows } from './parts/10-agentic-workflows'
 import { agenticWorkflowsMoves } from './parts/10-agentic-workflows/choreography'
 import { restMoves } from './rest'
 
 export const show = defineShow({
-  chapters: [cover, stateOfAi, maturity, actionsToAgents, problemsChapter, changeOfMind, runtime, agenticWorkflows],
+  chapters: [cover, stateOfAi, maturity, actionsToAgents, problemsChapter, changeOfMind, runtime, harnessChapter, agenticWorkflows],
   mountWindow: 1,
 })
 
 /** Moves on the shared actors, in show order. The rest state comes first. */
-export const choreographies = [restMoves, coverMoves, stateOfAiMoves, maturityMoves, actionsToAgentsMoves, problemsMoves, changeOfMindMoves, runtimeMoves, agenticWorkflowsMoves]
+export const choreographies = [restMoves, coverMoves, stateOfAiMoves, maturityMoves, actionsToAgentsMoves, problemsMoves, changeOfMindMoves, runtimeMoves, harnessMoves, agenticWorkflowsMoves]
 
 export { actors } from './actors'
 export { Hud } from './hud/Hud'

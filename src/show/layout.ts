@@ -171,3 +171,32 @@ export const MODELS: V3[] = [
 export const VENDOR_POS: V3 = [5.6, -1.2, -1.6]
 /** The runner the whole stack runs on. */
 export const RUNNER_POS: V3 = [0, -2.75, 0]
+
+// ---- part 9: Agent Harness ---------------------------------------------------------------------
+
+/** The Harness frame around the core and the OpenCode ring. */
+export const HARNESS_RADIUS = 1.55
+/** Every repo improvises: three runs from the same core, three different paths (9.1). */
+export const IMPROVISE_PATHS: V3[][] = [
+  [[-0.55, 0.45, 0.45], [-1.4, 1.4, 1.0], [-2.3, 1.1, 1.6], [-3.0, 1.9, 1.2]],
+  [[-0.7, -0.1, 0.4], [-1.8, -0.6, 1.3], [-2.2, 0.3, 2.0], [-3.2, -0.2, 2.2]],
+  [[0.2, 0.7, 0.45], [0.6, 1.8, 1.0], [-0.4, 2.4, 1.5], [-1.1, 3.0, 0.8]],
+]
+/** "Solve this issue": a cloud of possible paths (9.3). */
+export const CLOUD_PATHS: V3[][] = [
+  [[0.6, 0.3, 0.5], [1.6, 1.1, 1.0], [2.6, 0.5, 0.8], [3.3, 1.3, 0.2]],
+  [[0.6, -0.2, 0.5], [1.7, -0.9, 1.1], [2.5, -0.3, 1.6], [3.4, -0.8, 1.2]],
+  [[0.3, 0.7, 0.4], [1.0, 1.9, 0.3], [2.1, 2.2, -0.3], [2.8, 2.9, -0.8]],
+  [[0.5, -0.5, 0.3], [1.1, -1.5, 0.2], [2.2, -1.8, 0.8], [2.9, -2.4, 0.4]],
+  [[0.7, 0.05, 0.3], [1.9, 0.2, -0.4], [2.9, -0.4, -0.2], [3.7, 0.2, -0.9]],
+]
+/** After the Harness: one nearly clean orbit. */
+export const CLEAN_ORBIT = { radius: 2.15, tilt: 0.35 }
+/** Unsafe commands fly at the frame from here and bounce off (9.4). */
+export const COMMANDS_FROM: V3[] = [
+  [4.8, 1.6, 1.2],
+  [5.2, 0.1, 1.6],
+  [4.6, -1.5, 1.0],
+]
+/** The laptop: a small plate with a copy of the Harness (9.5). */
+export const LAPTOP_POS: V3 = [3.1, -1.35, 2.3]

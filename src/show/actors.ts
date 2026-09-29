@@ -12,8 +12,14 @@ import { defineActor, type ActorDef } from '@/world/actors'
 import {
   APPS,
   CAPSULE_POS,
+  CLEAN_ORBIT,
+  CLOUD_PATHS,
+  COMMANDS_FROM,
   COMPILER_POS,
   FORGE_POS,
+  HARNESS_RADIUS,
+  IMPROVISE_PATHS,
+  LAPTOP_POS,
   LEVEL_RADII,
   LINE_BENT,
   LINE_X,
@@ -374,6 +380,58 @@ const runner = defineActor({
   },
 })
 
+// ---- part 9: Agent Harness ----------------------------------------------------------------------
+
+const harness = defineActor({ id: 'harness', create: () => createFrame({ radius: HARNESS_RADIUS, width: 2.2, opacity: 0 }).object })
+const improvise = IMPROVISE_PATHS.map((points, i) =>
+  defineActor({
+    id: `p9.path.${i}`,
+    create: () => createSketchLine({ path: through(points), segments: 70, wobble: 0.09, width: 2.2, opacity: 0.85, reveal: 0 }).object,
+  }),
+)
+const cloud = CLOUD_PATHS.map((points, i) =>
+  defineActor({
+    id: `p9.cloud.${i}`,
+    create: () => createSketchLine({ path: through(points), segments: 70, wobble: 0.12, width: 2, opacity: 0.7, reveal: 0 }).object,
+  }),
+)
+const cleanOrbit = defineActor({
+  id: 'p9.orbit',
+  create: () => {
+    const o = createOrbitLine({ spec: CLEAN_ORBIT, wobble: 0.015, width: 2.5, opacity: 0.9 })
+    o.reveal.value = 0
+    return o.object
+  },
+})
+const COMMAND_COLORS = [palette.peach, palette.butter, palette.lilac]
+const commands = COMMANDS_FROM.map((_, i) =>
+  defineActor({ id: `cmd.${i}`, create: () => createBall({ radius: 0.12, color: COMMAND_COLORS[i] }).object }),
+)
+const laptop = defineActor({
+  id: 'laptop',
+  create: () => {
+    const el = createPlate({ radius: 0.85, color: palette.sage })
+    el.object.position.set(...LAPTOP_POS)
+    return el.object
+  },
+})
+const laptopCore = defineActor({
+  id: 'core.laptop',
+  create: () => {
+    const el = createCore({ radius: 0.3, segments: 32, outline: { width: 2.5 } })
+    el.object.position.set(LAPTOP_POS[0], LAPTOP_POS[1] + 0.55, LAPTOP_POS[2])
+    return el.object
+  },
+})
+const laptopHarness = defineActor({
+  id: 'harness.laptop',
+  create: () => {
+    const f = createFrame({ radius: 0.48, width: 1.8, opacity: 0 })
+    f.object.position.set(LAPTOP_POS[0], LAPTOP_POS[1] + 0.55, LAPTOP_POS[2])
+    return f.object
+  },
+})
+
 // ---- part 10 (style frame) ---------------------------------------------------------------
 
 const outerOrbit = defineActor({
@@ -437,6 +495,14 @@ export const actors: ActorDef[] = [
   direct,
   ...forgeLines,
   runner,
+  harness,
+  ...improvise,
+  ...cloud,
+  cleanOrbit,
+  ...commands,
+  laptop,
+  laptopCore,
+  laptopHarness,
   outerOrbit,
   innerOrbit,
   ...tasks,
