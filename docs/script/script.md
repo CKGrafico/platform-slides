@@ -36,7 +36,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 | # | Part | Minutes |
 |---|---|---|
 | 1 | Cover | 0.5 |
-| 2 | About me | 1 |
+| 2 | About me | 0.25 |
 | 3 | The state of AI | 3 |
 | 4 | AI maturity levels | 3.5 |
 | 5 | From GitHub Actions to Agentic Workflows | 6 |
@@ -69,14 +69,11 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 
 ### 2.1 Who is speaking
 
-- **Goal:** a reason to trust the speaker, in under a minute.
-- **On screen:** name and role, then three facts, one by one.
-- **Say:**
-  - Quique Fdez Guerra, Director of Engineering and Operations at Plain Concepts, in Barcelona.
-  - My work: helping technical organisations scale, now with agents and autonomous systems.
-  - More than ten years on stage, and Google Developer Expert in Web Technologies from 2019 to 2023.
+- **Goal:** say who is speaking, and move on.
+- **On screen:** "Quique Fdez Guerra", "Director of Engineering and Operations", "Plain Concepts". Nothing more.
+- **Say:** the name, the role, and the company. One sentence.
 - **Bridge:** "Before I tell you what we built, let's agree on where AI is today."
-- **Open:** one human or funny detail? **Recommendation:** keep the Platform team for part 7, so it lands as a reveal.
+- **Decided:** no list of talks, awards, or career. The title and the company are enough. The Platform team comes later, in part 7.
 
 **System on screen:** nothing yet.
 
@@ -600,3 +597,4 @@ More public figures are in [benchmarks.md](../knowledge/benchmarks.md). Our anon
 | 2026-09-29 | The whole talk is one diagram that grows. Each part ends with a "System on screen" contract. |
 | 2026-09-29 | The four slots of level 5 are the map of the talk. Each pillar fills one. |
 | 2026-09-29 | A human still approves what gets built (the story). No human reads the code. |
+| 2026-09-29 | About me: only name, role, and company. |
