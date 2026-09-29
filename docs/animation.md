@@ -83,7 +83,7 @@ There is one camera. The camera rig places it on every frame from a camera track
 A scene sets its camera with `camera`:
 
 - **A shot.** `{ position, target, fov?, roll?, shake? }`. The camera blends from the previous scene's end shot to this shot while the scene plays, with a smoothstep curve.
-- **A function.** `(local) => shot`. The scene owns the camera. Use it for dolly moves, orbits, and paths.
+- **A function.** `(local, from) => shot`. The scene owns the camera. `from` is where the previous scene left the camera, so a part never needs another part's shot. Use it for dolly moves, orbits, and paths.
 - **Nothing.** The camera keeps the previous scene's end shot.
 
 Shot helpers in `src/world/camera/shot.ts` are pure functions:
@@ -91,6 +91,7 @@ Shot helpers in `src/world/camera/shot.ts` are pure functions:
 - `dolly(shot, amount)` moves the camera along its view line.
 - `orbit(shot, angle, elevation)` turns the camera around its target.
 - `blendShots(a, b, t)` mixes two shots.
+- `shotSequence(from, moves, local)` is the usual scene camera: a list of moves `{ from, to, shot, arc? }` in local progress. The camera holds between moves (dwell, then travel), and `arc` pulls it back in the middle of a long move.
 
 `shake` adds noise from the clock. It is ambient and never changes the composition. To add a new camera behaviour, write a new pure helper in `shot.ts`. Do not add state to the rig.
 
@@ -111,4 +112,8 @@ These were added with the art direction (see `docs/art/art-direction.md`).
 - **Choreographies.** Each part of the talk moves the shared actors in its own file, `src/show/parts/NN-name/choreography.ts`, with `defineChoreography(key, (tl, cast, t) => ...)`. `cast.get(id)` returns an actor. `t.at` and `t.span` place tweens on global timeline units. All choreographies compose, in show order, into one paused timeline. In development, a console warning names two choreographies that write the same property in overlapping windows.
 - **Ambient life.** An actor may have `ambient(object, time, position)`. It runs every frame with the clock, for noise, sway, and slow tumbles. It must only write properties that no timeline writes. For art elements, that means `inner.position` and `inner.rotation`: the choreography owns `object`, entrances and exits own `inner.scale`.
 - **The beat grid.** `beatStops([4, 10, 6])` returns stops whose moves last 4, 10, and 6 beats at 120 BPM, with `ease: 'none'`, plus `b(n)`, the local progress n beats into the scene. Because the move itself is linear, a tween placed at `b(n)` lands exactly n beats after the press. Put the easing on each tween.
+- **drive().** `drive(tl, at, duration, fn)` (in `src/art/motion.ts`) calls `fn(u)` with u from 0 to 1 on every render of the timeline, forward or back. It is the one writer for anything that follows a path or needs math that a tween cannot express: the extraction in part 10, the route of the blue ball in part 13, swarms. `fn` must be pure.
+- **The rest state.** `src/show/rest.ts` hides, at position 0, every art element that is not on the cover. Parts only ink things in and out.
+- **Scene outro.** A scene stays on screen for `outro` seconds (default one beat) into the next move, and its text burns out with it (`useProgress` passes `outro` from 0 to 1). So the press that starts a part also clears the last part's text.
+- **Show overlays.** `usePlayhead(fn)` gives an overlay the playhead on every frame. The map of the talk (`src/show/hud/`) uses it with cues that parts register on their own beat grid.
 - **framePosition.** The presentation tick runs before GSAP moves the playhead in the same frame, so scenes and actors show the position of that tick. Anything drawn later in the frame (the camera rig, shader uniforms) reads `presentation.framePosition`, or it would run one frame ahead.

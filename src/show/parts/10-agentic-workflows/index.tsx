@@ -146,7 +146,7 @@ function Pipeline() {
       {LANE_LABELS.map((l, i) => (
         <Label key={l.k} k={l.k} target={() => l.p} width={16} level={pwin(QB.lanes + 1 + i * 0.5, QB.lanes + 1.75 + i * 0.5)} />
       ))}
-      <Label k="p10.approver" target={() => approverLabel} width={30} className="label-right" level={pwin(QB.lanes + 2.5, QB.lanes + 3.25)} />
+      <Label k="p10.approver" target={() => approverLabel} width={36} className="label-right" level={pwin(QB.lanes + 2.5, QB.lanes + 3.25)} />
       <Label k="p10.gateName" target={() => gateLabel} width={16} mono={false} className="p05-name" level={pwin(QB.gate + 1, QB.gate + 1.75)} />
       <Label k="p10.release" target={() => releaseLabel} width={14} level={pwin(QB.gate + 2, QB.gate + 2.75)} />
       <Label k="p10.audit" target="audit" offset={[0, 0.45, 0]} width={16} level={pwin(QB.side + 1, QB.side + 1.75)} />

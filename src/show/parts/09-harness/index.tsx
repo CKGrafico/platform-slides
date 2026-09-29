@@ -66,8 +66,8 @@ function Dom() {
         <PartTitle kicker="p09.kicker" title="p09.title" level={burnWindow(b(B.name + 1), b(B.name + 2.5), b(B.improvise), b(B.improvise + 0.75))} />
         <BurnCaption k="p09.improvise" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={112} level={burnWindow(b(B.improvise + 2), b(B.improvise + 3), b(B.frame), b(B.frame + 0.6))} />
         <BurnCaption k="p09.frame" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={113} level={burnWindow(b(B.frame + 3.5), b(B.frame + 4.5), b(B.cloud), b(B.cloud + 0.6))} />
-        <BurnCaption k="p09.solve" corner="bottom-left" width={80} height={9} className="art-caption--lead art-caption--mono" seed={114} level={burnWindow(b(B.cloud + 1), b(B.cloud + 2), b(B.clean), b(B.clean + 0.6))} />
-        <BurnCaption k="p09.clean" corner="bottom-left" width={84} height={13} className="art-caption--lead" seed={115} source="p09.clean.source" level={burnWindow(b(B.clean + 3), b(B.clean + 4), b(B.commands), b(B.commands + 0.6))} />
+        <BurnCaption k="p09.solve" corner="bottom-left" width={80} height={10} className="art-caption--lead art-caption--mono" seed={114} level={burnWindow(b(B.cloud + 1), b(B.cloud + 2), b(B.clean), b(B.clean + 0.6))} />
+        <BurnCaption k="p09.clean" corner="bottom-left" width={90} height={17} className="art-caption--lead" seed={115} source="p09.clean.source" level={burnWindow(b(B.clean + 3), b(B.clean + 4), b(B.commands), b(B.commands + 0.6))} />
         <BurnCaption k="p09.blocked" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={116} level={burnWindow(b(B.commands + 2.5), b(B.commands + 3.5), b(B.laptop), b(B.laptop + 0.6))} />
         <BurnCaption k="p09.laptop" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={117} level={burnWindow(b(B.laptop + 3), b(B.laptop + 4))} />
       </Stage>
@@ -80,7 +80,7 @@ function Dom() {
           level={win(B.frame + 2 + i * 0.2, B.frame + 2.5 + i * 0.2, B.cloud, B.cloud + 1)}
         />
       ))}
-      <Label k="p09.solveShort" target={() => cloudLabel} width={26} level={win(B.cloud + 1.5, B.cloud + 2.25, B.clean, B.clean + 0.75)} />
+      <Label k="p09.solveShort" target={() => cloudLabel} width={32} level={win(B.cloud + 1.5, B.cloud + 2.25, B.clean, B.clean + 0.75)} />
       {[0, 1, 2].map((i) => (
         <Label
           key={i}

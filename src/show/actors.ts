@@ -8,6 +8,7 @@ import { circleXZ, createFrame, createGrid, createHollowColumn, createSketchLine
 import { createOrbitLine, orbitPoint } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { TorusGeometry } from 'three'
+import { routePoint } from './route'
 import { defineActor, type ActorDef } from '@/world/actors'
 import {
   APPROVER_POS,
@@ -651,6 +652,14 @@ const auditLoop = defineActor({
   },
 })
 
+// ---- part 13: from issue to production --------------------------------------------------------
+
+/** The lit path of the blue ball through the whole system: the one place, with the ball, that is blue. */
+const litPath = defineActor({
+  id: 'p13.path',
+  create: () => createSketchLine({ path: (u, out) => routePoint(u, out), segments: 260, width: 3.5, color: palette.accent, opacity: 0.9, reveal: 0 }).object,
+})
+
 // ---- the orbits of the ladder -------------------------------------------------------------
 
 const outerOrbit = defineActor({
@@ -743,6 +752,7 @@ export const actors: ActorDef[] = [
   ...hollowMetrics,
   healthPerson,
   auditLoop,
+  litPath,
   outerOrbit,
   innerOrbit,
   ...tasks,

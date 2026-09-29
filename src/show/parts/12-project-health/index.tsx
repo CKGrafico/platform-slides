@@ -129,7 +129,7 @@ function Dom() {
         <Label key={i} k={`p12.hollow.${i + 1}` as MessageKey} target={() => p} width={24} className="verb-no" level={win(B.honest + 1 + i * 0.4, B.honest + 1.6 + i * 0.4, B.human, B.human + 1)} />
       ))}
       <Label k="p12.notCollected" target={() => notCollected} width={20} level={win(B.honest + 1.75, B.honest + 2.25, B.human, B.human + 1)} />
-      <Label k="p12.panel" target={() => panelPoint} width={20} mono={false} className="p05-name label-left health-panel" level={win(B.human + 1, B.human + 1.75, B.numbers, B.numbers + 1)} />
+      <Label k="p12.panel" target={() => panelPoint} width={28} mono={false} className="p05-name label-left health-panel" level={win(B.human + 1, B.human + 1.75, B.numbers, B.numbers + 1)} />
     </div>
   )
 }

@@ -506,3 +506,14 @@ body,
 .health-panel.art-label {
   padding: calc(var(--su) * 0.6) calc(var(--su) * 1.2);
 }
+
+/* The last line of the talk: centered in the frame, the largest statement. */
+.statement--last {
+  left: 50%;
+  top: 50%;
+  width: calc(var(--su) * 130);
+  height: calc(var(--su) * 30);
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-size: calc(var(--su) * 7);
+}

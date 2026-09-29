@@ -77,7 +77,7 @@ function Dom() {
           key={i}
           k={`p11.phase.${i + 1}` as MessageKey}
           target={() => p}
-          width={34}
+          width={48}
           mono={false}
           className="phase-label"
           level={win(B.phases + 1 + i * 0.6, B.phases + 1.75 + i * 0.6, B.disc, B.disc + 1)}

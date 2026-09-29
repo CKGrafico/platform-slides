@@ -9,7 +9,7 @@ The look of each element follows [art-direction.md](art-direction.md).
 | Element | Means | Look |
 |---|---|---|
 | Core | the model, the agent's reasoning | a deep indigo planet whose surface bubbles and never keeps its shape |
-| Moon | a deterministic piece: an action, a script, a job, a check | a small toon sphere with craters, near-white or pastel, dark outline |
+| Moon | a deterministic piece: an action, a script, a job, a check | an illustrated planet: flat pastel color, soft bands or spots, a white highlight, sometimes a ring, an outline in a deep shade of its own color |
 | Ball | an event or a work item | small toon sphere. Many balls use instancing |
 | Blue ball | "the issue", the one work item we follow | Platform blue, slightly larger. The motif of the talk |
 | Orbit | a loop that repeats | a sketchy ring line. Clean far out, wobbly near the core |

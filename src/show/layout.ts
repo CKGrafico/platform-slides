@@ -56,6 +56,8 @@ export const SLOT_ANGLES = [0.62, 0.86, 1.1, 1.34].map((f) => f * Math.PI)
 
 /** Scale of the core when part 10 starts (what part 9 leaves). Part 10 grows it from here. */
 export const CORE_SCALE_BEFORE_P10 = 0.8
+/** Scale of the core once part 10 has pulled the tasks out of it. */
+export const CORE_SCALE_AFTER_P10 = 0.86
 
 // ---- part 5: from GitHub Actions to Agentic Workflows -------------------------------------
 
@@ -253,3 +255,10 @@ export const METRIC_HEIGHTS = [1.9, 1.3, 1.6, 2.3, 1.1, 1.5]
 export const HOLLOW_HEIGHT = 1.7
 /** The person who looks at what needs a human (12.4), on the front left of the disc. */
 export const HEALTH_PERSON: V3 = [-5.0, -2.95, 2.9]
+
+// ---- parts 13 and 14 --------------------------------------------------------------------------
+
+/** After release, the blue ball escapes to production: up and away. */
+export const PRODUCTION_POS: V3 = [13.5, 6.2, -5]
+/** In the closing, the timeline comes back in the sky, above the system. */
+export const TIMELINE_LIFT: V3 = [0, 9.2, -3]

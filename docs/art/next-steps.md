@@ -14,6 +14,14 @@ The style frame (the cover and part 10) is built on the art kit in `src/art/`. T
 - Shader warm-up before the talk (`compileAsync`), shown in the debug panel.
 - The title burn in 16 steps.
 
+## Done while building the parts
+
+- Routes: `src/show/route.ts`, one pure path for work through the whole system (part 10 and part 13).
+- Swarms: `createSwarm` in `src/art/elements.ts`, instanced balls or rings with shared outlines.
+- Camera from the previous shot: function cameras get `from`; `shotSequence` composes moves.
+- Kit: rings, capsules, columns, hollow columns, walls, the disc and its grid, the Harness frame, dashed slots, sketch lines with `reveal`.
+- Scene outro, the rest state, and the map of the talk (HUD).
+
 ## To build next
 
 1. **Routes.** A route system that owns `object.position` for bound actors, made of pure path segments (`orbitArc`, `arc`, `capture`, `spiral`, `escape`, `wobbly`, `park`, `cameraPin`), with a check that segments meet. Part 10 moves its proxy tweens to routes. Part 13 (the blue ball's journey) needs it.

@@ -117,3 +117,16 @@ We do not take its illustrations, characters, textures, fonts, or colors. Our pa
 ## Revision 2026-09-29: one shape family
 
 The user disliked the black slab and found cubes next to balls confusing. Everything is now a sphere in orbit, inspired by the speaker's earlier orbit design. Deterministic pieces are small smooth moons. The model is the core: a deep indigo planet (`#28233F`, noise up to `#4E4679`) whose surface bubbles and never keeps its shape. The blue ball is the issue.
+
+## Revision 2026-09-29: illustrated planets
+
+The user disliked the craters. Moons and balls are now illustrated planets, after two references the user shared (flat illustrated planets in a row, and planet badges in a learning app):
+
+- A flat pastel color with the two toon bands.
+- Soft horizontal bands with wavy edges, or a few soft round spots. No craters and no rims.
+- A small hard white highlight near the upper left edge, fixed in view space, so every planet shows it in the same place, like a drawing.
+- A thin ring on some planets (GitHub Actions, the apps, audit).
+- The outline is a deep shade of the planet's own color, pulled toward the indigo, not the indigo itself. Lines, orbits, and the core keep the indigo.
+- Two warm pastels join the palette for planets only: peach `#EDC1A5` and butter `#E9D59E`.
+
+The extraction in part 10 follows the user's note that the pieces must come out of the core: each task sits in the core's surface; the surface swells, stretches after the task like a drop, snaps back, and wobbles.

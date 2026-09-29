@@ -2,7 +2,7 @@
 
 The script comes before the web. We work the content here first, beat by beat. Only when a part is solid does it become scenes in `src/show/`.
 
-Status: **draft 2**, 2026-09-29. Every part has full beats. Beat 12.5 has our anonymised numbers.
+Status: **draft 2**, 2026-09-29. Every part has full beats. Beat 12.5 has our anonymised numbers. All 14 parts are built in `src/show/parts/` (93 stops), in English and Spanish.
 
 Working title: **From issue to production with GitHub Agentic Workflows**
 

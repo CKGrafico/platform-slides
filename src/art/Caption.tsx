@@ -15,6 +15,7 @@ export type Corner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 
 export function Caption({
   k,
+  fit,
   corner,
   width = 44,
   height = 14,
@@ -22,6 +23,8 @@ export function Caption({
   children,
 }: {
   k?: MessageKey
+  /** Name for the overflow check when the text comes from children. */
+  fit?: string
   corner: Corner
   /** Box width in su. */
   width?: number
@@ -33,7 +36,7 @@ export function Caption({
   return (
     <div
       className={['art-caption', `art-caption--${corner}`, className].filter(Boolean).join(' ')}
-      data-fit={k ?? 'caption'}
+      data-fit={k ?? fit ?? 'caption'}
       style={{ width: `calc(var(--su) * ${width})`, height: `calc(var(--su) * ${height})` }}
     >
       {k ? <T k={k} /> : children}
@@ -123,7 +126,7 @@ export function BurnCaption({
   className?: string
 }) {
   return (
-    <Caption corner={corner} width={width} height={height} className={className}>
+    <Caption corner={corner} width={width} height={height} className={className} fit={k}>
       <Burn level={level} seed={seed} className={source ? 'art-caption-body' : undefined}>
         <T k={k} />
         {source ? (

@@ -65,13 +65,13 @@ function Dom() {
           k={`p06.task.${name}` as MessageKey}
           target={`task.${name}`}
           offset={TASK_OFFSETS[name]}
-          width={20}
+          width={26}
           className={TASK_OFFSETS[name]![0] > 0 ? 'label-left' : 'label-right'}
           level={win(B.cost + 0.75 + i * 0.4, B.cost + 1.25 + i * 0.4, B.human, B.human + 1)}
         />
       ))}
       <Label k="p06.tokens" target={aboveTokens} width={14} mono={false} className="p05-name" level={win(B.cost + 1.5, B.cost + 2.25)} />
-      <Label k="p06.person" target={() => personTop} width={24} mono={false} className="p05-name" level={win(B.human + 1, B.human + 1.75)} />
+      <Label k="p06.person" target={() => personTop} width={32} mono={false} className="p05-name" level={win(B.human + 1, B.human + 1.75)} />
     </div>
   )
 }

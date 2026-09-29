@@ -24,6 +24,7 @@ import { OUTER, STEPS, TASKS } from '../../actors'
 import {
   APPROVER_POS,
   CORE_R,
+  CORE_SCALE_AFTER_P10,
   CORE_SCALE_BEFORE_P10,
   EVENTS_FROM,
   LINE_BENT,
@@ -47,9 +48,7 @@ const pb = pipeGrid.b
 const R0 = CORE_R
 /** Scale of the core while it holds all the tasks, then after each task leaves. */
 const GROWN = 1.55
-const AFTER_EACH = [1.36, 1.19, 1.02, 0.86]
-/** The core's scale from the end of 10.2 on. */
-export const CORE_SCALE_AFTER_P10 = AFTER_EACH[3]!
+const AFTER_EACH = [1.36, 1.19, 1.02, CORE_SCALE_AFTER_P10]
 /** Where each satellite lands on the outer orbit, and how far it moves in stop 3. */
 const LANDING_ANGLES = [0.12, 0.38, 0.62, 0.88].map((f) => f * Math.PI)
 const ORBIT_SWEEP = 0.45
