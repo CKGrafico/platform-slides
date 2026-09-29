@@ -76,4 +76,4 @@ This repository is a keynote engine plus a show. Read `docs/README.md` before yo
 
 ## Knowledge
 
-`docs/knowledge/platform.md` holds the facts about the Plain Concepts Platform: the repos, the site, the vocabulary, and the numbers. Use it as the source for keynote content. `docs/knowledge/talk-notes.md` holds the current draft story of the talk. It is not binding. Do not invent numbers. Check its "Verify before you present" list before a fact goes on a slide. Never put personal data, such as contributor logins, on a slide.
+`docs/knowledge/platform.md` holds the facts about the Plain Concepts Platform: the repos, the site, the vocabulary, and the numbers. Use it as the source for keynote content. `docs/knowledge/talk-notes.md` holds the current draft story of the talk. It is not binding. `docs/script/script.md` is the talk script. Content is decided there first. Build a scene only from a beat in the script. Do not invent numbers. Check its "Verify before you present" list before a fact goes on a slide. Never put personal data, such as contributor logins, on a slide.

@@ -45,6 +45,7 @@ npm run i18n:check
 | Performance rules, rehearsal reliability, fallbacks | [performance.md](performance.md) |
 | Presenter controls and the debug workflow | [presenting.md](presenting.md) |
 | What the keynote is about: the Platform repos and site | [knowledge/platform.md](knowledge/platform.md) |
+| The talk script, beat by beat (work here first) | [script/script.md](script/script.md) |
 | Draft story of the talk (not binding) | [knowledge/talk-notes.md](knowledge/talk-notes.md) |
 | English and Spanish text | [conventions.md](conventions.md#text-and-languages) |
 | Inspiration sites, with The Monolith Project as the main art reference | [references.md](references.md) |
