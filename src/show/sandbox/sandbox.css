@@ -1,0 +1,56 @@
+/* Neutral styles for the architecture sandbox. Delete with the sandbox. */
+
+.sbx-label {
+  position: absolute;
+  left: 6%;
+  top: 8%;
+  font: 500 calc(var(--su) * 2.2) / 1 var(--font-mono);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.sbx-lines {
+  position: absolute;
+  left: 6%;
+  top: 38%;
+  display: grid;
+  gap: calc(var(--su) * 3);
+}
+
+.sbx-line {
+  font-size: calc(var(--su) * 7);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.sbx-bar {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  bottom: 8%;
+  height: 2px;
+  background: var(--fg);
+  transform-origin: 0 50%;
+  transform: scaleX(0);
+}
+
+.sbx-svg {
+  position: absolute;
+  inset: 12% 20%;
+}
+
+.sbx-svg path {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 2;
+}
+
+.sbx-svg .sbx-fill {
+  fill: var(--fg);
+  stroke: none;
+  opacity: 0.12;
+}

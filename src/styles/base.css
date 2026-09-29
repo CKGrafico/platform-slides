@@ -1,0 +1,205 @@
+/*
+ * Base styles for the keynote engine. Neutral on purpose: no visual identity yet.
+ * The identity goes in src/styles/theme.css when the show is designed.
+ * Stacking order lives in src/engine/layers.ts. Do not write z-index here.
+ */
+
+:root {
+  --bg: #0b0b0c;
+  --fg: #e8e8e6;
+  --muted: #8a8a86;
+  --line: #2a2a2c;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  /* Stage box, written by the engine on resize. */
+  --stage-x: 0px;
+  --stage-y: 0px;
+  --stage-w: 100vw;
+  --stage-h: 56.25vw;
+  --su: 1vh;
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  /* A presenter click or drag must never select text. */
+  user-select: none;
+  -webkit-user-select: none;
+  overscroll-behavior: none;
+  touch-action: none;
+}
+
+html.cursor-hidden,
+html.cursor-hidden * {
+  cursor: none !important;
+}
+
+.keynote {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  contain: strict;
+}
+
+.layer {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* A scene fills its layer. Scenes stack in DOM order inside the layer. */
+.scene {
+  position: absolute;
+  inset: 0;
+  contain: layout paint;
+}
+
+.scene-root {
+  position: absolute;
+  inset: 0;
+}
+
+.stage {
+  position: absolute;
+  left: var(--stage-x);
+  top: var(--stage-y);
+  width: var(--stage-w);
+  height: var(--stage-h);
+}
+
+.fx-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.svg-fixed-stroke :is(path, line, polyline, polygon, circle, rect, ellipse) {
+  vector-effect: non-scaling-stroke;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0s !important;
+    animation-duration: 0s !important;
+  }
+}
+
+/* ---- debug layer (development only) ---------------------------------- */
+
+.debug {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 320px;
+  max-height: calc(100% - 24px);
+  overflow: auto;
+  padding: 10px 12px;
+  background: rgb(20 20 22 / 0.92);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: 11px/1.45 var(--font-mono);
+  color: var(--fg);
+  pointer-events: auto;
+  user-select: text;
+}
+
+.debug button,
+.debug select {
+  font: inherit;
+  color: inherit;
+  background: #1d1d20;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 2px 6px;
+  cursor: pointer;
+}
+
+.debug button[aria-current='true'] {
+  border-color: var(--fg);
+}
+
+.debug-head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.debug-head button {
+  margin-left: auto;
+}
+
+.debug-grid {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 1px 8px;
+  margin: 0 0 8px;
+}
+
+.debug-grid dt {
+  color: var(--muted);
+}
+
+.debug-grid dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.debug-muted {
+  color: var(--muted);
+}
+
+.debug-warn {
+  color: #e0a040;
+}
+
+.debug-scrub {
+  width: 100%;
+  margin: 0 0 8px;
+}
+
+.debug-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.debug-scenes,
+.debug-scenes ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.debug-scenes ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 2px 0 6px;
+}
