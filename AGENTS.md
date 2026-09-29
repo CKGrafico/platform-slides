@@ -29,6 +29,19 @@ This repository also ships `design-taste-frontend` (`.claude/skills/design-taste
 
 You must use this skill for all visual work in this repository: slide layout, styles, colors, type, images, and any HTML or CSS. Read it before you design or change a slide. If your agent cannot load skills by name, read the `SKILL.md` file directly.
 
+## Motion and 3D skills
+
+These skills are in `.claude/skills/`. Use each one when the work matches it:
+
+- `build-threejs-scroll-worlds`: Three.js scenes that the reader moves through by scrolling.
+- `scroll-world-storytelling`: tell a story across chapters that change as the reader scrolls.
+- `gsap-web`: GSAP timelines and ScrollTrigger.
+- `shadertoy`: GLSL shaders in the style of Shadertoy.
+- `motion-design`: timing, easing, and how elements move together.
+- `optimize-web-animations`: make animations smooth, and profile them in the browser.
+
+Before you add or change any motion, read `motion-design`. After the motion works, read `optimize-web-animations`. Also make sure that every animation respects `prefers-reduced-motion`.
+
 ## No sound
 
 Do not use sound anywhere in this project. This includes audio files, music, sound effects, transition sounds, voice-over, and video with an audio track. If a skill or template suggests sound, do not add it.
