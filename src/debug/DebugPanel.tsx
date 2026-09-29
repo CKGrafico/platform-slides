@@ -7,19 +7,39 @@ import { usePresentation } from '@/engine/context'
 import { useEnvironment } from '@/engine/environment'
 import { toggleFullscreen } from '@/engine/fullscreen'
 import type { Tier } from '@/engine/types'
+import { LOCALES, useI18n, type Locale } from '@/i18n'
 import { debugBus } from './bus'
 
 const TIERS: Tier[] = ['high', 'medium', 'low']
 const fmt = (n: number, d = 3) => n.toFixed(d)
 
+/**
+ * Text boxes marked data-fit whose content does not fit. Both languages must fit
+ * the same box, so an overflow here is a layout bug. Reads layout, so debug only.
+ */
+function findOverflows(): string[] {
+  const out: string[] = []
+  document.querySelectorAll<HTMLElement>('[data-fit]').forEach((el) => {
+    const over = el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1
+    el.classList.toggle('i18n-overflow', over)
+    if (over && el.offsetParent !== null) out.push(el.dataset.fit || el.textContent?.slice(0, 24) || '?')
+  })
+  return out
+}
+
 export default function DebugPanel() {
   const p = usePresentation()
   const env = useEnvironment()
+  const i18n = useI18n()
+  const [overflows, setOverflows] = useState<string[]>([])
   const [, setTick] = useState(0)
   const [collapsed, setCollapsed] = useState(false)
 
   useEffect(() => {
-    const id = window.setInterval(() => setTick((t) => t + 1), 250)
+    const id = window.setInterval(() => {
+      setTick((t) => t + 1)
+      setOverflows(findOverflows())
+    }, 250)
     return () => window.clearInterval(id)
   }, [])
 
@@ -86,6 +106,19 @@ export default function DebugPanel() {
             <dt>viewport</dt>
             <dd>
               {env.viewport.width}x{env.viewport.height} dpr {fmt(b.dpr, 2)}
+            </dd>
+            <dt>language</dt>
+            <dd>
+              <select value={i18n.locale} onChange={(e) => i18n.setLocale(e.target.value as Locale)}>
+                {LOCALES.map((l) => (
+                  <option key={l}>{l}</option>
+                ))}
+              </select>{' '}
+              L toggles
+            </dd>
+            <dt>overflow</dt>
+            <dd className={overflows.length ? 'debug-warn' : undefined}>
+              {overflows.length ? overflows.join(', ') : 'none'}
             </dd>
             <dt>tier</dt>
             <dd>

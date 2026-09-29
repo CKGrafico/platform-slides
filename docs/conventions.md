@@ -2,6 +2,18 @@
 
 Most visuals in this show will be made by AI agents. So the conventions prefer formats an agent can write and edit as code: SVG, GLSL, and TypeScript. Blender, After Effects, and Figma are allowed but never required.
 
+## Text and languages
+
+The keynote runs in English and Spanish. The presenter switches with `L` at any time. The playhead does not move, and no scene remounts.
+
+- Every visible string lives in `src/i18n/locales/en.json` and `es.json`, under a flat key such as `intro.title`. English is the source of the keys.
+- Render text with `<T k="intro.title" />`. For attributes, use `const t = useT()` and `t('intro.title')`. Placeholders work: `t('stats.runs', { count: 723 })` fills `{count}`.
+- Never write visible text in JSX.
+- **Both languages must take the same space.** Layouts break on long strings. `npm run i18n:check` compares the character count of every key. A translation more than 15% longer or shorter than the English text fails the check (short strings get 4 characters of slack). The check runs before every build. Fix a failure by rewriting one of the two strings, not by making the box bigger. A key can go on the allow list in `scripts/check-i18n.mjs` only with a written reason.
+- Put text in boxes with a fixed size in `su` units, and mark the box with `data-fit="name"`. The debug panel lists every `data-fit` box whose text overflows in the current language, and outlines it.
+- A GSAP timeline that splits text into lines or characters must rebuild when the language changes. Pass the locale in its dependencies: `useSceneTimeline(build, [locale])`, with `const { locale } = useI18n()`.
+- The locale comes from `?lang=es` or `?lang=en`, then the last choice, then English.
+
 ## Assets
 
 Files live in `public/assets/<kind>/`:

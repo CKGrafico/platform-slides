@@ -40,7 +40,7 @@ function Fx() {
 function Dom() {
   return (
     <Stage>
-      <SceneLabel note="procedural + camera" />
+      <SceneLabel note="sandbox.label.grid" />
     </Stage>
   )
 }

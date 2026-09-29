@@ -16,7 +16,7 @@ npm run dev
 
 Open `http://localhost:5173`. The debug panel is open in development. Press `D` to hide it.
 
-Before you commit, run these three commands. Each one must pass:
+Before you commit, run these commands. Each one must pass. `build` also runs the language check:
 
 ```bash
 npm run typecheck
@@ -30,6 +30,10 @@ npm run lint
 npm run build
 ```
 
+```bash
+npm run i18n:check
+```
+
 ## Where to read
 
 | Topic | File |
@@ -41,6 +45,8 @@ npm run build
 | Performance rules, rehearsal reliability, fallbacks | [performance.md](performance.md) |
 | Presenter controls and the debug workflow | [presenting.md](presenting.md) |
 | What the keynote is about: the Platform repos and site | [knowledge/platform.md](knowledge/platform.md) |
+| Draft story of the talk (not binding) | [knowledge/talk-notes.md](knowledge/talk-notes.md) |
+| English and Spanish text | [conventions.md](conventions.md#text-and-languages) |
 | Inspiration sites, with The Monolith Project as the main art reference | [references.md](references.md) |
 
 If you are an agent and you only have time for one file, read [scenes.md](scenes.md).

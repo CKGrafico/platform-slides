@@ -11,6 +11,7 @@
 | `Home` | start of the show |
 | `End` | end of the show |
 | `F` | fullscreen on and off |
+| `L` | switch between English and Spanish |
 | mouse wheel, trackpad | one stop per gesture. The wheel must be quiet for 350 ms before the next step |
 
 Most presentation clickers send `PageDown` and `PageUp`, so they work with no setup.

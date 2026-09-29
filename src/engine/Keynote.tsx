@@ -5,6 +5,7 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { gsap } from '@/animation/gsap'
 import { debugBus } from '@/debug/bus'
+import { useI18n } from '@/i18n'
 import { World } from '@/world/World'
 import type { ActorDef } from '@/world/actors'
 import { PresentationProvider } from './context'
@@ -22,6 +23,7 @@ const DebugPanel = debugAllowed ? lazy(() => import('@/debug/DebugPanel')) : nul
 
 export function Keynote({ show, actors }: { show: ShowDef; actors: ActorDef[] }) {
   const env = useEnvironment()
+  const { toggleLocale } = useI18n()
   const [presentation] = useState(() => {
     const p = new Presentation(show)
     p.restoreFromHash(window.location.hash)
@@ -41,6 +43,11 @@ export function Keynote({ show, actors }: { show: ShowDef; actors: ActorDef[] })
     let digits = ''
     const unbind = bindInput(presentation, {
       onKey: (e) => {
+        // L switches the language live, in production too. The playhead does not move.
+        if (e.key === 'l' || e.key === 'L') {
+          toggleLocale()
+          return true
+        }
         if (!debugAllowed) return false
         if (e.key === 'd' || e.key === 'D') {
           setDebugOpen((o) => !o)
@@ -89,7 +96,7 @@ export function Keynote({ show, actors }: { show: ShowDef; actors: ActorDef[] })
       window.removeEventListener('hashchange', onHash)
       gsap.ticker.remove(fps)
     }
-  }, [presentation])
+  }, [presentation, toggleLocale])
 
   return (
     <PresentationProvider value={presentation}>

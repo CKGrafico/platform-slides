@@ -26,7 +26,7 @@ function World() {
 function Dom() {
   return (
     <Stage>
-      <SceneLabel note="shader" />
+      <SceneLabel note="sandbox.label.shader" />
     </Stage>
   )
 }

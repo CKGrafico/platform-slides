@@ -111,6 +111,11 @@ html.cursor-hidden * {
 
 /* ---- debug layer (development only) ---------------------------------- */
 
+.i18n-overflow {
+  outline: 2px dashed #e0a040;
+  outline-offset: 2px;
+}
+
 .debug {
   position: absolute;
   top: 12px;

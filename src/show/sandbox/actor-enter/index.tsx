@@ -9,7 +9,7 @@ import { SceneLabel } from '../SceneLabel'
 function Dom() {
   return (
     <Stage>
-      <SceneLabel note="actor" />
+      <SceneLabel note="sandbox.label.actor" />
     </Stage>
   )
 }

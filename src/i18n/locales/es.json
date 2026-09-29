@@ -1,0 +1,10 @@
+{
+  "sandbox.label.dom": "dom",
+  "sandbox.label.svg": "svg",
+  "sandbox.label.actor": "actor",
+  "sandbox.label.shader": "shader",
+  "sandbox.label.grid": "procedural y cámara",
+  "sandbox.domReveal.line1": "Primera línea",
+  "sandbox.domReveal.line2": "Segunda línea",
+  "sandbox.svgDraw.title": "Un círculo que se vuelve cuadrado"
+}

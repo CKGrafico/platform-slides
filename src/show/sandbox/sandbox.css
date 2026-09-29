@@ -16,6 +16,10 @@
   top: 38%;
   display: grid;
   gap: calc(var(--su) * 3);
+  /* A fixed box: both languages must fit it. */
+  width: calc(var(--su) * 80);
+  height: calc(var(--su) * 20);
+  overflow: hidden;
 }
 
 .sbx-line {

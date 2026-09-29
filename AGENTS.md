@@ -4,7 +4,19 @@ These rules apply to every agent that works in this repository. They are not opt
 
 ## Language
 
-Write everything in English: slide text, speaker notes, file names, comments, commit messages, pull requests, and chat replies. If the user writes in another language, reply in English. If source material is in another language, translate it to English before you use it.
+Write every file in English: code, comments, docs, file names, commit messages, and pull requests. If source material is in another language, translate it to English before you add it to the repo.
+
+In chat, reply in the language the user writes in. The user may write in Spanish.
+
+The keynote itself is bilingual, English and Spanish. See "Keynote text" below.
+
+## Keynote text
+
+- Every visible string lives in `src/i18n/locales/en.json` and `src/i18n/locales/es.json`. English is the source. Never write visible text in JSX.
+- Write both languages at the same time. Each translation must take about the same space as the English text. `npm run i18n:check` fails when a string is more than 15% longer or shorter (4 characters of slack for short strings). It runs before every build. If a check fails, rewrite one of the two strings. Do not make the box bigger.
+- Put text in fixed-size boxes sized in `su` units, and mark each box with `data-fit`. The debug panel lists every box that overflows in the current language.
+- Check every scene in both languages. Press `L` to switch.
+- The simple-english and humanizer skills apply to the English text. Write the Spanish text with the same rules: short sentences, plain words, no filler.
 
 ## Required skills
 
@@ -64,4 +76,4 @@ This repository is a keynote engine plus a show. Read `docs/README.md` before yo
 
 ## Knowledge
 
-`docs/knowledge/platform.md` holds the facts about the Plain Concepts Platform: the repos, the site, the vocabulary, and the numbers. Use it as the source for keynote content. Do not invent numbers. Check its "Verify before you present" list before a fact goes on a slide. Never put personal data, such as contributor logins, on a slide.
+`docs/knowledge/platform.md` holds the facts about the Plain Concepts Platform: the repos, the site, the vocabulary, and the numbers. Use it as the source for keynote content. `docs/knowledge/talk-notes.md` holds the current draft story of the talk. It is not binding. Do not invent numbers. Check its "Verify before you present" list before a fact goes on a slide. Never put personal data, such as contributor logins, on a slide.

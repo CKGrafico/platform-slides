@@ -5,6 +5,7 @@
 import { useSceneTimeline } from '@/animation/useSceneTimeline'
 import { defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
+import { T } from '@/i18n'
 import { SceneLabel } from '../SceneLabel'
 
 function Dom() {
@@ -18,13 +19,13 @@ function Dom() {
   return (
     <div ref={scope} className="scene-root">
       <Stage>
-        <SceneLabel note="dom" />
-        <div className="sbx-lines">
+        <SceneLabel note="sandbox.label.dom" />
+        <div className="sbx-lines" data-fit="sandbox lines">
           <h1 className="sbx-line" data-line="1">
-            Line one
+            <T k="sandbox.domReveal.line1" />
           </h1>
           <p className="sbx-line" data-line="2">
-            Line two
+            <T k="sandbox.domReveal.line2" />
           </p>
         </div>
         <div className="sbx-bar" />
