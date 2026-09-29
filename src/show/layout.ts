@@ -200,3 +200,23 @@ export const COMMANDS_FROM: V3[] = [
 ]
 /** The laptop: a small plate with a copy of the Harness (9.5). */
 export const LAPTOP_POS: V3 = [3.1, -1.35, 2.3]
+
+// ---- part 10: Agentic Workflows -----------------------------------------------------------------
+
+/** The triage cluster steps aside while the tasks leave the core (10.2). */
+export const TRIAGE_ASIDE: V3 = [5.9, 1.7, -2.6]
+/** The worker lanes, from the outside in: the closer to the core, the more a path wobbles. */
+export const LANES = {
+  triage: { radius: 2.9, wobble: 0.035 },
+  refine: { radius: 2.25, wobble: 0.08 },
+}
+/** The router: one capture ring at the entrance (10.4). Events come from far on the left. */
+export const ROUTER_POS: V3 = [-5.7, 0, 1.3]
+export const EVENTS_FROM: V3 = [-11, 0.4, 1.3]
+/** The merge gate on the way out, and release beyond it (10.6). */
+export const GATE_POS: V3 = [5.7, 0, 1.3]
+export const RELEASE_POS: V3 = [8.6, 1.6, 0.2]
+/** Where a human approves the story: between refine and implement. */
+export const APPROVER_POS: V3 = [-2.1, -0.9, 0.55]
+/** Audit and housekeeping circle to one side, on a steep orbit. */
+export const SIDE_ORBIT = { center: [0, 0.4, -1.2] as V3, radius: 4.7, tilt: 1.15 }

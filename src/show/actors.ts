@@ -10,6 +10,7 @@ import { palette } from '@/art/palette'
 import { TorusGeometry } from 'three'
 import { defineActor, type ActorDef } from '@/world/actors'
 import {
+  APPROVER_POS,
   APPS,
   CAPSULE_POS,
   CLEAN_ORBIT,
@@ -17,8 +18,10 @@ import {
   COMMANDS_FROM,
   COMPILER_POS,
   FORGE_POS,
+  GATE_POS,
   HARNESS_RADIUS,
   IMPROVISE_PATHS,
+  LANES,
   LAPTOP_POS,
   LEVEL_RADII,
   LINE_BENT,
@@ -29,6 +32,7 @@ import {
   OPENCODE,
   PILE,
   PILE_R,
+  ROUTER_POS,
   RUN_PATHS,
   RUNNER_POS,
   TEAM,
@@ -432,7 +436,54 @@ const laptopHarness = defineActor({
   },
 })
 
-// ---- part 10 (style frame) ---------------------------------------------------------------
+// ---- part 10: Agentic Workflows ----------------------------------------------------------------
+
+const laneTriage = defineActor({
+  id: 'lane.triage',
+  create: () => {
+    const o = createOrbitLine({ spec: { radius: LANES.triage.radius }, wobble: LANES.triage.wobble, width: 2.5, opacity: 0.85 })
+    o.reveal.value = 0
+    return o.object
+  },
+})
+const laneRefine = defineActor({
+  id: 'lane.refine',
+  create: () => {
+    const o = createOrbitLine({ spec: { radius: LANES.refine.radius }, wobble: LANES.refine.wobble, width: 2.5, opacity: 0.85 })
+    o.reveal.value = 0
+    return o.object
+  },
+})
+const router = defineActor({
+  id: 'router',
+  create: () => {
+    const el = createRing({ radius: 0.62, tube: 0.085, color: palette.peach, facing: 'x' })
+    el.object.position.set(...ROUTER_POS)
+    return el.object
+  },
+})
+const gate = defineActor({
+  id: 'gate',
+  create: () => {
+    const el = createRing({ radius: 0.62, tube: 0.085, color: palette.sage, facing: 'x' })
+    el.object.position.set(...GATE_POS)
+    return el.object
+  },
+})
+const approver = defineActor({
+  id: 'person.approver',
+  create: () => {
+    const el = createCapsule({ height: 0.55, color: palette.lilac })
+    el.object.position.set(...APPROVER_POS)
+    return el.object
+  },
+})
+/** Work items in the pipeline, and the copies of 10.4 that wake every workflow. */
+const flow = defineActor({ id: 'flow', create: () => createSwarm({ count: 12, radius: 0.11, color: palette.butter }).object })
+const audit = defineActor({ id: 'audit', create: () => createMoon({ radius: 0.2, color: palette.peach, pattern: 'bands', ring: palette.lilac }).object })
+const housekeeping = defineActor({ id: 'housekeeping', create: () => createMoon({ radius: 0.17, color: palette.sage, pattern: 'spots' }).object })
+
+// ---- the orbits of the ladder -------------------------------------------------------------
 
 const outerOrbit = defineActor({
   id: 'orbit.outer',
@@ -503,6 +554,14 @@ export const actors: ActorDef[] = [
   laptop,
   laptopCore,
   laptopHarness,
+  laneTriage,
+  laneRefine,
+  router,
+  gate,
+  approver,
+  flow,
+  audit,
+  housekeeping,
   outerOrbit,
   innerOrbit,
   ...tasks,

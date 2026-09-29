@@ -31,6 +31,10 @@ const HIDDEN = [
   /^cmd\./,
   /^laptop$/,
   /^core\.laptop$/,
+  /^router$/,
+  /^gate$/,
+  /^audit$/,
+  /^housekeeping$/,
 ]
 
 export const restMoves = defineChoreography('rest', (tl, cast) => {
