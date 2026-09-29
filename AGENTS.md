@@ -29,6 +29,8 @@ This repository also ships `design-taste-frontend` (`.claude/skills/design-taste
 
 You must use this skill for all visual work in this repository: slide layout, styles, colors, type, images, and any HTML or CSS. Read it before you design or change a slide. If your agent cannot load skills by name, read the `SKILL.md` file directly.
 
+The inspiration sites are in `docs/references.md`. The Monolith Project is the main art reference.
+
 ## Motion and 3D skills
 
 These skills are in `.claude/skills/`. Use each one when the work matches it:

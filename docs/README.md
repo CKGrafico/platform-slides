@@ -41,5 +41,6 @@ npm run build
 | Performance rules, rehearsal reliability, fallbacks | [performance.md](performance.md) |
 | Presenter controls and the debug workflow | [presenting.md](presenting.md) |
 | What the keynote is about: the Platform repos and site | [knowledge/platform.md](knowledge/platform.md) |
+| Inspiration sites, with The Monolith Project as the main art reference | [references.md](references.md) |
 
 If you are an agent and you only have time for one file, read [scenes.md](scenes.md).
