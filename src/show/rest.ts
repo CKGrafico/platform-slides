@@ -35,6 +35,11 @@ const HIDDEN = [
   /^gate$/,
   /^audit$/,
   /^housekeeping$/,
+  /^tidy\.core$/,
+  /^messy\.core$/,
+  /^disc$/,
+  /^wall\./,
+  /^verb\.(pr|merge|issue)$/,
 ]
 
 export const restMoves = defineChoreography('rest', (tl, cast) => {

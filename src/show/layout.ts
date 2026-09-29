@@ -220,3 +220,26 @@ export const RELEASE_POS: V3 = [8.6, 1.6, 0.2]
 export const APPROVER_POS: V3 = [-2.1, -0.9, 0.55]
 /** Audit and housekeeping circle to one side, on a steep orbit. */
 export const SIDE_ORBIT = { center: [0, 0.4, -1.2] as V3, radius: 4.7, tilt: 1.15 }
+
+// ---- part 11: Foundations ----------------------------------------------------------------------
+
+/** 11.1 happens in the sky again: a tidy system and a messy one, side by side. */
+export const TIDY_POS: V3 = [-2.3, TEAM_Y, 0]
+export const MESSY_POS: V3 = [2.3, TEAM_Y, 0]
+export const SMALL_ORBITS = [0.75, 1.15]
+/** The ground: where the disc forms (11.3), and the three phase circles lie (11.2). */
+export const GROUND_Y = -2.95
+export const DISC_RADIUS = 7.4
+export const PHASE_RADII = [2.4, 4.4, 6.6]
+/** Guardrails: low walls on the disc around the lanes, across the front half (11.4). */
+export const WALL_RADIUS = 4.25
+export const WALL_ANGLES = [0.12, 0.3, 0.5, 0.7, 0.88].map((f) => f * Math.PI)
+/** Verbs (11.5): what a worker may do, as small moons; what it may not, as hollow slots. */
+export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [
+  { id: 'pr', at: [1.95, 1.55, 1.4], hollow: false },
+  { id: 'merge-no', at: [1.95, 1.15, 1.4], hollow: true },
+  { id: 'main-no', at: [1.95, 0.75, 1.4], hollow: true },
+  { id: 'merge', at: [5.55, 1.35, 1.3], hollow: false },
+  { id: 'issue', at: [-4.1, 2.6, 0.4], hollow: false },
+  { id: 'code-no', at: [-4.1, 2.2, 0.4], hollow: true },
+]

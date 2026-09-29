@@ -3,8 +3,8 @@
  * Parts move them in their choreography files, never here. Where things stand
  * is in layout.ts. What is hidden at the start is in rest.ts.
  */
-import { artOf, createBall, createCapsule, createColumn, createCore, createMoon, createPlate, createRing, createSwarm } from '@/art/elements'
-import { createFrame, createSketchLine, createSlot, straight, through } from '@/art/lines'
+import { artOf, createBall, createCapsule, createColumn, createCore, createDisc, createMoon, createPlate, createRing, createSwarm, createWall } from '@/art/elements'
+import { circleXZ, createFrame, createGrid, createSketchLine, createSlot, straight, through } from '@/art/lines'
 import { createOrbitLine } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { TorusGeometry } from 'three'
@@ -17,8 +17,10 @@ import {
   CLOUD_PATHS,
   COMMANDS_FROM,
   COMPILER_POS,
+  DISC_RADIUS,
   FORGE_POS,
   GATE_POS,
+  GROUND_Y,
   HARNESS_RADIUS,
   IMPROVISE_PATHS,
   LANES,
@@ -28,23 +30,30 @@ import {
   LINE_X,
   LINE_Y,
   LINE_Z,
+  MESSY_POS,
   MODELS,
   OPENCODE,
+  PHASE_RADII,
   PILE,
   PILE_R,
   ROUTER_POS,
   RUN_PATHS,
   RUNNER_POS,
+  SMALL_ORBITS,
   TEAM,
   TIMELINE_PATH,
   TIMELINE_POINTS,
   TIMELINE_RADIUS,
   TIMELINE_SPLIT,
+  TIDY_POS,
   TIMELINE_U,
   TOKENS_POS,
   TRIAGE_ORBIT,
   TRIAGE_POS,
   VENDOR_POS,
+  VERBS,
+  WALL_ANGLES,
+  WALL_RADIUS,
 } from './layout'
 
 /** The four tasks that leave the agent in part 10, in the order they leave. */
@@ -483,6 +492,108 @@ const flow = defineActor({ id: 'flow', create: () => createSwarm({ count: 12, ra
 const audit = defineActor({ id: 'audit', create: () => createMoon({ radius: 0.2, color: palette.peach, pattern: 'bands', ring: palette.lilac }).object })
 const housekeeping = defineActor({ id: 'housekeeping', create: () => createMoon({ radius: 0.17, color: palette.sage, pattern: 'spots' }).object })
 
+// ---- part 11: Foundations -----------------------------------------------------------------------
+
+/** 11.1: a tidy system (clean orbits) and a messy one (wobbly orbits), each with its own small core. */
+const smallSystems = (['tidy', 'messy'] as const).flatMap((kind) => {
+  const at = kind === 'tidy' ? TIDY_POS : MESSY_POS
+  return [
+    defineActor({
+      id: `${kind}.core`,
+      create: () => {
+        const el = createCore({ radius: 0.34, segments: 32, outline: { width: 2.5 } })
+        el.object.position.set(...at)
+        return el.object
+      },
+    }),
+    ...SMALL_ORBITS.map((radius, i) =>
+      defineActor({
+        id: `${kind}.orbit.${i}`,
+        create: () => {
+          const o = createOrbitLine({ spec: { radius, tilt: 0.35 }, wobble: kind === 'tidy' ? 0.01 : 0.16, width: 2.2, opacity: 0.85 })
+          o.reveal.value = 0
+          o.object.position.set(...at)
+          return o.object
+        },
+      }),
+    ),
+  ]
+})
+/** The moons of both small systems, and the work that arrives faster and faster. */
+const smallMoons = defineActor({
+  id: 'p11.moons',
+  create: () => {
+    const sw = createSwarm({ count: 6, radius: 0.12 })
+    const colors = [palette.sage, palette.peach, palette.butter]
+    for (let i = 0; i < 6; i++) sw.paint(i, colors[i % 3]!)
+    return sw.object
+  },
+})
+const smallWork = defineActor({ id: 'p11.work', create: () => createSwarm({ count: 10, radius: 0.08, color: palette.lilac }).object })
+
+const phases = PHASE_RADII.map((radius, i) =>
+  defineActor({
+    id: `phase.${i}`,
+    create: () => createSketchLine({ path: circleXZ([0, GROUND_Y + 0.03, 0], radius), segments: 140, width: 2.5, dashed: i === 2, reveal: 0 }).object,
+  }),
+)
+const disc = defineActor({
+  id: 'disc',
+  create: () => {
+    const el = createDisc({ radius: DISC_RADIUS, color: palette.surface })
+    el.object.position.set(0, GROUND_Y, 0)
+    return el.object
+  },
+})
+const grid = defineActor({
+  id: 'disc.grid',
+  create: () => {
+    const g = createGrid({ radius: DISC_RADIUS * 0.97, opacity: 0 })
+    g.object.position.set(0, GROUND_Y + 0.02, 0)
+    return g.object
+  },
+})
+const walls = WALL_ANGLES.map((a, i) =>
+  defineActor({
+    id: `wall.${i}`,
+    create: () => {
+      const el = createWall({ length: 1.35, height: 0.42, color: [palette.sage, palette.lilac, palette.butter, palette.peach, palette.sage][i] })
+      el.object.position.set(Math.cos(a) * WALL_RADIUS, GROUND_Y, Math.sin(a) * WALL_RADIUS)
+      // Tangent to the circle, so the walls ring the lanes.
+      el.object.rotation.y = -a + Math.PI / 2
+      return el.object
+    },
+  }),
+)
+const verbs = VERBS.map((v) =>
+  defineActor({
+    id: `verb.${v.id}`,
+    create: () => {
+      if (v.hollow) {
+        const s = createSlot({ radius: 0.12, width: 2.2 })
+        s.reveal.value = 0
+        s.object.position.set(...v.at)
+        return s.object
+      }
+      const el = createMoon({ radius: 0.12, color: palette.butter })
+      el.object.position.set(...v.at)
+      return el.object
+    },
+  }),
+)
+/** 11.6: a shortcut from discovery straight to maintenance mode, in two halves that break apart. */
+const shortcut = [0, 1].map((half) =>
+  defineActor({
+    id: `shortcut.${half}`,
+    create: () => {
+      const a = [PHASE_RADII[0]! * 0.7, GROUND_Y + 0.05, PHASE_RADII[0]! * 0.7] as const
+      const m = [((PHASE_RADII[0]! + PHASE_RADII[2]!) / 2) * 0.7, GROUND_Y + 0.05, ((PHASE_RADII[0]! + PHASE_RADII[2]!) / 2) * 0.7] as const
+      const c = [PHASE_RADII[2]! * 0.7, GROUND_Y + 0.05, PHASE_RADII[2]! * 0.7] as const
+      return createSketchLine({ path: half === 0 ? straight(a, m) : straight(m, c), segments: 30, width: 3.5, color: palette.outline, reveal: 0 }).object
+    },
+  }),
+)
+
 // ---- the orbits of the ladder -------------------------------------------------------------
 
 const outerOrbit = defineActor({
@@ -562,6 +673,15 @@ export const actors: ActorDef[] = [
   flow,
   audit,
   housekeeping,
+  ...smallSystems,
+  smallMoons,
+  smallWork,
+  ...phases,
+  disc,
+  grid,
+  ...walls,
+  ...verbs,
+  ...shortcut,
   outerOrbit,
   innerOrbit,
   ...tasks,

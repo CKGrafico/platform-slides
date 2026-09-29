@@ -387,3 +387,14 @@ body,
   font-weight: 600;
   letter-spacing: 0;
 }
+
+/* Phase names on the ground (11.2). */
+.phase-label.art-label {
+  font-size: calc(var(--su) * 2.2);
+}
+
+/* A verb a worker does not have: struck, like a hollow slot. */
+.verb-no.art-label {
+  text-decoration: line-through;
+  text-decoration-thickness: calc(var(--su) * 0.25);
+}
