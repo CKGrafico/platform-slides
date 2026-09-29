@@ -253,9 +253,12 @@ export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [
 
 // ---- part 12: Project Health ---------------------------------------------------------------------
 
-/** Measures stack up on the front right edge of the disc, in the open: six collected, then two that are not. */
-export const METRIC_RADIUS = 6.3
-export const METRIC_ANGLES = [0.47, 0.41, 0.35, 0.29, 0.23, 0.17, 0.09, 0.03].map((f) => f * Math.PI)
+/**
+ * Measures stack up in a straight row at the front of the disc, like a bar
+ * chart: six collected, then two that are not. X of each stack; all at METRIC_Z.
+ */
+export const METRIC_X = [-3.65, -2.6, -1.55, -0.5, 0.55, 1.6, 2.75, 3.8]
+export const METRIC_Z = 5.75
 /** Coins in each collected measure, and in each ghost stack of a measure that is not collected. */
 export const METRIC_COINS = [9, 6, 7, 11, 5, 7]
 export const GHOST_COINS = 8

@@ -27,8 +27,7 @@ import { T, type MessageKey } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { metricBase } from '../../actors'
-import { stackPoint } from '../../coins'
-import { GHOST_COINS, HEALTH_PERSON, METRIC_COIN_SCALE, METRIC_COINS, RELEASE_POS, TEAM_Y } from '../../layout'
+import { GROUND_Y, HEALTH_PERSON, METRIC_COINS, METRIC_Z, RELEASE_POS, TEAM_Y } from '../../layout'
 
 export const grid = beatStops([4, 5, 6, 6, 5, 7, 6])
 const { b } = grid
@@ -42,20 +41,20 @@ hudCues.hide({ rise: { key: KEY, from: b(B.numbers), to: b(B.numbers + 1) }, fal
 const WHOLE: CameraShot = { position: [0, 5.4, 15.8], target: [0.2, -0.7, 0], fov: 36 }
 const ESCAPE: CameraShot = { position: [3.8, 2.4, 11.2], target: [5.4, 0.8, 0.6], fov: 36 }
 /** Looks at the measures on the front right edge of the disc. */
-const BACK: CameraShot = { position: [2.6, 1.9, 14.6], target: [4.3, -2.1, 3.6], fov: 36 }
+/** In front of the row of stacks, low, so they read like a chart with the system behind. */
+const BACK: CameraShot = { position: [0.1, -1.25, 14.2], target: [0.1, -2.15, 5.6], fov: 34 }
 const PERSON: CameraShot = { position: [-3.2, 0.2, 8.6], target: [-4.6, -2.1, 2.7], fov: 36 }
 const SKY: CameraShot = { position: [0, TEAM_Y + 1.1, 8.4], target: [0, TEAM_Y - 0.1, 0], fov: 36 }
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
 const question = new Vector3(RELEASE_POS[0] - 0.9, RELEASE_POS[1] + 0.9, RELEASE_POS[2])
-/** Above the top coin of a stack; every other label a step higher, so neighbours never touch. */
-const metricTop = (i: number, coins: number) =>
-  stackPoint(metricBase(i), coins - 1, METRIC_COIN_SCALE).add(new Vector3(0, 0.45 + (i % 2) * 0.55, 0))
-const metricLabels = METRIC_COINS.map((n, i) => metricTop(i, n))
-// The ghost stacks are named high above everything, and "not collected" goes to their right.
-const hollowLabels = [0, 1].map((k) => metricTop(6 + k, GHOST_COINS).add(new Vector3(0, 0.9 + k * 0.55, 0)))
-const notCollected = metricTop(7, GHOST_COINS).add(new Vector3(0.5, -0.75, 0))
+/** Names in two rows above the row of stacks, like the labels of a chart. */
+const NAME_Y = [-1.72, -1.36]
+const metricLabels = METRIC_COINS.map((_, i) => new Vector3(metricBase(i)[0], NAME_Y[i % 2]!, METRIC_Z))
+const hollowLabels = [0, 1].map((k) => new Vector3(metricBase(6 + k)[0], NAME_Y[k % 2]!, METRIC_Z))
+// "Not collected" under the two ghost stacks, on the disc.
+const notCollected = new Vector3((metricBase(6)[0] + metricBase(7)[0]) / 2, GROUND_Y - 0.3, METRIC_Z + 0.35)
 const panelPoint = new Vector3(HEALTH_PERSON[0] + 0.5, HEALTH_PERSON[1] + 1.15, HEALTH_PERSON[2])
 /** What needs a human, per app: a few pastel dots each. */
 const WAITING = [2, 1, 3]
@@ -136,7 +135,7 @@ function Dom() {
       {hollowLabels.map((p, i) => (
         <Label key={i} k={`p12.hollow.${i + 1}` as MessageKey} target={() => p} width={24} className="verb-no" level={win(B.honest + 1 + i * 0.4, B.honest + 1.6 + i * 0.4, B.human, B.human + 1)} />
       ))}
-      <Label k="p12.notCollected" target={() => notCollected} width={20} className="label-left" level={win(B.honest + 1.75, B.honest + 2.25, B.human, B.human + 1)} />
+      <Label k="p12.notCollected" target={() => notCollected} width={20} level={win(B.honest + 1.75, B.honest + 2.25, B.human, B.human + 1)} />
       <Card fit="p12.panel" target={() => panelPoint} width={25} height={14.5} className="health-card" level={win(B.human + 1, B.human + 1.75, B.numbers, B.numbers + 1)}>
         <p className="health-card-title">
           <T k="p12.panel" />

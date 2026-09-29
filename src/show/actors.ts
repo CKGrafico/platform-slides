@@ -37,10 +37,10 @@ import {
   LINE_Y,
   LINE_Z,
   MESSY_POS,
-  METRIC_ANGLES,
   METRIC_COIN_SCALE,
   METRIC_COINS,
-  METRIC_RADIUS,
+  METRIC_X,
+  METRIC_Z,
   MODELS,
   OPENCODE,
   PHASE_RADII,
@@ -627,11 +627,8 @@ const shortcut = [0, 1].map((half) =>
 // ---- part 12: Project Health ----------------------------------------------------------------------
 
 const METRIC_COLORS = [palette.sage, palette.lilac, palette.butter, palette.peach, palette.sage, palette.lilac]
-/** Where a measure stands on the back edge of the disc. */
-export const metricBase = (i: number) => {
-  const a = METRIC_ANGLES[i]!
-  return [Math.cos(a) * METRIC_RADIUS, GROUND_Y, Math.sin(a) * METRIC_RADIUS] as const
-}
+/** Where a measure stands: in the row at the front of the disc. */
+export const metricBase = (i: number) => [METRIC_X[i]!, GROUND_Y, METRIC_Z] as const
 /** Every coin of every collected measure, in one swarm. Coin k of measure i is METRIC_OFFSET[i] + k. */
 export const METRIC_OFFSET = METRIC_COINS.map((_, i) => METRIC_COINS.slice(0, i).reduce((x, y) => x + y, 0))
 const metrics = defineActor({
