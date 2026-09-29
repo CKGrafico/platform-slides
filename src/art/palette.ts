@@ -9,6 +9,9 @@ export const palette = {
   surface: '#F2F1EE',
   sage: '#9FB7A6',
   lilac: '#B7A7CC',
+  /** Warm pastels for planets only, so the satellites are not all one tone. */
+  peach: '#EDC1A5',
+  butter: '#E9D59E',
   outline: '#2E2A4A',
   text: '#1F1D33',
   accent: '#2F69FF',

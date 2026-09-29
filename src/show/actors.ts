@@ -3,12 +3,14 @@
  * Parts move them in their choreography files, never here. Where things stand
  * is in layout.ts. What is hidden at the start is in rest.ts.
  */
-import { artOf, createBall, createCapsule, createColumn, createCore, createMoon, createRing } from '@/art/elements'
+import { artOf, createBall, createCapsule, createColumn, createCore, createMoon, createRing, createSwarm } from '@/art/elements'
 import { createFrame, createSketchLine, createSlot, straight, through } from '@/art/lines'
 import { createOrbitLine } from '@/art/orbits'
 import { palette } from '@/art/palette'
+import { TorusGeometry } from 'three'
 import { defineActor, type ActorDef } from '@/world/actors'
 import {
+  APPS,
   CAPSULE_POS,
   COMPILER_POS,
   LEVEL_RADII,
@@ -24,6 +26,7 @@ import {
   TIMELINE_RADIUS,
   TIMELINE_SPLIT,
   TIMELINE_U,
+  TEAM,
   TOKENS_POS,
   TRIAGE_ORBIT,
   TRIAGE_POS,
@@ -129,7 +132,7 @@ const tlLoops = LOOPS.flatMap((l) => {
     defineActor({
       id: `tl.moon.${l.id}`,
       create: () => {
-        const m = createMoon({ radius: 0.085, color: palette.lilac, outline: { width: 2 } })
+        const m = createMoon({ radius: 0.09, color: palette.peach, outline: { width: 2 } })
         m.object.position.copy(at(l.step))
         return m.object
       },
@@ -197,11 +200,20 @@ export const STEPS = ['marketplace', 'ours', 'scripts', 'clis', 'code', 'apis'] 
 /** The shell the compiler builds around the agent (5.5), then our own step (5.6). */
 export const SHELL = ['permissions', 'firewall', 'outputs', 'threat', 'telemetry', 'runtime', 'ours'] as const
 
-const EVENT_COLORS = [palette.sage, palette.lilac, palette.surface, palette.sage, palette.lilac, palette.surface]
+const EVENT_COLORS = [palette.peach, palette.lilac, palette.butter, palette.sage, palette.peach, palette.lilac]
 
-const ga = defineActor({ id: 'ga', create: () => createMoon({ radius: 0.42, outline: { width: 3 } }).object })
+// GitHub Actions: the big banded planet everyone knows.
+const ga = defineActor({ id: 'ga', create: () => createMoon({ radius: 0.42, color: palette.sage, pattern: 'bands', ring: palette.butter, outline: { width: 3 } }).object })
 const events = EVENTS.map((name, i) => defineActor({ id: `evt.${name}`, create: () => createBall({ radius: 0.11, color: EVENT_COLORS[i] }).object }))
-const steps = STEPS.map((name) => defineActor({ id: `step.${name}`, create: () => createMoon({ radius: 0.17 }).object }))
+const STEP_LOOKS = [
+  { color: palette.butter, pattern: 'bands' },
+  { color: palette.lilac, pattern: 'plain' },
+  { color: palette.peach, pattern: 'spots' },
+  { color: palette.sage, pattern: 'plain' },
+  { color: palette.butter, pattern: 'plain' },
+  { color: palette.lilac, pattern: 'bands' },
+] as const
+const steps = STEPS.map((name, i) => defineActor({ id: `step.${name}`, create: () => createMoon({ radius: 0.17, ...STEP_LOOKS[i]! }).object }))
 
 const lineStart = [LINE_X[0]!, LINE_Y, LINE_Z] as const
 const lineEnd = [LINE_X[LINE_X.length - 1]!, LINE_Y, LINE_Z] as const
@@ -221,7 +233,7 @@ const curvedLine = defineActor({
     }).object,
 })
 
-const md = defineActor({ id: 'md', create: () => createMoon({ radius: 0.26, color: palette.surface, outline: { width: 3 } }).object })
+const md = defineActor({ id: 'md', create: () => createMoon({ radius: 0.26, color: palette.butter, pattern: 'bands', outline: { width: 3 } }).object })
 const compiler = defineActor({
   id: 'compiler',
   create: () => {
@@ -231,7 +243,7 @@ const compiler = defineActor({
   },
 })
 const shell = SHELL.map((name) =>
-  defineActor({ id: `shell.${name}`, create: () => createMoon({ radius: 0.1, color: name === 'ours' ? palette.lilac : palette.surface, outline: { width: 2 } }).object }),
+  defineActor({ id: `shell.${name}`, create: () => createMoon({ radius: 0.1, color: name === 'ours' ? palette.peach : palette.surface, outline: { width: 2 } }).object }),
 )
 
 const triageCore = defineActor({
@@ -262,7 +274,7 @@ const runPaths = RUN_PATHS.map((points, i) =>
   }),
 )
 const pile = PILE.map((_, i) =>
-  defineActor({ id: `p6.ball.${i}`, create: () => createBall({ radius: PILE_R, color: [palette.sage, palette.lilac, palette.surface][i % 3] }).object }),
+  defineActor({ id: `p6.ball.${i}`, create: () => createBall({ radius: PILE_R, color: [palette.peach, palette.lilac, palette.butter, palette.sage][i % 4] }).object }),
 )
 const tokens = defineActor({
   id: 'tokens',
@@ -282,6 +294,32 @@ const reviewer = defineActor({
   },
 })
 
+// ---- part 7: the change of mind --------------------------------------------------------------
+
+const team = TEAM.map((_, i) =>
+  defineActor({ id: `person.team.${i}`, create: () => createCapsule({ height: 0.62, color: [palette.lilac, palette.sage, palette.peach][i] }).object }),
+)
+/** More than ten apps: small planets, each with a ring. Two swarms, four draw calls. */
+const APP_COLORS = [palette.sage, palette.peach, palette.lilac, palette.butter]
+const apps = defineActor({
+  id: 'apps',
+  create: () => {
+    const sw = createSwarm({ count: APPS.length, radius: 0.2, bands: true })
+    APPS.forEach((_, i) => sw.paint(i, APP_COLORS[i % APP_COLORS.length]!))
+    return sw.object
+  },
+})
+const appRings = defineActor({
+  id: 'apps.rings',
+  create: () => {
+    const g = new TorusGeometry(0.34, 0.02, 8, 48)
+    g.rotateX(Math.PI / 2)
+    const sw = createSwarm({ count: APPS.length, geometry: g })
+    APPS.forEach((_, i) => sw.paint(i, APP_COLORS[(i + 2) % APP_COLORS.length]!))
+    return sw.object
+  },
+})
+
 // ---- part 10 (style frame) ---------------------------------------------------------------
 
 const outerOrbit = defineActor({
@@ -294,10 +332,12 @@ const innerOrbit = defineActor({
   create: () => createOrbitLine({ spec: INNER, wobble: 0.16, width: 3, opacity: 0 }).object,
 })
 
+/** The task moons start white in the core's surface; part 10 paints them as they land. */
+const TASK_PATTERNS = ['bands', 'plain', 'spots', 'bands'] as const
 const tasks = TASKS.map((name, i) =>
   defineActor({
     id: `task.${name}`,
-    create: () => createMoon({ radius: 0.2 }).object,
+    create: () => createMoon({ radius: 0.2, pattern: TASK_PATTERNS[i] }).object,
     // A small bounded sway, so a moon never shows one fixed face. Ambient: inner only.
     ambient: (o, time) => {
       const inner = artOf(o).inner
@@ -334,6 +374,9 @@ export const actors: ActorDef[] = [
   ...pile,
   tokens,
   reviewer,
+  ...team,
+  apps,
+  appRings,
   outerOrbit,
   innerOrbit,
   ...tasks,

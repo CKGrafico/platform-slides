@@ -137,3 +137,20 @@ export const TASK_DIRS: V3[] = [
 export const CORE_R = 0.95
 /** Share of the core radius where a task sits: just under the surface, half showing. */
 export const TASK_DEPTH = 0.97
+
+// ---- part 7: the change of mind ---------------------------------------------------------
+
+/** 7.2 happens in the empty space above the system. */
+export const TEAM_Y = 8.3
+/** Three people on one side. */
+export const TEAM: V3[] = [
+  [-3.5, TEAM_Y - 0.55, 0.3],
+  [-2.85, TEAM_Y - 0.55, -0.15],
+  [-2.2, TEAM_Y - 0.55, 0.3],
+]
+/** More than ten small systems (the apps) on the other side. */
+export const APPS: V3[] = Array.from({ length: 11 }, (_, i) => {
+  const row = i < 6 ? 0 : 1
+  const col = row === 0 ? i : i - 6
+  return [0.1 + col * 1.0 + row * 0.5, TEAM_Y + (row === 0 ? 0.55 : -0.55), (col % 2) * 0.4 - 0.2] as const
+})

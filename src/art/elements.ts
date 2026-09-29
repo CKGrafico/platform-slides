@@ -21,6 +21,7 @@ import {
   TorusGeometry,
   Vector3,
   Color,
+  Euler,
   type BufferAttribute,
   type BufferGeometry,
   type ColorRepresentation,
@@ -31,7 +32,7 @@ import { onArtFrame } from './clock'
 import { createMonolithMaterial, type MonolithMaterial } from './monolith'
 import { createOutlineMaterial, hullGeometry, type OutlineMaterial, type OutlineOptions } from './outline'
 import { palette } from './palette'
-import { createToonMaterial } from './toon'
+import { createToonMaterial, inkOf } from './toon'
 
 export interface ArtElement<M extends Material = Material> {
   object: Group
@@ -150,51 +151,115 @@ export function coreOf(object: Object3D): CoreElement {
 
 // ---- moons and balls ------------------------------------------------------------
 
-let craters: CanvasTexture | null = null
+export type PlanetPattern = 'plain' | 'bands' | 'spots'
 
-/** A shared, seeded crater map: darker hollows with a light rim. Multiplies the moon color. */
-function craterTexture(): CanvasTexture {
-  if (craters) return craters
-  const size = 512
+const patterns = new Map<PlanetPattern, CanvasTexture>()
+
+/**
+ * A shared, seeded surface for illustrated planets: soft bands with wavy edges,
+ * or a few soft spots. White with light grey marks, so it tints any color.
+ */
+function planetTexture(pattern: Exclude<PlanetPattern, 'plain'>): CanvasTexture {
+  const hit = patterns.get(pattern)
+  if (hit) return hit
+  const w = 512
+  const h = 256
   const canvas = document.createElement('canvas')
-  canvas.width = size
-  canvas.height = size / 2
+  canvas.width = w
+  canvas.height = h
   const ctx = canvas.getContext('2d')!
   ctx.fillStyle = '#ffffff'
-  ctx.fillRect(0, 0, size, size / 2)
-  let seed = 11
+  ctx.fillRect(0, 0, w, h)
+  let seed = pattern === 'bands' ? 7 : 19
   const rand = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296)
-  for (let i = 0; i < 26; i++) {
-    const x = rand() * size
-    const y = (0.15 + rand() * 0.7) * (size / 2)
-    const r = 6 + rand() * rand() * 34
-    ctx.beginPath()
-    ctx.ellipse(x, y, r, r * 0.9, 0, 0, Math.PI * 2)
-    ctx.fillStyle = 'rgba(120, 112, 150, 0.55)'
-    ctx.fill()
-    ctx.lineWidth = Math.max(1.5, r * 0.18)
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)'
-    ctx.beginPath()
-    ctx.arc(x - r * 0.12, y - r * 0.12, r, Math.PI * 0.9, Math.PI * 1.9)
-    ctx.stroke()
+  if (pattern === 'bands') {
+    // Three bands of different widths, with a gentle wave on each edge.
+    const bands = [
+      { y: 0.3, h: 0.07, tone: 0.84 },
+      { y: 0.48, h: 0.12, tone: 0.8 },
+      { y: 0.68, h: 0.05, tone: 0.86 },
+    ]
+    for (const band of bands) {
+      const v = Math.round(255 * band.tone)
+      ctx.fillStyle = `rgb(${v}, ${v}, ${v})`
+      const phase = rand() * Math.PI * 2
+      ctx.beginPath()
+      for (let x = 0; x <= w; x += 8) ctx.lineTo(x, (band.y + Math.sin(x / 60 + phase) * 0.012) * h)
+      for (let x = w; x >= 0; x -= 8) ctx.lineTo(x, (band.y + band.h + Math.sin(x / 45 + phase * 1.7) * 0.012) * h)
+      ctx.closePath()
+      ctx.fill()
+    }
+  } else {
+    // A few soft round spots, no rims.
+    for (let i = 0; i < 7; i++) {
+      const x = rand() * w
+      const y = (0.25 + rand() * 0.5) * h
+      const r = 14 + rand() * 30
+      ctx.fillStyle = 'rgb(214, 214, 214)'
+      ctx.beginPath()
+      ctx.ellipse(x, y, r * 1.3, r, 0, 0, Math.PI * 2)
+      ctx.fill()
+    }
   }
-  craters = new CanvasTexture(canvas)
-  craters.colorSpace = SRGBColorSpace
-  return craters
+  const texture = new CanvasTexture(canvas)
+  texture.colorSpace = SRGBColorSpace
+  patterns.set(pattern, texture)
+  return texture
 }
 
-/** A deterministic piece: a small smooth moon with craters. */
-export function createMoon(options: { radius?: number; color?: ColorRepresentation; outline?: OutlineOptions } = {}) {
-  const { radius = 0.2, color = palette.surface, outline } = options
-  const material = createToonMaterial({ color })
-  material.map = craterTexture()
-  return assemble('moon', new SphereGeometry(radius, 32, 24), material, { width: 2.5, ...outline })
+export interface PlanetOptions {
+  radius?: number
+  color?: ColorRepresentation
+  pattern?: PlanetPattern
+  /** A thin ring around it, in this color, like an illustrated Saturn. */
+  ring?: ColorRepresentation
+  /** Tilt of the ring, radians. */
+  ringTilt?: number
+  outline?: OutlineOptions
+}
+
+/**
+ * An illustrated planet: flat pastel color, two toon bands, a white highlight,
+ * soft bands or spots, an outline in a deep shade of its own color, and an
+ * optional ring. The ring sits inside the body, so it enters with it.
+ */
+function createPlanet(name: string, options: PlanetOptions, segments: [number, number]) {
+  const { radius = 0.2, color = palette.surface, pattern = 'plain', ring, ringTilt = 0.42, outline } = options
+  const material = createToonMaterial({ color, highlight: true })
+  if (pattern !== 'plain') material.map = planetTexture(pattern)
+  const el = assemble(name, new SphereGeometry(radius, segments[0], segments[1]), material, { width: 2.5, color: inkOf(color, palette.outline), ...outline })
+  if (ring) {
+    const geometry = new TorusGeometry(radius * 1.75, radius * 0.1, 10, 64)
+    geometry.rotateX(Math.PI / 2)
+    const ringMat = createToonMaterial({ color: ring })
+    const ringBody = new Mesh(geometry, ringMat)
+    const ringHull = new Mesh(hullGeometry(geometry), createOutlineMaterial({ width: 2, color: inkOf(ring, palette.outline) }))
+    ringHull.renderOrder = -1
+    const group = new Group()
+    group.rotation.set(ringTilt, 0, ringTilt * 0.5)
+    group.add(ringHull, ringBody)
+    el.body.add(group)
+    const dispose = el.dispose
+    el.dispose = () => {
+      dispose()
+      geometry.dispose()
+      ringHull.geometry.dispose()
+      ringMat.dispose()
+      ringHull.material.dispose()
+    }
+    el.object.userData.dispose = el.dispose
+  }
+  return el
+}
+
+/** A deterministic piece: an illustrated moon. */
+export function createMoon(options: PlanetOptions = {}) {
+  return createPlanet('moon', { radius: 0.2, ...options }, [32, 24])
 }
 
 /** An event or a work item. The blue ball is the issue. */
-export function createBall(options: { radius?: number; color?: ColorRepresentation; outline?: OutlineOptions } = {}) {
-  const { radius = 0.12, color = palette.surface, outline } = options
-  return assemble('ball', new SphereGeometry(radius, 24, 16), createToonMaterial({ color }), { width: 2.5, ...outline })
+export function createBall(options: PlanetOptions = {}) {
+  return createPlanet('ball', { radius: 0.12, ...options }, [24, 16])
 }
 
 // ---- rings, people, measures, ground ---------------------------------------------
@@ -225,7 +290,7 @@ export function createCapsule(options: { height?: number; color?: ColorRepresent
   const r = height * 0.24
   const geometry = new CapsuleGeometry(r, height - 2 * r, 8, 20)
   geometry.translate(0, height / 2, 0)
-  return assemble('capsule', geometry, createToonMaterial({ color }), { width: 2.5 })
+  return assemble('capsule', geometry, createToonMaterial({ color, highlight: true }), { width: 2.5, color: inkOf(color, palette.outline) })
 }
 
 /**
@@ -279,18 +344,26 @@ export interface Swarm {
   body: InstancedMesh
   hull: InstancedMesh
   count: number
-  place(i: number, x: number, y: number, z: number, scale?: number): void
+  /** Puts copy i at a point, with a scale and an optional tilt (radians around X and Z). */
+  place(i: number, x: number, y: number, z: number, scale?: number, rx?: number, rz?: number): void
   /** Sets the color of one copy. */
   paint(i: number, color: ColorRepresentation): void
   commit(): void
   dispose(): void
 }
 
-export function createSwarm(options: { count: number; radius?: number; color?: ColorRepresentation; craters?: boolean }): Swarm {
-  const { count, radius = 0.1, color = palette.surface, craters: withCraters = false } = options
-  const geometry = new SphereGeometry(radius, 20, 14)
-  const material = createToonMaterial({ color: '#ffffff' })
-  if (withCraters) material.map = craterTexture()
+export function createSwarm(options: {
+  count: number
+  radius?: number
+  color?: ColorRepresentation
+  bands?: boolean
+  /** Another shape for every copy (for example a small ring). Default: a sphere of `radius`. */
+  geometry?: BufferGeometry
+}): Swarm {
+  const { count, radius = 0.1, color = palette.surface, bands: withBands = false } = options
+  const geometry = options.geometry ?? new SphereGeometry(radius, 20, 14)
+  const material = createToonMaterial({ color: '#ffffff', highlight: !options.geometry })
+  if (withBands) material.map = planetTexture('bands')
   const body = new InstancedMesh(geometry, material, count)
   const hullGeo = hullGeometry(geometry)
   const hull = new InstancedMesh(hullGeo, createOutlineMaterial({ width: 2.5 }), count)
@@ -303,6 +376,7 @@ export function createSwarm(options: { count: number; radius?: number; color?: C
   object.add(hull, body)
   const m = new Matrix4()
   const q = new Quaternion()
+  const euler = new Euler()
   const p = new Vector3()
   const s = new Vector3()
   const c = new Color(color)
@@ -315,7 +389,8 @@ export function createSwarm(options: { count: number; radius?: number; color?: C
     body,
     hull,
     count,
-    place(i, x, y, z, scale = 1) {
+    place(i, x, y, z, scale = 1, rx = 0, rz = 0) {
+      q.setFromEuler(euler.set(rx, 0, rz))
       body.setMatrixAt(i, m.compose(p.set(x, y, z), q, s.set(scale, scale, scale)))
     },
     paint(i, value) {

@@ -31,7 +31,7 @@ const AFTER_EACH = [1.36, 1.19, 1.02, 0.86]
 /** Where each satellite lands on the outer orbit, and how far it moves in stop 3. */
 const LANDING_ANGLES = [0.12, 0.38, 0.62, 0.88].map((f) => f * Math.PI)
 const ORBIT_SWEEP = 0.45
-const COLORS = [palette.sage, palette.lilac, palette.sage, palette.lilac]
+const COLORS = [palette.sage, palette.lilac, palette.peach, palette.butter]
 
 /** Where each task sits in the surface (since 6.2): near the edge of the silhouette, so the drop shows in profile. */
 const DIRS = TASK_DIRS.map((d) => new Vector3(d[0], d[1], d[2]).normalize())
