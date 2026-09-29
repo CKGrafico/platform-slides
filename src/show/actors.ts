@@ -3,23 +3,28 @@
  * Parts move them in their choreography files, never here. Where things stand
  * is in layout.ts. What is hidden at the start is in rest.ts.
  */
-import { artOf, createBall, createCore, createMoon, createRing } from '@/art/elements'
+import { artOf, createBall, createCapsule, createColumn, createCore, createMoon, createRing } from '@/art/elements'
 import { createFrame, createSketchLine, createSlot, straight, through } from '@/art/lines'
 import { createOrbitLine } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { defineActor, type ActorDef } from '@/world/actors'
 import {
+  CAPSULE_POS,
   COMPILER_POS,
   LEVEL_RADII,
   LINE_BENT,
   LINE_X,
   LINE_Y,
   LINE_Z,
+  PILE,
+  PILE_R,
+  RUN_PATHS,
   TIMELINE_PATH,
   TIMELINE_POINTS,
   TIMELINE_RADIUS,
   TIMELINE_SPLIT,
   TIMELINE_U,
+  TOKENS_POS,
   TRIAGE_ORBIT,
   TRIAGE_POS,
 } from './layout'
@@ -247,6 +252,36 @@ const triageOrbit = defineActor({
   },
 })
 
+// ---- part 6: the problems ---------------------------------------------------------------------
+
+const runPaths = RUN_PATHS.map((points, i) =>
+  defineActor({
+    id: `p6.path.${i}`,
+    // Wobbly: the same prompt never takes the same path twice.
+    create: () => createSketchLine({ path: through(points), segments: 90, wobble: 0.07, width: 2.2, opacity: 0.85, reveal: 0 }).object,
+  }),
+)
+const pile = PILE.map((_, i) =>
+  defineActor({ id: `p6.ball.${i}`, create: () => createBall({ radius: PILE_R, color: [palette.sage, palette.lilac, palette.surface][i % 3] }).object }),
+)
+const tokens = defineActor({
+  id: 'tokens',
+  create: () => {
+    const el = createColumn({ radius: 0.15, color: palette.lilac })
+    el.object.position.set(...TOKENS_POS)
+    el.object.scale.y = 0.001
+    return el.object
+  },
+})
+const reviewer = defineActor({
+  id: 'person.exit',
+  create: () => {
+    const el = createCapsule({ height: 0.62 })
+    el.object.position.set(...CAPSULE_POS)
+    return el.object
+  },
+})
+
 // ---- part 10 (style frame) ---------------------------------------------------------------
 
 const outerOrbit = defineActor({
@@ -295,6 +330,10 @@ export const actors: ActorDef[] = [
   ...shell,
   triageCore,
   triageOrbit,
+  ...runPaths,
+  ...pile,
+  tokens,
+  reviewer,
   outerOrbit,
   innerOrbit,
   ...tasks,

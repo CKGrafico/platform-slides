@@ -55,7 +55,7 @@ export const SLOT_ANGLES = [0.62, 0.86, 1.1, 1.34].map((f) => f * Math.PI)
 // ---- the core through the talk ---------------------------------------------------------
 
 /** Scale of the core when part 10 starts (what part 9 leaves). Part 10 grows it from here. */
-export const CORE_SCALE_BEFORE_P10 = 1
+export const CORE_SCALE_BEFORE_P10 = 0.8
 
 // ---- part 5: from GitHub Actions to Agentic Workflows -------------------------------------
 
@@ -94,3 +94,46 @@ export const TRIAGE_POS: V3 = [4.4, 1.2, -1.2]
 export const TRIAGE_ORBIT = { radius: 0.95, tilt: 0.3 }
 /** Core scale while it is the implementation core (5.3 to part 9). */
 export const CORE_SCALE_AGENT = 0.8
+
+// ---- part 6: the problems -------------------------------------------------------------------
+
+/** Where work leaves the implementation core, on its surface, toward the exit. */
+export const EXIT_FROM: V3 = [0.62, -0.1, 0.48]
+/** The person at the exit (6.3), and the pile of work in front of them. */
+export const CAPSULE_POS: V3 = [3.2, -1.25, 1.5]
+export const PILE_R = 0.11
+/** Pile places, bottom row first. The first three are the balls of 6.1. */
+export const PILE: V3[] = [
+  [2.62, -1.14, 1.72],
+  [2.62, -1.14, 1.48],
+  [2.62, -1.14, 1.24],
+  [2.4, -1.14, 1.6],
+  [2.4, -1.14, 1.36],
+  [2.62, -0.94, 1.6],
+  [2.62, -0.94, 1.36],
+  [2.5, -0.75, 1.48],
+]
+/** Three runs of the same prompt: three paths of different shapes and lengths (6.1). */
+export const RUN_PATHS: V3[][] = [
+  [EXIT_FROM, [1.3, 0.25, 0.9], [2.05, -0.45, 1.35], PILE[0]!],
+  [EXIT_FROM, [1.05, 0.95, 0.9], [1.95, 1.2, 1.0], [2.9, 0.45, 1.3], [2.55, -0.45, 1.6], PILE[1]!],
+  [EXIT_FROM, [0.95, -0.85, 1.1], [1.7, -1.5, 1.7], [2.35, -1.3, 1.9], PILE[2]!],
+]
+/** The token column next to the core (6.2). Base on the ground line. */
+export const TOKENS_POS: V3 = [-1.5, -1.25, 0.7]
+export const TOKENS_HEIGHT = 1.9
+
+/**
+ * Where the four task moons sit in the core's surface, from 6.2 until part 10
+ * pulls them out: near the edge of the silhouette, one per quarter.
+ */
+export const TASK_DIRS: V3[] = [
+  [-0.86, 0.42, 0.3],
+  [0.88, 0.3, 0.34],
+  [-0.8, -0.46, 0.36],
+  [0.84, -0.42, 0.32],
+]
+/** Radius of the core at scale 1. */
+export const CORE_R = 0.95
+/** Share of the core radius where a task sits: just under the surface, half showing. */
+export const TASK_DEPTH = 0.97

@@ -18,14 +18,13 @@ import { arcPoint, easeInOut, orbitOf, orbitPoint } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { defineChoreography } from '@/world/actors'
 import { OUTER, TASKS } from '../../actors'
-import { CORE_SCALE_BEFORE_P10 } from '../../layout'
+import { CORE_R, CORE_SCALE_BEFORE_P10, TASK_DEPTH, TASK_DIRS } from '../../layout'
 import { grid } from '.'
 
 const KEY = '10-agentic-workflows/pull-out'
 const { b } = grid
 
-/** Radius of the core at scale 1. */
-const R0 = 0.95
+const R0 = CORE_R
 /** Scale of the core while it holds all the tasks, then after each task leaves. */
 const GROWN = 1.55
 const AFTER_EACH = [1.36, 1.19, 1.02, 0.86]
@@ -34,20 +33,11 @@ const LANDING_ANGLES = [0.12, 0.38, 0.62, 0.88].map((f) => f * Math.PI)
 const ORBIT_SWEEP = 0.45
 const COLORS = [palette.sage, palette.lilac, palette.sage, palette.lilac]
 
-/**
- * Where each task sits in the surface: near the edge of the silhouette, one per
- * quarter, so the drop it pulls out shows in profile.
- */
-const DIRS = [
-  new Vector3(-0.86, 0.42, 0.3),
-  new Vector3(0.88, 0.3, 0.34),
-  new Vector3(-0.8, -0.46, 0.36),
-  new Vector3(0.84, -0.42, 0.32),
-].map((v) => v.normalize())
+/** Where each task sits in the surface (since 6.2): near the edge of the silhouette, so the drop shows in profile. */
+const DIRS = TASK_DIRS.map((d) => new Vector3(d[0], d[1], d[2]).normalize())
 
 // Beats of the story.
 const GROW = [0.5, 2] as const
-const surfaceAt = (i: number) => [1.25 + i * 0.5, 2.5 + i * 0.5] as const
 const popAt = (i: number) => 5 + i * 2
 const POP = 2
 const SWEEP = [14, 20] as const
@@ -79,9 +69,6 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const tmp = new Vector3()
   const release = new Vector3()
 
-  // Tasks become visible inside the core, where its surface hides them.
-  tasks.forEach((el, i) => tl.set(el.inner, { visible: true }, span(surfaceAt(i)[0], surfaceAt(i)[0]).start))
-
   const scene = span(0, grid.totalBeats)
   drive(tl, scene.start, scene.duration, (u) => {
     const beat = u * grid.totalBeats
@@ -97,18 +84,16 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       let width = 0.12
       let pop = 1
 
-      const [sa, sb] = surfaceAt(i)
       const p = popAt(i)
       const v = win(beat, p, p + POP)
       if (beat < p) {
-        // It rises from inside and settles in the surface; the surface holds it.
-        const rise = easeOut(win(beat, sa, sb))
-        tmp.copy(dir).multiplyScalar(mix(0.5, 0.97, rise) * R)
-        amount = 0.02 * rise + 0.03 * Math.sin(Math.PI * rise)
+        // It sits in the surface, and the surface holds it as the core grows.
+        tmp.copy(dir).multiplyScalar(TASK_DEPTH * R)
+        amount = 0.02
       } else if (v < 0.3) {
         // Anticipation: it sinks a little while the surface swells.
         const w = easeInOut(v / 0.3)
-        tmp.copy(dir).multiplyScalar(mix(0.97, 0.9, w) * R)
+        tmp.copy(dir).multiplyScalar(mix(TASK_DEPTH, 0.9, w) * R)
         amount = mix(0.02, 0.09, w)
       } else if (v < 0.58) {
         // It pushes out, and the surface stretches after it: a drop with a thin neck.

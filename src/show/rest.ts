@@ -21,6 +21,9 @@ const HIDDEN = [
   /^compiler$/,
   /^shell\./,
   /^core\.triage$/,
+  /^p6\.ball\./,
+  /^tokens$/,
+  /^person\./,
 ]
 
 export const restMoves = defineChoreography('rest', (tl, cast) => {
