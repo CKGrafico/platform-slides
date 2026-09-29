@@ -398,3 +398,111 @@ body,
   text-decoration: line-through;
   text-decoration-thickness: calc(var(--su) * 0.25);
 }
+
+/* 12.5: our numbers next to the industry's. Three rows, two stats each. */
+.stats-shell {
+  position: absolute;
+  left: var(--safe);
+  top: calc(var(--safe) + var(--su) * 2);
+  width: calc(var(--su) * 150);
+  height: calc(var(--su) * 80);
+}
+
+.stats {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.stats p {
+  margin: 0;
+}
+
+.stats-head {
+  height: calc(var(--su) * 8);
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: calc(var(--su) * 5.2);
+  letter-spacing: -0.02em;
+  color: var(--c-surface);
+  -webkit-text-stroke: calc(var(--su) * 0.4) var(--c-outline);
+  paint-order: stroke fill;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: calc(var(--su) * 26) 1fr 1fr;
+  gap: calc(var(--su) * 2.5);
+  align-items: center;
+  height: calc(var(--su) * 17);
+  margin-top: calc(var(--su) * 2);
+}
+
+.stat-kicker {
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: calc(var(--su) * 2.2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-outline);
+}
+
+.stat-cell {
+  height: 100%;
+}
+
+.stat.art-burn {
+  box-sizing: border-box;
+  height: 100%;
+  border-radius: calc(var(--su) * 2.2);
+  border: calc(var(--su) * 0.35) solid var(--c-outline);
+  padding: calc(var(--su) * 1.6) calc(var(--su) * 2.2);
+}
+
+.stat--ours {
+  background: var(--c-lilac);
+}
+
+.stat--public {
+  background: var(--c-sage);
+}
+
+.stat.art-burn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stat-value {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: calc(var(--su) * 6);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--c-surface);
+  -webkit-text-stroke: calc(var(--su) * 0.4) var(--c-outline);
+  paint-order: stroke fill;
+}
+
+.stat-text {
+  margin-top: calc(var(--su) * 0.8);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: calc(var(--su) * 2.2);
+  line-height: 1.2;
+  color: var(--c-text);
+}
+
+.stats-foot {
+  margin-top: calc(var(--su) * 2.5) !important;
+  height: calc(var(--su) * 7);
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: calc(var(--su) * 1.8);
+  line-height: 1.35;
+  color: var(--c-outline);
+}
+
+.health-panel.art-label {
+  padding: calc(var(--su) * 0.6) calc(var(--su) * 1.2);
+}

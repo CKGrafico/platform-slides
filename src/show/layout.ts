@@ -243,3 +243,13 @@ export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [
   { id: 'issue', at: [-4.1, 2.6, 0.4], hollow: false },
   { id: 'code-no', at: [-4.1, 2.2, 0.4], hollow: true },
 ]
+
+// ---- part 12: Project Health ---------------------------------------------------------------------
+
+/** Measures rise at the back edge of the disc: six collected, then two that are not (12.2, 12.3). */
+export const METRIC_RADIUS = 6.2
+export const METRIC_ANGLES = [1.12, 1.22, 1.32, 1.42, 1.52, 1.62, 1.74, 1.84].map((f) => f * Math.PI)
+export const METRIC_HEIGHTS = [1.9, 1.3, 1.6, 2.3, 1.1, 1.5]
+export const HOLLOW_HEIGHT = 1.7
+/** The person who looks at what needs a human (12.4), on the front left of the disc. */
+export const HEALTH_PERSON: V3 = [-5.0, -2.95, 2.9]

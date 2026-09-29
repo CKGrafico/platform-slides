@@ -40,6 +40,7 @@ const HIDDEN = [
   /^disc$/,
   /^wall\./,
   /^verb\.(pr|merge|issue)$/,
+  /^metric\.\d$/,
 ]
 
 export const restMoves = defineChoreography('rest', (tl, cast) => {

@@ -4,8 +4,8 @@
  * is in layout.ts. What is hidden at the start is in rest.ts.
  */
 import { artOf, createBall, createCapsule, createColumn, createCore, createDisc, createMoon, createPlate, createRing, createSwarm, createWall } from '@/art/elements'
-import { circleXZ, createFrame, createGrid, createSketchLine, createSlot, straight, through } from '@/art/lines'
-import { createOrbitLine } from '@/art/orbits'
+import { circleXZ, createFrame, createGrid, createHollowColumn, createSketchLine, createSlot, straight, through } from '@/art/lines'
+import { createOrbitLine, orbitPoint } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { TorusGeometry } from 'three'
 import { defineActor, type ActorDef } from '@/world/actors'
@@ -22,6 +22,8 @@ import {
   GATE_POS,
   GROUND_Y,
   HARNESS_RADIUS,
+  HEALTH_PERSON,
+  HOLLOW_HEIGHT,
   IMPROVISE_PATHS,
   LANES,
   LAPTOP_POS,
@@ -31,6 +33,9 @@ import {
   LINE_Y,
   LINE_Z,
   MESSY_POS,
+  METRIC_ANGLES,
+  METRIC_HEIGHTS,
+  METRIC_RADIUS,
   MODELS,
   OPENCODE,
   PHASE_RADII,
@@ -39,6 +44,7 @@ import {
   ROUTER_POS,
   RUN_PATHS,
   RUNNER_POS,
+  SIDE_ORBIT,
   SMALL_ORBITS,
   TEAM,
   TIMELINE_PATH,
@@ -594,6 +600,57 @@ const shortcut = [0, 1].map((half) =>
   }),
 )
 
+// ---- part 12: Project Health ----------------------------------------------------------------------
+
+const METRIC_COLORS = [palette.sage, palette.lilac, palette.butter, palette.peach, palette.sage, palette.lilac]
+const metrics = METRIC_HEIGHTS.map((_, i) =>
+  defineActor({
+    id: `metric.${i}`,
+    create: () => {
+      const el = createColumn({ radius: 0.26, color: METRIC_COLORS[i] })
+      const a = METRIC_ANGLES[i]!
+      el.object.position.set(Math.cos(a) * METRIC_RADIUS, GROUND_Y, Math.sin(a) * METRIC_RADIUS)
+      el.object.scale.y = 0.001
+      return el.object
+    },
+  }),
+)
+/** Change failure rate and time to restore: not collected, so hollow. */
+const hollowMetrics = [0, 1].map((i) =>
+  defineActor({
+    id: `metric.hollow.${i}`,
+    create: () => {
+      const h = createHollowColumn({ radius: 0.26, height: HOLLOW_HEIGHT, width: 2.5 })
+      h.reveal.value = 0
+      const a = METRIC_ANGLES[6 + i]!
+      h.object.position.set(Math.cos(a) * METRIC_RADIUS, GROUND_Y, Math.sin(a) * METRIC_RADIUS)
+      return h.object
+    },
+  }),
+)
+const healthPerson = defineActor({
+  id: 'person.health',
+  create: () => {
+    const el = createCapsule({ height: 0.62, color: palette.peach })
+    el.object.position.set(...HEALTH_PERSON)
+    return el.object
+  },
+})
+/** The loop that maintains the maintainer (12.6): from audit, back into the router. */
+const auditLoop = defineActor({
+  id: 'p12.loop',
+  create: () => {
+    const a = orbitPoint(SIDE_ORBIT, 0.35 * Math.PI + 0.5)
+    return createSketchLine({
+      path: through([[a.x, a.y, a.z], [-2.6, 3.4, 1.6], [-5.2, 1.6, 1.6], [ROUTER_POS[0] - 0.6, ROUTER_POS[1] + 0.1, ROUTER_POS[2]]]),
+      segments: 80,
+      width: 2.5,
+      dashed: true,
+      reveal: 0,
+    }).object
+  },
+})
+
 // ---- the orbits of the ladder -------------------------------------------------------------
 
 const outerOrbit = defineActor({
@@ -682,6 +739,10 @@ export const actors: ActorDef[] = [
   ...walls,
   ...verbs,
   ...shortcut,
+  ...metrics,
+  ...hollowMetrics,
+  healthPerson,
+  auditLoop,
   outerOrbit,
   innerOrbit,
   ...tasks,

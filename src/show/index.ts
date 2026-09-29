@@ -25,15 +25,17 @@ import { agenticWorkflows } from './parts/10-agentic-workflows'
 import { agenticWorkflowsMoves } from './parts/10-agentic-workflows/choreography'
 import { foundations } from './parts/11-foundations'
 import { foundationsMoves } from './parts/11-foundations/choreography'
+import { projectHealth } from './parts/12-project-health'
+import { projectHealthMoves } from './parts/12-project-health/choreography'
 import { restMoves } from './rest'
 
 export const show = defineShow({
-  chapters: [cover, stateOfAi, maturity, actionsToAgents, problemsChapter, changeOfMind, runtime, harnessChapter, agenticWorkflows, foundations],
+  chapters: [cover, stateOfAi, maturity, actionsToAgents, problemsChapter, changeOfMind, runtime, harnessChapter, agenticWorkflows, foundations, projectHealth],
   mountWindow: 1,
 })
 
 /** Moves on the shared actors, in show order. The rest state comes first. */
-export const choreographies = [restMoves, coverMoves, stateOfAiMoves, maturityMoves, actionsToAgentsMoves, problemsMoves, changeOfMindMoves, runtimeMoves, harnessMoves, agenticWorkflowsMoves, foundationsMoves]
+export const choreographies = [restMoves, coverMoves, stateOfAiMoves, maturityMoves, actionsToAgentsMoves, problemsMoves, changeOfMindMoves, runtimeMoves, harnessMoves, agenticWorkflowsMoves, foundationsMoves, projectHealthMoves]
 
 export { actors } from './actors'
 export { Hud } from './hud/Hud'
