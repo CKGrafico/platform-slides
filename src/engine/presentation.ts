@@ -15,6 +15,7 @@ import {
   localProgress,
   mountedIndices,
   nextStop,
+  outroProgress,
   prevStop,
   resolve,
   stopIndexAtOrBefore,
@@ -34,12 +35,15 @@ export interface Snapshot {
   mounted: readonly number[]
 }
 
-type ProgressListener = (local: number) => void
+/** local: 0..1 in the scene. outro: 0..1 after the scene ends (see SceneDef.outro). */
+type ProgressListener = (local: number, outro: number) => void
 type LifecycleListener = (direction: Direction) => void
 
 /** Per-scene view of the playhead. Scenes only talk to this object. */
 export class SceneRuntime {
   local = 0
+  /** 0 while the scene plays, then 0..1 during its outro. */
+  outro = 0
   state: SceneState = 'before'
   private stale = true
   private progress = new Set<ProgressListener>()
@@ -54,7 +58,7 @@ export class SceneRuntime {
   /** Calls fn now with the current progress, then on every change. */
   onProgress(fn: ProgressListener): () => void {
     this.progress.add(fn)
-    fn(this.local)
+    fn(this.local, this.outro)
     return () => this.progress.delete(fn)
   }
 
@@ -69,12 +73,13 @@ export class SceneRuntime {
   }
 
   /** @internal */
-  _set(local: number, state: SceneState): void {
-    const changed = this.stale || local !== this.local || state !== this.state
+  _set(local: number, state: SceneState, outro = 0): void {
+    const changed = this.stale || local !== this.local || state !== this.state || outro !== this.outro
     this.stale = false
     this.local = local
     this.state = state
-    if (changed) for (const fn of this.progress) fn(local)
+    this.outro = outro
+    if (changed) for (const fn of this.progress) fn(local, outro)
   }
 
   /** @internal */
@@ -296,7 +301,7 @@ export class Presentation {
       const scene = this.model.scenes[runtime.index]!
       const state: SceneState =
         runtime.index === sceneIndex ? 'active' : runtime.index < sceneIndex ? 'after' : 'before'
-      runtime._set(localProgress(scene, position), state)
+      runtime._set(localProgress(scene, position), state, state === 'after' ? outroProgress(scene, position) : 0)
     }
 
     if (sceneIndex !== prevActive) {

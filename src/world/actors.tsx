@@ -52,6 +52,8 @@ export function defineActor<T extends Object3D>(def: ActorDef<T>): ActorDef {
 /** Read access to every actor, for choreographies. */
 export interface Cast {
   get<T extends Object3D = Object3D>(id: string): T
+  /** Every actor id, in cast order. */
+  ids(): string[]
 }
 
 export interface ChoreographyDef {
@@ -153,6 +155,7 @@ export function ActorsHost({
         if (!o) throw new Error(`Unknown actor "${id}" in a choreography`)
         return o as T
       },
+      ids: () => [...objects.keys()],
     }
     let master: Timeline | null = null
     const ctx = gsap.context(() => {

@@ -2,22 +2,30 @@
  * Part 10 moves (beats 10.2 and 10.3). All times come from the beat grid in
  * index.tsx: grid.b(n) is n beats into the scene.
  *
- * Each task cube has one writer for its position: one tween on a proxy, over
- * the whole path (out of the core, landing, along the orbit). So scrubbing
- * back and forth always gives the same frame.
+ * The extraction: the tasks sit in the core's surface. One per two beats, a
+ * task sinks a little, the surface swells, the task pushes out and drags the
+ * surface with it like a drop, the surface snaps back and wobbles, and the task
+ * flies on an arc to the clean outer orbit, where it turns pastel.
+ *
+ * One writer for all of it: a single drive() over the scene computes the core
+ * scale, the four bumps on the core's surface, and every task position from
+ * the beat alone. So any frame, reached from anywhere, is always the same.
  */
 import { Color, Vector3, type Group, type MeshToonMaterial } from 'three'
-import { artOf } from '@/art/elements'
-import { inkIn, hidden } from '@/art/motion'
+import { artOf, coreOf } from '@/art/elements'
+import { drive } from '@/art/motion'
 import { arcPoint, easeInOut, orbitOf, orbitPoint } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { defineChoreography } from '@/world/actors'
 import { OUTER, TASKS } from '../../actors'
+import { CORE_SCALE_BEFORE_P10 } from '../../layout'
 import { grid } from '.'
 
 const KEY = '10-agentic-workflows/pull-out'
 const { b } = grid
 
+/** Radius of the core at scale 1. */
+const R0 = 0.95
 /** Scale of the core while it holds all the tasks, then after each task leaves. */
 const GROWN = 1.55
 const AFTER_EACH = [1.36, 1.19, 1.02, 0.86]
@@ -27,23 +35,109 @@ const ORBIT_SWEEP = 0.45
 const COLORS = [palette.sage, palette.lilac, palette.sage, palette.lilac]
 
 /**
- * Where each task waits, held close around the grown core: inside its
- * field, where paths wobble.
+ * Where each task sits in the surface: near the edge of the silhouette, one per
+ * quarter, so the drop it pulls out shows in profile.
  */
-const HELD = [
-  { x: -1.75, y: 0.75, z: 0.8 },
-  { x: 1.8, y: 0.45, z: 0.7 },
-  { x: -1.6, y: -0.6, z: 0.95 },
-  { x: 1.65, y: -0.75, z: 0.85 },
-]
+const DIRS = [
+  new Vector3(-0.86, 0.42, 0.3),
+  new Vector3(0.88, 0.3, 0.34),
+  new Vector3(-0.8, -0.46, 0.36),
+  new Vector3(0.84, -0.42, 0.32),
+].map((v) => v.normalize())
+
+// Beats of the story.
+const GROW = [0.5, 2] as const
+const surfaceAt = (i: number) => [1.25 + i * 0.5, 2.5 + i * 0.5] as const
+const popAt = (i: number) => 5 + i * 2
+const POP = 2
+const SWEEP = [14, 20] as const
+
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
+const win = (beat: number, a: number, bb: number) => clamp01((beat - a) / (bb - a))
+const easeOut = (t: number) => 1 - Math.pow(1 - clamp01(t), 3)
+const easeIn = (t: number) => Math.pow(clamp01(t), 2.2)
+const mix = (a: number, bb: number, t: number) => a + (bb - a) * t
+
+/** Core scale at a beat: it grows to hold the tasks, then shrinks a step as each one leaves. */
+function coreScale(beat: number): number {
+  let s = mix(CORE_SCALE_BEFORE_P10, GROWN, easeInOut(win(beat, GROW[0], GROW[1])))
+  AFTER_EACH.forEach((after, i) => {
+    const release = popAt(i) + POP * 0.6
+    const before = i === 0 ? GROWN : AFTER_EACH[i - 1]!
+    s = beat < release ? s : mix(before, after, easeOut(win(beat, release, release + 1)))
+  })
+  return s
+}
 
 export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', (tl, cast, t) => {
   const span = (from: number, to: number) => t.span(KEY, b(from), b(to))
 
-  // Stop 1: the core grows to hold the tasks.
-  const core = cast.get('core')
-  const grow = span(0.5, 2)
-  tl.to(core.scale, { x: GROWN, y: GROWN, z: GROWN, duration: grow.duration, ease: 'power3.inOut' }, grow.start)
+  const coreObj = cast.get('core')
+  const core = coreOf(coreObj)
+  const tasks = TASKS.map((name) => artOf<MeshToonMaterial>(cast.get(`task.${name}`)))
+  const landing = LANDING_ANGLES.map((a) => orbitPoint(OUTER, a))
+  const tmp = new Vector3()
+  const release = new Vector3()
+
+  // Tasks become visible inside the core, where its surface hides them.
+  tasks.forEach((el, i) => tl.set(el.inner, { visible: true }, span(surfaceAt(i)[0], surfaceAt(i)[0]).start))
+
+  const scene = span(0, grid.totalBeats)
+  drive(tl, scene.start, scene.duration, (u) => {
+    const beat = u * grid.totalBeats
+    const s = coreScale(beat)
+    coreObj.scale.setScalar(s)
+    const R = R0 * s
+
+    tasks.forEach((el, i) => {
+      const dir = DIRS[i]!
+      const bump = core.bumps[i]!
+      bump.dir.copy(dir)
+      let amount: number
+      let width = 0.12
+      let pop = 1
+
+      const [sa, sb] = surfaceAt(i)
+      const p = popAt(i)
+      const v = win(beat, p, p + POP)
+      if (beat < p) {
+        // It rises from inside and settles in the surface; the surface holds it.
+        const rise = easeOut(win(beat, sa, sb))
+        tmp.copy(dir).multiplyScalar(mix(0.5, 0.97, rise) * R)
+        amount = 0.02 * rise + 0.03 * Math.sin(Math.PI * rise)
+      } else if (v < 0.3) {
+        // Anticipation: it sinks a little while the surface swells.
+        const w = easeInOut(v / 0.3)
+        tmp.copy(dir).multiplyScalar(mix(0.97, 0.9, w) * R)
+        amount = mix(0.02, 0.09, w)
+      } else if (v < 0.58) {
+        // It pushes out, and the surface stretches after it: a drop with a thin neck.
+        const w = (v - 0.3) / 0.28
+        tmp.copy(dir).multiplyScalar(mix(0.9, 1.62, easeIn(w)) * R)
+        amount = mix(0.09, 0.46, easeIn(w))
+        width = mix(0.12, 0.018, w)
+      } else {
+        // Release: the surface snaps back and wobbles; the task flies to its orbit.
+        const w = (v - 0.58) / 0.42
+        const snap = Math.min(1, w / 0.12)
+        const wobble = Math.exp(-w * 5) * Math.cos(w * 22)
+        amount = snap < 1 ? mix(0.46, -0.08, easeOut(snap)) : -0.08 * wobble
+        width = mix(0.018, 0.1, easeOut(snap))
+        release.copy(dir).multiplyScalar(1.62 * R)
+        if (beat < SWEEP[0]) {
+          arcPoint(release, landing[i]!, 0.9, easeInOut(w), tmp)
+        } else {
+          orbitPoint(OUTER, LANDING_ANGLES[i]! + ORBIT_SWEEP * easeInOut(win(beat, SWEEP[0], SWEEP[1])), tmp)
+        }
+        // A small pop in size as it breaks free.
+        pop = 1 + 0.16 * Math.sin(Math.PI * clamp01(w / 0.35))
+      }
+      bump.amount = amount
+      bump.width = width
+      el.object.position.copy(tmp)
+      el.object.scale.setScalar(pop)
+    })
+  })
 
   // Stop 2: the outer orbit appears as the first task gets ready to leave.
   const outer = orbitOf(cast.get<Group>('orbit.outer'))
@@ -55,56 +149,10 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const innerIn = span(14.5, 16)
   tl.to(inner.material, { opacity: 0.8, duration: innerIn.duration, ease: 'power2.out' }, innerIn.start)
 
-  const orbitWin = span(14, 20)
-
-  TASKS.forEach((name, i) => {
-    const el = artOf<MeshToonMaterial>(cast.get(`task.${name}`))
-    const held = HELD[i]!
-    const start = new Vector3(held.x, held.y, held.z)
-    const land = orbitPoint(OUTER, LANDING_ANGLES[i]!)
-    const tmp = new Vector3()
-
-    // Enter on the core's face in stop 1, one per half beat.
-    hidden(tl, el)
-    tl.set(el.object.position, { x: start.x, y: start.y, z: start.z }, 0)
-    const enter = span(1.5 + i * 0.5, 2.25 + i * 0.5)
-    inkIn(tl, el, enter.start, enter.duration)
-
-    // Stop 2: pop out on an arc and land on the orbit, one every 2 beats.
-    const pop = span(5 + i * 2, 7 + i * 2)
-    const total = orbitWin.start + orbitWin.duration - pop.start
-    const proxy = { u: 0 }
-    tl.to(
-      proxy,
-      {
-        u: 1,
-        duration: total,
-        ease: 'none',
-        onUpdate: () => {
-          const time = pop.start + proxy.u * total
-          if (time <= pop.start + pop.duration) {
-            arcPoint(start, land, 1.2, easeInOut((time - pop.start) / pop.duration), tmp)
-          } else if (time < orbitWin.start) {
-            tmp.copy(land)
-          } else {
-            const v = easeInOut((time - orbitWin.start) / orbitWin.duration)
-            orbitPoint(OUTER, LANDING_ANGLES[i]! + ORBIT_SWEEP * v, tmp)
-          }
-          el.object.position.copy(tmp)
-        },
-      },
-      pop.start,
-    )
-
-    // It turns into a pastel satellite as it lands.
+  // Each task turns into a pastel satellite as it lands.
+  tasks.forEach((el, i) => {
     const target = new Color(COLORS[i])
-    const tint = span(6.25 + i * 2, 7 + i * 2)
+    const tint = span(popAt(i) + POP * 0.75, popAt(i) + POP)
     tl.to(el.body.material.color, { r: target.r, g: target.g, b: target.b, duration: tint.duration, ease: 'power2.out' }, tint.start)
-
-    // The core shrinks a step as each task leaves.
-    const shrink = span(5.5 + i * 2, 6.5 + i * 2)
-    const s = AFTER_EACH[i]!
-    tl.to(core.scale, { x: s, y: s, z: s, duration: shrink.duration, ease: 'power3.out' }, shrink.start)
   })
-
 })

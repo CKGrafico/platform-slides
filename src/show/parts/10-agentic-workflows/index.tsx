@@ -11,7 +11,7 @@
  *   3. (6 beats)  the inner orbit appears near the core, the satellites move
  *                 along the clean outer orbit.
  */
-import { range, smoothstep } from '@/animation/progress'
+import { range } from '@/animation/progress'
 import { beatStops } from '@/animation/beat'
 import { Burn } from '@/art/Burn'
 import { Caption, Label } from '@/art/Caption'
@@ -19,14 +19,15 @@ import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import { T, type MessageKey } from '@/i18n'
 import { getActorObject } from '@/world/actors'
-import { blendShots, type CameraShot } from '@/world/camera/shot'
+import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { Vector3 } from 'three'
-import { COVER_SHOT } from '../01-cover'
 import { INNER, OUTER, TASKS } from '../../actors'
 
 export const grid = beatStops([4, 10, 6])
 const { b } = grid
 
+/** Close for the extraction, then back to see the whole outer orbit. */
+const CLOSE: CameraShot = { position: [0, 1.6, 7.6], target: [0, 0.1, 0], fov: 34 }
 export const P10_SHOT: CameraShot = { position: [0, 3.3, 11.8], target: [0, 0.1, 0], fov: 36 }
 
 /** Burn level that rises over [a, b] and falls over [c, d], in local progress. */
@@ -41,7 +42,7 @@ function aboveCore(): Vector3 | null {
 }
 
 // On the empty back part of the orbit, away from the satellites.
-const outerLabelPoint = new Vector3(Math.cos(1.25 * Math.PI) * OUTER.radius, 0.25, Math.sin(1.25 * Math.PI) * OUTER.radius)
+const outerLabelPoint = new Vector3(0, -0.42, OUTER.radius)
 const innerLabelPoint = new Vector3(INNER.radius * 0.7, 0.1, INNER.radius * 1.02)
 const atOuter = () => outerLabelPoint
 const atInner = () => innerLabelPoint
@@ -100,7 +101,15 @@ const pullOut = defineScene({
   stops: grid.stops,
   parts: { dom: Dom },
   // The camera travels during the first move only, then holds (dwell, then travel).
-  camera: (local) => blendShots(COVER_SHOT, P10_SHOT, smoothstep(range(local, 0, b(4)))),
+  camera: (local, from) =>
+    shotSequence(
+      from,
+      [
+        { from: 0, to: b(4), shot: CLOSE, arc: 1 },
+        { from: b(6.5), to: b(11), shot: P10_SHOT },
+      ],
+      local,
+    ),
 })
 
 export const agenticWorkflows = defineChapter({ id: '10-agentic-workflows', title: 'Pillar 2: Agentic Workflows', scenes: [pullOut] })

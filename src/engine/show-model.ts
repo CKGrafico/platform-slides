@@ -10,6 +10,8 @@ import type { ChapterDef, SceneDef, ShowDef, StopDef } from './types'
 
 export const DEFAULT_STOP_DURATION = 1.1
 export const DEFAULT_STOP_EASE = 'power2.inOut'
+/** Seconds a scene stays on screen into the next move, so its text can burn out. */
+export const DEFAULT_OUTRO = 0.5
 const EPSILON = 1e-9
 
 export interface ResolvedStop {
@@ -34,6 +36,8 @@ export interface ResolvedScene {
   end: number
   duration: number
   stops: ResolvedStop[]
+  /** Position where the outro ends (see SceneDef.outro). Equal to `end` when there is none. */
+  outroEnd: number
 }
 
 export interface ResolvedChapter {
@@ -108,6 +112,7 @@ export function buildShow(show: ShowDef): ShowModel {
         end: cursor + duration,
         duration,
         stops,
+        outroEnd: cursor + duration,
       })
       sceneIndices.push(index)
       cursor += duration
@@ -116,6 +121,17 @@ export function buildShow(show: ShowDef): ShowModel {
   })
 
   if (scenes.length === 0) throw new Error('The show needs at least one scene')
+
+  // The outro runs on the next scene's first move, which lasts stop.duration
+  // seconds over (stop.position - next.start) units.
+  scenes.forEach((scene, i) => {
+    const next = scenes[i + 1]
+    const seconds = scene.def.outro ?? DEFAULT_OUTRO
+    if (!next || !(seconds > 0)) return
+    const first = next.stops[0]!
+    const units = first.position - next.start
+    scene.outroEnd = next.start + Math.min(units, (seconds / Math.max(first.duration, 1e-6)) * units)
+  })
 
   const start: ResolvedStop = {
     position: 0,
@@ -204,6 +220,13 @@ export function positionOf(model: ShowModel, key: string, local: number): number
   const scene = findScene(model, key)
   if (!scene) throw new Error(`Unknown scene "${key}"`)
   return scene.start + Math.min(1, Math.max(0, local)) * scene.duration
+}
+
+/** Outro progress of a scene at a position: 0 until it ends, 1 when its outro is over. */
+export function outroProgress(scene: ResolvedScene, position: number): number {
+  if (position <= scene.end) return 0
+  if (scene.outroEnd <= scene.end) return 1
+  return Math.min(1, (position - scene.end) / (scene.outroEnd - scene.end))
 }
 
 /** Scene indices that stay mounted around the active scene. */

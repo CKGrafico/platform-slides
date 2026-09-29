@@ -2,21 +2,26 @@
  * The show. This is the only file that knows the order of the parts.
  * Add a part: create src/show/parts/NN-name/ with index.tsx (chapter and
  * scenes) and choreography.ts (moves on the shared actors), then list both here.
- *
- * Right now it holds the style frame: the cover and part 10.
+ * Parts follow docs/script/script.md. Part 2 (about me) is the cover's first stop.
  */
 import { defineShow } from '@/engine/define'
 import { cover } from './parts/01-cover'
 import { coverMoves } from './parts/01-cover/choreography'
+import { stateOfAi } from './parts/03-state-of-ai'
+import { stateOfAiMoves } from './parts/03-state-of-ai/choreography'
+import { maturity } from './parts/04-maturity'
+import { maturityMoves } from './parts/04-maturity/choreography'
 import { agenticWorkflows } from './parts/10-agentic-workflows'
 import { agenticWorkflowsMoves } from './parts/10-agentic-workflows/choreography'
+import { restMoves } from './rest'
 
 export const show = defineShow({
-  chapters: [cover, agenticWorkflows],
+  chapters: [cover, stateOfAi, maturity, agenticWorkflows],
   mountWindow: 1,
 })
 
-/** Moves on the shared actors, in show order. */
-export const choreographies = [coverMoves, agenticWorkflowsMoves]
+/** Moves on the shared actors, in show order. The rest state comes first. */
+export const choreographies = [restMoves, coverMoves, stateOfAiMoves, maturityMoves, agenticWorkflowsMoves]
 
 export { actors } from './actors'
+export { Hud } from './hud/Hud'

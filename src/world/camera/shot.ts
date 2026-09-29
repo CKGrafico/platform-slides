@@ -70,3 +70,43 @@ export function orbit(shot: CameraShot, angle: number, elevation = 0): Required<
     ],
   }
 }
+
+// ---- camera moves inside a scene ------------------------------------------
+
+/**
+ * One camera move inside a scene: from the previous shot to `shot`, over the
+ * window [from, to] of local progress. `arc` pulls the camera back by that many
+ * units in the middle of the move, so long moves pull back, pan, and push in.
+ */
+export interface ShotMove {
+  from: number
+  to: number
+  shot: CameraShot
+  arc?: number
+}
+
+const ease = (t: number) => {
+  const x = Math.min(1, Math.max(0, t))
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
+}
+
+/**
+ * The camera of a scene as a list of moves, starting where the previous scene
+ * left it. The camera holds between moves (dwell, then travel). Pure: the same
+ * local progress always gives the same shot.
+ *
+ *   camera: (local, from) => shotSequence(from, [{ from: 0, to: b(4), shot: WIDE }], local)
+ */
+export function shotSequence(start: CameraShot, moves: ShotMove[], local: number): Required<CameraShot> {
+  let current = fullShot(start)
+  for (const m of moves) {
+    if (local <= m.from) return current
+    if (local < m.to) {
+      const t = ease((local - m.from) / Math.max(m.to - m.from, 1e-6))
+      const next = blendShots(current, m.shot, t)
+      return m.arc ? dolly(next, -m.arc * Math.sin(Math.PI * t)) : next
+    }
+    current = fullShot(m.shot)
+  }
+  return current
+}

@@ -23,7 +23,13 @@ export interface SceneParts {
   world?: ComponentType
 }
 
-export type SceneCamera = CameraShot | ((local: number) => CameraShot)
+/**
+ * A fixed shot (the camera blends to it over the whole scene), or a function of
+ * local progress. The function also gets `from`: where the previous scene left
+ * the camera. So a part can travel from wherever the talk is, without knowing
+ * the other parts' shots.
+ */
+export type SceneCamera = CameraShot | ((local: number, from: Required<CameraShot>) => CameraShot)
 
 export interface SceneDef {
   id: string
@@ -37,6 +43,13 @@ export interface SceneDef {
   variants?: { reduced?: SceneParts; low?: SceneParts }
   /** Camera for this scene. Omit it to keep the previous shot. */
   camera?: SceneCamera
+  /**
+   * Seconds this scene stays on screen after it ends, into the next move.
+   * During that time `outro` goes from 0 to 1 and text (Burn, Label) leaves
+   * with it, so the next press burns the old text out while the next part
+   * starts. Default 0.5 (one beat).
+   */
+  outro?: number
   /** Keep the parts visible when the scene is before or after the playhead. Default 'none'. */
   visibleWhenInactive?: 'none' | 'before' | 'after' | 'both'
   meta?: Record<string, unknown>

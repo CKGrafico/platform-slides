@@ -7,7 +7,11 @@
  * Both write only `inner`, `hull.scale`, and `body.scale`, never `object`, so the
  * choreography that moves an element never fights its entrance.
  * `at` and `duration` are in the units of the timeline they are added to.
+ *
+ * Plus small builders that every part uses: drive (one writer for a path),
+ * tint, and fade.
  */
+import { Color, type ColorRepresentation } from 'three'
 import type { Timeline } from '@/animation/gsap'
 import type { ArtElement } from './elements'
 
@@ -32,4 +36,34 @@ export function inkOut(tl: Timeline, el: ArtElement, at: number, duration: numbe
 /** Sets an element as not entered yet, at the start of a timeline. */
 export function hidden(tl: Timeline, el: ArtElement): void {
   tl.set(el.inner, { visible: false }, 0)
+}
+
+/**
+ * Shows an element with no entrance: for an element that is already on screen
+ * in another form (it was set visible by an earlier part and never left).
+ */
+export function shown(tl: Timeline, el: ArtElement, at: number): void {
+  tl.set(el.inner, { visible: true }, at)
+  tl.set(el.inner.scale, { ...ONE }, at)
+}
+
+/**
+ * One writer for something that follows a path: fn(u) runs with u from 0 to 1
+ * over the window, on every render of the timeline, forward or back. fn must
+ * be pure (the same u always writes the same values).
+ */
+export function drive(tl: Timeline, at: number, duration: number, fn: (u: number) => void): void {
+  const proxy = { u: 0 }
+  tl.fromTo(proxy, { u: 0 }, { u: 1, duration: Math.max(duration, 1e-6), ease: 'none', ...LATE, onUpdate: () => fn(proxy.u) }, at)
+}
+
+/** Tweens a material color (or any Color) to a palette color. */
+export function tint(tl: Timeline, color: Color, to: ColorRepresentation, at: number, duration: number, ease = 'power2.out'): void {
+  const c = new Color(to)
+  tl.to(color, { r: c.r, g: c.g, b: c.b, duration, ease }, at)
+}
+
+/** Tweens an opacity (a line material, an outline uniform holder). */
+export function fade(tl: Timeline, target: { opacity: number }, opacity: number, at: number, duration: number, ease = 'power2.inOut'): void {
+  tl.to(target, { opacity, duration, ease }, at)
 }

@@ -51,7 +51,7 @@ function SceneShell({
         const el = ref.current
         if (!el) return
         el.dataset.state = runtime.state
-        el.style.visibility = isVisible(scene.def, runtime.state) ? 'visible' : 'hidden'
+        el.style.visibility = isVisible(scene.def, runtime.state, runtime.outro) ? 'visible' : 'hidden'
         el.setAttribute('aria-hidden', String(runtime.state !== 'active'))
       }),
     [runtime, scene],

@@ -80,6 +80,8 @@ export interface OrbitLine {
   object: Group
   /** Shared by every variant. Tween `material.opacity` to fade the orbit. */
   material: LineMaterial
+  /** 0..1: how much of the ring is drawn. Tween `reveal.value` to draw it on. */
+  reveal: { value: number }
   dispose(): void
 }
 
@@ -125,13 +127,20 @@ export function createOrbitLine(options: OrbitLineOptions): OrbitLine {
   const offBoil = onBoil((step) => {
     lines.forEach((l, i) => (l.visible = i === step % lines.length))
   })
+  const reveal = { value: 1 }
+  let lastCount = -1
   const offFrame = onArtFrame(() => {
     material.linewidth = width * (artUniforms.uResolution.value.y / 1080)
+    const count = Math.round(Math.min(1, Math.max(0, reveal.value)) * segments)
+    if (count === lastCount) return
+    lastCount = count
+    for (const l of lines) l.geometry.instanceCount = count
   })
 
   const orbit: OrbitLine = {
     object,
     material,
+    reveal,
     dispose() {
       offBoil()
       offFrame()

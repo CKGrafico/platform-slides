@@ -42,12 +42,12 @@ export function Burn({
   const textA = useRef<SVGFEFuncAElement>(null)
   const edgeA = useRef<SVGFEFuncAElement>(null)
 
-  useProgress((local) => {
+  useProgress((local, outro) => {
     const el = box.current
     if (!el) return
     // 16 steps per burn: the filter re-renders at most 16 times, and the reveal
-    // gets a slight stop-motion feel.
-    const v = Math.round(Math.min(1, Math.max(0, level(local))) * 16) / 16
+    // gets a slight stop-motion feel. After the scene ends, text burns out with the outro.
+    const v = Math.round(Math.min(1, Math.max(0, level(local))) * (1 - outro) * 16) / 16
     if (v <= 0) {
       el.style.visibility = 'hidden'
       el.style.filter = ''

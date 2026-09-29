@@ -20,6 +20,23 @@ export function usePresentation(): Presentation {
   return p
 }
 
+/**
+ * Runs fn with the playhead position now and on every frame where it moved.
+ * For show-level overlays that span many scenes (for example a map of the talk).
+ * Scenes use useProgress instead.
+ */
+export function usePlayhead(fn: (position: number, model: Presentation['model']) => void): void {
+  const p = usePresentation()
+  const ref = useRef(fn)
+  useEffect(() => {
+    ref.current = fn
+  })
+  useEffect(() => {
+    ref.current(p.framePosition, p.model)
+    return p.onFrame((position) => ref.current(position, p.model))
+  }, [p])
+}
+
 /** Re-renders only when the active scene changes. */
 export function usePresentationSnapshot(): Snapshot {
   const p = usePresentation()
@@ -83,16 +100,17 @@ export function useScene(): SceneApi {
 }
 
 /**
- * Runs fn with the local progress now and on every change.
+ * Runs fn with the local progress now and on every change. `outro` goes from
+ * 0 to 1 after the scene ends (SceneDef.outro), so text can leave with it.
  * Use it for values that GSAP does not animate. Keep fn cheap and free of layout reads.
  */
-export function useProgress(fn: (local: number) => void): void {
+export function useProgress(fn: (local: number, outro: number) => void): void {
   const { runtime } = useScene()
   const ref = useRef(fn)
   useEffect(() => {
     ref.current = fn
   })
-  useEffect(() => runtime.onProgress((l) => ref.current(l)), [runtime])
+  useEffect(() => runtime.onProgress((l, o) => ref.current(l, o)), [runtime])
 }
 
 /**

@@ -18,7 +18,7 @@ export function createCameraTrack(model: ShowModel): CameraTrack {
   model.scenes.forEach((scene, i) => {
     const cam = scene.def.camera
     const previous = i === 0 ? DEFAULT_SHOT : endShots[i - 1]!
-    endShots.push(!cam ? previous : typeof cam === 'function' ? fullShot(cam(1)) : fullShot(cam))
+    endShots.push(!cam ? previous : typeof cam === 'function' ? fullShot(cam(1, previous)) : fullShot(cam))
   })
 
   return {
@@ -27,7 +27,7 @@ export function createCameraTrack(model: ShowModel): CameraTrack {
       const cam = model.scenes[sceneIndex]!.def.camera
       const start = sceneIndex === 0 ? DEFAULT_SHOT : endShots[sceneIndex - 1]!
       if (!cam) return start
-      if (typeof cam === 'function') return fullShot(cam(local))
+      if (typeof cam === 'function') return fullShot(cam(local, start))
       return blendShots(start, cam, smoothstep(local))
     },
   }

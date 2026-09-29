@@ -192,3 +192,132 @@ body,
   font-size: calc(var(--su) * 10);
   white-space: nowrap;
 }
+
+/* Captions: text in a bottom corner sits on the bottom line of its box. */
+.art-caption--bottom-left > .art-burn,
+.art-caption--bottom-right > .art-burn {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.art-source {
+  display: block;
+  margin-top: calc(var(--su) * 1);
+  font-family: var(--font-label);
+  font-weight: 500;
+  font-size: calc(var(--su) * 1.8);
+  letter-spacing: 0.02em;
+  color: var(--c-outline);
+}
+
+/* About me (script 2.1): name, role, company. Nothing more. */
+.about {
+  position: absolute;
+  left: var(--safe);
+  top: 34%;
+  width: calc(var(--su) * 96);
+  height: calc(var(--su) * 26);
+  overflow: hidden;
+}
+
+.about p {
+  margin: 0;
+}
+
+.about-name.art-title {
+  font-size: calc(var(--su) * 8);
+  white-space: nowrap;
+}
+
+.about-role {
+  margin-top: calc(var(--su) * 2.2) !important;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: calc(var(--su) * 3.2);
+  color: var(--c-text);
+}
+
+.about-company {
+  margin-top: calc(var(--su) * 0.6) !important;
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: calc(var(--su) * 2.4);
+  letter-spacing: 0.04em;
+  color: var(--c-outline);
+}
+
+/* The "?" at the end of the timeline. */
+.tl-question.art-label {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: calc(var(--su) * 4.4);
+}
+
+/* The map of the talk, top right, over the scenes (Hud.tsx). */
+.hud-stage {
+  pointer-events: none;
+}
+
+.hud {
+  position: absolute;
+  right: calc(var(--safe) * 0.6);
+  top: calc(var(--safe) * 0.6);
+  width: calc(var(--su) * 44);
+  height: calc(var(--su) * 17);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--su) * 1.5);
+  transform-origin: 100% 0;
+}
+
+.hud-names {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(var(--su) * 0.3);
+}
+
+.hud-name {
+  width: 100%;
+  text-align: right;
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: calc(var(--su) * 1.8);
+  line-height: 1.3;
+  color: var(--c-outline);
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.hud-ring {
+  width: calc(var(--su) * 17);
+  height: calc(var(--su) * 17);
+  flex: none;
+  overflow: visible;
+}
+
+/* Timeline step names: larger, in the display face. */
+.tl-label.art-label {
+  font-size: calc(var(--su) * 2.5);
+}
+
+/* A lead caption: the one line the audience must read, larger. */
+.art-caption--lead {
+  font-size: calc(var(--su) * 3.5);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+/* Level names in part 4: left aligned, so each one starts at its ring. */
+.level-label.art-label {
+  transform: translate(0, -50%);
+  text-align: left;
+  font-size: calc(var(--su) * 2.4);
+}
+
+.slot-label.art-label {
+  font-size: calc(var(--su) * 2.2);
+}

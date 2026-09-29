@@ -9,8 +9,9 @@ export function pickParts(def: SceneDef, env: Pick<Environment, 'reducedMotion' 
 }
 
 /** True when a scene part must be visible in its current state. */
-export function isVisible(def: SceneDef, state: 'before' | 'active' | 'after'): boolean {
+export function isVisible(def: SceneDef, state: 'before' | 'active' | 'after', outro = 1): boolean {
   if (state === 'active') return true
+  if (state === 'after' && outro < 1) return true
   const keep = def.visibleWhenInactive ?? 'none'
   return keep === 'both' || keep === state
 }

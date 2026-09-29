@@ -9,6 +9,7 @@ import { useRef, type ReactNode } from 'react'
 import { useProgress } from '@/engine/context'
 import { T, type MessageKey } from '@/i18n'
 import { useAnchor, type AnchorTarget } from './anchor'
+import { Burn } from './Burn'
 
 export type Corner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
 
@@ -62,9 +63,9 @@ export function Label({
   const ref = useRef<HTMLDivElement>(null)
   const box = useRef<HTMLDivElement>(null)
   useAnchor(ref, target, offset)
-  useProgress((local) => {
-    if (!box.current || !level) return
-    const v = Math.min(1, Math.max(0, level(local)))
+  useProgress((local, outro) => {
+    if (!box.current || (!level && outro === 0)) return
+    const v = Math.min(1, Math.max(0, level ? level(local) : 1)) * (1 - outro)
     box.current.style.opacity = String(v)
   })
   return (
@@ -78,5 +79,59 @@ export function Label({
         <T k={k} />
       </div>
     </div>
+  )
+}
+
+/**
+ * A part title in the top left: a small kicker over an outlined act title.
+ * Both burn with the same level.
+ */
+export function PartTitle({ kicker, title, level, seed = 17 }: { kicker: MessageKey; title: MessageKey; level: (local: number) => number; seed?: number }) {
+  return (
+    <div className="part-title" data-fit={title}>
+      <Burn level={level} seed={seed}>
+        <p className="art-kicker">
+          <T k={kicker} />
+        </p>
+        <h2 className="art-title">
+          <T k={title} />
+        </h2>
+      </Burn>
+    </div>
+  )
+}
+
+/** A caption whose text burns in and out with a level, in one corner. */
+export function BurnCaption({
+  k,
+  corner,
+  level,
+  width = 58,
+  height = 9,
+  seed = 23,
+  source,
+  className,
+}: {
+  k: MessageKey
+  corner: Corner
+  level: (local: number) => number
+  width?: number
+  height?: number
+  seed?: number
+  /** A short source line under the text, in the label face. */
+  source?: MessageKey
+  className?: string
+}) {
+  return (
+    <Caption corner={corner} width={width} height={height} className={className}>
+      <Burn level={level} seed={seed} className={source ? 'art-caption-body' : undefined}>
+        <T k={k} />
+        {source ? (
+          <span className="art-source">
+            <T k={source} />
+          </span>
+        ) : null}
+      </Burn>
+    </Caption>
   )
 }
