@@ -3,7 +3,7 @@
  * Parts move them in their choreography files, never here. Where things stand
  * is in layout.ts. What is hidden at the start is in rest.ts.
  */
-import { artOf, createBall, createCapsule, createColumn, createCore, createMoon, createRing, createSwarm } from '@/art/elements'
+import { artOf, createBall, createCapsule, createColumn, createCore, createMoon, createPlate, createRing, createSwarm } from '@/art/elements'
 import { createFrame, createSketchLine, createSlot, straight, through } from '@/art/lines'
 import { createOrbitLine } from '@/art/orbits'
 import { palette } from '@/art/palette'
@@ -13,23 +13,28 @@ import {
   APPS,
   CAPSULE_POS,
   COMPILER_POS,
+  FORGE_POS,
   LEVEL_RADII,
   LINE_BENT,
   LINE_X,
   LINE_Y,
   LINE_Z,
+  MODELS,
+  OPENCODE,
   PILE,
   PILE_R,
   RUN_PATHS,
+  RUNNER_POS,
+  TEAM,
   TIMELINE_PATH,
   TIMELINE_POINTS,
   TIMELINE_RADIUS,
   TIMELINE_SPLIT,
   TIMELINE_U,
-  TEAM,
   TOKENS_POS,
   TRIAGE_ORBIT,
   TRIAGE_POS,
+  VENDOR_POS,
 } from './layout'
 
 /** The four tasks that leave the agent in part 10, in the order they leave. */
@@ -320,6 +325,55 @@ const appRings = defineActor({
   },
 })
 
+// ---- part 8: our runtime -----------------------------------------------------------------------
+
+const opencode = defineActor({
+  id: 'opencode',
+  create: () => {
+    const el = createRing({ radius: OPENCODE.radius, tube: OPENCODE.tube, color: palette.butter, facing: 'y' })
+    el.object.rotation.set(OPENCODE.tilt, 0, -0.18)
+    return el.object
+  },
+})
+const forge = defineActor({
+  id: 'forge',
+  create: () => {
+    const el = createRing({ radius: 0.62, tube: 0.075, color: palette.lilac, facing: 'y' })
+    el.object.position.set(...FORGE_POS)
+    return el.object
+  },
+})
+const models = MODELS.map((p, i) =>
+  defineActor({
+    id: `model.${i}`,
+    create: () => {
+      const el = createCore({ radius: 0.3, segments: 32, outline: { width: 2.5 } })
+      el.object.position.set(...p)
+      return el.object
+    },
+  }),
+)
+/** Before Forge: a straight call from the agent to a vendor. */
+const direct = defineActor({
+  id: 'p8.direct',
+  create: () => createSketchLine({ path: straight([0.7, -0.35, 0.1], VENDOR_POS), segments: 40, width: 2.5, dashed: true, reveal: 0 }).object,
+})
+/** After Forge: every call goes through it to one of the models. */
+const forgeLines = MODELS.map((p, i) =>
+  defineActor({
+    id: `p8.model.${i}`,
+    create: () => createSketchLine({ path: straight(FORGE_POS, p), segments: 30, width: 2, opacity: 0.8, reveal: 0 }).object,
+  }),
+)
+const runner = defineActor({
+  id: 'runner',
+  create: () => {
+    const el = createPlate({ radius: 1.55, color: palette.lilac })
+    el.object.position.set(...RUNNER_POS)
+    return el.object
+  },
+})
+
 // ---- part 10 (style frame) ---------------------------------------------------------------
 
 const outerOrbit = defineActor({
@@ -377,6 +431,12 @@ export const actors: ActorDef[] = [
   ...team,
   apps,
   appRings,
+  opencode,
+  forge,
+  ...models,
+  direct,
+  ...forgeLines,
+  runner,
   outerOrbit,
   innerOrbit,
   ...tasks,

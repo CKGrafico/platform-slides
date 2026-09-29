@@ -154,3 +154,20 @@ export const APPS: V3[] = Array.from({ length: 11 }, (_, i) => {
   const col = row === 0 ? i : i - 6
   return [0.1 + col * 1.0 + row * 0.5, TEAM_Y + (row === 0 ? 0.55 : -0.55), (col % 2) * 0.4 - 0.2] as const
 })
+
+// ---- part 8: our runtime ----------------------------------------------------------------------
+
+/** OpenCode: one runtime ring around the implementation core. */
+export const OPENCODE = { radius: 1.18, tube: 0.05, tilt: 0.42 }
+/** Forge, the AI gateway: a gate ring below the core. */
+export const FORGE_POS: V3 = [0, -1.9, 0]
+/** The models behind Forge. */
+export const MODELS: V3[] = [
+  [-1.25, -2.05, -2.1],
+  [0, -2.25, -2.7],
+  [1.25, -2.05, -2.1],
+]
+/** Before Forge, the agent called a vendor straight away. */
+export const VENDOR_POS: V3 = [5.6, -1.2, -1.6]
+/** The runner the whole stack runs on. */
+export const RUNNER_POS: V3 = [0, -2.75, 0]
