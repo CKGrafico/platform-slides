@@ -69,6 +69,8 @@ src/procedural/  procedural systems (instanced grid), FxCanvas for 2D
 src/assets/      asset URLs, texture and model loaders, disposal
 src/perf/        tier detection and DPR caps
 src/debug/       debug bus and panel (dev or ?debug only)
+src/art/         the art kit: palette, toon and outline materials, the monolith, elements, orbits,
+                 entrances and exits, screen anchors, burn, captions, grain
 src/styles/      base CSS. The visual identity goes in theme.css later
 src/show/        the show: chapters, scenes, actors. Agents work here
 public/assets/   svg, textures, models, fonts, images, video, generated
@@ -87,6 +89,7 @@ Each dependency has a reason. Do not add a dependency without the same kind of r
 | `@react-three/fiber` | One declarative, persistent canvas. Scene world parts are ordinary React components inside it. |
 | `@react-three/drei` | `PerformanceMonitor` for adaptive DPR, and the GLTF and texture loaders with caching. Only imported parts ship. |
 | `gsap` | The one animation model. Paused timelines scrubbed by progress work for DOM, SVG, Three.js objects, and uniforms. DrawSVG and MorphSVG ship with it. |
+| `@fontsource-variable/outfit`, `@fontsource-variable/jetbrains-mono` | The two typefaces of the art direction, self-hosted, so the show works offline at the venue. Latin subsets cover Spanish. |
 | `vite`, `@vitejs/plugin-react` | Dev server and build. |
 | `typescript`, `eslint`, `typescript-eslint`, `eslint-plugin-react-hooks`, `globals`, `@eslint/js` | Types and lint. |
 

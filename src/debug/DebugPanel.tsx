@@ -20,9 +20,12 @@ const fmt = (n: number, d = 3) => n.toFixed(d)
 function findOverflows(): string[] {
   const out: string[] = []
   document.querySelectorAll<HTMLElement>('[data-fit]').forEach((el) => {
-    const over = el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1
+    // Only text the audience can see: the active scene, and not hidden.
+    const scene = el.closest<HTMLElement>('.scene')
+    const shown = (!scene || scene.dataset.state === 'active') && getComputedStyle(el).visibility !== 'hidden'
+    const over = shown && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)
     el.classList.toggle('i18n-overflow', over)
-    if (over && el.offsetParent !== null) out.push(el.dataset.fit || el.textContent?.slice(0, 24) || '?')
+    if (over) out.push(el.dataset.fit || el.textContent?.slice(0, 24) || '?')
   })
   return out
 }
@@ -102,6 +105,10 @@ export default function DebugPanel() {
             <dd className={b.rendererCreations > 1 ? 'debug-warn' : undefined}>
               {b.rendererCreations}
               {b.contextLost ? ' (context lost)' : ''}
+            </dd>
+            <dt>warm-up</dt>
+            <dd>
+              {b.warmup.programs} programs in {b.warmup.ms} ms
             </dd>
             <dt>viewport</dt>
             <dd>

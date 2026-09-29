@@ -20,7 +20,7 @@ export function CameraRig() {
 
   useFrame(({ clock }) => {
     if (!(camera instanceof PerspectiveCamera)) return
-    const shot = track.shotAt(p.position)
+    const shot = track.shotAt(p.framePosition)
     camera.position.set(shot.position[0], shot.position[1], shot.position[2])
     if (shot.shake > 0) {
       const t = clock.elapsedTime * 6

@@ -2,7 +2,7 @@
 
 This repository holds a web keynote. The keynote runs in a browser, full screen, and the presenter controls it from the keyboard. It has no sound.
 
-The engine is done. The show is not. The only scenes in `src/show/sandbox/` are neutral test scenes that prove the engine works. Delete them when the real show starts.
+The engine and the art direction are done. The show holds the style frame: the cover (part 1) and part 10 (the tasks leave the agent). The other parts are built from the script, one folder per part in `src/show/parts/`.
 
 ## Run it
 
@@ -48,6 +48,7 @@ npm run i18n:check
 | The talk script, beat by beat (work here first) | [script/script.md](script/script.md) |
 | Art direction: the style bible | [art/art-direction.md](art/art-direction.md) |
 | Element grammar: what each element means | [art/elements.md](art/elements.md) |
+| Next technical steps for the art kit | [art/next-steps.md](art/next-steps.md) |
 | Our anonymised numbers | [knowledge/our-numbers.md](knowledge/our-numbers.md) |
 | Draft story of the talk (not binding) | [knowledge/talk-notes.md](knowledge/talk-notes.md) |
 | Public industry numbers to compare against | [knowledge/benchmarks.md](knowledge/benchmarks.md) |

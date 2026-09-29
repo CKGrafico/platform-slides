@@ -48,7 +48,7 @@ The panel shows:
 In development, `window.__keynote` holds the presentation. Use it from the console:
 
 ```js
-__keynote.goToScene('sandbox-world/grid-dolly')
+__keynote.goToScene('10-agentic-workflows/pull-out')
 __keynote.seek(4.2)
 __keynote.resolve()
 ```

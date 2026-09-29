@@ -117,7 +117,17 @@ export class Presentation {
   }
 
   get global(): number {
-    return this.model.total === 0 ? 0 : this.playhead.position / this.model.total
+    return this.model.total === 0 ? 0 : this.framePosition / this.model.total
+  }
+
+  /**
+   * The position the last tick used. The tick runs before GSAP moves the
+   * playhead in the same frame, so scenes and actors show this position.
+   * Anything drawn later in the frame (the camera, shader uniforms) must read
+   * this too, or it runs one frame ahead of everything else.
+   */
+  get framePosition(): number {
+    return Number.isNaN(this.lastPosition) ? this.playhead.position : this.lastPosition
   }
 
   resolve(position = this.playhead.position) {

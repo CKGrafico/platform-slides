@@ -1,10 +1,16 @@
 {
-  "sandbox.label.dom": "dom",
-  "sandbox.label.svg": "svg",
-  "sandbox.label.actor": "actor",
-  "sandbox.label.shader": "shader",
-  "sandbox.label.grid": "procedural and camera",
-  "sandbox.domReveal.line1": "First line",
-  "sandbox.domReveal.line2": "Second line",
-  "sandbox.svgDraw.title": "A circle that becomes a square"
+  "p01.title": "From issue to production with GitHub Agentic Workflows",
+  "p01.name": "Quique Fdez Guerra",
+  "p01.role": "Director of Engineering and Operations, Plain Concepts",
+  "p10.kicker": "Pillar 2",
+  "p10.title": "Agentic Workflows",
+  "p10.caption.pieces": "Every piece that leaves the agent now does the same thing, every time.",
+  "p10.caption.distance": "The closer to the model, the less a path repeats.",
+  "p10.monolith": "the model",
+  "p10.task.labels": "labels",
+  "p10.task.assign": "assign",
+  "p10.task.comment": "comment",
+  "p10.task.status": "status",
+  "p10.orbit.outer": "deterministic",
+  "p10.orbit.inner": "reasoning"
 }

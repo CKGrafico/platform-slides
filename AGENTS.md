@@ -74,7 +74,8 @@ This repository is a keynote engine plus a show. Read `docs/README.md` before yo
 - GSAP is the only animation library. Import it from `@/animation/gsap`.
 - Do not write z-index. Stacking order lives in `src/engine/layers.ts`.
 - Before you commit, `npm run typecheck`, `npm run lint`, and `npm run build` must pass. This project has no test suite. Check scenes in the browser with the debug panel.
-- The scenes in `src/show/sandbox/` are architecture tests. Delete them when the real show starts.
+- Each part of the talk is one folder, `src/show/parts/NN-name/`, with `index.tsx` (the chapter, its scenes, captions, and camera) and `choreography.ts` (its moves on the shared actors). List both in `src/show/index.ts`. The shared actors live in `src/show/actors.ts`.
+- Build visuals from the art kit in `src/art/` (elements, orbits, outlines, burn, captions, labels). Place moves on the beat grid (`src/animation/beat.ts`).
 
 ## Knowledge
 

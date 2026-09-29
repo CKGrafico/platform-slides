@@ -28,7 +28,7 @@ Why orbits: the timeline of part 3 ends in "Loop engineering" and "Autonomous lo
 | Outline | `#2E2A4A` deep indigo | the only line color |
 | Text | `#1F1D33` | captions and titles |
 | Accent | `#2F69FF` Platform blue | the blue ball, the active element, the lit path, the title burn edge. Nothing else |
-| Monolith | `#16161E`, noise up to `#262A3A` | off-black, never pure black |
+| Monolith | `#16161E`, noise up to `#2C3246` | off-black, never pure black |
 
 Rules:
 

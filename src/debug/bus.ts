@@ -11,4 +11,6 @@ export const debugBus = {
   /** How many WebGL renderers the world created. It must stay 1 unless the context was lost. */
   rendererCreations: 0,
   contextLost: false,
+  /** Shader warm-up before the talk: time taken and programs compiled. */
+  warmup: { ms: 0, programs: 0 },
 }

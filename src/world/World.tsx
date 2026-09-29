@@ -7,19 +7,28 @@
  */
 import { advance, Canvas, useThree } from '@react-three/fiber'
 import { PerformanceMonitor } from '@react-three/drei'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { gsap } from '@/animation/gsap'
 import { debugBus } from '@/debug/bus'
 import { useEnvironment } from '@/engine/environment'
 import { DPR_CAP, webglAvailable } from '@/perf/tier'
-import { ActorsHost, type ActorDef } from './actors'
+import { ActorsHost, type ActorDef, type ChoreographyDef } from './actors'
 import { CameraRig } from './camera/CameraRig'
 import { WorldSceneHost } from './WorldSceneHost'
 
 const DPR_STEP = 0.25
 const DPR_MIN = 0.75
 
-export function World({ actors }: { actors: ActorDef[] }) {
+export function World({
+  actors,
+  choreographies,
+  extras,
+}: {
+  actors: ActorDef[]
+  choreographies?: ChoreographyDef[]
+  /** Extra world content rendered once inside the canvas, after everything else (for example the art runtime). */
+  extras?: ReactNode
+}) {
   const { tier, viewport } = useEnvironment()
   const cap = Math.min(DPR_CAP[tier], viewport.dpr)
   const [dpr, setDpr] = useState(cap)
@@ -35,7 +44,8 @@ export function World({ actors }: { actors: ActorDef[] }) {
 
   // The GSAP ticker renders the canvas. The presentation tick runs first (it is prioritized).
   useEffect(() => {
-    const render = (time: number) => advance(time * 1000)
+    // R3F stores this value as clock.elapsedTime, so pass seconds, not milliseconds.
+    const render = (time: number) => advance(time)
     gsap.ticker.add(render)
     return () => gsap.ticker.remove(render)
   }, [])
@@ -48,7 +58,14 @@ export function World({ actors }: { actors: ActorDef[] }) {
       frameloop="never"
       dpr={dpr}
       style={{ visibility: lost ? 'hidden' : 'visible' }}
-      gl={{ antialias: tier !== 'low', powerPreference: 'high-performance', alpha: false, stencil: false }}
+      gl={{
+        antialias: tier !== 'low',
+        powerPreference: 'high-performance',
+        alpha: true,
+        stencil: false,
+        // Development only: keep the frame, so screenshots and captures are reliable.
+        preserveDrawingBuffer: import.meta.env.DEV,
+      }}
       camera={{ fov: 45, near: 0.1, far: 200, position: [0, 0, 8] }}
       onCreated={({ gl }) => {
         debugBus.rendererCreations += 1
@@ -75,9 +92,10 @@ export function World({ actors }: { actors: ActorDef[] }) {
       />
       <RendererStats />
       <CameraRig />
-      <ActorsHost actors={actors}>
+      <ActorsHost actors={actors} choreographies={choreographies}>
         <WorldSceneHost />
       </ActorsHost>
+      {extras}
     </Canvas>
   )
 }

@@ -103,3 +103,12 @@ The engine does not ship transitions. It keeps these open:
 - Actors carry objects across scenes, so a scene can transform an object instead of replacing it.
 - The camera track makes moves between compositions continuous.
 - DOM, SVG, and WebGL share one frame and one progress value, so a DOM element can hand over to a 3D object on the same frame.
+
+## Choreographies, ambient life, and the beat grid
+
+These were added with the art direction (see `docs/art/art-direction.md`).
+
+- **Choreographies.** Each part of the talk moves the shared actors in its own file, `src/show/parts/NN-name/choreography.ts`, with `defineChoreography(key, (tl, cast, t) => ...)`. `cast.get(id)` returns an actor. `t.at` and `t.span` place tweens on global timeline units. All choreographies compose, in show order, into one paused timeline. In development, a console warning names two choreographies that write the same property in overlapping windows.
+- **Ambient life.** An actor may have `ambient(object, time, position)`. It runs every frame with the clock, for noise, sway, and slow tumbles. It must only write properties that no timeline writes. For art elements, that means `inner.position` and `inner.rotation`: the choreography owns `object`, entrances and exits own `inner.scale`.
+- **The beat grid.** `beatStops([4, 10, 6])` returns stops whose moves last 4, 10, and 6 beats at 120 BPM, with `ease: 'none'`, plus `b(n)`, the local progress n beats into the scene. Because the move itself is linear, a tween placed at `b(n)` lands exactly n beats after the press. Put the easing on each tween.
+- **framePosition.** The presentation tick runs before GSAP moves the playhead in the same frame, so scenes and actors show the position of that tick. Anything drawn later in the frame (the camera rig, shader uniforms) reads `presentation.framePosition`, or it would run one frame ahead.

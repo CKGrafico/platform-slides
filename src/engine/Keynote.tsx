@@ -2,12 +2,12 @@
  * The app shell: one presentation, one world, and the layer stack.
  * Scenes never import this file.
  */
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { gsap } from '@/animation/gsap'
 import { debugBus } from '@/debug/bus'
 import { useI18n } from '@/i18n'
 import { World } from '@/world/World'
-import type { ActorDef } from '@/world/actors'
+import type { ActorDef, ChoreographyDef } from '@/world/actors'
 import { PresentationProvider } from './context'
 import { DomSceneHost } from './DomSceneHost'
 import { useEnvironment } from './environment'
@@ -22,7 +22,20 @@ const debugAllowed = import.meta.env.DEV || new URLSearchParams(window.location.
 // The debug code is a separate chunk. Production only downloads it with ?debug.
 const DebugPanel = debugAllowed ? lazy(() => import('@/debug/DebugPanel')) : null
 
-export function Keynote({ show, actors }: { show: ShowDef; actors: ActorDef[] }) {
+export interface KeynoteProps {
+  show: ShowDef
+  actors: ActorDef[]
+  /** Moves of each part of the talk on the shared actors, in show order. */
+  choreographies?: ChoreographyDef[]
+  /** Rendered once inside the persistent canvas (for example the art runtime). */
+  world?: ReactNode
+  /** Rendered once in the overlay layer, over the scenes. */
+  overlay?: ReactNode
+  /** Rendered once in the grain layer, over everything but the debug panel. */
+  grain?: ReactNode
+}
+
+export function Keynote({ show, actors, choreographies, world, overlay, grain }: KeynoteProps) {
   const env = useEnvironment()
   const { toggleLocale } = useI18n()
   const [presentation] = useState(() => {
@@ -103,7 +116,7 @@ export function Keynote({ show, actors }: { show: ShowDef; actors: ActorDef[] })
     <PresentationProvider value={presentation}>
       <main className="keynote">
         <Layer name="world">
-          <World actors={actors} />
+          <World actors={actors} choreographies={choreographies} extras={world} />
         </Layer>
         <Layer name="fx">
           <DomSceneHost part="fx" />
@@ -112,8 +125,10 @@ export function Keynote({ show, actors }: { show: ShowDef; actors: ActorDef[] })
           <DomSceneHost part="dom" />
         </Layer>
         <Layer name="overlay">
+          {overlay}
           <LanguageSwitch />
         </Layer>
+        {grain ? <Layer name="grain">{grain}</Layer> : null}
         {DebugPanel && debugOpen ? (
           <Layer name="debug">
             <Suspense fallback={null}>
