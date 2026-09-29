@@ -178,6 +178,11 @@ export function ActorsHost({
       // A paused timeline at time 0 ignores time(0). One pass to the end and back
       // records every start value and applies the state at 0.
       master.progress(1, true).progress(0, true)
+      // GSAP still calls each onUpdate once with u = 0 during that pass, in
+      // forward order, so the last drive() over a shared target would win at 0.
+      // A second pass with callbacks on scrubs like the presenter does: going
+      // back, the earliest writer renders last, so its state is the one at 0.
+      master.progress(1).progress(0)
     })
     const apply = (position: number) => master?.time(position)
     apply(p.position)

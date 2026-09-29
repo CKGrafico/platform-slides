@@ -42,6 +42,13 @@ for (const [key, text] of Object.entries(source)) {
   }
 }
 
+// No em dash or en dash anywhere in the text on screen (AGENTS.md). "--" stays: commands use it.
+for (const l of LOCALES) {
+  for (const [key, text] of Object.entries(messages[l])) {
+    if (/[–—]/.test(text)) problems.push(`${l}: "${key}" has an en dash or an em dash. Rewrite it.`)
+  }
+}
+
 if (problems.length) {
   console.error(`i18n check failed:\n  ${problems.join('\n  ')}`)
   process.exit(1)

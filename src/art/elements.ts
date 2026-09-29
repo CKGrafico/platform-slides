@@ -11,6 +11,8 @@ import {
   CanvasTexture,
   CapsuleGeometry,
   CylinderGeometry,
+  LatheGeometry,
+  Vector2,
   Group,
   InstancedMesh,
   Matrix4,
@@ -28,6 +30,7 @@ import {
   type Material,
   type Object3D,
 } from 'three'
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { onArtFrame } from './clock'
 import { createMonolithMaterial, type MonolithMaterial } from './monolith'
 import { createOutlineMaterial, hullGeometry, type OutlineMaterial, type OutlineOptions } from './outline'
@@ -284,24 +287,122 @@ export function createCaptureRing(options: { radius?: number; tube?: number; col
   return createRing({ ...options, facing: 'y' })
 }
 
-/** A person: a small upright pill with no face. Its base sits at y = 0. */
-export function createCapsule(options: { height?: number; color?: ColorRepresentation } = {}) {
-  const { height = 0.62, color = palette.lilac } = options
-  const r = height * 0.24
-  const geometry = new CapsuleGeometry(r, height - 2 * r, 8, 20)
-  geometry.translate(0, height / 2, 0)
-  return assemble('capsule', geometry, createToonMaterial({ color, highlight: true }), { width: 2.5, color: inkOf(color, palette.outline) })
+// ---- people -----------------------------------------------------------------------------
+
+export type AstronautPose = 'stand' | 'hold'
+
+/** Scale of an astronaut: about 1 unit tall. Its parts below are drawn for size 1 (0.78 tall). */
+export const ASTRONAUT_SIZE = 1.25
+
+/** A capsule part of the astronaut, placed and turned. */
+function part(radius: number, length: number, at: [number, number, number], rot: [number, number, number] = [0, 0, 0]): BufferGeometry {
+  const g = new CapsuleGeometry(radius, length, 6, 14)
+  g.rotateX(rot[0])
+  g.rotateY(rot[1])
+  g.rotateZ(rot[2])
+  g.translate(...at)
+  return g
 }
 
 /**
- * A measurement. Its base sits at y = 0 and its height is 1: set object.scale.y
- * to the value. A metric that is not collected is a hollow column (lines.ts).
+ * A person: a round chibi astronaut. A big helmet with a dark visor (it hides the
+ * face, and carries the planet highlight), a white suit, a backpack, and a small
+ * pastel patch on the chest, different for each person. Its feet sit at y = 0,
+ * and it faces +Z. Parts that share a material are one geometry, so an
+ * astronaut costs three meshes. `body` is the suit; the visor and the patch are
+ * children of `body`, so they enter, leave, and scale with it.
+ * `pose: 'hold'` brings the arms forward, to hold something at the chest.
  */
-export function createColumn(options: { radius?: number; color?: ColorRepresentation } = {}) {
-  const { radius = 0.22, color = palette.sage } = options
-  const geometry = new CylinderGeometry(radius, radius, 1, 32, 1)
-  geometry.translate(0, 0.5, 0)
-  return assemble('column', geometry, createToonMaterial({ color }), { width: 2.5, boil: 0.25 })
+export function createAstronaut(options: { suit?: ColorRepresentation; patch?: ColorRepresentation; pose?: AstronautPose; size?: number } = {}) {
+  const { suit = palette.surface, patch = palette.lilac, pose = 'stand', size = ASTRONAUT_SIZE } = options
+  const arms =
+    pose === 'hold'
+      ? [part(0.058, 0.1, [-0.13, 0.33, 0.1], [-1.25, 0, 0.25]), part(0.058, 0.1, [0.13, 0.33, 0.1], [-1.25, 0, -0.25])]
+      : [part(0.058, 0.11, [-0.195, 0.29, 0], [0, 0, -0.45]), part(0.058, 0.11, [0.195, 0.29, 0], [0, 0, 0.45])]
+  const helmet = new SphereGeometry(0.2, 28, 20)
+  helmet.translate(0, 0.58, 0)
+  const backpack = new CapsuleGeometry(0.1, 0.1, 6, 14)
+  backpack.scale(1, 1, 0.55)
+  backpack.translate(0, 0.33, -0.13)
+  const suitParts = [
+    helmet,
+    part(0.14, 0.1, [0, 0.31, 0]),
+    part(0.066, 0.06, [-0.072, 0.1, 0], [0, 0, 0.08]),
+    part(0.066, 0.06, [0.072, 0.1, 0], [0, 0, -0.08]),
+    backpack,
+    ...arms,
+  ]
+  const suitGeometry = mergeGeometries(suitParts)!
+  suitParts.forEach((g) => g.dispose())
+  suitGeometry.scale(size, size, size)
+  const el = assemble('astronaut', suitGeometry, createToonMaterial({ color: suit }), { width: 2.5, color: inkOf(suit, palette.outline) })
+
+  // The visor: a flattened dark glass in front of the helmet, with the highlight.
+  const visorGeometry = new SphereGeometry(0.15, 28, 18)
+  visorGeometry.scale(1, 0.74, 0.55)
+  visorGeometry.translate(0, 0.59, 0.12)
+  visorGeometry.scale(size, size, size)
+  const visorMaterial = createToonMaterial({ color: palette.core, highlight: true })
+  const visor = new Mesh(visorGeometry, visorMaterial)
+  const visorHull = new Mesh(hullGeometry(visorGeometry), createOutlineMaterial({ width: 2, color: palette.outline }))
+  visorHull.renderOrder = -1
+  // The patch: a small pastel badge on the chest.
+  const patchGeometry = new SphereGeometry(0.05, 16, 10)
+  patchGeometry.scale(1, 1, 0.35)
+  patchGeometry.translate(0.05, 0.36, 0.135)
+  patchGeometry.scale(size, size, size)
+  const patchMaterial = createToonMaterial({ color: patch })
+  const badge = new Mesh(patchGeometry, patchMaterial)
+  el.body.add(visorHull, visor, badge)
+
+  const dispose = el.dispose
+  el.dispose = () => {
+    dispose()
+    visorGeometry.dispose()
+    visorHull.geometry.dispose()
+    visorMaterial.dispose()
+    visorHull.material.dispose()
+    patchGeometry.dispose()
+    patchMaterial.dispose()
+  }
+  el.object.userData.dispose = el.dispose
+  return el
+}
+
+// ---- measures ------------------------------------------------------------------------
+
+let coin: BufferGeometry | null = null
+
+/**
+ * One coin, lying flat, with a raised rim, so the toon bands draw the rim with
+ * no texture. Radius 0.18, height 0.06, centered on y = 0. Shared: do not dispose.
+ */
+export function coinGeometry(): BufferGeometry {
+  if (coin) return coin
+  const profile = [
+    [0, -0.03],
+    [0.155, -0.03],
+    [0.175, -0.022],
+    [0.182, 0],
+    [0.175, 0.024],
+    [0.158, 0.03],
+    [0.132, 0.03],
+    [0.124, 0.021],
+    [0, 0.021],
+  ].map(([x, y]) => new Vector2(x, y))
+  coin = new LatheGeometry(profile, 36)
+  return coin
+}
+
+/** Height of one coin in a stack, with a hair of air between coins. */
+export const COIN_STEP = 0.063
+
+/** A single coin as an art element: for the one coin that a part adds on its own. */
+export function createCoin(options: { color?: ColorRepresentation; scale?: number } = {}) {
+  const { color = palette.butter, scale = 1 } = options
+  const g = coinGeometry().clone()
+  g.scale(scale, scale, scale)
+  return assemble('coin', g, createToonMaterial({ color }), { width: 2.2, color: inkOf(color, palette.outline), boil: 0.25 })
 }
 
 /** A guardrail: a low, thin, rounded panel standing on the disc, along X. */
@@ -326,10 +427,6 @@ export function createDisc(options: { radius?: number; color?: ColorRepresentati
   return assemble('disc', geometry, createToonMaterial({ color }), { width: 3, boil: 0.2 })
 }
 
-/** A plate the stack stands on: the runner. A small disc. */
-export function createPlate(options: { radius?: number; color?: ColorRepresentation } = {}) {
-  return createDisc({ radius: options.radius ?? 1.4, color: options.color ?? palette.lilac })
-}
 
 // ---- swarms ------------------------------------------------------------------------
 
@@ -357,8 +454,10 @@ export function createSwarm(options: {
   radius?: number
   color?: ColorRepresentation
   bands?: boolean
-  /** Another shape for every copy (for example a small ring). Default: a sphere of `radius`. */
+  /** Another shape for every copy (for example a small ring or a coin). Default: a sphere of `radius`. */
   geometry?: BufferGeometry
+  /** The outline of every copy. Default: the indigo line, 2.5 px. */
+  outline?: OutlineOptions
 }): Swarm {
   const { count, radius = 0.1, color = palette.surface, bands: withBands = false } = options
   const geometry = options.geometry ?? new SphereGeometry(radius, 20, 14)
@@ -366,7 +465,7 @@ export function createSwarm(options: {
   if (withBands) material.map = planetTexture('bands')
   const body = new InstancedMesh(geometry, material, count)
   const hullGeo = hullGeometry(geometry)
-  const hull = new InstancedMesh(hullGeo, createOutlineMaterial({ width: 2.5 }), count)
+  const hull = new InstancedMesh(hullGeo, createOutlineMaterial({ width: 2.5, ...options.outline }), count)
   hull.instanceMatrix = body.instanceMatrix
   hull.renderOrder = -1
   body.frustumCulled = false
@@ -380,6 +479,8 @@ export function createSwarm(options: {
   const p = new Vector3()
   const s = new Vector3()
   const c = new Color(color)
+  let shown = false
+  object.visible = false
   for (let i = 0; i < count; i++) {
     body.setMatrixAt(i, m.compose(p.set(0, 0, 0), q, s.set(0, 0, 0)))
     body.setColorAt(i, c)
@@ -390,6 +491,7 @@ export function createSwarm(options: {
     hull,
     count,
     place(i, x, y, z, scale = 1, rx = 0, rz = 0) {
+      if (scale > 0) shown = true
       q.setFromEuler(euler.set(rx, 0, rz))
       body.setMatrixAt(i, m.compose(p.set(x, y, z), q, s.set(scale, scale, scale)))
     },
@@ -399,9 +501,13 @@ export function createSwarm(options: {
     },
     commit() {
       body.instanceMatrix.needsUpdate = true
+      // Nothing to show: no draw calls. The next frame's place() calls decide again.
+      object.visible = shown
+      shown = false
     },
     dispose() {
-      geometry.dispose()
+      // A shared geometry (the coin) stays; a sphere made here goes.
+      if (!options.geometry) geometry.dispose()
       hullGeo.dispose()
       material.dispose()
       ;(hull.material as Material).dispose()

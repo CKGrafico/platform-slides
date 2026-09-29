@@ -27,7 +27,7 @@ import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
-import { HARNESS_RADIUS, LAPTOP_POS } from '../../layout'
+import { DEV_POS, HARNESS_RADIUS } from '../../layout'
 
 export const grid = beatStops([4, 4, 5, 6, 5, 6, 5, 6])
 const { b } = grid
@@ -48,15 +48,14 @@ const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => 
 
 /** The ten things the Harness holds, as tags around the frame. */
 const TAGS = ['rules', 'conventions', 'architecture', 'skills', 'notskills', 'commands', 'team', 'tests', 'pr', 'deploy'] as const
-const TAG_R = HARNESS_RADIUS + 0.62
-const tagPoints = TAGS.map((_, i) => {
-  const a = Math.PI / 2 + (i / TAGS.length) * Math.PI * 2
-  return new Vector3(Math.cos(a) * TAG_R * 1.25, Math.sin(a) * TAG_R * 0.92 + 0.1, 0.6)
-})
+/** Two columns beside the frame, like the sheet of rules it carries: five on each side. */
+const TAG_X = HARNESS_RADIUS + 0.55
+const tagPoints = TAGS.map((_, i) => new Vector3(i < 5 ? -TAG_X : TAG_X, 1.35 - (i % 5) * 0.55, 0.5))
 
-const laptopLabel = new Vector3(LAPTOP_POS[0], LAPTOP_POS[1] - 0.45, LAPTOP_POS[2] + 0.5)
+const laptopLabel = new Vector3(DEV_POS[0] + 0.1, DEV_POS[1] - 0.32, DEV_POS[2] + 0.3)
 const cloudLabel = new Vector3(0, -1.95, 0.6)
-const cloudName = new Vector3(0, -1.85, 1.3)
+// Up and to the left of the big frame: the cloud copy.
+const cloudName = new Vector3(-HARNESS_RADIUS - 0.35, 1.25, 0.5)
 
 function Dom() {
   return (
@@ -77,6 +76,7 @@ function Dom() {
           k={`p09.tag.${name}` as MessageKey}
           target={() => tagPoints[i]!}
           width={22}
+          className={i < 5 ? 'label-right' : 'label-left'}
           level={win(B.frame + 2 + i * 0.2, B.frame + 2.5 + i * 0.2, B.cloud, B.cloud + 1)}
         />
       ))}
@@ -92,8 +92,8 @@ function Dom() {
           level={win(B.commands + 0.25 + i * 0.5, B.commands + 0.75 + i * 0.5, B.commands + 2.75 + i * 0.5, B.commands + 3.25 + i * 0.5)}
         />
       ))}
-      <Label k="p09.laptopName" target={() => laptopLabel} width={16} mono={false} className="p05-name" level={win(B.laptop + 2, B.laptop + 2.75)} />
-      <Label k="p09.cloudName" target={() => cloudName} width={16} mono={false} className="p05-name" level={win(B.laptop + 2.25, B.laptop + 3)} />
+      <Label k="p09.laptopName" target={() => laptopLabel} width={20} mono={false} className="p05-name" level={win(B.laptop + 2, B.laptop + 2.75)} />
+      <Label k="p09.cloudName" target={() => cloudName} width={20} mono={false} className="p05-name label-right" level={win(B.laptop + 2.25, B.laptop + 3)} />
     </div>
   )
 }

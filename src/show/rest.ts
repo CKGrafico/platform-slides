@@ -22,14 +22,11 @@ const HIDDEN = [
   /^shell\./,
   /^core\.triage$/,
   /^p6\.ball\./,
-  /^tokens$/,
   /^person\./,
   /^opencode$/,
   /^forge$/,
   /^model\./,
-  /^runner$/,
   /^cmd\./,
-  /^laptop$/,
   /^core\.laptop$/,
   /^router$/,
   /^gate$/,
@@ -40,7 +37,7 @@ const HIDDEN = [
   /^disc$/,
   /^wall\./,
   /^verb\.(pr|merge|issue)$/,
-  /^metric\.\d$/,
+  /^metric\.new$/,
 ]
 
 export const restMoves = defineChoreography('rest', (tl, cast) => {

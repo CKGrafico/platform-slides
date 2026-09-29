@@ -1,16 +1,19 @@
 /**
  * Part 6 moves. Three runs of the same work, the simple tasks in the core's
- * surface with the token column, then the pile of work in front of a person.
+ * surface with the tokens they cost (gold coins that stack up), then the pile
+ * of work in front of a person. The tasks sink back into the core at 6.3: part
+ * 10 pulls them out of it.
  */
 import { Vector3, type Group } from 'three'
 import { boil } from '@/art/clock'
-import { artOf } from '@/art/elements'
+import { artOf, swarmOf } from '@/art/elements'
 import { sketchOf } from '@/art/lines'
 import { drive, fade, inkIn } from '@/art/motion'
 import { arcPoint, easeInOut } from '@/art/orbits'
 import { defineChoreography } from '@/world/actors'
 import { TASKS } from '../../actors'
-import { CORE_R, CORE_SCALE_AGENT, EXIT_FROM, PILE, TASK_DEPTH, TASK_DIRS, TOKENS_HEIGHT } from '../../layout'
+import { stackPoint, stackTilt, drop } from '../../coins'
+import { CORE_R, CORE_SCALE_AGENT, EXIT_FROM, PILE, TASK_DEPTH, TASK_DIRS, TOKEN_COINS, TOKENS_POS } from '../../layout'
 import { B, grid } from '.'
 
 const KEY = '06-problems/problems'
@@ -70,20 +73,38 @@ export const problemsMoves = defineChoreography('06-problems', (tl, cast, t) => 
   })
 
   // ---- 6.2: simple work in the core's surface, and the tokens it costs ---------------------
-  const R = CORE_R * CORE_SCALE_AGENT * TASK_DEPTH
-  TASKS.forEach((name, i) => {
-    const task = el(`task.${name}`)
-    const d = v3(TASK_DIRS[i]!).normalize().multiplyScalar(R)
+  const R = CORE_R * CORE_SCALE_AGENT
+  const tasks = TASKS.map((name) => el(`task.${name}`))
+  const dirs = TASK_DIRS.map((d) => v3(d).normalize())
+  tasks.forEach((task, i) => {
     const at = span(B.cost + 0.5 + i * 0.4, B.cost + 1.2 + i * 0.4)
-    tl.set(task.object.position, { x: d.x, y: d.y, z: d.z }, at.start)
     inkIn(tl, task, at.start, at.duration)
   })
-  const tokens = el('tokens')
-  const tokIn = span(B.cost + 0.5, B.cost + 1)
-  inkIn(tl, tokens, tokIn.start, tokIn.duration)
-  // The column rises one step per task the agent reasons about.
-  for (let i = 0; i < 4; i++) {
-    const step = span(B.cost + 0.9 + i * 0.4, B.cost + 1.7 + i * 0.4)
-    tl.to(tokens.object.scale, { y: (TOKENS_HEIGHT * (i + 1)) / 4, duration: step.duration, ease: 'power3.out' }, step.start)
-  }
+  // 6.3: the tasks sink back into the core and hide there, until part 10.
+  const sink = (i: number) => B.human + 0.25 + i * 0.15
+  tasks.forEach((task, i) => tl.set(task.inner, { visible: false }, span(sink(i) + 1, sink(i) + 1).start))
+  const taskWin = span(B.cost, B.human + 2)
+  drive(tl, taskWin.start, taskWin.duration, (u) => {
+    const beat = B.cost + u * (B.human + 2 - B.cost)
+    tasks.forEach((task, i) => {
+      const w = win(beat, sink(i), sink(i) + 1)
+      const depth = TASK_DEPTH + (0.45 - TASK_DEPTH) * w * w
+      task.object.position.copy(dirs[i]!).multiplyScalar(depth * R)
+    })
+  })
+
+  // Three gold coins drop onto the stack for each simple task the agent reasons about.
+  const tokens = swarmOf(cast.get('tokens'))
+  const coinAt = (c: number) => B.cost + 0.9 + Math.floor(c / 3) * 0.4 + (c % 3) * 0.12
+  const coinWin = span(B.cost, grid.totalBeats)
+  drive(tl, coinWin.start, coinWin.duration, (u) => {
+    const beat = B.cost + u * (grid.totalBeats - B.cost)
+    for (let c = 0; c < TOKEN_COINS; c++) {
+      const d = drop(win(beat, coinAt(c), coinAt(c) + 0.45))
+      stackPoint(TOKENS_POS, c, 1, tmp)
+      const [rx, rz] = stackTilt(c)
+      tokens.place(c, tmp.x, tmp.y + d.lift, tmp.z, d.scale, rx, rz)
+    }
+    tokens.commit()
+  })
 })

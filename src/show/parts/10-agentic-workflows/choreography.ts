@@ -23,10 +23,12 @@ import { defineChoreography } from '@/world/actors'
 import { OUTER, STEPS, TASKS } from '../../actors'
 import {
   APPROVER_POS,
+  AUDIT_END,
   CORE_R,
   CORE_SCALE_AFTER_P10,
   CORE_SCALE_BEFORE_P10,
   EVENTS_FROM,
+  HOUSEKEEPING_END,
   LINE_BENT,
   LINE_X,
   LINE_Y,
@@ -34,9 +36,12 @@ import {
   SIDE_ORBIT,
   TASK_DEPTH,
   TASK_DIRS,
-  TOKENS_HEIGHT,
+  TOKEN_COINS,
+  TOKENS_LEFT,
+  TOKENS_POS,
   TRIAGE_ASIDE,
 } from '../../layout'
+import { stackPoint, stackTilt } from '../../coins'
 import { routePoint, ROUTE } from '../../route'
 import { grid, PB, pipeGrid, QB } from '.'
 
@@ -58,6 +63,8 @@ const COLORS = [palette.sage, palette.lilac, palette.peach, palette.butter]
 const DIRS = TASK_DIRS.map((d) => new Vector3(d[0], d[1], d[2]).normalize())
 
 const popAt = (i: number) => PB.pop + 1 + i * 2
+/** Each task rises from inside the core to its surface while the core grows (stop 1). */
+const riseAt = (i: number) => [1.25 + i * 0.5, 2.5 + i * 0.5] as const
 const POP = 2
 const GROW = [0.5, 2] as const
 const SWEEP = [PB.distance, PB.back] as const
@@ -89,11 +96,11 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const span = (from: number, to: number) => t.span(PULL, b(from), b(to))
   const el = (id: string) => artOf(cast.get(id))
 
-  // ---- clear what part 9 left: the ride on the clean orbit, the laptop ------------------------
+  // ---- clear what part 9 left: the ride on the clean orbit, the developer ---------------------
   const clear = span(0.25, 1.5)
   inkOut(tl, el('p6.ball.0'), clear.start, clear.duration * 0.5)
   fade(tl, orbitOf(cast.get<Group>('p9.orbit')).material, 0, clear.start, clear.duration)
-  inkOut(tl, el('laptop'), clear.start, clear.duration * 0.6)
+  inkOut(tl, el('person.dev'), clear.start, clear.duration * 0.6)
   inkOut(tl, el('core.laptop'), clear.start, clear.duration * 0.5)
   fade(tl, segmentsOf(cast.get<Group>('harness.laptop')).material, 0, clear.start, clear.duration * 0.5)
   // The triage cluster steps aside, so the outer orbit is free.
@@ -114,6 +121,8 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const harness = cast.get<Group>('harness')
   const opencode = cast.get('opencode')
   const tasks = TASKS.map((name) => artOf<MeshToonMaterial>(cast.get(`task.${name}`)))
+  // The tasks wait inside the core since 6.3. They show as they rise to its surface.
+  tasks.forEach((task, i) => tl.set(task.inner, { visible: true }, span(riseAt(i)[0], riseAt(i)[0]).start))
   const landing = LANDING_ANGLES.map((a) => orbitPoint(OUTER, a))
   const tmp = new Vector3()
   const release = new Vector3()
@@ -138,9 +147,11 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       const p = popAt(i)
       const v = win(beat, p, p + POP)
       if (beat < p) {
-        // It sits in the surface, and the surface holds it as the core grows.
-        tmp.copy(dir).multiplyScalar(TASK_DEPTH * R)
-        amount = 0.02
+        // It rises from inside the core to its surface, and the surface holds it as the core grows.
+        const [ra, rb] = riseAt(i)
+        const rise = easeOut(win(beat, ra, rb))
+        tmp.copy(dir).multiplyScalar(mix(0.45, TASK_DEPTH, rise) * R)
+        amount = 0.02 * rise + 0.035 * Math.sin(Math.PI * rise)
       } else if (v < 0.3) {
         // Anticipation: it sinks a little while the surface swells.
         const w = easeInOut(v / 0.3)
@@ -174,6 +185,18 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       task.object.scale.setScalar(pop)
     })
   })
+
+  // The frame and the runtime ring step aside for the extraction, then come back.
+  const frameLines = segmentsOf(harness)
+  const aside2 = span(0.5, 1.5)
+  fade(tl, frameLines.material, 0.1, aside2.start, aside2.duration)
+  const frameBack = span(PB.back + 0.5, PB.back + 2.5)
+  fade(tl, frameLines.material, 0.9, frameBack.start, frameBack.duration)
+  const ringEl = el('opencode')
+  const ringOut = span(0.5, 1.1)
+  inkOut(tl, ringEl, ringOut.start, ringOut.duration)
+  const ringBack = span(PB.back + 1, PB.back + 2)
+  inkIn(tl, ringEl, ringBack.start, ringBack.duration)
 
   const outer = orbitOf(cast.get<Group>('orbit.outer'))
   const outerIn = span(PB.pop + 0.5, PB.pop + 2)
@@ -217,10 +240,24 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     ga.object.scale.setScalar(0.62 + 0.1 * easeInOut(win(beat, PB.back + 2, PB.back + 3.5)))
   })
 
-  // ---- 10.3: the model is the last resort; fewer tokens -----------------------------------------
-  const tokens = el('tokens')
-  const less = span(PB.resort + 0.5, PB.resort + 2.5)
-  tl.to(tokens.object.scale, { y: TOKENS_HEIGHT * 0.28, duration: less.duration, ease: 'power3.inOut' }, less.start)
+  // ---- 10.3: the model is the last resort; most tokens go -------------------------------------
+  const tokens = swarmOf(cast.get('tokens'))
+  const coinAway = (c: number) => PB.resort + 0.5 + (TOKEN_COINS - 1 - c) * 0.12
+  const away = new Vector3()
+  const resort = span(PB.resort, grid.totalBeats)
+  drive(tl, resort.start, resort.duration, (u) => {
+    const beat = PB.resort + u * (grid.totalBeats - PB.resort)
+    for (let c = 0; c < TOKEN_COINS; c++) {
+      stackPoint(TOKENS_POS, c, 1, tmp)
+      const [rx, rz] = stackTilt(c)
+      // The top coins fly off, up and away, and are gone; the bottom ones stay.
+      const w = c < TOKENS_LEFT ? 0 : easeInOut(win(beat, coinAway(c), coinAway(c) + 1.1))
+      away.set(tmp.x - 1.2 - (c % 3) * 0.5, tmp.y + 2.2 + (c % 4) * 0.3, tmp.z + ((c % 2) - 0.5) * 1.2)
+      arcPoint(tmp, away, 0.6, w, release)
+      tokens.place(c, release.x, release.y, release.z, 1 - w, rx * (1 + 6 * w), rz * (1 + 6 * w))
+    }
+    tokens.commit()
+  })
 
   // ---- pipeline ---------------------------------------------------------------------------------
   const q = (from: number, to: number) => t.span(PIPE, pb(from), pb(to))
@@ -232,17 +269,20 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const wakeAt = (e: number) => QB.before + 0.5 + e * 0.9
 
   // 10.4 before: every event wakes both workflows. Each one pulses as it wakes.
-  for (let e = 0; e < 3; e++) {
-    const hit = q(wakeAt(e) + 1.3, wakeAt(e) + 1.55)
-    const rest = q(wakeAt(e) + 1.55, wakeAt(e) + 2.1)
-    for (const [target, base] of [
-      [triage.object.scale, 1],
-      [coreObj.scale, CORE_SCALE_AFTER_P10],
-    ] as const) {
-      tl.to(target, { x: base * 1.14, y: base * 1.14, z: base * 1.14, duration: hit.duration, ease: 'power2.out' }, hit.start)
-      tl.to(target, { x: base, y: base, z: base, duration: rest.duration, ease: 'power2.inOut' }, rest.start)
+  // A drive, not tweens: the core's scale is written by drives (the extraction),
+  // and a tween going back would restore a value recorded before any drive ran.
+  const pulseWin = q(0, QB.router)
+  drive(tl, pulseWin.start, pulseWin.duration, (u) => {
+    const beat = u * QB.router
+    let pulse = 0
+    for (let e = 0; e < 3; e++) {
+      const up = win(beat, wakeAt(e) + 1.3, wakeAt(e) + 1.55)
+      const down = win(beat, wakeAt(e) + 1.55, wakeAt(e) + 2.1)
+      pulse = Math.max(pulse, easeOut(up) * (1 - easeInOut(down)))
     }
-  }
+    triage.object.scale.setScalar(1 + 0.14 * pulse)
+    coreObj.scale.setScalar(CORE_SCALE_AFTER_P10 * (1 + 0.14 * pulse))
+  })
 
   // 10.4 after: the triage cluster joins the system as a lane; the router at the entrance.
   const merge = q(QB.router + 0.25, QB.router + 2)
@@ -304,9 +344,9 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
 
     // The side orbit: audit and housekeeping arrive and move along it.
     const side = win(beat, QB.side + 0.5, pipeGrid.totalBeats)
-    orbitPoint(SIDE_ORBIT, 0.35 * Math.PI + side * 0.5, tmp)
+    orbitPoint(SIDE_ORBIT, AUDIT_END - 0.5 + side * 0.5, tmp)
     auditEl.object.position.copy(tmp)
-    orbitPoint(SIDE_ORBIT, 0.08 * Math.PI + side * 0.5, tmp)
+    orbitPoint(SIDE_ORBIT, HOUSEKEEPING_END - 0.5 + side * 0.5, tmp)
     houseEl.object.position.copy(tmp)
   })
 })

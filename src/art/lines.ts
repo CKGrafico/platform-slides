@@ -1,7 +1,7 @@
 /**
  * Sketch lines: every line in the talk that is not an orbit ring. Paths a ball
- * takes, the timeline arc, dashed slots, the Harness frame, the disc grid, a
- * hollow column.
+ * takes, the timeline arc, dashed slots, the Harness frame, the disc grid, the
+ * ghost stacks of measures that are not collected.
  *
  * Like orbits, a line is drawn as a few precomputed variants, and the visible
  * variant changes on each boil step. `wobble` makes the variants differ, so a
@@ -189,34 +189,6 @@ export function createSlot(options: { radius?: number; width?: number; color?: C
   return createSketchLine({ path: circleXY([0, 0, 0], radius), segments: 64, dashed: true, dashSize: radius * 0.28, gapSize: radius * 0.2, width, color, opacity })
 }
 
-/** A metric that is not collected: the dashed outline of a column, facing the camera. Base at y = 0. */
-export function createHollowColumn(options: { radius?: number; height?: number; width?: number } = {}): SketchLine {
-  const { radius = 0.22, height = 1, width = 2.5 } = options
-  const pts: V3[] = [
-    [-radius, 0, 0],
-    [-radius, height, 0],
-    [radius, height, 0],
-    [radius, 0, 0],
-    [-radius, 0, 0],
-  ]
-  const lengths = pts.slice(1).map((p, i) => Math.hypot(p[0] - pts[i]![0], p[1] - pts[i]![1]))
-  const total = lengths.reduce((a, b) => a + b, 0)
-  const path: PathFn = (u, out) => {
-    let d = Math.min(1, Math.max(0, u)) * total
-    for (let i = 0; i < lengths.length; i++) {
-      const len = lengths[i]!
-      if (d <= len || i === lengths.length - 1) {
-        const t = len > 0 ? Math.min(1, d / len) : 0
-        const a = pts[i]!, b = pts[i + 1]!
-        return out.set(a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, 0)
-      }
-      d -= len
-    }
-    return out.set(pts[0]![0], pts[0]![1], 0)
-  }
-  return createSketchLine({ path, segments: 80, dashed: true, dashSize: 0.1, gapSize: 0.07, width })
-}
-
 export interface SketchSegments {
   object: Group
   material: LineMaterial
@@ -331,4 +303,31 @@ export function createGrid(options: { radius?: number; step?: number; color?: Co
     }
     return out
   }, { width: 1.5, opacity: 0.22, ...rest })
+}
+
+/**
+ * A measure that is not collected: the ghost of a stack of coins, one dashed
+ * ring per coin. Several stacks in one line element (one draw call).
+ */
+export function createGhostStacks(
+  stacks: Array<{ base: readonly [number, number, number]; count: number }>,
+  options: { radius?: number; step?: number; color?: ColorRepresentation; width?: number; opacity?: number } = {},
+): SketchSegments {
+  const { radius = 0.27, step = 0.093, ...rest } = options
+  const DASHES = 14
+  return createSegments((variant) => {
+    const out: number[] = []
+    for (const { base, count } of stacks) {
+      for (let k = 0; k < count; k++) {
+        const y = base[1] + step / 2 + k * step
+        const turn = hash(k * 17 + variant * 5, 3) * 0.4
+        for (let d = 0; d < DASHES; d++) {
+          const a0 = ((d + turn) / DASHES) * Math.PI * 2
+          const a1 = a0 + (Math.PI * 2) / DASHES / 1.9
+          out.push(base[0] + Math.cos(a0) * radius, y, base[2] + Math.sin(a0) * radius, base[0] + Math.cos(a1) * radius, y, base[2] + Math.sin(a1) * radius)
+        }
+      }
+    }
+    return out
+  }, { width: 2, opacity: 0, ...rest })
 }

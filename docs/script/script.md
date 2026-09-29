@@ -214,7 +214,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 ### 6.2 The cost
 
 - **Goal:** intelligence spent on work that needs none.
-- **On screen:** the core does simple work (check a label, add a label, write a comment, assign a person), and a column rises next to it: the tokens.
+- **On screen:** the core does simple work (check a label, add a label, write a comment, assign a person), and gold coins stack up next to it, three per task: the tokens.
 - **Say:** an agent can do all of this. That does not mean it must. Every step it reasons about costs tokens, time, money, and one more chance to surprise you.
 - **Proof:** one issue of 13,398 characters, with 92 units of work in it, made the agent run for 17 minutes and spend 2.4 million tokens, twice, with no result. (agentic-workflows, refine worker)
 - **Bridge:** "So our first answer was the classic one."
@@ -222,21 +222,21 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 ### 6.3 A human in the loop
 
 - **Goal:** show the conservative answer and its real limit.
-- **On screen:** a capsule (a person) stands at the exit, between the pull request and production. Balls pile up in front of it. The boil speeds up.
+- **On screen:** an astronaut (a person) stands at the exit, between the pull request and production. Balls pile up in front of it. The boil speeds up. The task moons sink back into the core.
 - **Say:**
   - AI can work, implement, propose, prepare. But a human approves. For decades we built systems with human checkpoints, and the fear is obvious: what if the agent breaks something?
   - The problem: every change waits for the same few people. "Human attention is the thing that runs out" (Foundations).
 - **Proof:** in a study of 33,596 agent pull requests on GitHub, the top reason they failed was not bad code. It was that nobody reviewed them: 38% (Ehsani et al., MSR 2026).
 - **Bridge:** "For a long time, we tried to prove that the human had to stay."
 
-**System on screen:** the three clusters, the token column next to the Implementation core, and a capsule at the exit with balls piling up.
+**System on screen:** the three clusters, the stack of token coins next to the Implementation core, and an astronaut at the exit with balls piling up.
 
 ## 7. The change of mind
 
 ### 7.1 The question changes
 
 - **Goal:** the turning point of the talk.
-- **On screen:** the capsule fades a little. The boil slows back to 4 fps. A question appears.
+- **On screen:** the astronaut fades a little. The boil slows back to 4 fps. A question appears.
 - **Say:**
   - Between May and June we changed our minds. Not by ideology: we ran tests, experiments, different projects, different levels of autonomy, to prove that humans had to stay.
   - Then we had an app in production whose code we had not fully reviewed. We had guardrails, conventions, architecture, validation, and context. When we reviewed it, it was not perfect, but it was surprisingly good.
@@ -246,7 +246,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 ### 7.2 Platform as the client
 
 - **Goal:** a real, relatable case.
-- **On screen:** three capsules on one side. More than ten small orbital systems on the other: SaaS, internal apps, accelerators.
+- **On screen:** a big title, "Use case" and "Plain Concepts Platform". Three astronauts on one side. More than ten ringed planets on the other: SaaS, internal apps, accelerators.
 - **Say:** a very small team that runs many products. Many clients look exactly like this. So we treated our own Platform team as a client.
 - **Bridge:** "And we gave ourselves an aggressive goal."
 
@@ -261,7 +261,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
   - **Cloud:** no one's laptop. A fresh checkout on every run, so the recovery tricks a long local session needs simply disappear, because nothing persists between runs (Foundations).
 - **Bridge:** "Agentic Workflows gave us the base. But not as it ships."
 
-**System on screen:** the three clusters. The capsule is still there, faint. The four words sit above.
+**System on screen:** the three clusters. The astronaut is still there, faint. The four words sit above.
 
 ## 8. Our runtime
 
@@ -283,22 +283,18 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 ### 8.3 Forge, our AI gateway
 
 - **Goal:** one point of control for every model call.
-- **On screen:** a gate ring appears below OpenCode: Forge. Behind it, several cores: the models. Paths that went straight out to vendors are cut.
+- **On screen:** a direct, dashed call to a vendor breaks in two. Forge appears below OpenCode, a ringed planet, and behind it several cores: the models.
 - **Say:**
   - The agent talks to OpenCode, OpenCode talks to Forge, and Forge manages the models. "The spend and the model choice stay ours" (Foundations).
   - Each project has its own Forge key, so we see and control AI use per project.
 - **Proof (spoken aside, optional):** the config says `openai/...` as the model provider only because gh-aw validates a fixed list. Nothing reaches OpenAI.
 - **Bridge:** "Now the runtime is ours. But the agent still behaves differently in every repo."
 
-### 8.4 Where it runs
+### 8.4 Where it runs (cut)
 
-- **Goal:** the cloud part is cheap and boring, which is the point.
-- **On screen:** a small base plate under the whole stack: the runner.
-- **Say:** the jobs run on runners that exist only while there is work.
-- **Proof:** the runner pool costs nothing at rest and about $10 to $25 per month in normal use.
-- **Open:** Foundations says "ubuntu-latest" is the default, and agentic-workflows moved every job to its own scale set on 2026-09-29. **Recommendation:** confirm which one is true before the talk, then keep this beat to one sentence, or cut it to save time.
+Cut on 2026-09-29, to save time and keep the frame clean. If the speaker wants it, one spoken sentence: the jobs run on runners that exist only while there is work.
 
-**System on screen:** a vertical axis through the system: the agentic moon, the core inside the OpenCode ring, the Forge gate ring, the models behind it, on a runner plate. The CI/CD line sits beside it.
+**System on screen:** a vertical axis through the system: the compiled workflow on top, the core inside the thin OpenCode ring, Forge as a ringed planet below it, and the models (three smaller cores) around Forge. The CI/CD line sits beside it.
 
 ## The four pillars
 
@@ -345,7 +341,7 @@ The order follows the life of one change. Measurement comes last because it clos
 ### 9.5 The same Harness on a laptop and in the cloud
 
 - **Goal:** one system, not two.
-- **On screen:** the frame duplicates: one copy on a small laptop plane, one in the cloud. Both hold the same core.
+- **On screen:** the frame duplicates: a copy flies into the hands of a developer astronaut, with a small copy of the same core inside it (on a laptop); the big one stays (in the cloud).
 - **Say:**
   - The developer's OpenCode and the cloud agent read the same Harness. The model can still decide differently, but the rules, tools, and context are the same. Small per-project settings sit on top.
   - That closes the gap between "it works when I run it" and "it works when the agent runs it alone".
@@ -476,14 +472,14 @@ The real problem was never bad decisions. It was silence: work that stopped and 
 ### 12.2 What it measures
 
 - **Goal:** simple, cheap measurement.
-- **On screen:** columns rise at the edge of the disc: deployments, lead times, releases, agent runs, tokens, and time.
+- **On screen:** stacks of coins grow at the front edge of the disc: deployments, lead times, releases, agent runs, tokens, and time.
 - **Say:** delivery metrics from DORA, plus what the agents spend. No database and no service to run: JSON files and a static site, refreshed every day.
 - **Bridge:** "The hard part was not collecting numbers. It was not lying with them."
 
 ### 12.3 Honest numbers
 
 - **Goal:** trust comes from what you refuse to claim.
-- **On screen:** five columns for the five DORA metrics. Three are solid. Two stay hollow, marked "not collected".
+- **On screen:** two ghost stacks of dashed rings next to the real ones: change failure rate and time to restore, marked "not collected".
 - **Say:**
   - Two of the five DORA metrics need to know that a release caused a problem in production. GitHub cannot answer that, so we do not fake it from red pipelines.
   - Token totals are shown as a floor: "measured N of M". A missing value never counts as zero. With fewer than five releases in a period, we do not place the team at all.
@@ -494,14 +490,14 @@ The real problem was never bad decisions. It was silence: work that stopped and 
 ### 12.4 Human attention is the thing that runs out
 
 - **Goal:** the number that matters once agents do the work.
-- **On screen:** one small panel next to a capsule: "needs a human", per app.
+- **On screen:** one small card next to an astronaut: "needs a human", with a few dots per app.
 - **Say:** once agents implement, throughput stops being the interesting number. What matters is how much still needs a person. So that has its own view, refreshed every hour, with bot work counted apart.
 - **Bridge:** to 12.5.
 
 ### 12.5 Our numbers, next to the industry
 
 - **Goal:** three numbers that show where we are, honestly.
-- **On screen:** three pairs of columns: our number next to a public number, with its source. No project names.
+- **On screen:** three pairs of numbers in pastel cards: our number next to a public number, with its sources. No project names. The map of the talk steps out of the corner for this beat.
 - **Say:** three pairs, from [our-numbers.md](../knowledge/our-numbers.md) and [benchmarks.md](../knowledge/benchmarks.md):
   1. **Autonomy.** About half of our merged agent pull requests (52%) were merged by the bot, with no human. On public GitHub data, 38% to 83% of agent pull requests merge, and a human merges every one of them (Li et al. 2025, Ehsani et al. 2026, Watanabe et al. 2026).
   2. **Reliability.** 71% of our agent runs succeed end to end, and about 80% at the agent step itself. In dotnet/runtime, 68% of Copilot agent pull requests merged, and about half of those needed human commits (.NET Blog, 2026).
@@ -516,7 +512,7 @@ The real problem was never bad decisions. It was silence: work that stopped and 
 - **Say:** a read-only audit runs against the repo's own guardrails and files its worst findings as normal issues. "The system's own defects are worked the same way as the product's" (Foundations). This is what loop engineering looks like in practice.
 - **Bridge:** "Now let's follow one real issue through all of it."
 
-**System on screen:** the whole system on its disc, with the columns at the edge and the audit loop. Slot 4 fills.
+**System on screen:** the whole system on its disc, with the stacks of coins at the edge and the audit loop. Slot 4 fills.
 
 ## 13. From issue to production
 
@@ -600,3 +596,5 @@ More public figures are in [benchmarks.md](../knowledge/benchmarks.md). Our anon
 | 2026-09-29 | The four slots of level 5 are the map of the talk. Each pillar fills one. |
 | 2026-09-29 | A human still approves what gets built (the story). No human reads the code. |
 | 2026-09-29 | About me: only name, role, and company. |
+| 2026-09-29 | Beat 8.4 (the runner) is cut. |
+| 2026-09-29 | People are astronauts; measures are stacks of coins; text is sized for a conference room. |

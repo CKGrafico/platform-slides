@@ -17,8 +17,8 @@ The look of each element follows [art-direction.md](art-direction.md).
 | Frame | a set of rules around something: the Harness | an outline-only cage around the core |
 | Disc | the ground the system stands on: Foundations | a wide flat disc with a faint grid |
 | Wall | a guardrail | a low thin panel standing on the disc |
-| Column | a measurement: Project Health | a toon column. A hollow outline when a metric is not collected |
-| Capsule | a person | a small upright pill shape, with no face |
+| Measure | a measurement: tokens, Project Health | a stack of coins, one coin at a time. A ghost stack of dashed rings when a metric is not collected |
+| Person | a person | a round chibi astronaut: a big helmet with a dark visor that hides the face, a white suit, a backpack, a small pastel patch that tells people apart |
 | Slot | an empty place waiting for a pillar | a dashed outline of the shape that will fill it |
 
 ## Rules
@@ -28,7 +28,7 @@ The look of each element follows [art-direction.md](art-direction.md).
 - **Only the blue ball is blue**, with two exceptions: the element that is active right now, and the lit path in part 13. Nothing else uses the accent.
 - **Elements are never replaced.** They appear, move, split, merge, or leave. If a moon becomes a satellite, it is the same object that moves.
 - **Every element enters and leaves the same way:** "inking" in, shrink out. Use the helpers in `src/art/motion.ts`.
-- **People are capsules.** No faces, no avatars, no icons of people.
+- **People are astronauts.** The visor hides the face. No faces, no avatars, no icons of people.
 
 ## Do and do not
 
@@ -36,7 +36,7 @@ The look of each element follows [art-direction.md](art-direction.md).
 |---|---|
 | Show the router as a capture ring that lets one ball onto one lane | Draw a router icon, an arrow junction, or a box with the word "router" |
 | Show a guardrail as a wall on the disc | Show a padlock or a shield icon |
-| Show a missing metric as a hollow column | Show a grey column, a red cross, or an empty chart |
+| Show a missing metric as a ghost stack of dashed rings | Show a grey stack, a red cross, or an empty chart |
 | Make the core smaller as work moves out of it | Add a second model to show "less AI" |
 | Keep past elements on screen in a quieter tone | Delete past elements to make room |
 | Label an element with a short HTML label in a `data-fit` box | Put long sentences next to elements |

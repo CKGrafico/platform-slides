@@ -55,7 +55,8 @@ const coreTop = new Vector3()
 function aboveCore(): Vector3 | null {
   const m = getActorObject('core')
   if (!m) return null
-  return coreTop.set(m.position.x, m.position.y + 0.95 * m.scale.y + 0.35, m.position.z)
+  // Beside the core, not above it: grown, its top reaches the title.
+  return coreTop.set(m.position.x + 0.95 * m.scale.x + 0.3, m.position.y + 0.55 * m.scale.y, m.position.z)
 }
 
 const outerLabelPoint = new Vector3(0, -0.42, OUTER.radius)
@@ -73,7 +74,7 @@ function PullOut() {
         <BurnCaption k="p10.resort" corner="bottom-left" width={80} height={12} className="art-caption--lead" seed={33} source="p10.resort.source" level={burnWindow(b(PB.resort + 1), b(PB.resort + 2.5))} />
       </Stage>
 
-      <Label k="p10.core" target={aboveCore} width={14} level={from(b(2), b(3))} />
+      <Label k="p10.core" target={aboveCore} width={14} className="label-left" level={from(b(2), b(3))} />
       {TASKS.map((name, i) => (
         <Label
           key={name}
@@ -124,12 +125,13 @@ const pwin = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) =>
 const routerLabel = new Vector3(ROUTER_POS[0], ROUTER_POS[1] + 0.95, ROUTER_POS[2])
 const gateLabel = new Vector3(GATE_POS[0], GATE_POS[1] + 0.95, GATE_POS[2])
 const releaseLabel = new Vector3(RELEASE_POS[0], RELEASE_POS[1] + 0.55, RELEASE_POS[2])
-const approverLabel = new Vector3(APPROVER_POS[0] - 0.35, APPROVER_POS[1] + 0.3, APPROVER_POS[2])
-const laneLabel = (r: number) => orbitPoint({ radius: r }, 0.3 * Math.PI, new Vector3()).add(new Vector3(0.1, 0.18, 0))
+const approverLabel = new Vector3(APPROVER_POS[0] - 0.4, APPROVER_POS[1] + 0.45, APPROVER_POS[2])
+const laneLabel = (r: number, turn: number) => orbitPoint({ radius: r }, turn * Math.PI, new Vector3()).add(new Vector3(0, 0.2, 0))
+/** Each lane is named at its own angle, so the names never stack. */
 const LANE_LABELS = [
-  { k: 'p10.lane.triage', p: laneLabel(LANES.triage.radius) },
-  { k: 'p10.lane.refine', p: laneLabel(LANES.refine.radius) },
-  { k: 'p10.lane.implement', p: laneLabel(INNER.radius) },
+  { k: 'p10.lane.triage', p: laneLabel(LANES.triage.radius, 0.14) },
+  { k: 'p10.lane.refine', p: laneLabel(LANES.refine.radius, 0.3) },
+  { k: 'p10.lane.implement', p: laneLabel(INNER.radius, 0.47) },
 ] as const
 
 function Pipeline() {

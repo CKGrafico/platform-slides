@@ -20,13 +20,15 @@ import { Vector3 } from 'three'
 import { range } from '@/animation/progress'
 import { beatStops } from '@/animation/beat'
 import { Burn, burnWindow } from '@/art/Burn'
-import { BurnCaption, Label, PartTitle } from '@/art/Caption'
+import { BurnCaption, Card, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import { T, type MessageKey } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
-import { GROUND_Y, HEALTH_PERSON, HOLLOW_HEIGHT, METRIC_ANGLES, METRIC_HEIGHTS, METRIC_RADIUS, RELEASE_POS, TEAM_Y } from '../../layout'
+import { metricBase } from '../../actors'
+import { stackPoint } from '../../coins'
+import { GHOST_COINS, HEALTH_PERSON, METRIC_COIN_SCALE, METRIC_COINS, RELEASE_POS, TEAM_Y } from '../../layout'
 
 export const grid = beatStops([4, 5, 6, 6, 5, 7, 6])
 const { b } = grid
@@ -34,24 +36,30 @@ export const B = { title: 0, claim: 4, measure: 9, honest: 15, human: 21, number
 
 const KEY = '12-project-health/health'
 hudCues.fill(3, { key: KEY, from: b(1.5), to: b(3) })
+// The numbers of 12.5 need the whole frame; the map steps out and comes back.
+hudCues.hide({ rise: { key: KEY, from: b(B.numbers), to: b(B.numbers + 1) }, fall: { key: KEY, from: b(B.loop), to: b(B.loop + 1) } })
 
 const WHOLE: CameraShot = { position: [0, 5.4, 15.8], target: [0.2, -0.7, 0], fov: 36 }
 const ESCAPE: CameraShot = { position: [3.8, 2.4, 11.2], target: [5.4, 0.8, 0.6], fov: 36 }
-const BACK: CameraShot = { position: [0, 6.6, 12.4], target: [0, -1.4, -3.2], fov: 38 }
-const PERSON: CameraShot = { position: [-2.8, 1.2, 9.6], target: [-4.4, -2.0, 2.4], fov: 36 }
+/** Looks at the measures on the front right edge of the disc. */
+const BACK: CameraShot = { position: [2.6, 1.9, 14.6], target: [4.3, -2.1, 3.6], fov: 36 }
+const PERSON: CameraShot = { position: [-3.2, 0.2, 8.6], target: [-4.6, -2.1, 2.7], fov: 36 }
 const SKY: CameraShot = { position: [0, TEAM_Y + 1.1, 8.4], target: [0, TEAM_Y - 0.1, 0], fov: 36 }
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
 const question = new Vector3(RELEASE_POS[0] - 0.9, RELEASE_POS[1] + 0.9, RELEASE_POS[2])
-const metricTop = (i: number, h: number) => {
-  const a = METRIC_ANGLES[i]!
-  return new Vector3(Math.cos(a) * METRIC_RADIUS, GROUND_Y + h + 0.35, Math.sin(a) * METRIC_RADIUS)
-}
-const metricLabels = METRIC_HEIGHTS.map((h, i) => metricTop(i, h))
-const hollowLabels = [0, 1].map((i) => metricTop(6 + i, HOLLOW_HEIGHT))
-const notCollected = hollowLabels[1]!.clone().add(new Vector3(0.6, 0.4, 0))
-const panelPoint = new Vector3(HEALTH_PERSON[0] + 0.55, HEALTH_PERSON[1] + 1.15, HEALTH_PERSON[2])
+/** Above the top coin of a stack; every other label a step higher, so neighbours never touch. */
+const metricTop = (i: number, coins: number) =>
+  stackPoint(metricBase(i), coins - 1, METRIC_COIN_SCALE).add(new Vector3(0, 0.45 + (i % 2) * 0.55, 0))
+const metricLabels = METRIC_COINS.map((n, i) => metricTop(i, n))
+// The ghost stacks are named high above everything, and "not collected" goes to their right.
+const hollowLabels = [0, 1].map((k) => metricTop(6 + k, GHOST_COINS).add(new Vector3(0, 0.9 + k * 0.55, 0)))
+const notCollected = metricTop(7, GHOST_COINS).add(new Vector3(0.5, -0.75, 0))
+const panelPoint = new Vector3(HEALTH_PERSON[0] + 0.5, HEALTH_PERSON[1] + 1.15, HEALTH_PERSON[2])
+/** What needs a human, per app: a few pastel dots each. */
+const WAITING = [2, 1, 3]
+const DOTS = ['var(--c-peach)', 'var(--c-lilac)', 'var(--c-butter)']
 
 const PAIRS = [1, 2, 3] as const
 
@@ -75,7 +83,7 @@ function Numbers() {
                 <T k={`p12.pair.${n}.name` as MessageKey} />
               </Burn>
             </p>
-            <div className="stat-cell">
+            <div className="stat-cell" data-fit={`p12.pair.${n}.ours`}>
               <Burn className="stat stat--ours" level={statLevel(at + 0.25)} seed={151 + i}>
                 <span className="stat-value">
                   <T k={`p12.pair.${n}.ours` as MessageKey} />
@@ -85,7 +93,7 @@ function Numbers() {
                 </span>
               </Burn>
             </div>
-            <div className="stat-cell">
+            <div className="stat-cell" data-fit={`p12.pair.${n}.public`}>
               <Burn className="stat stat--public" level={statLevel(at + 0.5)} seed={161 + i}>
                 <span className="stat-value">
                   <T k={`p12.pair.${n}.public` as MessageKey} />
@@ -128,8 +136,22 @@ function Dom() {
       {hollowLabels.map((p, i) => (
         <Label key={i} k={`p12.hollow.${i + 1}` as MessageKey} target={() => p} width={24} className="verb-no" level={win(B.honest + 1 + i * 0.4, B.honest + 1.6 + i * 0.4, B.human, B.human + 1)} />
       ))}
-      <Label k="p12.notCollected" target={() => notCollected} width={20} level={win(B.honest + 1.75, B.honest + 2.25, B.human, B.human + 1)} />
-      <Label k="p12.panel" target={() => panelPoint} width={28} mono={false} className="p05-name label-left health-panel" level={win(B.human + 1, B.human + 1.75, B.numbers, B.numbers + 1)} />
+      <Label k="p12.notCollected" target={() => notCollected} width={20} className="label-left" level={win(B.honest + 1.75, B.honest + 2.25, B.human, B.human + 1)} />
+      <Card fit="p12.panel" target={() => panelPoint} width={25} height={14.5} className="health-card" level={win(B.human + 1, B.human + 1.75, B.numbers, B.numbers + 1)}>
+        <p className="health-card-title">
+          <T k="p12.panel" />
+        </p>
+        {WAITING.map((n, row) => (
+          <p key={row} className="health-card-row">
+            <span className="health-card-app">
+              <T k="p12.app" /> {row + 1}
+            </span>
+            {Array.from({ length: n }, (_, d) => (
+              <span key={d} className="health-card-dot" style={{ background: DOTS[(row + d) % DOTS.length] }} />
+            ))}
+          </p>
+        ))}
+      </Card>
     </div>
   )
 }

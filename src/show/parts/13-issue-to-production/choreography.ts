@@ -10,7 +10,9 @@ import { drive, inkIn, tint } from '@/art/motion'
 import { easeInOut } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { defineChoreography } from '@/world/actors'
-import { EVENTS_FROM, PRODUCTION_POS, RELEASE_POS, WALL_ANGLES } from '../../layout'
+import { EVENTS_FROM, METRIC_COIN_SCALE, METRIC_COINS, PRODUCTION_POS, RELEASE_POS, WALL_ANGLES } from '../../layout'
+import { metricBase } from '../../actors'
+import { stackPoint } from '../../coins'
 import { routePoint, ROUTE } from '../../route'
 import { grid, stepBeat } from '.'
 
@@ -62,15 +64,18 @@ export const issueToProductionMoves = defineChoreography('13-issue-to-production
     tint(tl, color, base, off.start, off.duration)
   }
   flash(el('router').body.material.color, palette.peach, 1, 1.8)
-  flash(el('person.approver').body.material.color, palette.lilac, 3, 1.5)
+  flash(el('person.approver').body.material.color, palette.surface, 3, 1.5)
   flash(el('opencode').body.material.color, palette.butter, 4, 1.8)
   WALL_ANGLES.forEach((_, i) => {
     const wall = el(`wall.${i}`)
     flash(wall.body.material.color, [palette.sage, palette.lilac, palette.butter, palette.peach, palette.sage][i]!, 5, 1 + i * 0.2)
   })
   flash(el('gate').body.material.color, palette.sage, 6, 1.4)
-  // Project Health counts it: the deployments column grows a step.
-  const dep = el('metric.0')
-  const count = span(stepBeat(7) + 3, stepBeat(7) + 3.75)
-  tl.to(dep.object.scale, { y: 2.25, duration: count.duration, ease: 'power3.out' }, count.start)
+  // Project Health counts it: one more coin drops onto the deployments stack.
+  const coin = el('metric.new')
+  const rest = stackPoint(metricBase(0), METRIC_COINS[0]!, METRIC_COIN_SCALE)
+  const count = span(stepBeat(7) + 2.75, stepBeat(7) + 3.75)
+  tl.set(coin.object.position, { x: rest.x, y: rest.y + 0.9, z: rest.z }, count.start)
+  inkIn(tl, coin, count.start, count.duration * 0.4)
+  tl.to(coin.object.position, { y: rest.y, duration: count.duration, ease: 'bounce.out' }, count.start)
 })

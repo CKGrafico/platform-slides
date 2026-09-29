@@ -1,7 +1,7 @@
 /**
  * Part 9 moves. Three improvised runs, the frame that closes around the core,
  * the cloud of paths that becomes one orbit, the commands that bounce off, and
- * the copy of the frame that flies to the laptop.
+ * the copy of the frame that flies into a developer's hands, on a laptop.
  */
 import { Vector3, type Group } from 'three'
 import { artOf } from '@/art/elements'
@@ -9,7 +9,7 @@ import { segmentsOf, sketchOf } from '@/art/lines'
 import { drive, fade, inkIn, inkOut } from '@/art/motion'
 import { arcPoint, easeInOut, orbitOf, orbitPoint } from '@/art/orbits'
 import { defineChoreography } from '@/world/actors'
-import { CLEAN_ORBIT, CLOUD_PATHS, COMMANDS_FROM, HARNESS_RADIUS, IMPROVISE_PATHS, LAPTOP_POS } from '../../layout'
+import { CLEAN_ORBIT, CLOUD_PATHS, COMMANDS_FROM, DEV_HOLD, DEV_POS, HARNESS_RADIUS, IMPROVISE_PATHS, PILE } from '../../layout'
 import { B, grid } from '.'
 
 const KEY = '09-harness/harness'
@@ -65,6 +65,7 @@ export const harnessMoves = defineChoreography('09-harness', (tl, cast, t) => {
 
   // One writer for the balls of 9.1 and the ride on the clean orbit.
   const paths = IMPROVISE_PATHS.map((_, k) => runs[k]!)
+  const pile = PILE.slice(0, 3).map(v3)
   const tmp = new Vector3()
   const orbitTmp = new Vector3()
   const all = span(B.improvise, grid.totalBeats)
@@ -73,6 +74,12 @@ export const harnessMoves = defineChoreography('09-harness', (tl, cast, t) => {
     balls.forEach((ball, k) => {
       const w = easeInOut(win(beat, runAt(k), runAt(k) + RUN_BEATS[k]!))
       paths[k]!.reveal.value = w
+      // Before its run the ball is still where part 6 left it, on the pile (hidden
+      // since part 8). So this drive starts exactly where part 6's ended.
+      if (beat < runAt(k)) {
+        ball.object.position.copy(pile[k]!)
+        return
+      }
       paths[k]!.point(w, tmp)
       if (k === 0 && beat >= B.clean + 1.25) {
         // The same work, now on one nearly clean orbit, again and again.
@@ -118,25 +125,25 @@ export const harnessMoves = defineChoreography('09-harness', (tl, cast, t) => {
     })
   })
 
-  // ---- 9.5: a copy of the frame flies to the laptop ---------------------------------------------
-  const plate = el('laptop')
-  const plateIn = span(B.laptop + 0.5, B.laptop + 1.25)
-  inkIn(tl, plate, plateIn.start, plateIn.duration)
+  // ---- 9.5: a copy of the frame flies into a developer's hands --------------------------------
+  const dev = el('person.dev')
+  const devIn = span(B.laptop + 0.25, B.laptop + 1)
+  inkIn(tl, dev, devIn.start, devIn.duration)
   const small = el('core.laptop')
-  const smallIn = span(B.laptop + 1, B.laptop + 1.75)
+  const smallIn = span(B.laptop + 1.75, B.laptop + 2.5)
   inkIn(tl, small, smallIn.start, smallIn.duration)
   const copyObj = cast.get<Group>('harness.laptop')
   const copy = segmentsOf(copyObj)
   const copyIn = span(B.laptop + 0.25, B.laptop + 0.75)
   fade(tl, copy.material, 0.9, copyIn.start, copyIn.duration)
-  const home = new Vector3(LAPTOP_POS[0], LAPTOP_POS[1] + 0.55, LAPTOP_POS[2])
+  const home = new Vector3(DEV_POS[0] + DEV_HOLD[0], DEV_POS[1] + DEV_HOLD[1], DEV_POS[2] + DEV_HOLD[2])
   const fly = span(B.laptop + 0.25, B.laptop + 2.5)
   const start = new Vector3(0, 0, 0)
   drive(tl, fly.start, fly.duration, (u) => {
     const w = easeInOut(u)
     arcPoint(start, home, 1.4, w, tmp)
     copyObj.position.copy(tmp)
-    // From the size of the big frame to the size of the laptop's.
-    copyObj.scale.setScalar(((HARNESS_RADIUS * 0.9) / 0.48) * (1 - w) + w)
+    // From the size of the big frame to the size of the one in the developer's hands.
+    copyObj.scale.setScalar(((HARNESS_RADIUS * 0.9) / 0.24) * (1 - w) + w)
   })
 })

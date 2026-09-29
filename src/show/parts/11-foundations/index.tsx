@@ -63,12 +63,12 @@ function Dom() {
     <div className="scene-root">
       <Stage>
         <PartTitle kicker="p11.kicker" title="p11.title" level={burnWindow(b(1), b(2.5), b(B.amplify), b(B.amplify + 0.75))} />
-        <BurnCaption k="p11.amplify" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={131} source="p11.amplify.source" level={burnWindow(b(B.amplify + 3), b(B.amplify + 4), b(B.phases), b(B.phases + 0.6))} />
-        <BurnCaption k="p11.phases" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={132} source="p11.phases.source" level={burnWindow(b(B.phases + 3), b(B.phases + 4), b(B.disc), b(B.disc + 0.6))} />
-        <BurnCaption k="p11.disc" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={133} source="p11.disc.source" level={burnWindow(b(B.disc + 2.5), b(B.disc + 3.5), b(B.walls), b(B.walls + 0.6))} />
-        <BurnCaption k="p11.walls" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={134} source="p11.walls.source" level={burnWindow(b(B.walls + 3), b(B.walls + 4), b(B.verbs), b(B.verbs + 0.6))} />
-        <BurnCaption k="p11.verbs" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={135} source="p11.verbs.source" level={burnWindow(b(B.verbs + 2.5), b(B.verbs + 3.5), b(B.skip), b(B.skip + 0.6))} />
-        <BurnCaption k="p11.skip" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={136} source="p11.skip.source" level={burnWindow(b(B.skip + 2.5), b(B.skip + 3.5))} />
+        <BurnCaption k="p11.amplify" corner="top-left" width={84} height={12} className="art-caption--lead" seed={131} source="p11.amplify.source" level={burnWindow(b(B.amplify + 3), b(B.amplify + 4), b(B.phases), b(B.phases + 0.6))} />
+        <BurnCaption k="p11.phases" corner="top-left" width={84} height={12} className="art-caption--lead" seed={132} source="p11.phases.source" level={burnWindow(b(B.phases + 3), b(B.phases + 4), b(B.disc), b(B.disc + 0.6))} />
+        <BurnCaption k="p11.disc" corner="top-left" width={84} height={12} className="art-caption--lead" seed={133} source="p11.disc.source" level={burnWindow(b(B.disc + 2.5), b(B.disc + 3.5), b(B.walls), b(B.walls + 0.6))} />
+        <BurnCaption k="p11.walls" corner="top-left" width={84} height={12} className="art-caption--lead" seed={134} source="p11.walls.source" level={burnWindow(b(B.walls + 3), b(B.walls + 4), b(B.verbs), b(B.verbs + 0.6))} />
+        <BurnCaption k="p11.verbs" corner="top-left" width={84} height={12} className="art-caption--lead" seed={135} source="p11.verbs.source" level={burnWindow(b(B.verbs + 2.5), b(B.verbs + 3.5), b(B.skip), b(B.skip + 0.6))} />
+        <BurnCaption k="p11.skip" corner="top-left" width={84} height={12} className="art-caption--lead" seed={136} source="p11.skip.source" level={burnWindow(b(B.skip + 2.5), b(B.skip + 3.5))} />
       </Stage>
       <Label k="p11.tidy" target={() => tidyLabel} width={20} mono={false} className="p05-name" level={win(B.amplify + 1, B.amplify + 1.75, B.phases, B.phases + 1)} />
       <Label k="p11.messy" target={() => messyLabel} width={20} mono={false} className="p05-name" level={win(B.amplify + 1.25, B.amplify + 2, B.phases, B.phases + 1)} />

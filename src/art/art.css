@@ -1,3 +1,16 @@
+/* The box scales are numbers; a bad value falls back to 1 instead of breaking every box. */
+@property --label-scale {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
+@property --caption-scale {
+  syntax: '<number>';
+  inherits: true;
+  initial-value: 1;
+}
+
 /*
  * The look of "Elements in orbit" (docs/art/art-direction.md).
  * Colors come from src/art/palette.ts as --c-* variables. Stacking order stays in
@@ -10,6 +23,12 @@
   --bg: var(--c-void-bottom);
   --fg: var(--c-text);
   --safe: 6%;
+  /*
+   * Type for a conference room: label and caption boxes (sized in su in the
+   * parts) grow with these factors, so text that fits keeps fitting.
+   */
+  --label-scale: 1.4;
+  --caption-scale: 1.2;
   color-scheme: light;
 }
 
@@ -62,7 +81,7 @@ body,
   position: absolute;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: calc(var(--su) * 2.6);
+  font-size: calc(var(--su) * 3.2);
   line-height: 1.25;
   letter-spacing: -0.005em;
   color: var(--c-text);
@@ -91,7 +110,7 @@ body,
 .art-kicker {
   font-family: var(--font-label);
   font-weight: 600;
-  font-size: calc(var(--su) * 1.9);
+  font-size: calc(var(--su) * 2.5);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--c-outline);
@@ -110,11 +129,11 @@ body,
   text-align: center;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: calc(var(--su) * 2);
+  font-size: calc(var(--su) * 2.8);
   line-height: 1.35;
-  /* Outlined like the titles, so a label reads on the dark monolith and on the void. */
+  /* Outlined like the titles, so a label reads on the dark core and on the void. */
   color: var(--c-surface);
-  -webkit-text-stroke: calc(var(--su) * 0.42) var(--c-outline);
+  -webkit-text-stroke: 0.2em var(--c-outline);
   paint-order: stroke fill;
   overflow: hidden;
   white-space: nowrap;
@@ -123,7 +142,7 @@ body,
 .art-label--mono {
   font-family: var(--font-label);
   font-weight: 700;
-  font-size: calc(var(--su) * 1.8);
+  font-size: calc(var(--su) * 2.5);
   letter-spacing: 0.02em;
 }
 
@@ -157,7 +176,7 @@ body,
   display: block;
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: calc(var(--su) * 1.9);
+  font-size: calc(var(--su) * 2.4);
   letter-spacing: 0.02em;
   margin-top: calc(var(--su) * 0.8);
 }
@@ -178,8 +197,8 @@ body,
   position: absolute;
   left: var(--safe);
   top: var(--safe);
-  width: calc(var(--su) * 120);
-  height: calc(var(--su) * 18);
+  width: calc(var(--su) * 104);
+  height: calc(var(--su) * 29);
   overflow: hidden;
 }
 
@@ -190,7 +209,7 @@ body,
 .part-title .art-title {
   margin: calc(var(--su) * 1) 0 0;
   font-size: calc(var(--su) * 10);
-  white-space: nowrap;
+  line-height: 0.95;
 }
 
 /* Captions: text in a bottom corner sits on the bottom line of its box. */
@@ -206,7 +225,7 @@ body,
   margin-top: calc(var(--su) * 1);
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: calc(var(--su) * 1.8);
+  font-size: calc(var(--su) * 2.2);
   letter-spacing: 0.02em;
   color: var(--c-outline);
 }
@@ -234,7 +253,7 @@ body,
   margin-top: calc(var(--su) * 2.2) !important;
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: calc(var(--su) * 3.2);
+  font-size: calc(var(--su) * 3.6);
   color: var(--c-text);
 }
 
@@ -242,7 +261,7 @@ body,
   margin-top: calc(var(--su) * 0.6) !important;
   font-family: var(--font-label);
   font-weight: 600;
-  font-size: calc(var(--su) * 2.4);
+  font-size: calc(var(--su) * 2.8);
   letter-spacing: 0.04em;
   color: var(--c-outline);
 }
@@ -251,7 +270,8 @@ body,
 .tl-question.art-label {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: calc(var(--su) * 4.4);
+  font-size: calc(var(--su) * 5.2);
+  -webkit-text-stroke-width: 0.12em;
 }
 
 /* The map of the talk, top right, over the scenes (Hud.tsx). */
@@ -263,8 +283,8 @@ body,
   position: absolute;
   right: calc(var(--safe) * 0.6);
   top: calc(var(--safe) * 0.6);
-  width: calc(var(--su) * 44);
-  height: calc(var(--su) * 17);
+  width: calc(var(--su) * 50);
+  height: calc(var(--su) * 20);
   display: flex;
   align-items: center;
   gap: calc(var(--su) * 1.5);
@@ -284,7 +304,7 @@ body,
   text-align: right;
   font-family: var(--font-label);
   font-weight: 700;
-  font-size: calc(var(--su) * 1.8);
+  font-size: calc(var(--su) * 2.4);
   line-height: 1.3;
   color: var(--c-outline);
   white-space: nowrap;
@@ -292,20 +312,20 @@ body,
 }
 
 .hud-ring {
-  width: calc(var(--su) * 17);
-  height: calc(var(--su) * 17);
+  width: calc(var(--su) * 20);
+  height: calc(var(--su) * 20);
   flex: none;
   overflow: visible;
 }
 
 /* Timeline step names: larger, in the display face. */
 .tl-label.art-label {
-  font-size: calc(var(--su) * 2.5);
+  font-size: calc(var(--su) * 2.9);
 }
 
 /* A lead caption: the one line the audience must read, larger. */
 .art-caption--lead {
-  font-size: calc(var(--su) * 3.5);
+  font-size: calc(var(--su) * 4.2);
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.01em;
@@ -315,11 +335,11 @@ body,
 .level-label.art-label {
   transform: translate(0, -50%);
   text-align: left;
-  font-size: calc(var(--su) * 2.4);
+  font-size: calc(var(--su) * 3);
 }
 
 .slot-label.art-label {
-  font-size: calc(var(--su) * 2.2);
+  font-size: calc(var(--su) * 2.8);
 }
 
 /* Labels that start at their anchor (to the right of it), or end at it (to the left). */
@@ -335,7 +355,7 @@ body,
 
 /* Names of the big elements of the system. */
 .p05-name.art-label {
-  font-size: calc(var(--su) * 2.5);
+  font-size: calc(var(--su) * 3.2);
 }
 
 /* A statement: one big question or claim, left of center. */
@@ -386,11 +406,13 @@ body,
   font-family: var(--font-label);
   font-weight: 600;
   letter-spacing: 0;
+  /* The mono face's glyph box is taller than 1.2 lines. */
+  line-height: 1.35;
 }
 
 /* Phase names on the ground (11.2). */
 .phase-label.art-label {
-  font-size: calc(var(--su) * 2.2);
+  font-size: calc(var(--su) * 2.8);
 }
 
 /* A verb a worker does not have: struck, like a hollow slot. */
@@ -403,9 +425,9 @@ body,
 .stats-shell {
   position: absolute;
   left: var(--safe);
-  top: calc(var(--safe) + var(--su) * 2);
-  width: calc(var(--su) * 150);
-  height: calc(var(--su) * 80);
+  top: var(--safe);
+  width: calc(var(--su) * 156);
+  height: calc(var(--su) * 88);
 }
 
 .stats {
@@ -422,7 +444,7 @@ body,
   height: calc(var(--su) * 8);
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: calc(var(--su) * 5.2);
+  font-size: calc(var(--su) * 5.6);
   letter-spacing: -0.02em;
   color: var(--c-surface);
   -webkit-text-stroke: calc(var(--su) * 0.4) var(--c-outline);
@@ -431,17 +453,17 @@ body,
 
 .stat-row {
   display: grid;
-  grid-template-columns: calc(var(--su) * 26) 1fr 1fr;
+  grid-template-columns: calc(var(--su) * 28) 1fr 1fr;
   gap: calc(var(--su) * 2.5);
   align-items: center;
-  height: calc(var(--su) * 17);
+  height: calc(var(--su) * 19.5);
   margin-top: calc(var(--su) * 2);
 }
 
 .stat-kicker {
   font-family: var(--font-label);
   font-weight: 700;
-  font-size: calc(var(--su) * 2.2);
+  font-size: calc(var(--su) * 2.6);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--c-outline);
@@ -449,6 +471,7 @@ body,
 
 .stat-cell {
   height: 100%;
+  overflow: hidden;
 }
 
 .stat.art-burn {
@@ -476,7 +499,7 @@ body,
 .stat-value {
   font-family: var(--font-display);
   font-weight: 900;
-  font-size: calc(var(--su) * 6);
+  font-size: calc(var(--su) * 6.4);
   line-height: 1;
   letter-spacing: -0.02em;
   color: var(--c-surface);
@@ -488,23 +511,65 @@ body,
   margin-top: calc(var(--su) * 0.8);
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: calc(var(--su) * 2.2);
+  font-size: calc(var(--su) * 2.8);
   line-height: 1.2;
   color: var(--c-text);
 }
 
 .stats-foot {
   margin-top: calc(var(--su) * 2.5) !important;
-  height: calc(var(--su) * 7);
+  height: calc(var(--su) * 8);
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: calc(var(--su) * 1.8);
+  font-size: calc(var(--su) * 2.3);
   line-height: 1.35;
   color: var(--c-outline);
 }
 
-.health-panel.art-label {
-  padding: calc(var(--su) * 0.6) calc(var(--su) * 1.2);
+/* A card that follows a 3D point (Card in Caption.tsx). */
+.art-card {
+  transform: translate(0, -100%);
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: calc(var(--su) * 1.4) calc(var(--su) * 1.8);
+  border: calc(var(--su) * 0.35) solid var(--c-outline);
+  border-radius: calc(var(--su) * 2);
+  background: var(--c-surface);
+}
+
+/* 12.4: what needs a human, per app. */
+.health-card p {
+  margin: 0;
+}
+
+.health-card-title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: calc(var(--su) * 3);
+  line-height: 1.1;
+  color: var(--c-text);
+}
+
+.health-card-row {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--su) * 1);
+  margin-top: calc(var(--su) * 1.1) !important;
+}
+
+.health-card-app {
+  width: calc(var(--su) * 9);
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: calc(var(--su) * 2.3);
+  color: var(--c-outline);
+}
+
+.health-card-dot {
+  width: calc(var(--su) * 2.2);
+  height: calc(var(--su) * 2.2);
+  border-radius: 50%;
+  border: calc(var(--su) * 0.3) solid var(--c-outline);
 }
 
 /* The last line of the talk: centered in the frame, the largest statement. */
@@ -516,4 +581,16 @@ body,
   transform: translate(-50%, -50%);
   text-align: center;
   font-size: calc(var(--su) * 7);
+}
+
+/* A part title that takes two lines (the use case in 7.2). */
+.part-title--tall {
+  width: calc(var(--su) * 100);
+  height: calc(var(--su) * 30);
+}
+
+.part-title--tall .art-title {
+  white-space: normal;
+  font-size: calc(var(--su) * 9.5);
+  line-height: 0.95;
 }

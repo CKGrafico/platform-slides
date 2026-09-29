@@ -9,32 +9,17 @@ import { toggleFullscreen } from '@/engine/fullscreen'
 import type { Tier } from '@/engine/types'
 import { LOCALES, useI18n, type Locale } from '@/i18n'
 import { debugBus } from './bus'
+import { findOverflows, findOverlaps } from './textChecks'
 
 const TIERS: Tier[] = ['high', 'medium', 'low']
 const fmt = (n: number, d = 3) => n.toFixed(d)
-
-/**
- * Text boxes marked data-fit whose content does not fit. Both languages must fit
- * the same box, so an overflow here is a layout bug. Reads layout, so debug only.
- */
-function findOverflows(): string[] {
-  const out: string[] = []
-  document.querySelectorAll<HTMLElement>('[data-fit]').forEach((el) => {
-    // Only text the audience can see: the active scene, and not hidden.
-    const scene = el.closest<HTMLElement>('.scene')
-    const shown = (!scene || scene.dataset.state === 'active') && getComputedStyle(el).visibility !== 'hidden'
-    const over = shown && (el.scrollWidth > el.clientWidth + 1 || el.scrollHeight > el.clientHeight + 1)
-    el.classList.toggle('i18n-overflow', over)
-    if (over) out.push(el.dataset.fit || el.textContent?.slice(0, 24) || '?')
-  })
-  return out
-}
 
 export default function DebugPanel() {
   const p = usePresentation()
   const env = useEnvironment()
   const i18n = useI18n()
   const [overflows, setOverflows] = useState<string[]>([])
+  const [overlaps, setOverlaps] = useState<string[]>([])
   const [, setTick] = useState(0)
   const [collapsed, setCollapsed] = useState(false)
 
@@ -42,9 +27,11 @@ export default function DebugPanel() {
     const id = window.setInterval(() => {
       setTick((t) => t + 1)
       setOverflows(findOverflows())
+      // Only at rest: while the playhead moves, text burns in and out on purpose.
+      if (p.isSettled()) setOverlaps(findOverlaps())
     }, 250)
     return () => window.clearInterval(id)
-  }, [])
+  }, [p])
 
   const r = p.resolve()
   const scene = p.model.scenes[r.sceneIndex]!
@@ -126,6 +113,10 @@ export default function DebugPanel() {
             <dt>overflow</dt>
             <dd className={overflows.length ? 'debug-warn' : undefined}>
               {overflows.length ? overflows.join(', ') : 'none'}
+            </dd>
+            <dt>overlap</dt>
+            <dd className={overlaps.length ? 'debug-warn' : undefined}>
+              {overlaps.length ? overlaps.join(', ') : 'none'}
             </dd>
             <dt>tier</dt>
             <dd>

@@ -54,8 +54,8 @@ export const SLOT_ANGLES = [0.62, 0.86, 1.1, 1.34].map((f) => f * Math.PI)
 
 // ---- the core through the talk ---------------------------------------------------------
 
-/** Scale of the core when part 10 starts (what part 9 leaves). Part 10 grows it from here. */
-export const CORE_SCALE_BEFORE_P10 = 0.8
+/** Scale of the core when part 10 starts (what part 9 leaves): the implementation core's scale. */
+export const CORE_SCALE_BEFORE_P10 = 0.8 as const
 /** Scale of the core once part 10 has pulled the tasks out of it. */
 export const CORE_SCALE_AFTER_P10 = 0.86
 
@@ -94,8 +94,8 @@ export const SHELL_DIRS: V3[] = [
 /** The triage cluster: a second small core with its own orbit (5.7). */
 export const TRIAGE_POS: V3 = [4.4, 1.2, -1.2]
 export const TRIAGE_ORBIT = { radius: 0.95, tilt: 0.3 }
-/** Core scale while it is the implementation core (5.3 to part 9). */
-export const CORE_SCALE_AGENT = 0.8
+/** Core scale while it is the implementation core (5.3 to part 9). Part 10 grows it from here. */
+export const CORE_SCALE_AGENT = CORE_SCALE_BEFORE_P10
 
 // ---- part 6: the problems -------------------------------------------------------------------
 
@@ -121,9 +121,11 @@ export const RUN_PATHS: V3[][] = [
   [EXIT_FROM, [1.05, 0.95, 0.9], [1.95, 1.2, 1.0], [2.9, 0.45, 1.3], [2.55, -0.45, 1.6], PILE[1]!],
   [EXIT_FROM, [0.95, -0.85, 1.1], [1.7, -1.5, 1.7], [2.35, -1.3, 1.9], PILE[2]!],
 ]
-/** The token column next to the core (6.2). Base on the ground line. */
-export const TOKENS_POS: V3 = [-1.5, -1.25, 0.7]
-export const TOKENS_HEIGHT = 1.9
+/** The stack of token coins beside the core, above the line of steps (6.2): its base, three coins per simple task. */
+export const TOKENS_POS: V3 = [-2.9, 0.3, -0.6]
+export const TOKEN_COINS = 12
+/** Coins left once the simple work leaves the agent (10.3). */
+export const TOKENS_LEFT = 3
 
 /**
  * Where the four task moons sit in the core's surface, from 6.2 until part 10
@@ -146,9 +148,9 @@ export const TASK_DEPTH = 0.97
 export const TEAM_Y = 8.3
 /** Three people on one side. */
 export const TEAM: V3[] = [
-  [-3.5, TEAM_Y - 0.55, 0.3],
-  [-2.85, TEAM_Y - 0.55, -0.15],
-  [-2.2, TEAM_Y - 0.55, 0.3],
+  [-3.75, TEAM_Y - 0.62, 0.3],
+  [-2.85, TEAM_Y - 0.62, -0.15],
+  [-1.95, TEAM_Y - 0.62, 0.3],
 ]
 /** More than ten small systems (the apps) on the other side. */
 export const APPS: V3[] = Array.from({ length: 11 }, (_, i) => {
@@ -159,20 +161,18 @@ export const APPS: V3[] = Array.from({ length: 11 }, (_, i) => {
 
 // ---- part 8: our runtime ----------------------------------------------------------------------
 
-/** OpenCode: one runtime ring around the implementation core. */
-export const OPENCODE = { radius: 1.18, tube: 0.05, tilt: 0.42 }
-/** Forge, the AI gateway: a gate ring below the core. */
-export const FORGE_POS: V3 = [0, -1.9, 0]
-/** The models behind Forge. */
+/** OpenCode: one runtime around the implementation core, a thin ring tilted like a planet's. */
+export const OPENCODE = { radius: 1.3, tilt: 0.5 }
+/** Forge, the AI gateway: a ringed planet below the core, the hub every model call goes through. */
+export const FORGE_POS: V3 = [0, -1.75, 0.35]
+/** The models behind Forge: three planets in a low arc, so all three read. */
 export const MODELS: V3[] = [
-  [-1.25, -2.05, -2.1],
-  [0, -2.25, -2.7],
-  [1.25, -2.05, -2.1],
+  [-1.95, -2.3, -0.4],
+  [0, -2.45, -1.1],
+  [1.95, -2.3, -0.4],
 ]
 /** Before Forge, the agent called a vendor straight away. */
 export const VENDOR_POS: V3 = [5.6, -1.2, -1.6]
-/** The runner the whole stack runs on. */
-export const RUNNER_POS: V3 = [0, -2.75, 0]
 
 // ---- part 9: Agent Harness ---------------------------------------------------------------------
 
@@ -200,8 +200,10 @@ export const COMMANDS_FROM: V3[] = [
   [5.2, 0.1, 1.6],
   [4.6, -1.5, 1.0],
 ]
-/** The laptop: a small plate with a copy of the Harness (9.5). */
-export const LAPTOP_POS: V3 = [3.1, -1.35, 2.3]
+/** The developer: an astronaut who holds a copy of the Harness and the core, on a laptop (9.5). */
+export const DEV_POS: V3 = [3.1, -1.35, 2.3]
+/** Where the developer's hands hold the copy, from DEV_POS. */
+export const DEV_HOLD: V3 = [0, 0.45, 0.38]
 
 // ---- part 10: Agentic Workflows -----------------------------------------------------------------
 
@@ -219,9 +221,12 @@ export const EVENTS_FROM: V3 = [-11, 0.4, 1.3]
 export const GATE_POS: V3 = [5.7, 0, 1.3]
 export const RELEASE_POS: V3 = [8.6, 1.6, 0.2]
 /** Where a human approves the story: between refine and implement. */
-export const APPROVER_POS: V3 = [-2.1, -0.9, 0.55]
+export const APPROVER_POS: V3 = [-2.1, -1.2, 0.55]
 /** Audit and housekeeping circle to one side, on a steep orbit. */
 export const SIDE_ORBIT = { center: [0, 0.4, -1.2] as V3, radius: 4.7, tilt: 1.15 }
+/** Where audit and housekeeping are on their orbit when 10.6 ends (angles, radians). */
+export const AUDIT_END = 1.3 * Math.PI + 0.5
+export const HOUSEKEEPING_END = 1.58 * Math.PI + 0.5
 
 // ---- part 11: Foundations ----------------------------------------------------------------------
 
@@ -248,11 +253,14 @@ export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [
 
 // ---- part 12: Project Health ---------------------------------------------------------------------
 
-/** Measures rise at the back edge of the disc: six collected, then two that are not (12.2, 12.3). */
-export const METRIC_RADIUS = 6.2
-export const METRIC_ANGLES = [1.12, 1.22, 1.32, 1.42, 1.52, 1.62, 1.74, 1.84].map((f) => f * Math.PI)
-export const METRIC_HEIGHTS = [1.9, 1.3, 1.6, 2.3, 1.1, 1.5]
-export const HOLLOW_HEIGHT = 1.7
+/** Measures stack up on the front right edge of the disc, in the open: six collected, then two that are not. */
+export const METRIC_RADIUS = 6.3
+export const METRIC_ANGLES = [0.47, 0.41, 0.35, 0.29, 0.23, 0.17, 0.09, 0.03].map((f) => f * Math.PI)
+/** Coins in each collected measure, and in each ghost stack of a measure that is not collected. */
+export const METRIC_COINS = [9, 6, 7, 11, 5, 7]
+export const GHOST_COINS = 8
+/** Metric coins are bigger than token coins. */
+export const METRIC_COIN_SCALE = 1.5
 /** The person who looks at what needs a human (12.4), on the front left of the disc. */
 export const HEALTH_PERSON: V3 = [-5.0, -2.95, 2.9]
 

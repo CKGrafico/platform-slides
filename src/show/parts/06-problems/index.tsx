@@ -21,10 +21,10 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { getActorObject } from '@/world/actors'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { TASKS } from '../../actors'
-import { CAPSULE_POS, TOKENS_POS } from '../../layout'
+import { stackPoint } from '../../coins'
+import { CAPSULE_POS, TOKEN_COINS, TOKENS_POS } from '../../layout'
 
 export const grid = beatStops([4, 6, 6, 7])
 const { b } = grid
@@ -34,13 +34,10 @@ const P6_SHOT: CameraShot = { position: [0.9, 0.9, 7.2], target: [0.9, -0.3, 0.7
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
-const tokenTop = new Vector3()
-function aboveTokens() {
-  const o = getActorObject('tokens')
-  if (!o) return null
-  return tokenTop.set(TOKENS_POS[0], TOKENS_POS[1] + o.scale.y + 0.35, TOKENS_POS[2])
-}
-const personTop = new Vector3(CAPSULE_POS[0] + 0.05, CAPSULE_POS[1] + 0.95, CAPSULE_POS[2])
+// Above the full stack of coins.
+const tokenTop = stackPoint(TOKENS_POS, TOKEN_COINS - 1).add(new Vector3(0, 0.42, 0))
+const aboveTokens = () => tokenTop
+const personTop = new Vector3(CAPSULE_POS[0], CAPSULE_POS[1] + 1.35, CAPSULE_POS[2])
 
 /** What the agent does with its reasoning in 6.2, one per task moon. */
 const TASK_OFFSETS: Record<string, readonly [number, number, number]> = {

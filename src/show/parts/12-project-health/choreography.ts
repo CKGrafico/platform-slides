@@ -1,14 +1,16 @@
 /**
- * Part 12 moves. The columns rise, two stay hollow, a person looks at what
+ * Part 12 moves. The measures stack up in coins, two are ghost stacks, a person looks at what
  * needs a human, and the audit drops a finding back into the router: the loop.
  */
 import { Vector3, type Group } from 'three'
 import { artOf, swarmOf } from '@/art/elements'
-import { sketchOf } from '@/art/lines'
-import { drive, inkIn } from '@/art/motion'
+import { segmentsOf, sketchOf } from '@/art/lines'
+import { drive, fade, inkIn } from '@/art/motion'
 import { easeInOut, orbitPoint } from '@/art/orbits'
 import { defineChoreography } from '@/world/actors'
-import { METRIC_HEIGHTS, SIDE_ORBIT } from '../../layout'
+import { metricBase, METRIC_OFFSET } from '../../actors'
+import { drop, stackPoint, stackTilt } from '../../coins'
+import { AUDIT_END, METRIC_COIN_SCALE, METRIC_COINS, SIDE_ORBIT } from '../../layout'
 import { routePoint, ROUTE } from '../../route'
 import { B, grid } from '.'
 
@@ -22,21 +24,28 @@ export const projectHealthMoves = defineChoreography('12-project-health', (tl, c
   const span = (from: number, to: number) => t.span(KEY, b(from), b(to))
   const el = (id: string) => artOf(cast.get(id))
 
-  // 12.2: the columns rise at the edge of the disc.
-  METRIC_HEIGHTS.forEach((h, i) => {
-    const m = el(`metric.${i}`)
-    const a = span(B.measure + 0.5 + i * 0.3, B.measure + 1.1 + i * 0.3)
-    inkIn(tl, m, a.start, a.duration)
-    const rise = span(B.measure + 0.6 + i * 0.3, B.measure + 2.1 + i * 0.3)
-    tl.to(m.object.scale, { y: h, duration: rise.duration, ease: 'power3.out' }, rise.start)
+  // 12.2: the measures stack up at the edge of the disc, coin by coin.
+  const metrics = swarmOf(cast.get('metrics'))
+  const coinAt = (i: number, k: number) => B.measure + 0.5 + i * 0.3 + k * 0.1
+  const place = new Vector3()
+  const stacks = span(B.measure, grid.totalBeats)
+  drive(tl, stacks.start, stacks.duration, (u) => {
+    const beat = B.measure + u * (grid.totalBeats - B.measure)
+    METRIC_COINS.forEach((n, i) => {
+      for (let k = 0; k < n; k++) {
+        const d = drop(win(beat, coinAt(i, k), coinAt(i, k) + 0.4), 0.7)
+        stackPoint(metricBase(i), k, METRIC_COIN_SCALE, place)
+        const [rx, rz] = stackTilt(k + i * 13)
+        metrics.place(METRIC_OFFSET[i]! + k, place.x, place.y + d.lift, place.z, d.scale, rx, rz)
+      }
+    })
+    metrics.commit()
   })
 
-  // 12.3: two measures stay hollow: not collected.
-  for (let i = 0; i < 2; i++) {
-    const hollow = sketchOf(cast.get<Group>(`metric.hollow.${i}`))
-    const draw = span(B.honest + 0.5 + i * 0.4, B.honest + 1.75 + i * 0.4)
-    tl.to(hollow.reveal, { value: 1, duration: draw.duration, ease: 'power2.inOut' }, draw.start)
-  }
+  // 12.3: two measures are not collected: ghost stacks.
+  const ghost = segmentsOf(cast.get<Group>('metrics.ghost'))
+  const ghostIn = span(B.honest + 0.5, B.honest + 1.75)
+  fade(tl, ghost.material, 0.85, ghostIn.start, ghostIn.duration)
 
   // 12.4: a person, and what still needs them.
   const person = el('person.health')
@@ -49,7 +58,7 @@ export const projectHealthMoves = defineChoreography('12-project-health', (tl, c
   tl.to(loop.reveal, { value: 1, duration: draw.duration, ease: 'power2.inOut' }, draw.start)
   const flow = swarmOf(cast.get('flow'))
   const tmp = new Vector3()
-  const audit = orbitPoint(SIDE_ORBIT, 0.35 * Math.PI + 0.5)
+  const audit = orbitPoint(SIDE_ORBIT, AUDIT_END)
   const all = span(B.loop, grid.totalBeats)
   drive(tl, all.start, all.duration, (u) => {
     const beat = B.loop + u * (grid.totalBeats - B.loop)

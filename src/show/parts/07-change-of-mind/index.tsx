@@ -29,13 +29,13 @@ export const B = { title: 0, question: 4, team: 9, words: 15 }
 export const wordBeat = (i: number) => B.words + 3 * i
 
 const QUESTION_SHOT: CameraShot = { position: [0.4, 3.9, 11.2], target: [0.4, 1.9, 0.2], fov: 36 }
-const TEAM_SHOT: CameraShot = { position: [0.6, TEAM_Y + 0.9, 8.6], target: [0.6, TEAM_Y - 0.05, 0], fov: 36 }
+const TEAM_SHOT: CameraShot = { position: [0.6, TEAM_Y + 1.5, 9.2], target: [0.6, TEAM_Y + 0.55, 0], fov: 36 }
 const SYSTEM_SHOT: CameraShot = { position: [-0.6, 2.4, 13.4], target: [-0.6, -0.1, 0], fov: 34 }
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
-const teamLabel = new Vector3(TEAM[1]![0], TEAM_Y + 0.55, TEAM[1]![2])
-const appsLabel = new Vector3(3.1, TEAM_Y + 1.45, 0)
+const teamLabel = new Vector3(TEAM[1]![0], TEAM_Y - 0.9, TEAM[1]![2])
+const appsLabel = new Vector3(3.1, TEAM_Y - 1.35, 0)
 
 function Dom() {
   return (
@@ -48,11 +48,18 @@ function Dom() {
             <T k="p07.question" />
           </Burn>
         </div>
+        <PartTitle
+          kicker="p07.case.kicker"
+          title="p07.case.title"
+          className="part-title--tall"
+          seed={82}
+          level={burnWindow(b(B.team + 1), b(B.team + 2.5), b(B.words), b(B.words + 0.7))}
+        />
         <BurnCaption k="p07.client" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={84} level={burnWindow(b(B.team + 3), b(B.team + 4), b(B.words), b(B.words + 0.6))} />
         <div className="words" data-fit="p07.words">
           {[1, 2, 3, 4].map((n, i) => (
             <p key={n} className="word">
-              <Burn level={burnWindow(b(wordBeat(i) + 0.25), b(wordBeat(i) + 1.25))} seed={85 + i}>
+              <Burn level={burnWindow(b(wordBeat(i) + 0.8), b(wordBeat(i) + 1.6))} seed={85 + i}>
                 <T k={`p07.word.${n}` as MessageKey} />
               </Burn>
             </p>
@@ -69,7 +76,7 @@ function Dom() {
               height={9}
               className="art-caption--lead"
               seed={91 + i}
-              level={burnWindow(b(wordBeat(i) + 1), b(wordBeat(i) + 2), b(end), b(end + 0.6))}
+              level={burnWindow(b(wordBeat(i) + 1.6), b(wordBeat(i) + 2.4), b(end), b(end + 0.6))}
             />
           )
         })}

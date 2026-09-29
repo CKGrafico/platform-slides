@@ -104,8 +104,8 @@ We do not take its illustrations, characters, textures, fonts, or colors. Our pa
 | 3 Timeline | Ten elements appear along an arc, each closer than the last. The first half are single objects. The second half are structures around the core. The last one is an empty dashed outline: "?". |
 | 4 Maturity | Five rings of growing size, level 1 the smallest. The outermost ring, level 5, keeps four empty slots. They stay at the edge of the frame for the rest of the talk. |
 | 5 Actions to Agentic Workflows | One moon alone, with no core. Balls fall into it. It unfolds into small moons on a straight line. Then the core arrives, and everything near it starts to curve. The Markdown file is a slab that passes through a capture ring and comes out with a shell of small moons (the compiler). Three clusters: one straight line (CI/CD) and two small orbits around small cores (triage, implementation). |
-| 6 Problems | Three balls leave the core on three different wobbly paths. A column rises next to it as it does simple work (tokens). A capsule stands at the exit, and balls pile up in front of it. The boil speeds up. |
-| 7 Change of mind | The capsule fades. Three capsules on one side, ten small orbital systems on the other (the apps). The four words land one by one. |
+| 6 Problems | Three balls leave the core on three different wobbly paths. Gold coins stack up next to it as it does simple work (tokens). An astronaut stands at the exit, and balls pile up in front of it. The boil speeds up. |
+| 7 Change of mind | The astronaut at the exit fades. Under the title "Use case: Plain Concepts Platform", three astronauts on one side and more than ten ringed planets (the apps) on the other. The four words land one by one. |
 | 8 Runtime | A vertical axis through the system: the agentic moon, OpenCode as a ring around the core, Forge as a gate ring below, several cores behind it (the models). One shell moon detaches and fades (threat detection off). |
 | 9 Harness | A frame closes around the core. The wobbly trails converge into a nearly clean orbit. Unsafe commands bounce off the frame. The frame duplicates: one copy on a small laptop plane, one in the cloud. Slot 1 fills. |
 | 10 Agentic Workflows | The core grows large, with white task moons set in its surface. They pop out, one per beat, and settle on outer orbits as pastel satellites. The core shrinks. The satellites stack into a ladder with the core near the top. A capture ring at the entrance (the router). Orbit lanes for the workers, and a checkpoint ring on the way out (the merge gate). Slot 2 fills. |
@@ -130,3 +130,23 @@ The user disliked the craters. Moons and balls are now illustrated planets, afte
 - Two warm pastels join the palette for planets only: peach `#EDC1A5` and butter `#E9D59E`.
 
 The extraction in part 10 follows the user's note that the pieces must come out of the core: each task sits in the core's surface; the surface swells, stretches after the task like a drop, snaps back, and wobbles.
+
+## Revision 2026-09-29: a conference room, astronauts, coins
+
+After the first full review the user asked for bigger text, a nicer person, and a nicer token bar, and found part 8 ugly.
+
+- **Type for a room.** Nothing the audience must read is under 2.2 su (about 24 px at 1080p):
+  - Labels are 2.5 su (mono) to 3.2 su (names).
+  - Captions are 4.2 su, and sources 2.2 su.
+  - Kickers are 2.5 su, and the map's names 2.4 su.
+
+  Label boxes grow by `--label-scale` (1.4) and caption boxes by `--caption-scale` (1.2), so text that fit keeps fitting. The debug panel also lists text that overlaps other text.
+- **People are astronauts**, round and chibi. Each costs three meshes.
+- **Measures are stacks of coins.** Coins drop one by one with a small bounce. A metric that is not collected is a ghost stack of dashed rings. Tokens are gold coins, three per simple task, and most of them fly away when the simple work leaves the agent.
+- **Part 8.**
+  - OpenCode is a thin ring tilted like a planet's, like the Guardrails ring of part 3.
+  - Forge is a ringed planet.
+  - The models stay cores (in the grammar a model is a core), bigger and spread in a low arc.
+  - The runner beat (8.4) is cut.
+  - The task moons wait inside the core from 6.3 until part 10 pulls them out.
+- **One writer per property.** A property that a `drive()` writes is only written by drives. A tween going back restores a value recorded while the timeline was built, before any drive ran.

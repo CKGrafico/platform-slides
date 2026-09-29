@@ -28,6 +28,8 @@ const cues = {
   fill: [null, null, null, null] as Array<Cue | null>,
   /** A slot lights while the issue passes its pillar (part 13). */
   lit: [[], [], [], []] as Pulse[][],
+  /** The ring steps out of the way while something else needs the corner. */
+  hide: [] as Pulse[],
 }
 
 /** Parts call these once, at module load, with windows on their own grid. */
@@ -43,6 +45,9 @@ export const hudCues = {
   },
   lit(slot: number, pulse: Pulse) {
     cues.lit[slot]!.push(pulse)
+  },
+  hide(pulse: Pulse) {
+    cues.hide.push(pulse)
   },
 }
 
@@ -66,9 +71,10 @@ export interface HudState {
 
 export function hudState(model: ShowModel, position: number): HudState {
   const round = (v: number) => Math.round(v * 1000) / 1000
-  const shown = level(model, position, cues.appear)
+  const away = cues.hide.reduce((m, p) => Math.max(m, pulse(model, position, p)), 0)
+  const shown = level(model, position, cues.appear) * (1 - away)
   // While it appears, the ring flies from the middle of the frame to its corner.
-  const arriving = shown < 1 ? 1 - shown : 0
+  const arriving = shown < 1 && away === 0 ? 1 - shown : 0
   const center = Math.max(arriving, cues.center.reduce((m, p) => Math.max(m, pulse(model, position, p)), 0))
   return {
     shown: round(shown),
