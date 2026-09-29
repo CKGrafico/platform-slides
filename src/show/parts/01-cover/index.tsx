@@ -1,5 +1,5 @@
 /**
- * Part 1: the cover. The monolith alone, the blue ball circling it, the title.
+ * Part 1: the cover. The core alone, the blue ball circling it, the title.
  * The cover holds until the presenter starts. The first press burns the title
  * out and the blue ball leaves.
  */
@@ -11,7 +11,7 @@ import { Stage } from '@/engine/Stage'
 import { T } from '@/i18n'
 import type { CameraShot } from '@/world/camera/shot'
 
-// The monolith sits in the right third, so the title has the left side.
+// The core sits in the right third, so the title has the left side.
 export const COVER_SHOT: CameraShot = { position: [-1.9, 1.1, 9.5], target: [-1.9, 0.45, 0], fov: 32 }
 
 export const coverGrid = beatStops([4])

@@ -21,7 +21,7 @@ Each beat has these fields:
 
 ## The one system
 
-The whole talk is one system of simple elements that grows in a soft void, in the art of [art-direction.md](../art/art-direction.md). It starts with one cube, "GitHub Actions", alone. Elements appear, split, move, and leave, until the screen shows the real system: the work router, the deterministic jobs, the agentic workers, OpenCode, the Harness, Forge, the models, the guardrails, and the metrics, all in orbit around one monolith: the model.
+The whole talk is one system of simple elements that grows in a soft void, in the art of [art-direction.md](../art/art-direction.md). It starts with one moon, "GitHub Actions", alone. Elements appear, split, move, and leave, until the screen shows the real system: the work router, the deterministic jobs, the agentic workers, OpenCode, the Harness, Forge, the models, the guardrails, and the metrics, all in orbit around one core: the model.
 
 Rules for the system:
 
@@ -59,12 +59,12 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 ### 1.1 Title
 
 - **Goal:** set the promise of the talk in one line.
-- **On screen:** the void. The monolith alone, turning slowly, with the blue ball on one orbit around it. The title, "Quique Fdez Guerra", and Plain Concepts. The language buttons (English, Español) sit in a corner while the room fills. They disappear on the first key press.
+- **On screen:** the void. The core alone, turning slowly, with the blue ball on one orbit around it. The title, "Quique Fdez Guerra", and Plain Concepts. The language buttons (English, Español) sit in a corner while the room fills. They disappear on the first key press.
 - **Say:** nothing, or one sentence while people sit down.
 - **Bridge:** the cover holds until the speaker starts.
 - **Open:** keep the title? **Recommendation:** keep it. It names the tool the audience came for, and the closing turns it around ("the entry point, not the whole solution").
 
-**System on screen:** the monolith and the blue ball.
+**System on screen:** the core and the blue ball.
 
 ## 2. About me
 
@@ -76,7 +76,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 - **Bridge:** "Before I tell you what we built, let's agree on where AI is today."
 - **Decided:** no list of talks, awards, or career. The title and the company are enough. The Platform team comes later, in part 7.
 
-**System on screen:** the monolith and the blue ball, unchanged.
+**System on screen:** the core and the blue ball, unchanged.
 
 ## 3. The state of AI
 
@@ -100,7 +100,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 ### 3.2 Two halves
 
 - **Goal:** the timeline is not a list of products. It shows one direction.
-- **On screen:** the arc splits into two halves. The first half are single objects. The second half are structures around the monolith. The second half lights up and the first dims. The last element is an empty dashed outline: "?".
+- **On screen:** the arc splits into two halves. The first half are single objects. The second half are structures around the core. The second half lights up and the first dims. The last element is an empty dashed outline: "?".
 - **Say:**
   - The first half, from Models to Agents, is about making the model more capable.
   - The second half, from Guardrails to Autonomous loops, is about building a system around the model.
@@ -109,7 +109,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 - **Bridge:** "Where is your team on this line?"
 - **Decided:** the old beat 3.3 is merged into 3.2.
 
-**System on screen:** the monolith. The timeline arc leaves the screen at the end of the part.
+**System on screen:** the core. The timeline arc leaves the screen at the end of the part.
 
 ## 4. AI maturity levels
 
@@ -146,38 +146,38 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 
 ## 5. From GitHub Actions to Agentic Workflows
 
-### 5.1 One cube
+### 5.1 One moon
 
 - **Goal:** start from what everyone knows.
-- **On screen:** the void, with no monolith. One cube in the center: "GitHub Actions". Small balls fall into it: issue opened, pull request, push, label added, merge, release.
+- **On screen:** the void, with no core. One moon in the center: "GitHub Actions". Small balls fall into it: issue opened, pull request, push, label added, merge, release.
 - **Say:** GitHub Actions reacts to events in GitHub and runs operations. It runs on runners: GitHub's, self-hosted, or our own infrastructure.
 - **Bridge:** "And inside a workflow, you can run almost anything."
 
-### 5.2 The cube unfolds
+### 5.2 The moon unfolds
 
 - **Goal:** GitHub is already a strong automation system before any AI.
-- **On screen:** the cube unfolds into small cubes on a straight line: marketplace actions, our own actions, scripts, CLIs, code, APIs. Everything moves in straight lines.
+- **On screen:** the moon unfolds into small moons on a straight line: marketplace actions, our own actions, scripts, CLIs, code, APIs. Everything moves in straight lines.
 - **Say:** "This is deterministic automation: when X happens, run Y, then Z. It works, and it will come back later in this talk."
 - **Bridge:** "Then something new arrived."
 
 ### 5.3 A new kind of element
 
 - **Goal:** introduce GitHub Agentic Workflows as a change of kind, not of degree.
-- **On screen:** the monolith arrives next to the line of cubes. Everything near it starts to curve, and the first orbit appears. Label: "Agentic Workflow".
+- **On screen:** the core arrives next to the line of moons. Everything near it starts to curve, and the first orbit appears. Label: "Agentic Workflow".
 - **Say:** instead of a list of steps, we write an intent. An agent reasons about it and decides which steps it needs.
 - **Bridge:** "And the file you write is not YAML."
 
 ### 5.4 A workflow is Markdown
 
 - **Goal:** make the format concrete.
-- **On screen:** a slab labelled `workflow.md` leaves the monolith's orbit. It splits into two bands: the frontmatter on top, the text below.
+- **On screen:** a slab labelled `workflow.md` leaves the core's orbit. It splits into two bands: the frontmatter on top, the text below.
 - **Say:** the frontmatter is the wiring: when it fires, where it runs, what it may write. "The body is the prompt" (Foundations). One file holds configuration, normal actions, agent instructions, and the tools the agent may use.
 - **Bridge:** "But GitHub cannot run Markdown."
 
 ### 5.5 Compilation
 
 - **Goal:** compilation adds real infrastructure around the prompt.
-- **On screen:** the slab passes through a capture ring (the compiler) and comes out as `workflow.lock.yml`, with a shell of small cubes snapped around it: permissions, a network firewall, safe outputs, telemetry, the agent runtime.
+- **On screen:** the slab passes through a capture ring (the compiler) and comes out as `workflow.lock.yml`, with a shell of small moons snapped around it: permissions, a network firewall, safe outputs, telemetry, the agent runtime.
 - **Say:** the compiler does not translate. It builds a secure frame around the agent. Some pieces are configurable, some are fixed.
 - **Proof (spoken aside):** "Compiling is not working" (Foundations). If you edit the Markdown and forget to compile, the old behaviour keeps running, silently. So CI checks that the lock file is up to date.
 - **Bridge:** "And we went one step further."
@@ -185,28 +185,28 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 ### 5.6 Our step after compilation
 
 - **Goal:** plant the idea that returns all talk long: we adapt the system to our environment.
-- **On screen:** one small cube snaps onto the shell after the ring: "our changes".
+- **On screen:** one small moon snaps onto the shell after the ring: "our changes".
 - **Say:** a small script of ours changes the generated YAML where the standard options are not enough, for example to pin the runtime version. Short beat.
 - **Bridge:** "With these pieces, we built our first real setup."
 
 ### 5.7 The first scenario
 
 - **Goal:** show the setup most teams stop at, and then say that this is where the story starts.
-- **On screen:** three clusters in the void: a straight line of cubes (CI/CD with GitHub Actions), and two small orbits around small monoliths (Triage, Implementation).
+- **On screen:** three clusters in the void: a straight line of moons (CI/CD with GitHub Actions), and two small orbits around small cores (Triage, Implementation).
 - **Say:**
   - CI/CD builds, tests, and deploys. Triage reads each new issue, classifies it, labels it, assigns it. Implementation reads a task, changes code, runs tests, opens a pull request.
   - CI/CD, agents, issues, pull requests, code written by AI, all in the cloud. It looks like an AI development system.
   - "We could stop here. This is exactly where the real story starts."
 - **Bridge:** to the problems.
 
-**System on screen:** three clusters: the CI/CD line of cubes, and the Triage and Implementation orbits, each with its small monolith.
+**System on screen:** three clusters: the CI/CD line of moons, and the Triage and Implementation orbits, each with its small core.
 
 ## 6. The problems
 
 ### 6.1 AI is not deterministic
 
 - **Goal:** an agentic workflow is not a reliable process.
-- **On screen:** the Implementation monolith releases three balls from the same point. Each ball takes a different wobbly path, with a different length.
+- **On screen:** the Implementation core releases three balls from the same point. Each ball takes a different wobbly path, with a different length.
 - **Say:** the same prompt does not give the same result. It changes how the agent reads the issue, which files it touches, which tools it uses, how long it takes, and how many tokens it spends. "Having an agentic workflow does not mean having a reliable process."
 - **Proof:** the same agent task can vary 30-fold in tokens between runs (Bai et al., 2026).
 - **Bridge:** "And each of those paths costs money."
@@ -214,7 +214,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 ### 6.2 The cost
 
 - **Goal:** intelligence spent on work that needs none.
-- **On screen:** the monolith does simple work (check a label, add a label, write a comment, assign a person), and a column rises next to it: the tokens.
+- **On screen:** the core does simple work (check a label, add a label, write a comment, assign a person), and a column rises next to it: the tokens.
 - **Say:** an agent can do all of this. That does not mean it must. Every step it reasons about costs tokens, time, money, and one more chance to surprise you.
 - **Proof:** one issue of 13,398 characters, with 92 units of work in it, made the agent run for 17 minutes and spend 2.4 million tokens, twice, with no result. (agentic-workflows, refine worker)
 - **Bridge:** "So our first answer was the classic one."
@@ -229,7 +229,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 - **Proof:** in a study of 33,596 agent pull requests on GitHub, the top reason they failed was not bad code. It was that nobody reviewed them: 38% (Ehsani et al., MSR 2026).
 - **Bridge:** "For a long time, we tried to prove that the human had to stay."
 
-**System on screen:** the three clusters, the token column next to the Implementation monolith, and a capsule at the exit with balls piling up.
+**System on screen:** the three clusters, the token column next to the Implementation core, and a capsule at the exit with balls piling up.
 
 ## 7. The change of mind
 
@@ -268,7 +268,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 ### 8.1 Adapt, do not just accept
 
 - **Goal:** the right controls for our context, not every generic one.
-- **On screen:** the compiled shell around the agentic cube. Its small cubes light up one by one, and one detaches and fades: threat detection.
+- **On screen:** the compiled shell around the agentic moon. Its small moons light up one by one, and one detaches and fades: threat detection.
 - **Say:** the standard system adds protections that make sense for a generic or public repo. Some add steps, calls, and tokens for things we already solve another way. We keep the security and change how we get it.
 - **Proof:** threat detection. gh-aw can run a second model over the agent's output to look for leaked secrets and bad patches. We turned it off, on purpose: it is a second full model run for every workflow run, and our pull requests already pass deterministic scanners (TruffleHog, Semgrep, Trivy) that are cheaper, reproducible, and "do not have an opinion" (Foundations).
 - **Bridge:** "Next: one runtime for every agent."
@@ -276,14 +276,14 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 ### 8.2 OpenCode as the one runtime
 
 - **Goal:** one layer of our own between the workflow and the model.
-- **On screen:** a ring closes around the Implementation monolith: OpenCode.
+- **On screen:** a ring closes around the Implementation core: OpenCode.
 - **Say:** every agentic job runs OpenCode. That gives us one place to control how the agent works, whatever model is behind it.
 - **Bridge:** "And OpenCode does not talk to model vendors directly."
 
 ### 8.3 Forge, our AI gateway
 
 - **Goal:** one point of control for every model call.
-- **On screen:** a gate ring appears below OpenCode: Forge. Behind it, several monoliths: the models. Paths that went straight out to vendors are cut.
+- **On screen:** a gate ring appears below OpenCode: Forge. Behind it, several cores: the models. Paths that went straight out to vendors are cut.
 - **Say:**
   - The agent talks to OpenCode, OpenCode talks to Forge, and Forge manages the models. "The spend and the model choice stay ours" (Foundations).
   - Each project has its own Forge key, so we see and control AI use per project.
@@ -298,7 +298,7 @@ Target: 45 minutes. The current draft runs about 49, so part 5 and part 10 must 
 - **Proof:** the runner pool costs nothing at rest and about $10 to $25 per month in normal use.
 - **Open:** Foundations says "ubuntu-latest" is the default, and agentic-workflows moved every job to its own scale set on 2026-09-29. **Recommendation:** confirm which one is true before the talk, then keep this beat to one sentence, or cut it to save time.
 
-**System on screen:** a vertical axis through the system: the agentic cube, the monolith inside the OpenCode ring, the Forge gate ring, the models behind it, on a runner plate. The CI/CD line sits beside it.
+**System on screen:** a vertical axis through the system: the agentic moon, the core inside the OpenCode ring, the Forge gate ring, the models behind it, on a runner plate. The CI/CD line sits beside it.
 
 ## The four pillars
 
@@ -316,21 +316,21 @@ The order follows the life of one change. Measurement comes last because it clos
 ### 9.1 Every repo improvises
 
 - **Goal:** name the problem the Harness solves.
-- **On screen:** the same monolith in three repos. Each one releases its ball on a different wobbly path.
+- **On screen:** the same core in three repos. Each one releases its ball on a different wobbly path.
 - **Say:** most repos have no instructions for agents, no architecture an agent can read, and no defined way to pick up a task. So agents improvise, and they give a different answer every run.
 - **Bridge:** "So we wrote down how an agent must work in Platform."
 
 ### 9.2 What the Harness holds
 
 - **Goal:** make the Harness concrete.
-- **On screen:** a frame (an outline-only cage) closes around the monolith and the OpenCode ring. Small tags appear on the frame: rules, conventions, architecture, skills to use, skills not to use, commands, an agent team, how to test, how to open a pull request, how to deploy.
+- **On screen:** a frame (an outline-only cage) closes around the core and the OpenCode ring. Small tags appear on the frame: rules, conventions, architecture, skills to use, skills not to use, commands, an agent team, how to test, how to open a pull request, how to deploy.
 - **Say:** it is the operating environment of the agent. The model still reasons, but it does not start from zero. It installs with one command and updates without losing local edits.
 - **Bridge:** to 9.3.
 
 ### 9.3 A smaller decision space
 
 - **Goal:** the Harness does not make the agent deterministic. It makes the space smaller.
-- **On screen:** "Solve this issue": a cloud of possible paths leaves the monolith. Then "Solve this issue. This is how this project works. These are the rules, the tools, the tests. Do not do these things." The frame tightens, and the paths converge into one nearly clean orbit.
+- **On screen:** "Solve this issue": a cloud of possible paths leaves the core. Then "Solve this issue. This is how this project works. These are the rules, the tools, the tests. Do not do these things." The frame tightens, and the paths converge into one nearly clean orbit.
 - **Say:** "We cannot make an agent deterministic. But we can make each run look much more like the last one."
 - **Proof:** the .NET team published ten months of the Copilot coding agent in dotnet/runtime. When they added instruction files, the success rate went from 38% to 69% (Microsoft .NET Blog, 2026).
 - **Bridge:** "And some rules we do not ask for. We enforce them."
@@ -345,14 +345,14 @@ The order follows the life of one change. Measurement comes last because it clos
 ### 9.5 The same Harness on a laptop and in the cloud
 
 - **Goal:** one system, not two.
-- **On screen:** the frame duplicates: one copy on a small laptop plane, one in the cloud. Both hold the same monolith.
+- **On screen:** the frame duplicates: one copy on a small laptop plane, one in the cloud. Both hold the same core.
 - **Say:**
   - The developer's OpenCode and the cloud agent read the same Harness. The model can still decide differently, but the rules, tools, and context are the same. Small per-project settings sit on top.
   - That closes the gap between "it works when I run it" and "it works when the agent runs it alone".
   - When to use each: if the work needs a person's judgement while it happens, run it on the laptop. If it must happen whether or not anyone is looking, run it in the cloud (Foundations).
 - **Bridge:** "Next, we looked at what the agent was actually doing all day."
 
-**System on screen:** the stack from part 8, with the frame around the monolith, and a second copy on a laptop plane. Slot 1 fills.
+**System on screen:** the stack from part 8, with the frame around the core, and a second copy on a laptop plane. Slot 1 fills.
 
 ## 10. Pillar 2: Agentic Workflows
 
@@ -363,14 +363,14 @@ Two kinds of work sit in the same agent. Work that needs intelligence: understan
 ### 10.2 Pulling pieces out of the agent
 
 - **Goal:** the strongest visual moment of the talk.
-- **On screen:** the monolith grows large, with white task cubes set in its surface. One per beat, the tasks that need no intelligence pop out: labels, assignment, comments, status. Each one settles on an outer orbit as a pastel satellite. The monolith shrinks until only analyse, code, test, and validate are left inside.
+- **On screen:** the core grows large, with white task moons set in its surface. One per beat, the tasks that need no intelligence pop out: labels, assignment, comments, status. Each one settles on an outer orbit as a pastel satellite. The core shrinks until only analyse, code, test, and validate are left inside.
 - **Say:** each piece that leaves the agent now does the same thing every time, costs almost nothing, and cannot surprise us.
 - **Bridge:** "And where did those pieces go? Back to where we started."
 
 ### 10.3 Back to GitHub Actions
 
 - **Goal:** close the circle, and name the rule.
-- **On screen:** the satellites join the GitHub Actions line from part 5, then stack into a ladder: clean outer orbits below, the monolith near the top. The closer to the monolith, the more the orbit wobbles.
+- **On screen:** the satellites join the GitHub Actions line from part 5, then stack into a ladder: clean outer orbits below, the core near the top. The closer to the core, the more the orbit wobbles.
 - **Say:**
   - We started with GitHub Actions, added agents, and came back to GitHub Actions. The system is hybrid.
   - Uncertainty now sits only where it adds value. Labels always work the same way. The implementation strategy can vary.
@@ -395,7 +395,7 @@ The agent runs read-only. Every write is a request that the framework checks aga
 ### 10.6 The pipeline
 
 - **Goal:** the whole flow, and where humans still decide.
-- **On screen:** behind the router, orbit lanes line up: triage (outer), refine, implement (near the monolith), then a checkpoint ring on the way out (the merge gate) and release. A weekly audit satellite and a housekeeping satellite circle to one side. Small tags (labels) ride on the balls from lane to lane.
+- **On screen:** behind the router, orbit lanes line up: triage (outer), refine, implement (near the core), then a checkpoint ring on the way out (the merge gate) and release. A weekly audit satellite and a housekeeping satellite circle to one side. Small tags (labels) ride on the balls from lane to lane.
 - **Say:**
   - Triage checks a request from outside the team. Refine turns it into a user story grounded in the code, with an estimate, or asks the author questions.
   - A human still decides **what** gets built: someone approves the story. No human reads the code.
@@ -410,7 +410,7 @@ The real problem was never bad decisions. It was silence: work that stopped and 
 
 - **Decided:** 10.2, 10.3, 10.4, and 10.6 are on screen. 10.1, 10.5, and 10.7 are spoken only.
 
-**System on screen:** the router ring, the orbit lanes of the workers, the checkpoint ring, the satellites, and the monolith inside its frame and the OpenCode ring, through Forge, to the models. Slot 2 fills.
+**System on screen:** the router ring, the orbit lanes of the workers, the checkpoint ring, the satellites, and the core inside its frame and the OpenCode ring, through Forge, to the models. Slot 2 fills.
 
 ## 11. Pillar 3: Foundations
 
@@ -451,7 +451,7 @@ The real problem was never bad decisions. It was silence: work that stopped and 
 ### 11.5 Verbs, not trust
 
 - **Goal:** autonomy is designed per task.
-- **On screen:** each satellite shows a few small verb cubes. The verbs it does not need are hollow outlines.
+- **On screen:** each satellite shows a few small verb moons. The verbs it does not need are hollow outlines.
 - **Say:** "An agent is not given a trust level. It is given a set of verbs" (Foundations). The worker that proposes work can create issues and nothing else. The worker that implements opens a pull request and stops. Only the gate can merge, and only when the checks are green.
 - **Bridge:** to 11.6.
 
@@ -542,7 +542,7 @@ The real problem was never bad decisions. It was silence: work that stopped and 
 ### 14.1 Back to the start
 
 - **Goal:** close every open loop of the talk.
-- **On screen:** the camera pulls back over the whole system on its disc. The monolith is small at the center. Then three returns, one after the other:
+- **On screen:** the camera pulls back over the whole system on its disc. The core is small at the center. Then three returns, one after the other:
   1. The four slots of level 5, now full.
   2. The timeline, with its "?".
   3. The title.
@@ -554,7 +554,7 @@ The real problem was never bad decisions. It was silence: work that stopped and 
 - **Last line:** **"More autonomy does not need less structure. It needs better structure."**
 - **Open:** confirm the last line.
 
-**System on screen:** the whole system on its disc, with a small monolith at the center, fading to the title.
+**System on screen:** the whole system on its disc, with a small core at the center, fading to the title.
 
 ---
 

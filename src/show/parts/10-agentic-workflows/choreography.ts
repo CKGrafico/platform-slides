@@ -3,7 +3,7 @@
  * index.tsx: grid.b(n) is n beats into the scene.
  *
  * Each task cube has one writer for its position: one tween on a proxy, over
- * the whole path (out of the monolith, landing, along the orbit). So scrubbing
+ * the whole path (out of the core, landing, along the orbit). So scrubbing
  * back and forth always gives the same frame.
  */
 import { Color, Vector3, type Group, type MeshToonMaterial } from 'three'
@@ -18,7 +18,7 @@ import { grid } from '.'
 const KEY = '10-agentic-workflows/pull-out'
 const { b } = grid
 
-/** Scale of the monolith while it holds all the tasks, then after each task leaves. */
+/** Scale of the core while it holds all the tasks, then after each task leaves. */
 const GROWN = 1.55
 const AFTER_EACH = [1.36, 1.19, 1.02, 0.86]
 /** Where each satellite lands on the outer orbit, and how far it moves in stop 3. */
@@ -27,30 +27,30 @@ const ORBIT_SWEEP = 0.45
 const COLORS = [palette.sage, palette.lilac, palette.sage, palette.lilac]
 
 /**
- * Where each task waits, held close around the grown monolith: inside its
- * field, where paths wobble. Turned, so each one reads as a cube.
+ * Where each task waits, held close around the grown core: inside its
+ * field, where paths wobble.
  */
 const HELD = [
-  { x: -1.15, y: 0.95, z: 0.55, ry: 0.7, rx: 0.45 },
-  { x: 1.2, y: 0.55, z: 0.45, ry: -0.6, rx: 0.5 },
-  { x: -1.05, y: -0.55, z: 0.6, ry: 0.75, rx: -0.45 },
-  { x: 1.1, y: -0.85, z: 0.5, ry: -0.75, rx: 0.4 },
+  { x: -1.75, y: 0.75, z: 0.8 },
+  { x: 1.8, y: 0.45, z: 0.7 },
+  { x: -1.6, y: -0.6, z: 0.95 },
+  { x: 1.65, y: -0.75, z: 0.85 },
 ]
 
 export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', (tl, cast, t) => {
   const span = (from: number, to: number) => t.span(KEY, b(from), b(to))
 
-  // Stop 1: the monolith grows to hold the tasks.
-  const monolith = cast.get('monolith')
+  // Stop 1: the core grows to hold the tasks.
+  const core = cast.get('core')
   const grow = span(0.5, 2)
-  tl.to(monolith.scale, { x: GROWN, y: GROWN, z: GROWN, duration: grow.duration, ease: 'power3.inOut' }, grow.start)
+  tl.to(core.scale, { x: GROWN, y: GROWN, z: GROWN, duration: grow.duration, ease: 'power3.inOut' }, grow.start)
 
   // Stop 2: the outer orbit appears as the first task gets ready to leave.
   const outer = orbitOf(cast.get<Group>('orbit.outer'))
   const outerIn = span(4.5, 6)
   tl.to(outer.material, { opacity: 0.8, duration: outerIn.duration, ease: 'power2.out' }, outerIn.start)
 
-  // Stop 3: the inner orbit appears near the monolith. It wobbles by design.
+  // Stop 3: the inner orbit appears near the core. It wobbles by design.
   const inner = orbitOf(cast.get<Group>('orbit.inner'))
   const innerIn = span(14.5, 16)
   tl.to(inner.material, { opacity: 0.8, duration: innerIn.duration, ease: 'power2.out' }, innerIn.start)
@@ -64,10 +64,9 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     const land = orbitPoint(OUTER, LANDING_ANGLES[i]!)
     const tmp = new Vector3()
 
-    // Enter on the monolith's face in stop 1, one per half beat.
+    // Enter on the core's face in stop 1, one per half beat.
     hidden(tl, el)
     tl.set(el.object.position, { x: start.x, y: start.y, z: start.z }, 0)
-    tl.set(el.object.rotation, { x: held.rx, y: held.ry, z: 0 }, 0)
     const enter = span(1.5 + i * 0.5, 2.25 + i * 0.5)
     inkIn(tl, el, enter.start, enter.duration)
 
@@ -102,10 +101,10 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     const tint = span(6.25 + i * 2, 7 + i * 2)
     tl.to(el.body.material.color, { r: target.r, g: target.g, b: target.b, duration: tint.duration, ease: 'power2.out' }, tint.start)
 
-    // The monolith shrinks a step as each task leaves.
+    // The core shrinks a step as each task leaves.
     const shrink = span(5.5 + i * 2, 6.5 + i * 2)
     const s = AFTER_EACH[i]!
-    tl.to(monolith.scale, { x: s, y: s, z: s, duration: shrink.duration, ease: 'power3.out' }, shrink.start)
+    tl.to(core.scale, { x: s, y: s, z: s, duration: shrink.duration, ease: 'power3.out' }, shrink.start)
   })
 
 })

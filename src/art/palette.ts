@@ -12,8 +12,8 @@ export const palette = {
   outline: '#2E2A4A',
   text: '#1F1D33',
   accent: '#2F69FF',
-  monolith: '#16161E',
-  monolithNoise: '#2C3246',
+  core: '#28233F',
+  coreNoise: '#4E4679',
 } as const
 
 export type PaletteColor = keyof typeof palette

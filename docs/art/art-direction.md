@@ -12,9 +12,9 @@ Dials (design-taste-frontend): DESIGN_VARIANCE 6, MOTION_INTENSITY 7, VISUAL_DEN
 
 ## Concept
 
-The talk builds one abstract system in a soft void. At its center sits the model: a near-black monolith with slow noise moving inside. It is the only thing that moves by time and not by the presenter. Everything else is a simple element: cubes, balls, rings, a disc. The system grows around the monolith until the monolith is one small part of it.
+The talk builds one abstract system in a soft void. At its center sits the model: a near-black core with slow noise moving inside. It is the only thing that moves by time and not by the presenter. Everything else is a simple element: moons, balls, rings, a disc. The system grows around the core until the core is one small part of it.
 
-Why orbits: the timeline of part 3 ends in "Loop engineering" and "Autonomous loops". An orbit is a loop: the same path every time, with no one pushing it. Deterministic work lives on clean outer orbits. Near the monolith, orbits wobble. The talk is the story of pushing work outward, onto orbits that repeat.
+Why orbits: the timeline of part 3 ends in "Loop engineering" and "Autonomous loops". An orbit is a loop: the same path every time, with no one pushing it. Deterministic work lives on clean outer orbits. Near the core, orbits wobble. The talk is the story of pushing work outward, onto orbits that repeat.
 
 ## Palette: Lilac and sage
 
@@ -28,7 +28,7 @@ Why orbits: the timeline of part 3 ends in "Loop engineering" and "Autonomous lo
 | Outline | `#2E2A4A` deep indigo | the only line color |
 | Text | `#1F1D33` | captions and titles |
 | Accent | `#2F69FF` Platform blue | the blue ball, the active element, the lit path, the title burn edge. Nothing else |
-| Monolith | `#16161E`, noise up to `#2C3246` | off-black, never pure black |
+| Core | `#16161E`, noise up to `#2C3246` | off-black, never pure black |
 
 Rules:
 
@@ -48,11 +48,11 @@ Rules:
 ## Look and material
 
 - **Toon shading:** two light bands, one key light from the upper left, soft ambient light. No bloom and no glow.
-- **Outlines:** thick indigo outlines, about 3 px at 1080p. They "boil": the line wobble changes at a stepped 4 fps. This is the main trait we take from Monolith, and it is also the silent metronome of the talk.
+- **Outlines:** thick indigo outlines, about 3 px at 1080p. They "boil": the line wobble changes at a stepped 4 fps. This is the main trait we take from Core, and it is also the silent metronome of the talk.
 - **Grain:** one full-screen grain layer on top of everything, stepped at 4 fps. Stronger than Monolith's 0.2 opacity, so it survives the projector.
 - **Void:** a soft vertical gradient with faint noise. Cheap blob shadows sit under elements, so nothing floats without a reason.
-- **Monolith:** off-black, with noise that looks deep, as if you look into it. Its outline is the same indigo as everything else.
-- **Shape lock:** sharp edges for cubes, the monolith, walls, and columns. Round shapes only for balls, orbits, rings, and the disc.
+- **Core:** off-black, with noise that looks deep, as if you look into it. Its outline is the same indigo as everything else.
+- **Shape lock:** sharp edges for moons, the core, walls, and columns. Round shapes only for balls, orbits, rings, and the disc.
 
 ## Motion grammar
 
@@ -62,7 +62,7 @@ Rules:
 - **Entrance, "inking":** the outline appears first (a quarter beat), then the fill, then a small settle.
 - **Exit:** the element shrinks to a point in a quarter beat, with three small dust balls as the secondary layer.
 - **Camera:** a long lens (FOV 30 to 40). Dwell, then travel: the camera holds still while people read, and moves only between stops. Long moves arc: pull back, pan, push in. No move crosses more than a third of the screen without a change of direction. The FOV widens a little while the camera travels.
-- **Three layers:** primary (the move the presenter triggered), secondary (labels settling, dust, satellites adjusting), ambient (boil, grain, monolith noise, a few degrees of orbital drift).
+- **Three layers:** primary (the move the presenter triggered), secondary (labels settling, dust, satellites adjusting), ambient (boil, grain, core noise, a few degrees of orbital drift).
 - **Determinism:** positions come from progress. Time drives only the ambient layer. At a stop, the composition is always the same.
 
 ## Silent rhythm
@@ -73,7 +73,7 @@ The talk has no sound, so rhythm is visual:
 - Under tension (part 6) the boil speeds up from 4 to 8 fps. On release it returns to 4 fps.
 - Releases snap fast, in about 200 ms.
 - Every new element lands on a beat, like a note.
-- The blue ball opens and closes the talk: it orbits the monolith on the cover, and it escapes to production in part 13.
+- The blue ball opens and closes the talk: it orbits the core on the cover, and it escapes to production in part 13.
 
 ## Composition and text
 
@@ -99,17 +99,21 @@ We do not take its illustrations, characters, textures, fonts, or colors. Our pa
 
 | Part | What the system looks like |
 |---|---|
-| 1 Cover | The void. The monolith alone, turning slowly, with the blue ball on one orbit around it. The title burns in. Language buttons in a corner. |
+| 1 Cover | The void. The core alone, turning slowly, with the blue ball on one orbit around it. The title burns in. Language buttons in a corner. |
 | 2 About me | Name, role, and company in a caption. The system does not change. |
-| 3 Timeline | Ten elements appear along an arc, each closer than the last. The first half are single objects. The second half are structures around the monolith. The last one is an empty dashed outline: "?". |
+| 3 Timeline | Ten elements appear along an arc, each closer than the last. The first half are single objects. The second half are structures around the core. The last one is an empty dashed outline: "?". |
 | 4 Maturity | Five rings of growing size, level 1 the smallest. The outermost ring, level 5, keeps four empty slots. They stay at the edge of the frame for the rest of the talk. |
-| 5 Actions to Agentic Workflows | One cube alone, with no monolith. Balls fall into it. It unfolds into small cubes on a straight line. Then the monolith arrives, and everything near it starts to curve. The Markdown file is a slab that passes through a capture ring and comes out with a shell of small cubes (the compiler). Three clusters: one straight line (CI/CD) and two small orbits around small monoliths (triage, implementation). |
-| 6 Problems | Three balls leave the monolith on three different wobbly paths. A column rises next to it as it does simple work (tokens). A capsule stands at the exit, and balls pile up in front of it. The boil speeds up. |
+| 5 Actions to Agentic Workflows | One moon alone, with no core. Balls fall into it. It unfolds into small moons on a straight line. Then the core arrives, and everything near it starts to curve. The Markdown file is a slab that passes through a capture ring and comes out with a shell of small moons (the compiler). Three clusters: one straight line (CI/CD) and two small orbits around small cores (triage, implementation). |
+| 6 Problems | Three balls leave the core on three different wobbly paths. A column rises next to it as it does simple work (tokens). A capsule stands at the exit, and balls pile up in front of it. The boil speeds up. |
 | 7 Change of mind | The capsule fades. Three capsules on one side, ten small orbital systems on the other (the apps). The four words land one by one. |
-| 8 Runtime | A vertical axis through the system: the agentic cube, OpenCode as a ring around the monolith, Forge as a gate ring below, several monoliths behind it (the models). One shell cube detaches and fades (threat detection off). |
-| 9 Harness | A frame closes around the monolith. The wobbly trails converge into a nearly clean orbit. Unsafe commands bounce off the frame. The frame duplicates: one copy on a small laptop plane, one in the cloud. Slot 1 fills. |
-| 10 Agentic Workflows | The monolith grows large, with white task cubes set in its surface. They pop out, one per beat, and settle on outer orbits as pastel satellites. The monolith shrinks. The satellites stack into a ladder with the monolith near the top. A capture ring at the entrance (the router). Orbit lanes for the workers, and a checkpoint ring on the way out (the merge gate). Slot 2 fills. |
-| 11 Foundations | The disc forms under everything, with its grid. Low walls rise around the lanes. Each satellite shows a few small verb cubes, and the missing verbs are hollow. Slot 3 fills. |
+| 8 Runtime | A vertical axis through the system: the agentic moon, OpenCode as a ring around the core, Forge as a gate ring below, several cores behind it (the models). One shell moon detaches and fades (threat detection off). |
+| 9 Harness | A frame closes around the core. The wobbly trails converge into a nearly clean orbit. Unsafe commands bounce off the frame. The frame duplicates: one copy on a small laptop plane, one in the cloud. Slot 1 fills. |
+| 10 Agentic Workflows | The core grows large, with white task moons set in its surface. They pop out, one per beat, and settle on outer orbits as pastel satellites. The core shrinks. The satellites stack into a ladder with the core near the top. A capture ring at the entrance (the router). Orbit lanes for the workers, and a checkpoint ring on the way out (the merge gate). Slot 2 fills. |
+| 11 Foundations | The disc forms under everything, with its grid. Low walls rise around the lanes. Each satellite shows a few small verb moons, and the missing verbs are hollow. Slot 3 fills. |
 | 12 Project Health | Columns rise at the edge of the disc, and two stay hollow. A small panel counts what needs a human. Our numbers stand next to the industry's. One satellite circles and drops a ball back in (the audit loop). Slot 4 fills. |
 | 13 Issue to production | The camera follows the blue ball: captured by the router, spiraling in to implement, out through the walls and the merge gate, and escaping to production. Each pillar lights as the ball passes. |
-| 14 Closing | The camera pulls back over the whole system on its disc. The four slots on the outer ring are full. The monolith is small at the center. The timeline arc returns with its "?". The title burns in, then the last line. |
+| 14 Closing | The camera pulls back over the whole system on its disc. The four slots on the outer ring are full. The core is small at the center. The timeline arc returns with its "?". The title burns in, then the last line. |
+
+## Revision 2026-09-29: one shape family
+
+The user disliked the black slab and found cubes next to balls confusing. Everything is now a sphere in orbit, inspired by the speaker's earlier orbit design. Deterministic pieces are small smooth moons. The model is the core: a deep indigo planet (`#28233F`, noise up to `#4E4679`) whose surface bubbles and never keeps its shape. The blue ball is the issue.

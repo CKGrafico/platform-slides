@@ -88,8 +88,8 @@ export function createMonolithMaterial(): MonolithMaterial {
     uniforms: {
       uTime: artUniforms.uTime,
       uCalm: { value: 0 },
-      uBase: { value: new Color(palette.monolith) },
-      uNoise: { value: new Color(palette.monolithNoise) },
+      uBase: { value: new Color(palette.core) },
+      uNoise: { value: new Color(palette.coreNoise) },
       uLight: { value: [-0.5, 0.8, 0.6] },
     },
   }) as MonolithMaterial

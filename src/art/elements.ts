@@ -4,11 +4,12 @@
  * Every element is three nested parts, so each property has one owner:
  * - `object`: the choreography moves, scales, and turns this one.
  * - `inner`: entrances, exits, and the settle animate this one (motion.ts).
- * - `body` and `hull`: the toon or monolith surface, and the boiling outline.
+ * - `body` and `hull`: the toon or core surface, and the boiling outline.
  * Every factory returns { object, inner, body, hull, dispose }.
  */
 import {
   BoxGeometry,
+  type BufferAttribute,
   Group,
   Mesh,
   SphereGeometry,
@@ -18,6 +19,7 @@ import {
   type Material,
   type Object3D,
 } from 'three'
+import { onArtFrame } from './clock'
 import { createMonolithMaterial, type MonolithMaterial } from './monolith'
 import { createOutlineMaterial, hullGeometry, type OutlineMaterial, type OutlineOptions } from './outline'
 import { palette } from './palette'
@@ -71,13 +73,43 @@ export function createCube(options: { size?: number; color?: ColorRepresentation
 }
 
 /**
- * The model. Proportions 1:4:9 (depth, width, height), like the slab in
- * 2001 and in The Monolith Project. `height` is in world units.
+ * The model: a planet whose surface bubbles and never keeps its shape. It is the
+ * only element that moves by time (ambient), and time stops under reduced
+ * motion (the art clock passes 0). Body and outline deform with the same noise.
  */
-export function createMonolith(options: { height?: number; outline?: OutlineOptions } = {}): ArtElement<MonolithMaterial> {
-  const { height = 2.25, outline } = options
-  const unit = height / 9
-  return assemble('monolith', new BoxGeometry(unit * 4, height, unit), createMonolithMaterial(), { width: 3.5, ...outline })
+export function createCore(options: { radius?: number; outline?: OutlineOptions } = {}): ArtElement<MonolithMaterial> {
+  const { radius = 1, outline } = options
+  const geometry = new SphereGeometry(radius, 64, 48)
+  const el = assemble('core', geometry, createMonolithMaterial(), { width: 3.5, color: palette.text, ...outline })
+  const targets = [el.body.geometry, el.hull.geometry].map((g) => {
+    const pos = g.attributes.position as BufferAttribute
+    return { g, pos, dirs: Float32Array.from(pos.array as ArrayLike<number>).map((v) => v / radius) }
+  })
+  const deform = (time: number) => {
+    const t = time * 0.35
+    for (const { g, pos, dirs } of targets) {
+      const a = pos.array as Float32Array
+      for (let i = 0; i < a.length; i += 3) {
+        const x = dirs[i]!, y = dirs[i + 1]!, z = dirs[i + 2]!
+        const n = Math.sin(x * 2.3 + t) * Math.sin(y * 2.9 - t * 0.8) * Math.sin(z * 2.6 + t * 1.3) + 0.5 * Math.sin(x * 4.1 - y * 3.7 + t * 1.7)
+        const r = radius * (1 + 0.075 * n)
+        a[i] = x * r
+        a[i + 1] = y * r
+        a[i + 2] = z * r
+      }
+      pos.needsUpdate = true
+      g.computeVertexNormals()
+    }
+  }
+  deform(0)
+  const off = onArtFrame(deform)
+  const dispose = el.dispose
+  el.dispose = () => {
+    off()
+    dispose()
+  }
+  el.object.userData.dispose = el.dispose
+  return el
 }
 
 /** An event or a work item. The blue ball is the issue. */

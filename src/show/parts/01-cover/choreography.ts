@@ -1,5 +1,5 @@
 /**
- * Part 1 moves: the monolith starts at rest in the center, the blue ball
+ * Part 1 moves: the core starts at rest in the center, the blue ball
  * circles it (ambient, see actors.ts), and both the ball and its orbit leave
  * when the presenter starts.
  */
@@ -13,9 +13,9 @@ import { coverGrid } from '.'
 const KEY = '01-cover/title'
 
 export const coverMoves = defineChoreography('01-cover', (tl, cast, t) => {
-  const monolith = cast.get('monolith')
-  tl.set(monolith.position, { x: 0, y: 0, z: 0 }, 0)
-  tl.set(monolith.scale, { x: 1, y: 1, z: 1 }, 0)
+  const core = cast.get('core')
+  tl.set(core.position, { x: 0, y: 0, z: 0 }, 0)
+  tl.set(core.scale, { x: 1, y: 1, z: 1 }, 0)
 
   const issue = artOf(cast.get('issue'))
   tl.set(issue.object.position, { x: 0, y: 0, z: 0 }, 0)

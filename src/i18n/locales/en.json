@@ -6,7 +6,7 @@
   "p10.title": "Agentic Workflows",
   "p10.caption.pieces": "Every piece that leaves the agent now does the same thing, every time.",
   "p10.caption.distance": "The closer to the model, the less a path repeats.",
-  "p10.monolith": "the model",
+  "p10.core": "the model",
   "p10.task.labels": "labels",
   "p10.task.assign": "assign",
   "p10.task.comment": "comment",

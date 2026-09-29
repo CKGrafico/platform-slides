@@ -1,14 +1,14 @@
 /**
  * Part 10, beats 10.2 and 10.3 (the style frame): the tasks that need no
  * intelligence leave the agent and become satellites on a clean outer orbit.
- * Close to the monolith, orbits wobble. See docs/script/script.md.
+ * Close to the core, orbits wobble. See docs/script/script.md.
  *
  * Stops, on the beat grid:
- *   1. (4 beats)  the part title burns in, the camera arrives, the monolith grows
+ *   1. (4 beats)  the part title burns in, the camera arrives, the core grows
  *                 and shows its tasks.
  *   2. (10 beats) the title burns out, the tasks pop out one by one and settle on
- *                 the outer orbit, the monolith shrinks.
- *   3. (6 beats)  the inner orbit appears near the monolith, the satellites move
+ *                 the outer orbit, the core shrinks.
+ *   3. (6 beats)  the inner orbit appears near the core, the satellites move
  *                 along the clean outer orbit.
  */
 import { range, smoothstep } from '@/animation/progress'
@@ -32,12 +32,12 @@ export const P10_SHOT: CameraShot = { position: [0, 3.3, 11.8], target: [0, 0.1,
 /** Burn level that rises over [a, b] and falls over [c, d], in local progress. */
 const win = (a: number, bb: number, c = 2, d = 3) => (local: number) => Math.min(range(local, a, bb), 1 - range(local, c, d))
 
-const monolithTop = new Vector3()
-function aboveMonolith(): Vector3 | null {
-  const m = getActorObject('monolith')
+const coreTop = new Vector3()
+function aboveCore(): Vector3 | null {
+  const m = getActorObject('core')
   if (!m) return null
-  // The slab is 2.4 units tall at scale 1.
-  return monolithTop.set(m.position.x, m.position.y + 1.2 * m.scale.y + 0.35, m.position.z)
+  // The core has radius 0.95 at scale 1.
+  return coreTop.set(m.position.x, m.position.y + 0.95 * m.scale.y + 0.35, m.position.z)
 }
 
 // On the empty back part of the orbit, away from the satellites.
@@ -77,7 +77,7 @@ function Dom() {
         </Caption>
       </Stage>
 
-      <Label k="p10.monolith" target={aboveMonolith} width={14} level={from(b(2), b(3))} />
+      <Label k="p10.core" target={aboveCore} width={14} level={from(b(2), b(3))} />
       {TASKS.map((name, i) => (
         <Label
           key={name}

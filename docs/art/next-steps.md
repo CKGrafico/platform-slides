@@ -17,10 +17,10 @@ The style frame (the cover and part 10) is built on the art kit in `src/art/`. T
 ## To build next
 
 1. **Routes.** A route system that owns `object.position` for bound actors, made of pure path segments (`orbitArc`, `arc`, `capture`, `spiral`, `escape`, `wobbly`, `park`, `cameraPin`), with a check that segments meet. Part 10 moves its proxy tweens to routes. Part 13 (the blue ball's journey) needs it.
-2. **Swarms.** Instanced balls and cubes on routes, for events and work items in bulk, with per-instance inking. Use a swarm for more than 8 copies of one element.
+2. **Swarms.** Instanced balls and moons on routes, for events and work items in bulk, with per-instance inking. Use a swarm for more than 8 copies of one element.
 3. **Camera from choreographies.** `camera.hold`, `move` (arcs, FOV kick, distance in log space), `cut`, `matchCut`, and `follow`, composed into one track. A part must never import another part's shot.
 4. **Choreography context.** `rest` on actors for initial states, `t.beat(sceneKey, n)` computed from the model, `claim()` so writers outside GSAP are checked, and the checks for writes outside a part's chapter and for jumps in value.
-5. **Cold open.** At position 0: the void, then the monolith alone, then (after warm-up) the blue ball inks in and the title burns in, once. Reduced motion or a restored hash skips it.
+5. **Cold open.** At position 0: the void, then the core alone, then (after warm-up) the blue ball inks in and the title burns in, once. Reduced motion or a restored hash skips it.
 6. **Kit additions.** Sketch lines (frame, slots, hollow columns, trails), capsule, disc with grid, wall, column, blob shadows under elements, and dust for exits.
 7. **Burn.** Replace `feTurbulence` with `feImage` of a seeded tile. At most 2 burns at once, never during camera travel.
 

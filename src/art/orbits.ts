@@ -65,7 +65,7 @@ function wobbleAt(angle: number, variant: number): number {
 
 export interface OrbitLineOptions {
   spec: OrbitSpec
-  /** Share of the radius the path wanders. 0 for a clean orbit, about 0.12 near the monolith. */
+  /** Share of the radius the path wanders. 0 for a clean orbit, about 0.12 near the core. */
   wobble?: number
   color?: ColorRepresentation
   /** Width in pixels of a 1080 px tall frame. */
