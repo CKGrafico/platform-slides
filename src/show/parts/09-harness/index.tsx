@@ -56,8 +56,8 @@ const tagPoints = TAGS.map((_, i) => new Vector3(i < 5 ? -TAG_X : TAG_X, 1.35 - 
 
 const laptopLabel = new Vector3(DEV_POS[0] + 0.1, DEV_POS[1] - 0.32, DEV_POS[2] + 0.3)
 const cloudLabel = new Vector3(0, -1.95, 0.6)
-// Up and to the left of the big frame: the cloud copy.
-const cloudName = new Vector3(-HARNESS_RADIUS - 0.35, 1.25, 0.5)
+// Up and to the right of the big frame: the cloud copy. On the left it would sit on the coins.
+const cloudName = new Vector3(HARNESS_RADIUS + 0.1, 1.2, 0.5)
 
 function Dom() {
   return (
@@ -95,7 +95,7 @@ function Dom() {
         />
       ))}
       <Label k="p09.laptopName" target={() => laptopLabel} width={20} mono={false} className="p05-name" level={win(B.laptop + 2, B.laptop + 2.75)} />
-      <Label k="p09.cloudName" target={() => cloudName} width={20} mono={false} className="p05-name label-right" level={win(B.laptop + 2.25, B.laptop + 3)} />
+      <Label k="p09.cloudName" target={() => cloudName} width={20} mono={false} className="p05-name label-left" level={win(B.laptop + 2.25, B.laptop + 3)} />
     </div>
   )
 }
