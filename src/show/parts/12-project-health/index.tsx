@@ -35,8 +35,9 @@ export const B = { title: 0, claim: 4, measure: 9, honest: 15, human: 21, number
 
 const KEY = '12-project-health/health'
 hudCues.fill(3, { key: KEY, from: b(1.5), to: b(3) })
-// The numbers of 12.5 need the whole frame; the map steps out and comes back.
-hudCues.hide({ rise: { key: KEY, from: b(B.numbers), to: b(B.numbers + 1) }, fall: { key: KEY, from: b(B.loop), to: b(B.loop + 1) } })
+// The row of measures (12.2 to 12.4) has the merge gate in the top right corner, and the
+// numbers of 12.5 need the whole frame: the map steps out and comes back for the loop.
+hudCues.hide({ rise: { key: KEY, from: b(B.measure), to: b(B.measure + 1) }, fall: { key: KEY, from: b(B.loop), to: b(B.loop + 1) } })
 
 const WHOLE: CameraShot = { position: [0, 5.4, 15.8], target: [0.2, -0.7, 0], fov: 36 }
 const ESCAPE: CameraShot = { position: [3.8, 2.4, 11.2], target: [5.4, 0.8, 0.6], fov: 36 }
@@ -119,9 +120,10 @@ function Dom() {
     <div className="scene-root">
       <Stage>
         <PartTitle kicker="p12.kicker" title="p12.title" level={burnWindow(b(1), b(2.5), b(B.claim), b(B.claim + 0.75))} />
-        <BurnCaption k="p12.claim" corner="bottom-left" width={84} height={9} className="art-caption--lead" seed={171} level={burnWindow(b(B.claim + 2), b(B.claim + 3), b(B.measure), b(B.measure + 0.6))} />
+        {/* Top left: the escape shot has the system and the disc at the bottom left. */}
+        <BurnCaption k="p12.claim" corner="top-left" width={84} height={9} className="art-caption--lead" seed={171} level={burnWindow(b(B.claim + 2), b(B.claim + 3), b(B.measure), b(B.measure + 0.6))} />
         <BurnCaption k="p12.measure" corner="bottom-left" width={84} height={9} className="art-caption--lead" seed={172} level={burnWindow(b(B.measure + 3), b(B.measure + 4), b(B.honest), b(B.honest + 0.6))} />
-        <BurnCaption k="p12.honest" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={173} source="p12.honest.source" level={burnWindow(b(B.honest + 2.5), b(B.honest + 3.5), b(B.human), b(B.human + 0.6))} />
+        <BurnCaption k="p12.honest" corner="bottom-left" width={84} height={15} className="art-caption--lead" seed={173} source="p12.honest.source" level={burnWindow(b(B.honest + 2.5), b(B.honest + 3.5), b(B.human), b(B.human + 0.6))} />
         <BurnCaption k="p12.human" corner="bottom-left" width={84} height={9} className="art-caption--lead" seed={174} level={burnWindow(b(B.human + 2), b(B.human + 3), b(B.numbers), b(B.numbers + 0.6))} />
         <div className="stats-shell">
           <Numbers />

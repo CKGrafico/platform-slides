@@ -39,9 +39,11 @@ hudCues.fill(0, { key: KEY, from: b(B.name + 1.5), to: b(B.name + 3) })
 
 /** Up at the empty sky, so the map of the talk has the frame to itself. */
 const SKY: CameraShot = { position: [0, 7.6, 10.5], target: [0, 7.9, 0], fov: 34 }
-const CORE: CameraShot = { position: [1.6, 1.3, 8.2], target: [0.1, 0.1, 0], fov: 36 }
-const FRAME: CameraShot = { position: [1.2, 1.0, 7.4], target: [0.1, 0.1, 0.2], fov: 36 }
-const OUT: CameraShot = { position: [2.8, 1.1, 8.8], target: [1.2, 0.1, 0.4], fov: 36 }
+// Far enough back that the whole column (the workflow on top, the core, Forge and
+// the models below) sits above the caption at the bottom left.
+const CORE: CameraShot = { position: [2.42, 1.2, 12.66], target: [0.1, -0.65, 0], fov: 36 }
+const FRAME: CameraShot = { position: [1.87, 0.75, 11.78], target: [0.1, -0.7, 0.2], fov: 36 }
+const OUT: CameraShot = { position: [3.52, 0.8, 12.6], target: [1.2, -0.65, 0.4], fov: 36 }
 const LAPTOP: CameraShot = { position: [2.2, 1.3, 10], target: [1.4, -0.35, 0.8], fov: 36 }
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))

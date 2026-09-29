@@ -32,7 +32,8 @@ export const pulseAt = (i: number) => 1.5 + i * 0.4
 
 const SHELL_SHOT: CameraShot = { position: [1.3, 3.1, 5.6], target: [0, 2.15, 0], fov: 36 }
 const OPENCODE_SHOT: CameraShot = { position: [1.4, 1.6, 6.8], target: [0.1, 0.05, 0], fov: 36 }
-const FORGE_SHOT: CameraShot = { position: [2.4, 0.1, 9.2], target: [0.6, -1.3, -0.3], fov: 36 }
+// A little to the right, so the Triage core stays out of the corner where the map of the talk sits.
+const FORGE_SHOT: CameraShot = { position: [3.4, 0.1, 9.2], target: [1.6, -1.3, -0.3], fov: 36 }
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
@@ -47,7 +48,8 @@ function Dom() {
     <div className="scene-root">
       <Stage>
         <PartTitle kicker="p08.kicker" title="p08.title" level={burnWindow(b(1), b(2.5), b(B.threat), b(B.threat + 0.75))} />
-        <BurnCaption k="p08.adapt" corner="bottom-left" width={80} height={12} className="art-caption--lead" seed={101} source="p08.adapt.source" level={burnWindow(b(B.threat + 2), b(B.threat + 3), b(B.opencode), b(B.opencode + 0.6))} />
+        {/* Top left: the shell shot looks up at the workflow, and the core fills the bottom. */}
+        <BurnCaption k="p08.adapt" corner="top-left" width={80} height={15} className="art-caption--lead" seed={101} source="p08.adapt.source" level={burnWindow(b(B.threat + 2), b(B.threat + 3), b(B.opencode), b(B.opencode + 0.6))} />
         <BurnCaption k="p08.opencode" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={102} level={burnWindow(b(B.opencode + 2), b(B.opencode + 3), b(B.forge), b(B.forge + 0.6))} />
         <BurnCaption k="p08.forge" corner="bottom-left" width={80} height={12} className="art-caption--lead" seed={103} source="p08.forge.source" level={burnWindow(b(B.forge + 3), b(B.forge + 4))} />
       </Stage>

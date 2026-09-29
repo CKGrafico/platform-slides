@@ -30,7 +30,8 @@ export const grid = beatStops([4, 6, 6, 7])
 const { b } = grid
 export const B = { title: 0, runs: 4, cost: 10, human: 16 }
 
-const P6_SHOT: CameraShot = { position: [0.9, 0.9, 7.2], target: [0.9, -0.3, 0.7], fov: 36 }
+// Wide enough that the Triage core stays out of the corner where the map of the talk sits.
+const P6_SHOT: CameraShot = { position: [1.35, 1.08, 8.17], target: [1.35, -0.3, 0.7], fov: 36 }
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 

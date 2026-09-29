@@ -24,6 +24,23 @@ const R = 30
 const CX = 150
 const CY = 40
 
+// The box in su (art.css .hud): 50 x 20, with its top right corner at
+// (STAGE_W - 3.6% of the width, 3.6% of the height). The stage is 16:9.
+const STAGE_W = 177.78
+const CORNER = [STAGE_W * (1 - 0.036), 3.6] as const
+const MIDDLE = [STAGE_W / 2, 50] as const
+
+/**
+ * The shift (in su) that puts the ring, or the ring with its names, in the
+ * middle of the stage at this scale. The transform grows the box from its top
+ * right corner. The ring's middle is 10 su in from that corner; the names are
+ * right-aligned, so the ring and the words are centered 23 su in, not 25.
+ */
+function centerShift(scale: number, named: number): [number, number] {
+  const inX = 10 + 13 * named
+  return [MIDDLE[0] - CORNER[0] + inX * scale, MIDDLE[1] - CORNER[1] - 10 * scale]
+}
+
 export function Hud() {
   const root = useRef<HTMLDivElement>(null)
   const turbulence = useRef<SVGFETurbulenceElement>(null)
@@ -50,9 +67,14 @@ export function Hud() {
     if (!el) return
     el.style.visibility = s.shown > 0 ? 'visible' : 'hidden'
     el.style.opacity = String(Math.min(1, s.shown * 1.5))
-    // Center mode: move to the middle of the stage and grow.
+    // Center mode: move to the middle of the stage and grow. Alone, the ring
+    // goes to the middle; once the pillars have names, the ring and its names
+    // go there together.
     const c = s.center
-    el.style.transform = `translate(calc(var(--su) * ${-58 * c}), calc(var(--su) * ${30 * c})) scale(${(0.6 + 0.4 * s.shown) * (1 + 1.5 * c)})`
+    const scale = (0.6 + 0.4 * s.shown) * (1 + 1.5 * c)
+    const named = Math.max(...s.fill)
+    const [x, y] = centerShift(scale, named)
+    el.style.transform = `translate(calc(var(--su) * ${x * c}), calc(var(--su) * ${y * c})) scale(${scale})`
     s.fill.forEach((f, i) => {
       const lit = s.lit[i]!
       fills.current[i]?.setAttribute('r', String(7.5 * Math.min(1, f * 1.2)))

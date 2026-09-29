@@ -35,7 +35,8 @@ const KEY = '04-maturity/levels'
 hudCues.appear({ key: KEY, from: b(MAP_BEAT + 1), to: b(MAP_BEAT + 3) })
 
 const ABOVE: CameraShot = { position: [0.6, 8.0, 7.2], target: [0.6, -0.6, 0.5], fov: 36 }
-const SLOTS: CameraShot = { position: [-0.6, 8.2, 7.6], target: [-0.6, -0.5, 0.3], fov: 36 }
+// A little further back than ABOVE: the level names on the right and the slot names under the ring must fit.
+const SLOTS: CameraShot = { position: [-0.6, 9.25, 8.5], target: [-0.6, -0.5, 0.3], fov: 36 }
 const MAP: CameraShot = { position: [0, 3.2, 10.5], target: [0, 0.1, 0], fov: 34 }
 
 const levelPoints = LEVEL_RADII.map((r) => orbitPoint({ radius: r }, LEVEL_LABEL_ANGLE, new Vector3()).add(new Vector3(0.1, 0.05, 0)))
@@ -83,7 +84,8 @@ function Dom() {
             />
           )
         })}
-        <BurnCaption k="p04.slots" corner="bottom-left" width={64} height={9} className="art-caption--lead" seed={57} level={burnWindow(b(SLOTS_BEAT + 1), b(SLOTS_BEAT + 2), b(MAP_BEAT), b(MAP_BEAT + 0.6))} />
+        {/* Top left: the slot names under the ring take the bottom of this shot. */}
+        <BurnCaption k="p04.slots" corner="top-left" width={64} height={9} className="art-caption--lead" seed={57} level={burnWindow(b(SLOTS_BEAT + 1), b(SLOTS_BEAT + 2), b(MAP_BEAT), b(MAP_BEAT + 0.6))} />
         <BurnCaption k="p04.map" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={59} level={burnWindow(b(MAP_BEAT + 2), b(MAP_BEAT + 3.25))} />
       </Stage>
       {levelTargets.map((target, i) => (

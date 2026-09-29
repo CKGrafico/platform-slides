@@ -46,12 +46,20 @@ LABEL_OFFSETS.push([-1.1, 0, 0])
 const NAME_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.name` as MessageKey)
 const LINE_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.line` as MessageKey)
 
-/** Label level: in with its step, then the first half dims at the split. */
+/** The second-half shot leaves this many first steps out of the frame. */
+const LEFT_OUT = 1
+
+/**
+ * Label level: in with its step, then the first half dims at the split. The
+ * labels the second-half shot leaves out of the frame go instead, so no half
+ * word stays at the edge.
+ */
 function labelLevel(k: number) {
   const a = b(stepBeat(k) + 0.75)
+  const depth = k < LEFT_OUT ? 1 : 0.65
   return (local: number) => {
     const shown = range(local, a, a + b(0.75))
-    const dim = k < TIMELINE_SPLIT ? 0.65 * range(local, b(SPLIT_BEAT), b(SPLIT_BEAT + 1.5)) : 0
+    const dim = k < TIMELINE_SPLIT ? depth * range(local, b(SPLIT_BEAT), b(SPLIT_BEAT + 1.5)) : 0
     return shown * (1 - dim)
   }
 }

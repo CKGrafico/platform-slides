@@ -46,8 +46,9 @@ hudCues.fill(1, { key: PULL, from: b(1.5), to: b(3) })
 
 /** Close for the extraction, then back to see the whole outer orbit. */
 const CLOSE: CameraShot = { position: [0, 1.6, 7.6], target: [0, 0.1, 0], fov: 34 }
-export const P10_SHOT: CameraShot = { position: [0, 3.3, 11.8], target: [0, 0.1, 0], fov: 36 }
-const LADDER: CameraShot = { position: [-0.6, 4.4, 12.4], target: [-0.3, -0.2, 0], fov: 36 }
+// Both a little to the right, so the Refinement core stays out of the map's corner.
+export const P10_SHOT: CameraShot = { position: [0.6, 3.3, 11.8], target: [0.6, 0.1, 0], fov: 36 }
+const LADDER: CameraShot = { position: [0.3, 4.4, 12.4], target: [0.6, -0.2, 0], fov: 36 }
 
 const from = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, a, bb), 1 - range(local, c, d))
 
@@ -117,14 +118,24 @@ export const QB = { before: 0, router: 5, lanes: 11, gate: 17, side: 22 }
 const WAKE: CameraShot = { position: [-1.2, 3.0, 13.2], target: [-0.6, 0, 0], fov: 36 }
 const ENTRANCE: CameraShot = { position: [-3.6, 2.6, 10.4], target: [-3.2, -0.1, 0.4], fov: 36 }
 const LANES_SHOT: CameraShot = { position: [0, 5.2, 10.6], target: [0, -0.3, 0.3], fov: 36 }
-const EXIT: CameraShot = { position: [2.8, 3.4, 11.4], target: [2.4, -0.1, 0.3], fov: 36 }
-const WHOLE: CameraShot = { position: [0, 4.6, 15.4], target: [0.4, 0, 0], fov: 36 }
+const EXIT: CameraShot = { position: [4.0, 3.4, 11.8], target: [3.6, 0.1, 0.3], fov: 36 }
+const WHOLE: CameraShot = { position: [0, 4.9, 16.2], target: [0.4, 0.3, 0], fov: 36 }
 
 const pwin = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, pb(a), pb(bb)), 1 - range(local, pb(c), pb(d)))
+/**
+ * A label that leaves when the camera moves on to the next piece (its element
+ * is at the edge of that shot) and comes back for the whole picture.
+ */
+const untilNext = (a: number, bb: number, next: number) => {
+  const own = pwin(a, bb, next, next + 0.75)
+  const whole = pwin(QB.side + 0.5, QB.side + 1.25)
+  return (local: number) => Math.max(own(local), whole(local))
+}
 
 const routerLabel = new Vector3(ROUTER_POS[0], ROUTER_POS[1] + 0.95, ROUTER_POS[2])
 const gateLabel = new Vector3(GATE_POS[0], GATE_POS[1] + 0.95, GATE_POS[2])
-const releaseLabel = new Vector3(RELEASE_POS[0], RELEASE_POS[1] + 0.55, RELEASE_POS[2])
+// Under the release, so it stays clear of the map of the talk in the top right corner.
+const releaseLabel = new Vector3(RELEASE_POS[0], RELEASE_POS[1] - 0.5, RELEASE_POS[2])
 const approverLabel = new Vector3(APPROVER_POS[0] - 0.4, APPROVER_POS[1] + 0.45, APPROVER_POS[2])
 const laneLabel = (r: number, turn: number) => orbitPoint({ radius: r }, turn * Math.PI, new Vector3()).add(new Vector3(0, 0.2, 0))
 /** Each lane is named at its own angle, so the names never stack. */
@@ -144,11 +155,11 @@ function Pipeline() {
         <BurnCaption k="p10.gate" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={124} source="p10.gate.source" level={burnWindow(pb(QB.gate + 2.5), pb(QB.gate + 3.5), pb(QB.side), pb(QB.side + 0.6))} />
         <BurnCaption k="p10.side" corner="bottom-left" width={84} height={9} className="art-caption--lead" seed={125} level={burnWindow(pb(QB.side + 2), pb(QB.side + 3))} />
       </Stage>
-      <Label k="p10.routerName" target={() => routerLabel} width={14} mono={false} className="p05-name" level={pwin(QB.router + 1, QB.router + 1.75)} />
+      <Label k="p10.routerName" target={() => routerLabel} width={14} mono={false} className="p05-name" level={untilNext(QB.router + 1, QB.router + 1.75, QB.lanes)} />
       {LANE_LABELS.map((l, i) => (
         <Label key={l.k} k={l.k} target={() => l.p} width={16} level={pwin(QB.lanes + 1 + i * 0.5, QB.lanes + 1.75 + i * 0.5)} />
       ))}
-      <Label k="p10.approver" target={() => approverLabel} width={36} className="label-right" level={pwin(QB.lanes + 2.5, QB.lanes + 3.25)} />
+      <Label k="p10.approver" target={() => approverLabel} width={36} className="label-right" level={untilNext(QB.lanes + 2.5, QB.lanes + 3.25, QB.gate)} />
       <Label k="p10.gateName" target={() => gateLabel} width={16} mono={false} className="p05-name" level={pwin(QB.gate + 1, QB.gate + 1.75)} />
       <Label k="p10.release" target={() => releaseLabel} width={14} level={pwin(QB.gate + 2, QB.gate + 2.75)} />
       <Label k="p10.audit" target="audit" offset={[0, 0.45, 0]} width={16} level={pwin(QB.side + 1, QB.side + 1.75)} />
