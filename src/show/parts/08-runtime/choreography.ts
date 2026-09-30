@@ -9,7 +9,7 @@ import { sketchOf } from '@/art/lines'
 import { drive, fade, inkIn, inkOut } from '@/art/motion'
 import { defineChoreography } from '@/world/actors'
 import { SHELL } from '../../actors'
-import { HALL_BIG, KILNS, LOCK_DOCK, PILE } from '../../layout'
+import { HALL_BIG, KILNS, LOCK_DOCK } from '../../layout'
 import { SHELL_DIRS, SHELL_RADIUS } from '../05-actions-to-agents'
 import { B, grid, pulseAt } from '.'
 
@@ -26,14 +26,9 @@ export const runtimeMoves = defineChoreography('08-runtime', (tl, cast, t) => {
   const span = (from: number, to: number) => t.span(KEY, b(from), b(to))
   const el = (id: string) => artOf(cast.get(id))
 
-  // The old problem leaves the stage: the pile of work, the person, the three runs.
+  // The person at the exit leaves the stage.
   const clear = span(0.25, 1.75)
-  PILE.forEach((_, k) => {
-    const out = span(0.25 + k * 0.08, 0.75 + k * 0.08)
-    inkOut(tl, el(`p6.ball.${k}`), out.start, out.duration)
-  })
   inkOut(tl, el('reviewer'), clear.start, clear.duration * 0.6)
-  for (let k = 0; k < 3; k++) fade(tl, sketchOf(cast.get<Group>(`p6.path.${k}`)).material, 0, clear.start, clear.duration)
 
   // 8.1: each piece of the shell lights up in turn (a small pulse).
   SHELL.forEach((name, i) => {

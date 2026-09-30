@@ -3,12 +3,13 @@
  * small team with a hamlet of many products appears north east of the town.
  * The hamlet stays: those are the products the town works for.
  */
-import type { MeshToonMaterial } from 'three'
+import type { Group, MeshToonMaterial } from 'three'
 import { boil } from '@/art/clock'
 import { artOf, swarmOf } from '@/art/elements'
-import { drive, inkIn, tint } from '@/art/motion'
+import { sketchOf } from '@/art/lines'
+import { drive, fade, inkIn, inkOut, tint } from '@/art/motion'
 import { defineChoreography } from '@/world/actors'
-import { APPS, TEAM } from '../../layout'
+import { APPS, PILE, TEAM } from '../../layout'
 import { B, grid } from '.'
 
 const KEY = '07-change-of-mind/change'
@@ -29,6 +30,12 @@ export const changeOfMindMoves = defineChoreography('07-change-of-mind', (tl, ca
   const person = artOf<MeshToonMaterial>(cast.get('reviewer'))
   tint(tl, person.body.material.color, FAINT, calm.start, calm.duration)
   tl.to(person.object.scale, { x: 0.85, y: 0.85, z: 0.85, duration: calm.duration, ease: 'power2.inOut' }, calm.start)
+  // The three runs and the pile of work leave: the question turns the page.
+  PILE.forEach((_, k) => {
+    const out = span(0.5 + k * 0.08, 1 + k * 0.08)
+    inkOut(tl, artOf(cast.get(`p6.ball.${k}`)), out.start, out.duration)
+  })
+  for (let k = 0; k < 3; k++) fade(tl, sketchOf(cast.get<Group>(`p6.path.${k}`)).material, 0, calm.start, calm.duration)
 
   // 7.2: three people by the hamlet, more than ten cottages.
   TEAM.forEach((_, i) => {

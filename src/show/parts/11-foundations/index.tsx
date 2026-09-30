@@ -40,8 +40,8 @@ hudCues.fill(2, { key: KEY, from: b(1.5), to: b(3) })
 /** The town; then out west for the two houses; the ground south of the hall; the walls; the verbs; the shortcut north west. */
 const WHOLE = townShot([0, 0.3, 1.5])
 const WEST = townShot([-14, 0.3, -7])
-const GROUND = townShot([-2, 0, 5])
-const WALLS = townShot([-1, 0, 7])
+const GROUND = townShot([-1, 0, 8.5])
+const WALLS = townShot([-1, 0, 9.5])
 const VERBS_SHOT = townShot([1.2, 0.5, 4.0])
 const SKIP = townShot([-8, 0, -7])
 
@@ -80,7 +80,7 @@ function Dom() {
         <BurnCaption k="p11.phases" corner="top-left" width={84} height={12} className="art-caption--lead" seed={132} source="p11.phases.source" level={burnWindow(b(B.phases + 3), b(B.phases + 4), b(B.disc), b(B.disc + 0.6))} />
         <BurnCaption k="p11.disc" corner="top-left" width={84} height={12} className="art-caption--lead" seed={133} source="p11.disc.source" level={burnWindow(b(B.disc + 2.5), b(B.disc + 3.5), b(B.walls), b(B.walls + 0.6))} />
         <BurnCaption k="p11.walls" corner="top-left" width={84} height={12} className="art-caption--lead" seed={134} source="p11.walls.source" level={burnWindow(b(B.walls + 3), b(B.walls + 4), b(B.verbs), b(B.verbs + 0.6))} />
-        <BurnCaption k="p11.verbs" corner="top-left" width={84} height={12} className="art-caption--lead" seed={135} source="p11.verbs.source" level={burnWindow(b(B.verbs + 2.5), b(B.verbs + 3.5), b(B.skip), b(B.skip + 0.6))} />
+        <BurnCaption k="p11.verbs" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={135} source="p11.verbs.source" level={burnWindow(b(B.verbs + 2.5), b(B.verbs + 3.5), b(B.skip), b(B.skip + 0.6))} />
         <BurnCaption k="p11.skip" corner="top-left" width={84} height={12} className="art-caption--lead" seed={136} source="p11.skip.source" level={burnWindow(b(B.skip + 2.5), b(B.skip + 3.5))} />
       </Stage>
       <Label k="p11.tidy" target={() => tidyLabel} width={20} mono={false} className="p05-name" level={win(B.amplify + 1, B.amplify + 1.75, B.phases, B.phases + 1)} />

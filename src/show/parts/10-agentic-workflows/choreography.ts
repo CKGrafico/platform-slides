@@ -57,6 +57,12 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const tmp = new Vector3()
   const tmp2 = new Vector3()
 
+  // The developer and the copy of the hall leave: the laptop had its beat.
+  for (const id of ['dev', 'dev.hall', 'dev.harness']) {
+    const out = span(0.3, 0.9)
+    inkOut(tl, el(id), out.start, out.duration)
+  }
+
   // ---- 10.2: the hall, big and closed; the tasks leave it -----------------------------------
   const hall = el('hall')
   const parapet = el('harness')

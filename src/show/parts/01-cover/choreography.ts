@@ -19,6 +19,6 @@ export const coverMoves = defineChoreography('01-cover', (tl, cast) => {
   tl.set(banner.scale, { x: HALL_BIG, y: HALL_BIG, z: HALL_BIG }, 0)
 
   const issue = artOf(cast.get('issue'))
-  tl.set(issue.object.position, { x: 0, y: 0.16, z: 0 }, 0)
+  tl.set(issue.object.position, { x: 0, y: 0.26, z: 0 }, 0)
   tl.set(issue.object.scale, { x: 1, y: 1, z: 1 }, 0)
 })

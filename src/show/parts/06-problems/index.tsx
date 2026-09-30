@@ -32,7 +32,7 @@ const { b } = grid
 export const B = { title: 0, runs: 4, cost: 10, human: 16 }
 
 /** The hall on the left, the road and the exit on the right. */
-const P6_SHOT = townShot([4.5, 0.3, 3.5])
+const P6_SHOT = townShot([5.5, 0.3, 4.8])
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
@@ -40,13 +40,8 @@ const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => 
 const tokenTop = stackPoint(COINS, TOKEN_COINS - 1).add(new Vector3(0, 0.42, 0))
 const aboveTokens = () => tokenTop
 
-/** What the agent does with its reasoning in 6.2, one per task moon: names to the sides, in two rows. */
-const TASK_OFFSETS: Record<string, readonly [number, number, number]> = {
-  labels: [-0.3, 0.3, 0],
-  assign: [-0.3, 0.95, 0],
-  comment: [0.3, 0.3, 0],
-  status: [0.3, 0.95, 0],
-}
+/** What the agent does with its reasoning in 6.2: one name at a time, above its task. */
+const TASK_OFFSET = [0, 0.55, 0] as const
 
 function Dom() {
   return (
@@ -62,10 +57,9 @@ function Dom() {
           key={name}
           k={`p06.task.${name}` as MessageKey}
           target={`task.${name}`}
-          offset={TASK_OFFSETS[name]}
+          offset={TASK_OFFSET}
           width={26}
-          className={TASK_OFFSETS[name]![0] > 0 ? 'label-right' : 'label-left'}
-          level={win(B.cost + 0.75 + i * 0.4, B.cost + 1.25 + i * 0.4, B.human, B.human + 1)}
+          level={win(B.cost + 0.6 + i * 0.5, B.cost + 0.9 + i * 0.5, B.cost + 1.45 + i * 0.5, B.cost + 1.75 + i * 0.5)}
         />
       ))}
       <Label k="p06.tokens" target={aboveTokens} width={14} mono={false} className="p05-name" level={win(B.cost + 1.5, B.cost + 2.25)} />

@@ -42,7 +42,7 @@ export const B = { ga: 0, events: 4, unfold: 10, core: 15, md: 20, compile: 25, 
 export const MD_OUT: V3 = [-3.8, 0.4, 2.6]
 export const LOCK_POS: V3 = [-6.4, 0, -2.9]
 /** The shell of small moons around the crate: six from the compiler, then "our changes". */
-export const SHELL_RADIUS = 0.5
+export const SHELL_RADIUS = 0.8
 export const SHELL_DIRS: V3[] = [
   [0, 1, 0.15],
   [0.87, 0.5, 0.2],
@@ -109,21 +109,21 @@ function Dom() {
           key={name}
           k={`p05.step.${name}` as MessageKey}
           target={`step.${name}`}
-          offset={[0, i % 2 === 0 ? 0.55 : -0.5, 0]}
+          offset={[0, 0.6, 0]}
           width={20}
-          level={win(B.unfold + 1 + i * 0.25, B.unfold + 1.75 + i * 0.25, B.core, B.core + 1)}
+          level={win(B.unfold + 0.9 + i * 0.55, B.unfold + 1.2 + i * 0.55, B.unfold + 1.5 + i * 0.55, B.unfold + 1.8 + i * 0.55)}
         />
       ))}
-      <Label k="p05.agentic" target="hall" offset={[0.4, 4.6, -0.6]} width={26} mono={false} className="p05-name" level={win(B.core + 2, B.core + 3, B.clusters, B.clusters + 1)} />
-      <Label k="p05.md" target={above('md', 0.55)} width={18} level={win(B.md + 1, B.md + 1.75, B.compile + 1.6, B.compile + 1.9)} />
-      <Label k="p05.front" target={above('md', 1.1)} width={30} level={win(B.md + 2.5, B.md + 3.25, B.compile, B.compile + 0.5)} />
-      <Label k="p05.body" target={above('md', -0.4, 0.5)} width={30} level={win(B.md + 3, B.md + 3.75, B.compile, B.compile + 0.5)} />
+      <Label k="p05.agentic" target="hall" offset={[0.4, 4.6, -0.6]} width={26} mono={false} className="p05-name" level={win(B.core + 2, B.core + 3, B.md, B.md + 0.6)} />
+      <Label k="p05.md" target={above('md', 0.85)} width={18} level={win(B.md + 1, B.md + 1.75, B.compile + 1.6, B.compile + 1.9)} />
+      <Label k="p05.front" target={above('md', 1.5)} width={30} level={win(B.md + 2.5, B.md + 3.25, B.compile, B.compile + 0.5)} />
+      <Label k="p05.body" target={above('md', -0.5, 0.7)} width={30} level={win(B.md + 3, B.md + 3.75, B.compile, B.compile + 0.5)} />
       <Label k="p05.compilerName" target="scriptorium" offset={[0, 1.95, 0]} width={16} level={win(B.compile + 0.75, B.compile + 1.5, B.clusters, B.clusters + 1)} />
       <Label k="p05.lock" target={above('lock', 1.15)} width={24} level={win(B.compile + 2.4, B.compile + 3, B.clusters, B.clusters + 1)} />
       {SHELL.map((name, i) => {
         const d = SHELL_DIRS[i]!
         const len = Math.hypot(d[0], d[1])
-        const off = [(d[0] / (len || 1)) * 0.42, (d[1] / (len || 1)) * 0.28, 0] as const
+        const off = [(d[0] / (len || 1)) * 0.6, (d[1] / (len || 1)) * 0.42, 0] as const
         // One name at a time, as each piece snaps on; "our changes" stays until the clusters.
         const inAt = name === 'ours' ? B.ours + 1 : B.compile + 3 + i * 0.25
         const outAt = name === 'ours' ? B.clusters : inAt + 0.5

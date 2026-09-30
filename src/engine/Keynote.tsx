@@ -44,7 +44,7 @@ export function Keynote({ show, actors, choreographies, world, overlay, grain }:
     p.tick()
     return p
   })
-  const [debugOpen, setDebugOpen] = useState(debugAllowed)
+  const [debugOpen, setDebugOpen] = useState(false)
 
   useEffect(() => {
     presentation.reducedMotion = env.reducedMotion

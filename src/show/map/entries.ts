@@ -9,7 +9,7 @@
 import { Vector3 } from 'three'
 import type { AnchorTarget } from '@/art/anchor'
 import type { MessageKey } from '@/i18n'
-import { COINS, GUARDRAIL_SPOTS, HALL_BIG, KILNS, LOOP, RINGS } from '../layout'
+import { COINS, HALL_BIG, KILNS, LOOP, RINGS } from '../layout'
 
 export type Side = 'above' | 'below' | 'left' | 'right'
 
@@ -36,13 +36,13 @@ export const MAP_ENTRIES: MapEntry[] = [
   // A nameplate under the loop, so the name never reaches the map of the talk in the corner.
   { id: 'hall', target: 'hall', offset: [0, -0.05, 4.6], name: 'town.hall', role: 'town.hall.role', side: 'below' },
   { id: 'opencode', target: 'banner', offset: [0.45, 1.1, 0], name: 'map.opencode', role: 'map.opencode.role', side: 'right' },
-  { id: 'harness', target: point(-2.3 * HALL_BIG - 0.7, 0.5, 2.0 * HALL_BIG), name: 'map.harness', role: 'map.harness.role', side: 'left' },
+  { id: 'harness', target: point(1.9 * HALL_BIG, 0.3, 2.0 * HALL_BIG + 0.35), name: 'map.harness', role: 'map.harness.role', side: 'below' },
   { id: 'coins', target: point(COINS[0] + 0.45, COINS[1] + 0.7, COINS[2]), name: 'town.coins', role: 'town.coins.role', side: 'right' },
   { id: 'lane.automation', target: point(1.7, 0, LOOP[1]![2] - 0.45), name: 'map.lane.automation', side: 'above', lane: true },
 
   // The runtime.
   { id: 'forge', target: 'forge', offset: [0, 2.2, 0], name: 'map.forge', role: 'map.forge.role', side: 'above' },
-  { id: 'models', target: point(KILNS[1]![0], 1.3, KILNS[1]![2]), name: 'map.models', role: 'map.models.role', side: 'above' },
+  { id: 'models', target: point(KILNS[2]![0] + 1.2, 0.9, KILNS[2]![2] + 0.2), name: 'map.models', role: 'map.models.role', side: 'right' },
 
   // The automation.
   { id: 'station', target: 'station', offset: [0, 2.7, 0], name: 'map.ga', role: 'map.ga.role', side: 'above' },
@@ -57,8 +57,8 @@ export const MAP_ENTRIES: MapEntry[] = [
   { id: 'booth', target: 'booth', offset: [0, -0.1, 1.0], name: 'town.booth', role: 'town.booth.role', side: 'below' },
 
   // Production and measure.
-  { id: 'walls', target: onRing(GUARDRAIL_SPOTS[0]!.ring, GUARDRAIL_SPOTS[0]!.angle, 1.5), name: 'map.walls', role: 'map.walls.role', side: 'above' },
-  { id: 'tower', target: 'tower', offset: [0, 4.0, 0], name: 'map.audit', role: 'map.audit.role', side: 'above' },
+  { id: 'walls', target: onRing(1, Math.PI / 2, 1.5), name: 'map.walls', role: 'map.walls.role', side: 'above' },
+  { id: 'tower', target: 'tower', offset: [0, 3.4, 0], name: 'map.audit', role: 'map.audit.role', side: 'above' },
   { id: 'repair', target: 'repair', offset: [0, 1.4, 0], name: 'map.housekeeping', role: 'map.housekeeping.role', side: 'above' },
   { id: 'health', target: 'elder', offset: [-0.55, 1.4, 0], name: 'map.health', role: 'map.health.role', side: 'left' },
 ]

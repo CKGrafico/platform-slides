@@ -41,8 +41,8 @@ hudCues.hide({ rise: { key: KEY, from: b(B.numbers), to: b(B.numbers + 1) }, fal
 /** The town; the road out to production; the stacks by the barn; the elder; a quiet corner for the numbers; the town again. */
 const WHOLE = townShot([0, 0.3, 1.5])
 const ESCAPE = townShot([12, 0.3, 4.5])
-const STACKS = townShot([7.6, 0.3, 3.2])
-const PERSON = townShot([5.0, 0.3, 6.5])
+const STACKS = townShot([8.0, 0.3, 4.4])
+const PERSON = townShot([4.5, 0.3, 7.5])
 const QUIET = townShot([-14, 0, -20])
 
 const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
@@ -57,11 +57,13 @@ mapCues.focus(['tower', 'gatehouse', 'health'], mapPulse(B.loop, B.loop + 5))
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
 const question = new Vector3(OUTER_E[0] - 2.0, 2.4, OUTER_E[2])
-/** Names above the stacks: the front row lower, the back row higher. */
-const metricLabels = METRIC_COINS.map((_, i) => new Vector3(METRIC_BASES[i]![0], i < 4 ? 1.45 : 2.1, METRIC_BASES[i]![2]))
-const hollowLabels = [0, 1].map((k) => new Vector3(METRIC_BASES[6 + k]![0], 2.1, METRIC_BASES[6 + k]![2]))
-// "Not collected" under the two ghost stacks, on the ground in front of them.
-const notCollected = new Vector3((METRIC_BASES[6]![0] + METRIC_BASES[7]![0]) / 2, 0.05, METRIC_BASES[7]![2] + 0.75)
+/** Names of the front row on the ground before the stacks, at three depths; names of the back row above, at three heights. */
+const FRONT_DEPTH = [0.7, 1.9, 3.1, 0.7]
+const BACK_HEIGHT = [2.0, 3.0, 4.0, 2.0]
+const metricLabels = METRIC_COINS.map((_, i) => (i < 4 ? new Vector3(METRIC_BASES[i]![0], 0.05, METRIC_BASES[i]![2] + FRONT_DEPTH[i]!) : new Vector3(METRIC_BASES[i]![0], BACK_HEIGHT[i - 4]!, METRIC_BASES[i]![2])))
+const hollowLabels = [0, 1].map((k) => new Vector3(METRIC_BASES[6 + k]![0], BACK_HEIGHT[2 + k]!, METRIC_BASES[6 + k]![2]))
+// "Not collected" above the two ghost stacks' names.
+const notCollected = new Vector3((METRIC_BASES[6]![0] + METRIC_BASES[7]![0]) / 2, 4.9, METRIC_BASES[7]![2])
 const panelPoint = new Vector3(HEALTH_PERSON[0] + 0.6, 1.3, HEALTH_PERSON[2])
 /** What needs a human, per app: a few pastel dots each. */
 const WAITING = [2, 1, 3]

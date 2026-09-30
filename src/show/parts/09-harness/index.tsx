@@ -63,7 +63,7 @@ const SKY = townShot([-10, 0, -19])
 /** The town, as a map. */
 const MAP_WHOLE = townShot([0, 0.3, 1.5])
 /** Close on the hall: the parapet, the paths of the runs. */
-const CENTER = townShot([0.8, 0.5, 1.4])
+const CENTER = townShot([1.4, 0.5, 1.0])
 /** The developer with the copy, on the road south of the hall. */
 const LAPTOP = townShot([-1.5, 0.3, 5.5])
 
@@ -72,8 +72,7 @@ const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => 
 /** The ten things the Harness holds, as tags beside the hall. */
 const TAGS = ['rules', 'conventions', 'architecture', 'skills', 'notskills', 'commands', 'team', 'tests', 'pr', 'deploy'] as const
 /** Two columns beside the parapet, like the sheet of rules it carries: five on each side. */
-const TAG_X = 2.3 * HALL_BIG + 1.0
-const tagPoints = TAGS.map((_, i) => new Vector3(i < 5 ? -TAG_X : TAG_X, 2.5 - (i % 5) * 0.48, 1.2))
+const tagPoints = TAGS.map((_, i) => new Vector3(i < 5 ? -6.4 : 5.0, 3.4 - (i % 5) * 0.72, 1.0))
 
 const cloudLabel = new Vector3(3.6, 0.2, 6.2)
 const laptopLabel = new Vector3(DEV_POS[0] + 0.6, 0, DEV_POS[2] + 0.95)
@@ -99,7 +98,7 @@ function Dom() {
           k={`p09.tag.${name}` as MessageKey}
           target={() => tagPoints[i]!}
           width={22}
-          className={i < 5 ? 'label-right' : 'label-left'}
+          className="label-left"
           level={win(B.frame + 2 + i * 0.2, B.frame + 2.5 + i * 0.2, B.cloud, B.cloud + 1)}
         />
       ))}

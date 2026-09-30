@@ -72,7 +72,7 @@ export const MAIN: V3[] = [
 ]
 /** The road into the town (part 3): from the far west to the outer gate. */
 export const TIMELINE_ROAD: V3[] = [
-  [-42, 0, MAIN_Z],
+  [-47.5, 0, MAIN_Z],
   [-18.5, 0, MAIN_Z],
 ]
 /** Along the main belt, as fractions of its length. */
@@ -87,9 +87,9 @@ const crossing = (r: number) => Math.sqrt(r * r - MAIN_Z * MAIN_Z)
 export const RING_CROSSINGS = RINGS.map(crossing)
 /** Angles (radians, +z toward the camera) where each ring has a tower of its own on the wall. */
 export const RING_TOWERS: number[][] = [
-  [0, -2.0, -2.8, 2.7, 1.57],
-  [-0.52, -1.05, -1.57, -2.09, -2.62, Math.PI, 1.57, 1.05, 2.09],
-  [-0.52, -1.05, -1.57, -2.09, -2.62, Math.PI, 1.05, 1.57, 2.09],
+  [-2.0, 2.7, 1.57],
+  [-0.52, -1.57, -2.62, 1.05, 2.09],
+  [-0.52, -1.57, -2.62, Math.PI, 1.05, 2.09],
 ]
 /** Each ring is built as arcs, so it can rise around the town. */
 export const RING_ARCS = 8
@@ -108,7 +108,7 @@ export const REFINE_HOUSE: V3 = [-6.3, 0, 3.3]
 export const REQUESTER: V3 = [-6.6, 0, 7.4]
 export const MARKET: V3 = [14.2, 0, 3.6]
 /** The person a risky change is sent to: a booth south of the exit gate. */
-export const BOOTH: V3 = [8.0, 0, 7.8]
+export const BOOTH: V3 = [5.8, 0, 8.3]
 export const WELL: V3 = [-9.6, 0, 1.4]
 /** The compiler: a scriptorium north west of the loop. */
 export const SCRIPTORIUM: V3 = [-8.0, 0, -4.5]
@@ -126,7 +126,7 @@ export const VENDOR: V3 = [22, 0.3, -6]
 export const TOWER_ANGLE = deg(-75)
 export const TOWER: V3 = [Math.cos(TOWER_ANGLE) * RINGS[0]!, 0, Math.sin(TOWER_ANGLE) * RINGS[0]!]
 /** The barn and the stacks of measures beside it, between the first ring and the exit gate (part 12). */
-export const BARN: V3 = [8.6, 0, 2.0]
+export const BARN: V3 = [8.8, 0, 0.2]
 export const MAIN_AT = { gate: mainAt(GATEHOUSE[0]), triage: mainAt(TRIAGE_HOUSE[0]), refine: mainAt(REFINE_HOUSE[0]), hall: 0.5, exit: mainAt(EXIT_GATE[0]), market: mainAt(MARKET[0]) }
 
 // ---- people --------------------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ export const APPS: V3[] = Array.from({ length: 11 }, (_, i) => {
 /** The developer with the copy of the hall (9.5), south of the road. */
 export const DEV_POS: V3 = [-2.5, 0, 8.0]
 /** The elder who looks at what needs a human (12.4), by the stacks. */
-export const HEALTH_PERSON: V3 = [4.6, 0, 7.6]
+export const HEALTH_PERSON: V3 = [3.8, 0, 8.6]
 
 // ---- the paths of the story --------------------------------------------------------------------------
 
@@ -221,12 +221,12 @@ export const PHASE_LABEL_DIR: V3 = [0, 0, 1]
 export const PHASE_LABEL_R = [5.6, 10.0, 14.6]
 /** Verbs (11.5): what a worker may do, as small moons; what it may not, as hollow slots. */
 export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [
-  { id: 'pr', at: [2.6, 1.7, 2.9], hollow: false },
-  { id: 'merge-no', at: [2.6, 1.3, 2.9], hollow: true },
-  { id: 'main-no', at: [2.6, 0.9, 2.9], hollow: true },
+  { id: 'pr', at: [2.6, 2.6, 2.9], hollow: false },
+  { id: 'merge-no', at: [2.6, 1.95, 2.9], hollow: true },
+  { id: 'main-no', at: [2.6, 1.3, 2.9], hollow: true },
   { id: 'merge', at: [EXIT_GATE[0], 3.1, EXIT_GATE[2] + 0.4], hollow: false },
-  { id: 'issue', at: [TRIAGE_HOUSE[0], 2.4, TRIAGE_HOUSE[2] + 0.6], hollow: false },
-  { id: 'code-no', at: [TRIAGE_HOUSE[0], 2.0, TRIAGE_HOUSE[2] + 0.6], hollow: true },
+  { id: 'issue', at: [TRIAGE_HOUSE[0] + 1.6, 1.5, TRIAGE_HOUSE[2] + 0.4], hollow: false },
+  { id: 'code-no', at: [TRIAGE_HOUSE[0] + 1.6, 0.85, TRIAGE_HOUSE[2] + 0.4], hollow: true },
 ]
 /** Where the five guardrail names sit: on wall segments the camera sees (ring index, angle). */
 export const GUARDRAIL_SPOTS: Array<{ ring: number; angle: number }> = [
@@ -251,18 +251,19 @@ export const MESSY_POS: V3 = [-12, 0, -9]
 // ---- part 12: the measures -------------------------------------------------------------------------------
 
 /**
- * Measures stack up in two rows by the barn, like the stores of a game: four
- * in front, then two more with the two that are not collected behind them.
+ * Measures stack up on both sides of the road, like the stores of a game:
+ * four south of it, then two more north of it by the barn, with the two that
+ * are not collected beside them.
  */
 export const METRIC_BASES: V3[] = [
-  [6.0, 0, 3.35],
-  [7.05, 0, 3.35],
-  [8.1, 0, 3.35],
-  [9.15, 0, 3.35],
-  [6.5, 0, 4.4],
-  [7.55, 0, 4.4],
-  [8.6, 0, 4.4],
-  [9.65, 0, 4.4],
+  [6.4, 0, 7.3],
+  [7.7, 0, 7.3],
+  [9.0, 0, 7.3],
+  [10.3, 0, 7.3],
+  [6.3, 0, 1.6],
+  [7.6, 0, 1.6],
+  [8.9, 0, 1.6],
+  [10.2, 0, 1.6],
 ]
 /** Coins in each collected measure, and in each ghost stack of a measure that is not collected. */
 export const METRIC_COINS = [9, 6, 7, 11, 5, 7]
@@ -276,12 +277,12 @@ export const TOKENS_LEFT = 3
 
 // ---- part 3: the milestones on the road ------------------------------------------------------------------
 
-const GAP_RATIO = 0.9
+const GAP_RATIO = 0.93
 const gaps = Array.from({ length: 9 }, (_, i) => Math.pow(GAP_RATIO, i))
 const gapSum = gaps.reduce((a, b) => a + b, 0)
 /** X of each of the ten milestones on the road into the town: each closer to the last. */
-export const MILESTONE_X: number[] = [-40.2]
-for (const g of gaps) MILESTONE_X.push(MILESTONE_X[MILESTONE_X.length - 1]! + (g / gapSum) * 20)
+export const MILESTONE_X: number[] = [-44]
+for (const g of gaps) MILESTONE_X.push(MILESTONE_X[MILESTONE_X.length - 1]! + (g / gapSum) * 22.5)
 /** The milestones stand on the north side of the road, so their names sit above it. */
 export const MILESTONE_Z = MAIN_Z - 1.15
 export const MILESTONES: V3[] = MILESTONE_X.map((x) => [x, 0, MILESTONE_Z] as const)
@@ -318,7 +319,7 @@ const smooth = (t: number) => {
 /** How far a point is outside the flat land: the town, the road into it, the hamlets. Negative inside. */
 function outsideFlat(x: number, z: number): number {
   const town = Math.hypot(x, z) - (RINGS[2]! + 2.5)
-  const road = Math.max(Math.abs(x + 30) - 14, Math.abs(z - MAIN_Z) - 3.5)
+  const road = Math.max(Math.abs(x + 31) - 18, Math.abs(z - MAIN_Z) - 3.5)
   const west = Math.hypot(x + 14, z + 7) - 6
   return Math.min(town, road, west)
 }
@@ -355,7 +356,7 @@ function farm(cx: number, cz: number, cols: number, rows: number): Farm {
   ]
   return { tiles, fence, bales }
 }
-export const FARMS: Farm[] = [farm(-15.5, 0.2, 2, 3), farm(-11, 9.6, 3, 2), farm(1.5, 9.8, 3, 2), farm(15.5, 1.0, 2, 3), farm(9.6, -1.6, 2, 2), farm(-6.5, -13.4, 3, 2)]
+export const FARMS: Farm[] = [farm(-15.5, 0.2, 2, 3), farm(-11, 9.6, 3, 2), farm(1.5, 9.8, 3, 2), farm(15.5, 1.0, 2, 3), farm(9.2, -2.4, 2, 2), farm(-6.5, -13.4, 3, 2)]
 export const FIELDS: V3[] = FARMS.flatMap((f) => f.tiles)
 export const BALES: V3[] = FARMS.flatMap((f) => f.bales)
 
@@ -367,7 +368,7 @@ export const BALES: V3[] = FARMS.flatMap((f) => f.bales)
 const rect = (p: V3, hw: number, hd: number, lean = 0.4): [number, number, number, number] => [p[0] + lean, p[2] + lean, hw, hd]
 const KEEP_CLEAR: Array<[number, number, number, number]> = [
   [0.4, 0.4, 6.4, 5.4], // the hall and its loop
-  [0, MAIN_Z, 44, 1.8], // the roads, into the town and through it
+  [-2, MAIN_Z, 48, 1.8], // the roads, into the town and through it
   rect(GATEHOUSE, 1.8, 3.4, 0.3),
   rect(EXIT_GATE, 1.8, 3.4, 0.3),
   rect(OUTER_W, 1.8, 3.4, 0.3),
@@ -386,7 +387,7 @@ const KEEP_CLEAR: Array<[number, number, number, number]> = [
   rect(FORGE, 2.0, 1.8),
   ...KILNS.map((k) => rect(k, 1.2, 1.2, 0.3)),
   rect(BARN, 2.0, 1.8, 0.5),
-  [7.8, 3.9, 3.0, 1.2], // the stacks of measures
+  [8.4, 4.4, 3.2, 3.8], // the stacks of measures
   rect(REVIEWER, 1.4, 1.4, 0.3),
   rect(DEV_POS, 1.2, 1.2, 0.3),
   rect(HEALTH_PERSON, 1.2, 1.2, 0.3),

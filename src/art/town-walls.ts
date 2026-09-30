@@ -29,11 +29,11 @@ const inGap = (a: number, gaps: Gap[]) => gaps.some(([g0, g1]) => a >= g0 && a <
 
 /** A ring wall between two angles: blocks of stone with merlons, and towers. Its center is the origin. */
 export function createWallArc(options: WallArcOptions) {
-  const { radius, from, to, height = 1.1, thickness = 0.5, towers = [], gaps = [] } = options
+  const { radius, from, to, height = 0.75, thickness = 0.36, towers = [], gaps = [] } = options
   const stone: BufferGeometry[] = []
   const p = new Parts()
   const length = (to - from) * radius
-  const blocks = Math.max(1, Math.round(length / 1.6))
+  const blocks = Math.max(1, Math.round(length / 1.2))
   const step = (to - from) / blocks
   const chord = radius * step
   for (let i = 0; i < blocks; i++) {
@@ -48,20 +48,19 @@ export function createWallArc(options: WallArcOptions) {
     for (let k = 0; k < merlons; k++) {
       const t = (k + 0.5) / merlons - 0.5
       const am = a + t * step
-      const r = radius + thickness / 2 - 0.1
-      stone.push(boxAt(0.18, 0.2, 0.18, Math.cos(am) * r, height + 0.1, Math.sin(am) * r, { y: -am }))
+      const r = radius + thickness / 2 - 0.08
+      stone.push(boxAt(0.14, 0.14, 0.14, Math.cos(am) * r, height + 0.07, Math.sin(am) * r, { y: -am }))
     }
   }
   for (const a of towers) {
     const x = Math.cos(a) * radius
     const z = Math.sin(a) * radius
-    const tw = 0.9
-    const th = height + 0.9
+    const tw = 0.7
+    const th = height + 0.7
     stone.push(boxAt(tw, th, tw, x, th / 2, z, { y: -a }))
-    p.timber.push(boxAt(tw + 0.3, 0.34, tw + 0.3, x, th + 0.17, z, { y: -a }))
-    const roof = hipRoofGeometry(tw + 0.5, tw + 0.5, 0.5, 0)
+    const roof = hipRoofGeometry(tw + 0.3, tw + 0.3, 0.42, 0)
     roof.rotateY(-a)
-    roof.translate(x, th + 0.34, z)
+    roof.translate(x, th, z)
     p.tiles.push(roof)
   }
   const el = building('wall', merge(stone), town.stone, stoneTexture())
@@ -76,20 +75,20 @@ export function createWallArc(options: WallArcOptions) {
  */
 export function createArch(options: { span?: number } = {}) {
   const { span = 1.6 } = options
-  const jw = 0.5
+  const jw = 0.45
   const zj = span / 2 + jw / 2
   const stone: BufferGeometry[] = []
-  for (const z of [-zj, zj]) stone.push(boxAt(0.55, 1.3, jw, 0, 0.65, z))
-  stone.push(boxAt(0.55, 0.4, span + jw * 2, 0, 1.5, 0))
+  for (const z of [-zj, zj]) stone.push(boxAt(0.45, 1.15, jw, 0, 0.575, z))
+  stone.push(boxAt(0.45, 0.35, span + jw * 2, 0, 1.325, 0))
   const merlons = Math.round((span + jw * 2) / 0.45)
   for (let k = 0; k < merlons; k++) {
     const z = -(span + jw * 2) / 2 + ((k + 0.5) * (span + jw * 2)) / merlons
-    for (const x of [-0.18, 0.18]) stone.push(boxAt(0.16, 0.18, 0.16, x, 1.79, z))
+    for (const x of [-0.14, 0.14]) stone.push(boxAt(0.14, 0.14, 0.14, x, 1.57, z))
   }
-  for (const s of [-1, 1]) stone.push(boxAt(0.5, 1.1, 0.9, 0, 0.55, s * (zj + jw / 2 + 0.45)))
+  for (const s of [-1, 1]) stone.push(boxAt(0.36, 0.75, 0.9, 0, 0.375, s * (zj + jw / 2 + 0.45)))
   const el = building('arch', merge(stone), town.stone, stoneTexture())
   const p = new Parts()
-  p.dark.push(boxAt(0.03, 0.22, 0.08, -0.29, 0.95, -zj), boxAt(0.03, 0.22, 0.08, -0.29, 0.95, zj))
+  p.dark.push(boxAt(0.03, 0.2, 0.08, -0.24, 0.85, -zj), boxAt(0.03, 0.2, 0.08, -0.24, 0.85, zj))
   p.attachTo(el, town.stone)
   return el
 }

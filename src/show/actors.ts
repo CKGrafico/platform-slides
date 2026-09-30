@@ -207,8 +207,8 @@ const banner = defineActor({
 const issue = defineActor({
   id: 'issue',
   create: () => {
-    const el = createBall({ radius: 0.16, color: palette.accent })
-    el.object.position.set(0, 0.16, 0)
+    const el = createBall({ radius: 0.26, color: palette.accent })
+    el.object.position.set(0, 0.26, 0)
     return el.object
   },
   ambient: (o, time) => {
@@ -323,8 +323,15 @@ const curvedLine = defineActor({
       opacity: 0,
     }).object,
 })
-const md = defineActor({ id: 'md', create: () => createScroll().object })
-const lock = defineActor({ id: 'lock', create: () => createCrate().object })
+const md = defineActor({
+  id: 'md',
+  create: () => {
+    const el = createScroll()
+    el.object.scale.setScalar(1.7)
+    return el.object
+  },
+})
+const lock = defineActor({ id: 'lock', create: () => createCrate({ size: 0.62 }).object })
 const scriptorium = defineActor({
   id: 'scriptorium',
   create: () => {
@@ -334,7 +341,7 @@ const scriptorium = defineActor({
   },
 })
 const shell = SHELL.map((name) =>
-  defineActor({ id: `shell.${name}`, create: () => createMoon({ radius: 0.1, color: name === 'ours' ? palette.peach : palette.surface, outline: { width: 2 } }).object }),
+  defineActor({ id: `shell.${name}`, create: () => createMoon({ radius: 0.13, color: name === 'ours' ? palette.peach : palette.surface, outline: { width: 2 } }).object }),
 )
 const triage = defineActor({
   id: 'triage',

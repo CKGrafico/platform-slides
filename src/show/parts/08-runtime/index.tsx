@@ -32,7 +32,7 @@ export const B = { light: 0, threat: 4, opencode: 9, forge: 14 }
 /** When each piece of the shell lights up in 8.1. */
 export const pulseAt = (i: number) => 1.5 + i * 0.4
 
-const SHELL_SHOT = townShot([-2.0, 0.5, -1.4])
+const SHELL_SHOT = townShot([-1.8, 0.6, -0.2])
 const OPENCODE_SHOT = townShot([-0.8, 1.2, -0.4])
 const FORGE_SHOT = townShot([-1.5, 0.3, -6.5])
 
@@ -60,7 +60,7 @@ function Dom() {
             key={name}
             k={`p05.shell.${name}` as MessageKey}
             target={`shell.${name}`}
-            offset={[(d[0] / len) * 0.3, (d[1] / len) * 0.26, 0]}
+            offset={[(d[0] / len) * 0.45, (d[1] / len) * 0.36, 0]}
             width={20}
             className={d[0] > 0.3 ? 'label-left' : d[0] < -0.3 ? 'label-right' : undefined}
             level={win(pulseAt(i), pulseAt(i) + 0.3, pulseAt(i) + 0.7, pulseAt(i) + 0.95)}

@@ -40,8 +40,9 @@ export const PB = { title: 0, pop: 4, distance: 14, back: 20, resort: 26 }
 const PULL = '10-agentic-workflows/pull-out'
 hudCues.fill(1, { key: PULL, from: b(1.5), to: b(3) })
 
-/** The hall in the middle of the frame: the tasks leave it, and the loop and the mill fit around it. */
+/** The hall in the middle of the frame while the tasks leave it; then a step toward the mill, when its steps come back. */
 const HALL_SHOT = townShot([0.4, 0.8, 0.4])
+const MILL_SHOT = townShot([2.4, 0.7, -2.0])
 
 const pullKey = (from: number, to: number) => ({ key: PULL, from: b(from), to: b(to) })
 const pullPulse = (from: number, to: number) => ({ rise: pullKey(from, from + 0.75), fall: pullKey(to, to + 0.75) })
@@ -86,7 +87,15 @@ const pullOut = defineScene({
   title: 'Pieces leave the hall, and land on the belt',
   stops: grid.stops,
   parts: { dom: PullOut },
-  camera: (local, from) => shotSequence(from, [{ from: 0, to: b(2.5), shot: HALL_SHOT }], local),
+  camera: (local, from) =>
+    shotSequence(
+      from,
+      [
+        { from: 0, to: b(2.5), shot: HALL_SHOT },
+        { from: b(PB.back), to: b(PB.back + 2.5), shot: MILL_SHOT },
+      ],
+      local,
+    ),
 })
 
 // ---- pipeline ------------------------------------------------------------------------------
@@ -102,7 +111,7 @@ const WHOLE = townShot([0, 0, 2])
 const ENTRANCE = townShot([-8.5, 0, 4.6])
 const LANES_SHOT = townShot([-4.5, 0, 3.6])
 const EXIT = townShot([9.5, 0, 4.8])
-const SIDE = townShot([4.0, 0, -1.5])
+const SIDE = townShot([2.0, 0, -3.8])
 
 const pipeKey = (from: number, to: number) => ({ key: PIPE, from: pb(from), to: pb(to) })
 const pipePulse = (from: number, to: number) => ({ rise: pipeKey(from, from + 0.75), fall: pipeKey(to, to + 0.75) })
