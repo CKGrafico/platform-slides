@@ -43,17 +43,17 @@ export const snapAt = (i: number) => B.compile + 2.2 + i * 0.45
 /** Where the scroll waits outside the hall (5.4), the crate comes out of the scriptorium (5.5), and the crate docks (5.7, in the hall's local units, scaled by the parts). */
 export const MD_OUT: V3 = [-3.8, 0.4, 2.6]
 export const LOCK_POS: V3 = [-6.4, 0, -2.9]
-/** The shell of small moons around the crate: six from the compiler, then "our changes". */
-export const SHELL_RADIUS = 0.8
-export const SHELL_DIRS: V3[] = [
-  [0, 1, 0.15],
-  [0.87, 0.5, 0.2],
-  [0.87, -0.5, 0.2],
-  [0, -1, 0.15],
-  [-0.87, -0.5, 0.2],
-  [-0.87, 0.5, 0.2],
-  [0.35, 0.2, 0.92],
-]
+/** The palisade of stakes around the crate: six from the compiler, then "our changes", by their angle on the ring (radians, +z toward the camera). */
+export const SHELL_RING = 0.85
+const deg = (d: number) => (d * Math.PI) / 180
+export const SHELL_ANGLES = [-90, -30, 30, 90, 150, 210, 60].map(deg)
+/** A stake's name goes beside it, on the side away from the crate as the camera sees it. */
+export function shellSide(a: number): string | undefined {
+  const s = Math.cos(a) - Math.sin(a)
+  return s > 0.2 ? 'label-left' : s < -0.2 ? 'label-right' : undefined
+}
+/** Where a stake's name sits: beside the stake, a little out from the ring, at the band's height. */
+export const shellOffset = (a: number): readonly [number, number, number] => [Math.cos(a) * 0.3, 0.36, Math.sin(a) * 0.3]
 
 const GA_SHOT = townShot([4.8, 0.6, -5.6])
 const LINE_SHOT = townShot([2.4, 0.4, -5.4])
@@ -100,7 +100,7 @@ function Dom() {
           key={name}
           k={`p05.evt.${name}` as MessageKey}
           target={`evt.${name}`}
-          offset={[0.62, 0.02, 0]}
+          offset={[0.4, 0.12, 0]}
           width={18}
           level={win(B.events + 0.6 + i * 0.8, B.events + 1 + i * 0.8, B.events + 1.9 + i * 0.8, B.events + 2.2 + i * 0.8)}
           className="label-left"
@@ -123,10 +123,8 @@ function Dom() {
       <Label k="p05.compilerName" target="scriptorium" offset={[0, 1.95, 0]} width={16} level={win(B.compile + 0.75, B.compile + 1.5, B.clusters, B.clusters + 1)} />
       <Label k="p05.lock" target={above('lock', 1.15)} width={24} level={win(B.compile + 5.5, B.compile + 5.9, B.clusters, B.clusters + 1)} />
       {SHELL.map((name, i) => {
-        const d = SHELL_DIRS[i]!
-        const len = Math.hypot(d[0], d[1])
-        const off = [(d[0] / (len || 1)) * 0.6, (d[1] / (len || 1)) * 0.42, 0] as const
-        // One name at a time, a flash as each piece lands; "our changes" stays until the clusters.
+        const a = SHELL_ANGLES[i]!
+        // One name at a time, a flash as each stake lands; "our changes" stays until the clusters.
         const quick = name !== 'ours'
         const inAt = quick ? snapAt(i) + 0.55 : B.ours + 1
         const outAt = quick ? inAt + 0.35 : B.clusters
@@ -136,9 +134,9 @@ function Dom() {
             key={name}
             k={`p05.shell.${name}` as MessageKey}
             target={`shell.${name}`}
-            offset={name === 'ours' ? [0.62, 0.1, 0] : off}
+            offset={shellOffset(a)}
             width={20}
-            className={d[0] > 0.3 ? 'label-left' : d[0] < -0.3 ? 'label-right' : undefined}
+            className={shellSide(a)}
             level={win(inAt, inAt + fade, outAt, outAt + fade)}
           />
         )

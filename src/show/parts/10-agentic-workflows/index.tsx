@@ -56,7 +56,7 @@ mapCues.focus(['coins', 'hall'], pullPulse(PB.resort, PB.resort + 4.5))
 
 const from = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, a, bb), 1 - range(local, c, d))
 
-const TASK_OFFSET = [0, 0.42, 0] as const
+const TASK_OFFSET = [0, 0.62, 0] as const
 
 function PullOut() {
   return (

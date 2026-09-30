@@ -23,14 +23,14 @@ import { shotSequence } from '@/world/camera/shot'
 import { SHELL } from '../../actors'
 import { KILNS } from '../../layout'
 import { townShot } from '../../shots'
-import { SHELL_DIRS } from '../05-actions-to-agents'
+import { SHELL_ANGLES, shellOffset, shellSide } from '../05-actions-to-agents'
 
 export const grid = beatStops([9, 5, 6])
 const { b } = grid
 export const B = { light: 0, threat: 4, opencode: 9, forge: 14 }
 
 /** When each piece of the shell lights up in 8.1. */
-export const pulseAt = (i: number) => 1.5 + i * 0.4
+export const pulseAt = (i: number) => 1.5 + i * 0.55
 
 const SHELL_SHOT = townShot([-1.8, 0.6, -0.2])
 const OPENCODE_SHOT = townShot([-0.8, 1.2, -0.4])
@@ -53,21 +53,20 @@ function Dom() {
       <Label k="p08.lock" target="lock" offset={[0, 1.15, 0]} width={24} level={win(pulseAt(5) + 1.1, pulseAt(5) + 1.6, B.opencode, B.opencode + 1)} />
       {SHELL.map((name, i) => {
         if (name === 'ours' || name === 'threat') return null
-        const d = SHELL_DIRS[i]!
-        const len = Math.hypot(d[0], d[1]) || 1
+        const a = SHELL_ANGLES[i]!
         return (
           <Label
             key={name}
             k={`p05.shell.${name}` as MessageKey}
             target={`shell.${name}`}
-            offset={[(d[0] / len) * 0.45, (d[1] / len) * 0.36, 0]}
+            offset={shellOffset(a)}
             width={20}
-            className={d[0] > 0.3 ? 'label-left' : d[0] < -0.3 ? 'label-right' : undefined}
-            level={win(pulseAt(i), pulseAt(i) + 0.3, pulseAt(i) + 0.7, pulseAt(i) + 0.95)}
+            className={shellSide(a)}
+            level={win(pulseAt(i), pulseAt(i) + 0.25, pulseAt(i) + 0.4, pulseAt(i) + 0.6)}
           />
         )
       })}
-      <Label k="p08.threat" target="shell.threat" offset={[0.25, -0.1, 0]} width={24} className="label-left" level={win(B.threat + 0.5, B.threat + 1.25, B.threat + 3, B.threat + 4)} />
+      <Label k="p08.threat" target="shell.threat" offset={[0.3, 0.3, 0]} width={24} className="label-left" level={win(B.threat + 0.5, B.threat + 1.25, B.threat + 3, B.threat + 4)} />
       <Label k="p08.opencodeName" target="banner" offset={[0.55, 1.6, 0]} width={16} mono={false} className="p05-name label-left" level={win(B.opencode + 1.5, B.opencode + 2.25)} />
       <Label k="p08.vendor" target={() => vendorLabel} width={16} level={win(B.forge + 0.25, B.forge + 0.75, B.forge + 1.5, B.forge + 2.25)} />
       <Label k="p08.forgeName" target="forge" offset={[1.3, 0.9, 0]} width={12} mono={false} className="p05-name label-left" level={win(B.forge + 1.25, B.forge + 2)} />

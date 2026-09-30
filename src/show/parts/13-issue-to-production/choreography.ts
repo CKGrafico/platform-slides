@@ -10,6 +10,7 @@ import { town } from '@/art/town'
 import { drive, inkIn, tint } from '@/art/motion'
 import { easeInOut } from '@/art/orbits'
 import { palette } from '@/art/palette'
+import { faceOnPath, type PathAt } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
 import { METRIC_BASES, METRIC_COIN_SCALE, METRIC_COINS } from '../../layout'
 import { stackPoint } from '../../coins'
@@ -32,10 +33,11 @@ export const issueToProductionMoves = defineChoreography('13-issue-to-production
   // The blue cart comes back, far away on the road to the west.
   const issue = el('issue')
   const start = routePoint(0)
-  tl.set(issue.object.position, { x: start.x, y: start.y, z: start.z }, span(0, 0).start)
+  tl.set(issue.object.position, { x: start.x, y: 0.06, z: start.z }, span(0, 0).start)
   const back = span(1.5, 2.5)
   inkIn(tl, issue, back.start, back.duration)
-  tl.set(issue.object.scale, { x: 1.35, y: 1.35, z: 1.35 }, back.start)
+  tl.set(issue.object.scale, { x: 1.2, y: 1.2, z: 1.2 }, back.start)
+  const routeAt: PathAt = (u, out) => routePoint(u, out)
 
   const path = sketchOf(cast.get<Group>('p13.path'))
   const tmp = new Vector3()
@@ -48,7 +50,9 @@ export const issueToProductionMoves = defineChoreography('13-issue-to-production
       if (beat >= stepBeat(n)) r = STEP_U[n - 1]! + (STEP_U[n]! - STEP_U[n - 1]!) * w
     }
     routePoint(r, tmp)
+    tmp.y = 0.06
     issue.object.position.copy(tmp)
+    faceOnPath(issue.object, routeAt, r)
     path.reveal.value = r
   })
 

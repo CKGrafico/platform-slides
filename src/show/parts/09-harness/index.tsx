@@ -30,7 +30,8 @@ import type { MessageKey } from '@/i18n'
 import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
-import { DEV_POS, HALL_BIG } from '../../layout'
+import { HALL_SCALE } from '../../hall'
+import { DEV_POS } from '../../layout'
 import { townShot } from '../../shots'
 
 export const grid = beatStops([4, 4, 5, 6, 5, 6, 5, 6])
@@ -76,7 +77,7 @@ const tagPoints = TAGS.map((_, i) => new Vector3(i < 5 ? -6.4 : 5.0, 3.4 - (i % 
 
 const cloudLabel = new Vector3(3.6, 0.2, 6.2)
 const laptopLabel = new Vector3(DEV_POS[0] + 0.6, 0, DEV_POS[2] + 0.95)
-const cloudName = new Vector3(2.3 * HALL_BIG + 0.3, 1.7, 0.5)
+const cloudName = new Vector3(2.3 * HALL_SCALE.forge + 0.3, 1.7, 0.5)
 
 function Dom() {
   return (

@@ -1,26 +1,31 @@
 /**
  * Part 10 moves.
  *
- * pull-out: the hall is big and closed; the tasks leave it by the door and
- * land on the belt loop, and the hall shrinks each time, with its parapet and
- * its banner; the steps of the mill's belt join the loop; most coins go.
+ * pull-out: the hall is big and closed; the task carts roll out of it by the
+ * door and onto the loop, and the hall shrinks each time, with its parapet and
+ * its banner, the folk still at home standing on its platform; the carts of
+ * the mill's road join the loop; most coins go.
  *
  * pipeline: belts everywhere with stations that wake on every cart; then one
- * main belt with a gatehouse, laid with its road; the workshops along it; the
- * exit gate, the market and the booth, and the person at the exit goes; the
- * fields; the watchtower and the repair crew on the loop.
+ * main belt with a gatehouse, laid with its road, and one of the hall's folk
+ * walks out to keep it; the workshops along it, with another who moves out to
+ * refine; the exit gate, the market and the booth, and the person at the exit
+ * goes; the fields; the watchtower, and the repair crew leaves the hall for
+ * the loop.
  */
 import { Color, Vector3, type Group, type MeshToonMaterial } from 'three'
 import { artOf, swarmOf } from '@/art/elements'
-import { town } from '@/art/town'
+import { polyline, town } from '@/art/town'
 import { sketchOf } from '@/art/lines'
 import { drive, fade, inkIn, inkOut, shown } from '@/art/motion'
 import { arcPoint, easeInOut } from '@/art/orbits'
 import { palette } from '@/art/palette'
+import { faceAlong, faceOnPath, yawAlong, yawOnPath, type PathAt } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
 import { STEPS, TASKS } from '../../actors'
 import { stackPoint, stackTilt } from '../../coins'
-import { BALES, BOOTH, COINS, FARMS, FIELDS, FIELD_TILE, HALL_AFTER_EACH, HALL_BIG, HALL_DOOR, LINE_BENT, LINE_X, LINE_Y, LINE_Z, LOOP_LANDING, LOOP_SWEEP, MAIN_AT, SPAGHETTI, STEP_LANDING, TOKEN_COINS, TOKENS_LEFT, TURRET_TOP } from '../../layout'
+import { FOLK, FOLK_HOME, HALL_SCALE, hallStep, homeAfter, homeAt, homePoint, setHallScale, walkPath } from '../../hall'
+import { BALES, BOOTH, COINS, FARMS, FIELDS, FIELD_TILE, HALL_DOOR, LINE_BENT, LINE_X, LINE_Y, LINE_Z, LOOP_LANDING, LOOP_SWEEP, MAIN_AT, PLATFORM_TOP, SPAGHETTI, STEP_LANDING, TOKEN_COINS, TOKENS_LEFT } from '../../layout'
 import { grid, PB, pipeGrid, QB } from '.'
 
 const PULL = '10-agentic-workflows/pull-out'
@@ -39,12 +44,12 @@ const mix = (a: number, bb: number, t: number) => a + (bb - a) * t
 const frac = (v: number) => v - Math.floor(v)
 const v3 = (p: readonly [number, number, number]) => new Vector3(p[0], p[1], p[2])
 
-/** The hall's scale at a beat: big, then a step smaller as each task leaves. */
+/** The hall's scale at a beat of the pull-out: as the smiths left it, then a step smaller as each task cart leaves. */
 function hallScale(beat: number): number {
-  let s = HALL_BIG
-  HALL_AFTER_EACH.forEach((after, i) => {
+  let s: number = HALL_SCALE.forge
+  HALL_SCALE.tasks.forEach((after, i) => {
     const release = popAt(i) + POP * 0.5
-    const before = i === 0 ? HALL_BIG : HALL_AFTER_EACH[i - 1]!
+    const before = i === 0 ? HALL_SCALE.forge : HALL_SCALE.tasks[i - 1]!
     s = beat < release ? s : mix(before, after, easeOut(win(beat, release, release + 1)))
   })
   return s
@@ -63,13 +68,17 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     inkOut(tl, el(id), out.start, out.duration)
   }
 
-  // ---- 10.2: the hall, big and closed; the tasks leave it -----------------------------------
+  // ---- 10.2: the hall, big and closed; the task carts leave it -------------------------------
   const hall = el('hall')
   const parapet = el('harness')
   const banner = el('banner')
   const loop = sketchOf(cast.get<Group>('loop'))
+  const loopAt: PathAt = (u, out) => loop.point(u, out)
   const tasks = TASKS.map((name) => artOf<MeshToonMaterial>(cast.get(`task.${name}`)))
+  const home = homeAfter(FOLK.smiths[1]).map((id) => ({ object: cast.get(id), spot: FOLK_HOME.find((f) => f.id === id)!.spot }))
   const door = new Vector3()
+  const off = new Vector3()
+  const landing = new Vector3()
   tasks.forEach((task, i) => {
     const a = span(popAt(i), popAt(i) + 0.5)
     inkIn(tl, task, a.start, a.duration)
@@ -81,29 +90,41 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   drive(tl, extraction.start, extraction.duration, (u) => {
     const beat = u * PB.back
     const s = hallScale(beat)
-    hall.object.scale.setScalar(s)
-    parapet.object.scale.setScalar(s)
-    banner.object.scale.setScalar(s)
-    banner.object.position.set(TURRET_TOP[0] * s, TURRET_TOP[1] * s, TURRET_TOP[2] * s)
-    door.set(HALL_DOOR[0] * s, HALL_DOOR[1] * s, HALL_DOOR[2] * s)
+    setHallScale(hall.object, parapet.object, banner.object, s)
+    for (const f of home) homePoint(f.spot, s, f.object.position)
+    door.set(HALL_DOOR[0] * s, PLATFORM_TOP * s, HALL_DOOR[2] * s)
+    off.set(door.x + 0.4, 0.03, 2.0 * s + 0.8)
     tasks.forEach((task, i) => {
       const v = win(beat, popAt(i), popAt(i) + POP)
       if (beat < popAt(i)) {
         task.object.position.copy(door)
         task.object.scale.setScalar(1)
+        task.object.rotation.y = 0
         return
       }
       const ride = LOOP_LANDING[i]! + LOOP_SWEEP * easeInOut(win(beat, PB.distance, PB.back))
-      loop.point(ride, tmp2)
-      tmp2.y += 0.22
-      if (v < 1) arcPoint(door, tmp2, 1.1, easeInOut(v), tmp)
-      else tmp.copy(tmp2)
+      loop.point(ride, landing)
+      landing.y += 0.03
+      if (v < 1) {
+        // Out of the door, down off the platform, then across to the loop.
+        const e = easeInOut(v)
+        if (e < 0.35) {
+          tmp.lerpVectors(door, off, e / 0.35)
+          faceAlong(task.object, door, off)
+        } else {
+          tmp.lerpVectors(off, landing, (e - 0.35) / 0.65)
+          faceAlong(task.object, off, landing)
+        }
+      } else {
+        tmp.copy(landing)
+        faceOnPath(task.object, loopAt, ride)
+      }
       task.object.position.copy(tmp)
       task.object.scale.setScalar(1 + 0.16 * Math.sin(Math.PI * clamp01(v / 0.35)))
     })
   })
 
-  // ---- 10.3: the steps of GitHub Actions join the loop ---------------------------------------
+  // ---- 10.3: the carts of GitHub Actions join the loop -----------------------------------------
   const steps = STEPS.map((name) => el(`step.${name}`))
   const curve = sketchOf(cast.get<Group>('p5.curve'))
   const curveOut = span(PB.back + 1, PB.back + 2.5)
@@ -118,11 +139,14 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     steps.forEach((step, k) => {
       const a = PB.back + 1 + k * 0.25
       const w = easeInOut(win(beat, a, a + 1.6))
-      loop.point(STEP_LANDING[k]! + 0.04 * easeInOut(win(beat, PB.resort, grid.totalBeats)), tmp2)
-      tmp2.y += 0.2
-      arcPoint(starts[k]!, tmp2, 0.9, w, tmp)
+      const at = STEP_LANDING[k]! + 0.04 * easeInOut(win(beat, PB.resort, grid.totalBeats))
+      loop.point(at, tmp2)
+      tmp2.y += 0.03
+      tmp.lerpVectors(starts[k]!, tmp2, w)
+      if (w < 1) faceAlong(step.object, starts[k]!, tmp2)
+      else faceOnPath(step.object, loopAt, at)
       step.object.position.copy(tmp)
-      step.object.scale.setScalar(1 - 0.3 * w)
+      step.object.scale.setScalar(1 - 0.15 * w)
     })
   })
 
@@ -147,6 +171,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
 
   // ---- pipeline, 10.4 before: belts everywhere, every station waking on every cart ------------
   const spag = SPAGHETTI.map((_, i) => sketchOf(cast.get<Group>(`spag.${i}`)))
+  const spagAt: PathAt[] = spag.map((line) => (u, out) => line.point(u, out))
   const spagStations = SPAGHETTI.map((_, i) => el(`spagstation.${i}`))
   spag.forEach((line, i) => {
     const draw = q(0.25 + i * 0.3, 1.75 + i * 0.3)
@@ -160,6 +185,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   })
   const flow = swarmOf(cast.get('flow'))
   const main = sketchOf(cast.get<Group>('main'))
+  const mainAt: PathAt = (u, out) => main.point(u, out)
   const mainSteps: Array<[number, number, number]> = [
     [QB.router + 0.5, QB.router + 2, MAIN_AT.gate + 0.03],
     [QB.lanes, QB.lanes + 1.5, MAIN_AT.hall + 0.05],
@@ -198,8 +224,8 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       const p = frac(beat * 0.14 + k * 0.5)
       const on = spagOn * easeInOut(win(beat, 0.75 + i * 0.3, 1.75 + i * 0.3))
       line.point(p, tmp)
-      tmp.y += 0.14
-      flow.place(k, tmp.x, tmp.y, tmp.z, on)
+      tmp.y += 0.02
+      flow.place(k, tmp.x, tmp.y, tmp.z, on, 0, 0, yawOnPath(spagAt[i]!, p))
     }
     spagStations.forEach((s, i) => {
       let pulse = 0
@@ -214,28 +240,39 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     for (let k = 0; k < 5; k++) {
       const p = (beat - (QB.router + 1.5) - k * 1.7) * 0.05
       const shownCart = p >= 0 && p <= drawn ? 1 : 0
-      main.point(clamp01(p), tmp)
-      tmp.y += 0.14
+      const pc = clamp01(p)
+      main.point(pc, tmp)
+      tmp.y += 0.02
+      let yaw = yawOnPath(mainAt, pc)
       if (k === 2 && p > MAIN_AT.exit) {
         main.point(MAIN_AT.exit, tmp2)
-        tmp2.y += 0.14
-        arcPoint(tmp2, booth, 0.5, clamp01((p - MAIN_AT.exit) / 0.08), tmp)
+        tmp2.y += 0.02
+        tmp.lerpVectors(tmp2, booth, clamp01((p - MAIN_AT.exit) / 0.08))
+        yaw = yawAlong(tmp2, booth)
       }
-      flow.place(6 + k, tmp.x, tmp.y, tmp.z, shownCart)
+      flow.place(6 + k, tmp.x, tmp.y, tmp.z, shownCart, 0, 0, yaw)
     }
     flow.commit()
   })
 
-  // ---- 10.4 after: one gatehouse -----------------------------------------------------------------
+  // ---- 10.4 after: one gatehouse, and one of the hall's folk walks out to keep it ---------------
   const gatehouse = el('gatehouse')
   const gateIn = q(QB.router + 1, QB.router + 1.75)
   inkIn(tl, gatehouse, gateIn.start, gateIn.duration)
+  const routerWalk = q(QB.router + 0.25, QB.router + 4.25)
+  walkPath(tl, cast, FOLK.router, routerWalk.start, routerWalk.duration, [homeAt(FOLK.router, HALL_SCALE.tasks[3]), [2.6, 0, 3.4], [2.6, 0, 6.9], [-9.8, 0, 6.9]])
+  const routerStep = q(QB.router + 1.75, QB.router + 2.75)
+  hallStep(tl, cast, routerStep.start, routerStep.duration, HALL_SCALE.tasks[3], HALL_SCALE.router, homeAfter(FOLK.router))
 
   // ---- 10.6: the workshops along the belt, and the person who asks -----------------------------
   for (const [id, from, to] of [['refine', 1, 1.75], ['requester', 2.5, 3.25]] as const) {
     const a = q(QB.lanes + from, QB.lanes + to)
     inkIn(tl, el(id), a.start, a.duration)
   }
+  const refineWalk = q(QB.lanes + 0.25, QB.lanes + 2.25)
+  walkPath(tl, cast, FOLK.refine, refineWalk.start, refineWalk.duration, [homeAt(FOLK.refine, HALL_SCALE.router), [-0.5, 0, 3.6], [-5.0, 0, 4.5]])
+  const refineStep = q(QB.lanes + 1.75, QB.lanes + 2.75)
+  hallStep(tl, cast, refineStep.start, refineStep.duration, HALL_SCALE.router, HALL_SCALE.refine, homeAfter(FOLK.refine))
 
   // ---- 10.6: the exit gate, the market, the booth; the person at the exit goes ----------------
   const reviewerOut = q(QB.gate + 0.25, QB.gate + 0.85)
@@ -266,15 +303,26 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     inkIn(tl, el(`fence.${i}`), a.start, a.duration)
   })
 
-  // ---- 10.6: the watchtower and the repair crew on the loop -------------------------------------
+  // ---- 10.6: the watchtower; the repair crew leaves the hall and walks the loop -----------------
   const towerIn = q(QB.side + 0.5, QB.side + 1.25)
   inkIn(tl, el('tower'), towerIn.start, towerIn.duration)
   const repair = el('repair')
-  const repairIn = q(QB.side + 1, QB.side + 1.75)
-  inkIn(tl, repair, repairIn.start, repairIn.duration)
-  const walk = q(QB.side + 1, pipeGrid.totalBeats)
+  const repairPath = polyline([homeAt(FOLK.tower, HALL_SCALE.refine), [3.4, 0, 1.2], [4.95, 0, -2.85]])
+  const walk = q(QB.side + 0.5, pipeGrid.totalBeats)
   drive(tl, walk.start, walk.duration, (u) => {
-    const p = frac(0.5 + u * 0.35)
+    const beat = QB.side + 0.5 + u * (pipeGrid.totalBeats - QB.side - 0.5)
+    if (beat < QB.side + 1.5) {
+      // Off the platform, east, to the corner of the loop.
+      const w = easeInOut(win(beat, QB.side + 0.5, QB.side + 1.5))
+      repairPath(w, tmp)
+      repairPath(Math.min(1, w + 0.01), tmp2)
+      repair.object.position.copy(tmp)
+      const dx = tmp2.x - tmp.x
+      const dz = tmp2.z - tmp.z
+      if (dx * dx + dz * dz > 1e-8) repair.object.rotation.y = Math.atan2(dx, dz)
+      return
+    }
+    const p = frac(0.5 + ((beat - (QB.side + 1.5)) / (pipeGrid.totalBeats - QB.side - 1.5)) * 0.35)
     loop.point(p, tmp)
     loop.point(p + 0.01, tmp2)
     tmp.x += 0.55
@@ -282,4 +330,6 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     repair.object.position.copy(tmp)
     repair.object.rotation.y = Math.atan2(tmp2.x - tmp.x + 0.55, tmp2.z - tmp.z + 0.55)
   })
+  const towerStep = q(QB.side + 1.25, QB.side + 2.25)
+  hallStep(tl, cast, towerStep.start, towerStep.duration, HALL_SCALE.refine, HALL_SCALE.tower, homeAfter(FOLK.tower))
 })

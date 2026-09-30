@@ -12,7 +12,7 @@ Dials (design-taste-frontend): DESIGN_VARIANCE 6, MOTION_INTENSITY 7, VISUAL_DEN
 
 ## Concept
 
-The talk builds one town on a map, seen the way a strategy game shows a base. The map starts almost empty: a green land with its woods, and one big house in the middle, the hall: the agent, which does everything at first. Part by part the town grows around it: a road in from the west, a mill, a belt loop, workshops, gates, a watchtower, fields, and at the end three ring walls with their towers, like a fortified city. The hall shrinks as pieces leave it, until it is one small part of the town.
+The talk builds one town on a map, seen the way a strategy game shows a base. The map starts almost empty: a green land with its woods, and one big house in the middle, the hall: the agent, which does everything at first. Part by part the town grows around it: a road in from the west, a mill, a belt loop, workshops, gates, a watchtower, fields, and at the end three ring walls with their towers, like a fortified city. The hall gives its jobs away: each time one of its folk walks out to a house of their own, it steps down a size, until it is one small part of a town where everyone has their place. A commune that became a village.
 
 Why a town: a wall is a wall and a gate is a gate. The audience learns nothing to read it. Deterministic work rides belts and roads; only the hall reasons. The talk is the story of moving work out of the hall onto belts that repeat, and of building what protects the town. The reasons are in [town-proposal.md](town-proposal.md) and [clarity-review.md](clarity-review.md).
 
@@ -22,7 +22,8 @@ Why a town: a wall is a wall and a gate is a gate. The audience learns nothing t
 - **The land** is a green plane with soft patches, flat in the town and along the road, with gentle hills beyond. Groves of round trees and pines, bushes, rocks and flowers are placed once, at creation: the map exists before the talk starts.
 - **Roads** are strips of sand, laid from their west end as the belts are drawn. The loop around the hall is cobbled. Belts are dashed ink lines whose dashes travel.
 - **Walls** are rings of stone around the hall, built as arcs so they rise piece by piece, with merlons, towers, and gates where the road crosses them. Three rings: the three phases of Foundations.
-- **People** are round chibi villagers with a hat and no face.
+- **Units** are what moves: carts with a load (a barrel, a crate, a sack, a tarp), sacks that fall into the mill, the stakes of a palisade, stones. Nothing floats and nothing is a sphere: what moves rides a road on wheels, or is carried, and faces the way it goes. The kit is in `src/art/town-units.ts`.
+- **People** are round chibi villagers with a hat and no face. Eight of them stand at the hall's arcade at the start, and one by one they walk out to the house that does their job now (`src/show/hall.ts`).
 
 ## Palette: Lilac and sage
 

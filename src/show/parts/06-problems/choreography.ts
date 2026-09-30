@@ -1,19 +1,21 @@
 /**
- * Part 6 moves. Three runs of the same work, the simple tasks at the hall's
- * arcade with the tokens they cost (gold coins that stack up), then the pile
- * of work in front of a person at the exit. The tasks go back inside the hall
- * at 6.3: part 10 pulls them out of it.
+ * Part 6 moves. Three runs of the same work: three carts down three wobbly
+ * paths; the simple tasks at the hall's arcade with the tokens they cost (gold
+ * coins that stack up); then the queue of carts in front of a person at the
+ * exit. The tasks go back inside the hall at 6.3: part 10 pulls them out of it.
  */
 import { Vector3, type Group } from 'three'
 import { boil } from '@/art/clock'
 import { artOf, swarmOf } from '@/art/elements'
 import { sketchOf } from '@/art/lines'
 import { drive, fade, inkIn } from '@/art/motion'
-import { arcPoint, easeInOut } from '@/art/orbits'
+import { easeInOut } from '@/art/orbits'
+import { faceAlong, faceOnPath } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
 import { TASKS } from '../../actors'
 import { stackPoint, stackTilt, drop } from '../../coins'
-import { COINS, DOOR_BIG, HALL_BIG, PILE, TASK_SPOTS, TOKEN_COINS } from '../../layout'
+import { HALL_SCALE } from '../../hall'
+import { COINS, DOOR_GROUND, PILE, TASK_SPOTS, TOKEN_COINS } from '../../layout'
 import { B, grid } from '.'
 
 const KEY = '06-problems/problems'
@@ -32,20 +34,21 @@ export const problemsMoves = defineChoreography('06-problems', (tl, cast, t) => 
   const el = (id: string) => artOf(cast.get(id))
 
   // ---- 6.1: three runs of the same prompt -------------------------------------------------
-  const balls = PILE.map((_, i) => el(`p6.ball.${i}`))
+  const carts = PILE.map((_, i) => el(`p6.ball.${i}`))
   const paths = [0, 1, 2].map((k) => sketchOf(cast.get<Group>(`p6.path.${k}`)))
-  const from = v3(DOOR_BIG)
+  const pathAt = paths.map((p) => (u: number, out: Vector3) => p.point(u, out))
+  const from = v3(DOOR_GROUND)
   for (let k = 0; k < 3; k++) {
     const a = span(runStart(k), runStart(k) + 0.4)
-    inkIn(tl, balls[k]!, a.start, a.duration)
+    inkIn(tl, carts[k]!, a.start, a.duration)
     const quiet = span(B.cost, B.cost + 1.5)
     fade(tl, paths[k]!.material, 0.3, quiet.start, quiet.duration)
   }
-  // ---- 6.3: the rest of the work piles up on the road in front of the person ---------------
+  // ---- 6.3: the rest of the work queues up on the road in front of the person ---------------
   const arriveAt = (j: number) => B.human + 1.5 + j * 0.55
   for (let j = 3; j < PILE.length; j++) {
     const a = span(arriveAt(j - 3), arriveAt(j - 3) + 0.3)
-    inkIn(tl, balls[j]!, a.start, a.duration)
+    inkIn(tl, carts[j]!, a.start, a.duration)
   }
   const person = el('reviewer')
   const personIn = span(B.human + 0.5, B.human + 1.5)
@@ -63,23 +66,27 @@ export const problemsMoves = defineChoreography('06-problems', (tl, cast, t) => 
       const w = easeInOut(win(beat, runStart(k), runStart(k) + RUN_BEATS[k]!))
       paths[k]!.reveal.value = w
       paths[k]!.point(w, tmp)
-      balls[k]!.object.position.copy(tmp)
+      carts[k]!.object.position.copy(tmp)
+      if (w < 1) faceOnPath(carts[k]!.object, pathAt[k]!, w)
+      else carts[k]!.object.rotation.y = 0
     }
     for (let j = 3; j < PILE.length; j++) {
       const w = easeInOut(win(beat, arriveAt(j - 3), arriveAt(j - 3) + 1.4))
-      arcPoint(from, pile[j]!, 1.2, w, tmp)
-      balls[j]!.object.position.copy(tmp)
+      tmp.lerpVectors(from, pile[j]!, w)
+      carts[j]!.object.position.copy(tmp)
+      if (w < 1) faceAlong(carts[j]!.object, from, pile[j]!)
+      else carts[j]!.object.rotation.y = 0
     }
   })
 
   // ---- 6.2: simple work at the hall's arcade, and the tokens it costs -----------------------
   const tasks = TASKS.map((name) => el(`task.${name}`))
-  const spots = TASK_SPOTS.map((p) => v3(p).multiplyScalar(HALL_BIG))
+  const spots = TASK_SPOTS.map((p) => v3(p).multiplyScalar(HALL_SCALE.triage))
   tasks.forEach((task, i) => {
     const at = span(B.cost + 0.5 + i * 0.4, B.cost + 1.2 + i * 0.4)
     inkIn(tl, task, at.start, at.duration)
   })
-  // 6.3: the tasks go back inside the hall and hide there, until part 10.
+  // 6.3: the task carts go back inside the hall and hide there, until part 10.
   const sink = (i: number) => B.human + 0.25 + i * 0.15
   tasks.forEach((task, i) => tl.set(task.inner, { visible: false }, span(sink(i) + 1, sink(i) + 1).start))
   const taskWin = span(B.cost, B.human + 2)
@@ -88,9 +95,11 @@ export const problemsMoves = defineChoreography('06-problems', (tl, cast, t) => 
     tasks.forEach((task, i) => {
       const w = win(beat, sink(i), sink(i) + 1)
       tmp.copy(spots[i]!)
-      tmp.z -= 1.2 * HALL_BIG * w * w
+      tmp.z -= 1.2 * HALL_SCALE.triage * w * w
       tmp.y -= 0.2 * w
       task.object.position.copy(tmp)
+      // Parked side on; they turn in through the arcade.
+      task.object.rotation.y = (Math.PI / 2) * w
     })
   })
 

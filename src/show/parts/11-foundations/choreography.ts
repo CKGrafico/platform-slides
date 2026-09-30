@@ -8,6 +8,7 @@ import { artOf, swarmOf } from '@/art/elements'
 import { segmentsOf, sketchOf } from '@/art/lines'
 import { drive, fade, inkIn, inkOut } from '@/art/motion'
 import { easeInOut } from '@/art/orbits'
+import { yawOnPath } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
 import { RING_ARCS, RINGS, VERBS } from '../../layout'
 import { B, grid } from '.'
@@ -55,8 +56,8 @@ export const foundationsMoves = defineChoreography('11-foundations', (tl, cast, 
       // Even work goes to the tidy house down its one path; odd work to the messy one down one of three.
       const path = k % 2 === 0 ? tidyPath : messyPaths[(k >> 1) % 3]!
       path.point(w, tmp)
-      tmp.y += 0.1
-      work.place(k, tmp.x, tmp.y, tmp.z, w > 0 && w < 1 ? 1 : 0)
+      tmp.y += 0.02
+      work.place(k, tmp.x, tmp.y, tmp.z, w > 0 && w < 1 ? 1 : 0, 0, 0, yawOnPath((v, out) => path.point(v, out), w))
     })
     work.commit()
   })

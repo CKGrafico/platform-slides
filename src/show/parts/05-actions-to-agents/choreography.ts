@@ -1,6 +1,10 @@
 /**
  * Part 5 moves. Each group of elements has one drive() that writes its
  * positions from the beat, so every frame is the same however it is reached.
+ * Sacks fall into the mill; carts with barrels come out of it onto the road
+ * and bend into the loop; the scroll goes into the scriptorium and the crate
+ * comes out with its palisade of stakes; the first of the hall's folk walks
+ * out to the triage house, and the hall steps down a size.
  */
 import { Vector3, type Group } from 'three'
 import { artOf } from '@/art/elements'
@@ -9,8 +13,9 @@ import { drive, fade, inkIn, inkOut } from '@/art/motion'
 import { arcPoint, easeInOut } from '@/art/orbits'
 import { defineChoreography } from '@/world/actors'
 import { EVENTS, SHELL, STEPS } from '../../actors'
-import { DOOR_BIG, HALL_BIG, LINE_BENT, LINE_X, LINE_Y, LINE_Z, LOCK_DOCK, SCRIPTORIUM_DOOR, STATION, STATION_TURN } from '../../layout'
-import { B, grid, LOCK_POS, MD_OUT, SHELL_DIRS, SHELL_RADIUS, snapAt } from '.'
+import { FOLK, HALL_SCALE, hallStep, homeAfter, homeAt, walkPath } from '../../hall'
+import { DOOR_BIG, LINE_BENT, LINE_X, LINE_Y, LINE_Z, LOCK_DOCK, SCRIPTORIUM_DOOR, STATION, STATION_TURN } from '../../layout'
+import { B, grid, LOCK_POS, MD_OUT, SHELL_ANGLES, SHELL_RING, snapAt } from '.'
 
 const KEY = '05-actions-to-agents/actions'
 const { b } = grid
@@ -21,7 +26,7 @@ const easeOut = (t: number) => 1 - Math.pow(1 - clamp01(t), 3)
 const easeIn = (t: number) => Math.pow(clamp01(t), 2)
 const v3 = (p: readonly [number, number, number]) => new Vector3(p[0], p[1], p[2])
 
-/** The mouth of the mill, where the events fall in and the steps come out. */
+/** The mouth of the mill, where the sacks fall in, and its door, where the carts come out. */
 const MILL_TOP = new Vector3(STATION[0], 1.7, STATION[2])
 const MILL_DOOR = new Vector3(STATION[0] + Math.sin(STATION_TURN) * 0.7, LINE_Y, STATION[2] + Math.cos(STATION_TURN) * 0.7)
 
@@ -35,7 +40,7 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
   inkIn(tl, mill, millIn.start, millIn.duration)
   inkIn(tl, el('blades'), millIn.start + 0.4, millIn.duration * 0.8)
 
-  // ---- events fall into it, then two of them run along the belt ------------------------------
+  // ---- events fall into it, then two of them run along the road ------------------------------
   const evts = EVENTS.map((name) => el(`evt.${name}`))
   evts.forEach((e, i) => {
     const s = B.events + 0.5 + i * 0.8
@@ -66,11 +71,11 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
       const s = B.unfold + 2 + i * 0.9
       if (beat < s) return
       const w = win(beat, s, s + 2.4)
-      e.object.position.set(LINE_X[0]! + 0.5 + (LINE_X[5]! - 0.5 - LINE_X[0]! - 0.5) * w, LINE_Y + 0.3, LINE_Z)
+      e.object.position.set(LINE_X[0]! + 0.5 + (LINE_X[5]! - 0.5 - LINE_X[0]! - 0.5) * w, LINE_Y + 0.02, LINE_Z)
     })
   })
 
-  // ---- 5.2: the steps come out of the mill onto a straight belt ------------------------------
+  // ---- 5.2: the carts come out of the mill onto a straight road ------------------------------
   const steps = STEPS.map((name) => el(`step.${name}`))
   steps.forEach((s, i) => {
     const a = span(B.unfold + 0.5 + i * 0.25, B.unfold + 1.1 + i * 0.25)
@@ -80,7 +85,7 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
   const drawLine = span(B.unfold + 0.5, B.unfold + 2.5)
   tl.to(line.reveal, { value: 1, duration: drawLine.duration, ease: 'power2.inOut' }, drawLine.start)
 
-  // ---- 5.3: the belt bends into the loop around the hall -------------------------------------
+  // ---- 5.3: the road bends into the loop around the hall -------------------------------------
   const loop = sketchOf(cast.get<Group>('loop'))
   const loopIn = span(B.core + 1, B.core + 2.75)
   inkIn(tl, el('road.loop'), loopIn.start - 0.3, loopIn.duration * 0.6)
@@ -95,23 +100,27 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
   const lineMoves = span(B.unfold, grid.totalBeats)
   const bent = LINE_BENT.map(v3)
   const tmp = new Vector3()
+  const lineSpot = new Vector3()
   drive(tl, lineMoves.start, lineMoves.duration, (u) => {
     const beat = B.unfold + u * (grid.totalBeats - B.unfold)
     steps.forEach((s, i) => {
-      // Each step slides out of the mill to its place on the belt.
+      // Each cart rolls out of the mill to its place on the road, facing west.
       const out = easeOut(win(beat, B.unfold + 0.5 + i * 0.25, B.unfold + 1.75 + i * 0.25))
-      tmp.set(MILL_DOOR.x + (LINE_X[i]! - MILL_DOOR.x) * out, LINE_Y, MILL_DOOR.z + (LINE_Z - MILL_DOOR.z) * out)
-      // The two steps near the hall curve toward the loop.
+      lineSpot.set(LINE_X[i]!, LINE_Y, LINE_Z)
+      tmp.lerpVectors(MILL_DOOR, lineSpot, out)
+      s.object.rotation.y = Math.atan2(-(LINE_Z - MILL_DOOR.z), LINE_X[i]! - MILL_DOOR.x)
+      // The two carts near the hall turn toward the loop.
       const k = i - (steps.length - 2)
       if (k >= 0) {
         const w = easeInOut(win(beat, B.core + 2, B.core + 3.5))
         tmp.lerp(bent[k]!, w)
+        if (w > 0) s.object.rotation.y = Math.atan2(-(bent[k]!.z - lineSpot.z), bent[k]!.x - lineSpot.x)
       }
       s.object.position.copy(tmp)
     })
   })
 
-  // ---- 5.4 to 5.7: the scroll, the scriptorium, the crate and its shell, the dock -------------
+  // ---- 5.4 to 5.7: the scroll, the scriptorium, the crate and its palisade, the dock ----------
   const md = el('md')
   const mdIn = span(B.md + 0.5, B.md + 1.25)
   inkIn(tl, md, mdIn.start, mdIn.duration)
@@ -136,10 +145,12 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
   const out = v3(MD_OUT)
   const scriptDoor = v3(SCRIPTORIUM_DOOR)
   const lockPos = v3(LOCK_POS)
-  const dock = new Vector3(LOCK_DOCK[0] * HALL_BIG, LOCK_DOCK[1] * HALL_BIG, LOCK_DOCK[2] * HALL_BIG)
+  // The crate docks at the size the hall has once the triage clerk has moved out.
+  const dock = new Vector3(LOCK_DOCK[0] * HALL_SCALE.triage, LOCK_DOCK[1] * HALL_SCALE.triage, LOCK_DOCK[2] * HALL_SCALE.triage)
   const center = new Vector3()
   const crateCenter = new Vector3()
-  const dirs = SHELL_DIRS.map((d) => v3(d).normalize().multiplyScalar(SHELL_RADIUS))
+  const from = new Vector3()
+  const target = new Vector3()
   const fileMoves = span(B.md, grid.totalBeats)
   drive(tl, fileMoves.start, fileMoves.duration, (u) => {
     const beat = B.md + u * (grid.totalBeats - B.md)
@@ -157,18 +168,25 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
     const docking = easeInOut(win(beat, B.clusters + 0.5, B.clusters + 3))
     if (docking > 0) arcPoint(lockPos, dock, 1.6, docking, crateCenter)
     lock.object.position.copy(crateCenter)
-    const hub = tmp.copy(crateCenter).add(new Vector3(0, 0.22, 0))
     shell.forEach((s, i) => {
       const at = SHELL[i] === 'ours' ? B.ours + 0.5 : snapAt(i)
-      // Each piece comes from the scriptorium and snaps onto the shell.
+      // Each stake comes from the scriptorium (ours from the town side) and plants itself on the ring.
       const snap = easeOut(win(beat, at, at + 1))
-      const from = SHELL[i] === 'ours' ? center.copy(hub).add(new Vector3(1.4, 0.2, 0.6)) : center.copy(scriptDoor)
-      s.object.position.copy(from).lerp(new Vector3().copy(hub).add(dirs[i]!), snap)
+      const a = SHELL_ANGLES[i]!
+      target.set(crateCenter.x + Math.cos(a) * SHELL_RING, crateCenter.y, crateCenter.z + Math.sin(a) * SHELL_RING)
+      if (SHELL[i] === 'ours') from.set(crateCenter.x + 1.6, crateCenter.y, crateCenter.z + 1.0)
+      else from.copy(scriptDoor)
+      arcPoint(from, target, 0.9, snap, tmp)
+      s.object.position.copy(tmp)
     })
   })
 
-  // ---- 5.7: the triage house ------------------------------------------------------------------
+  // ---- 5.7: the triage house, and the first of the hall's folk moves out to it ----------------
   const triage = el('triage')
   const triIn = span(B.clusters + 2, B.clusters + 3)
   inkIn(tl, triage, triIn.start, triIn.duration)
+  const walk = span(B.clusters + 0.5, B.clusters + 2.75)
+  walkPath(tl, cast, FOLK.triage, walk.start, walk.duration, [homeAt(FOLK.triage, HALL_SCALE.start), [-2.7, 0, 3.3], [-6.0, 0, 4.6], [-7.3, 0, 4.5]])
+  const smaller = span(B.clusters + 2, B.clusters + 3)
+  hallStep(tl, cast, smaller.start, smaller.duration, HALL_SCALE.start, HALL_SCALE.triage, homeAfter(FOLK.triage))
 })

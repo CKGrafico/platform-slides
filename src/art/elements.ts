@@ -442,8 +442,8 @@ export interface Swarm {
   body: InstancedMesh
   hull: InstancedMesh
   count: number
-  /** Puts copy i at a point, with a scale and an optional tilt (radians around X and Z). */
-  place(i: number, x: number, y: number, z: number, scale?: number, rx?: number, rz?: number): void
+  /** Puts copy i at a point, with a scale, an optional tilt (radians around X and Z) and a yaw (around Y). */
+  place(i: number, x: number, y: number, z: number, scale?: number, rx?: number, rz?: number, ry?: number): void
   /** Sets the color of one copy. */
   paint(i: number, color: ColorRepresentation): void
   commit(): void
@@ -491,9 +491,9 @@ export function createSwarm(options: {
     body,
     hull,
     count,
-    place(i, x, y, z, scale = 1, rx = 0, rz = 0) {
+    place(i, x, y, z, scale = 1, rx = 0, rz = 0, ry = 0) {
       if (scale > 0) shown = true
-      q.setFromEuler(euler.set(rx, 0, rz))
+      q.setFromEuler(euler.set(rx, ry, rz))
       body.setMatrixAt(i, m.compose(p.set(x, y, z), q, s.set(scale, scale, scale)))
     },
     paint(i, value) {

@@ -1,7 +1,8 @@
 /**
- * Part 8 moves. The shell lights up piece by piece and threat detection comes
- * off; the banner of OpenCode rises on the hall's turret; the direct call to
- * a vendor breaks, and Forge and its kilns take its place.
+ * Part 8 moves. The stakes of the palisade light up one by one and the threat
+ * detection stake is pulled out and falls; the banner of OpenCode rises on the
+ * hall's turret; the direct call to a vendor breaks, and Forge and its kilns
+ * take its place, with two of the hall's folk moving out to work them.
  */
 import { Vector3, type Group } from 'three'
 import { artOf } from '@/art/elements'
@@ -9,8 +10,9 @@ import { sketchOf } from '@/art/lines'
 import { drive, fade, inkIn, inkOut } from '@/art/motion'
 import { defineChoreography } from '@/world/actors'
 import { SHELL } from '../../actors'
-import { HALL_BIG, KILNS, LOCK_DOCK } from '../../layout'
-import { SHELL_DIRS, SHELL_RADIUS } from '../05-actions-to-agents'
+import { FOLK, HALL_SCALE, hallStep, homeAfter, homeAt, walkPath } from '../../hall'
+import { KILNS, LOCK_DOCK } from '../../layout'
+import { SHELL_ANGLES, SHELL_RING } from '../05-actions-to-agents'
 import { B, grid, pulseAt } from '.'
 
 const KEY = '08-runtime/stack'
@@ -30,7 +32,7 @@ export const runtimeMoves = defineChoreography('08-runtime', (tl, cast, t) => {
   const clear = span(0.25, 1.75)
   inkOut(tl, el('reviewer'), clear.start, clear.duration * 0.6)
 
-  // 8.1: each piece of the shell lights up in turn (a small pulse).
+  // 8.1: each stake lights up in turn (a small pulse).
   SHELL.forEach((name, i) => {
     if (name === 'ours') return
     const s = el(`shell.${name}`)
@@ -40,19 +42,16 @@ export const runtimeMoves = defineChoreography('08-runtime', (tl, cast, t) => {
     tl.to(s.object.scale, { x: 1, y: 1, z: 1, duration: down.duration, ease: 'power2.inOut' }, down.start)
   })
 
-  // Threat detection comes off the shell, drifts away, and fades.
+  // Threat detection is pulled out of the ring, tips over away from the crate, and fades.
   const threat = el('shell.threat')
-  const i = SHELL.indexOf('threat')
-  const d = SHELL_DIRS[i]!
-  const dir = new Vector3(d[0], d[1], d[2]).normalize()
-  const hub = new Vector3(LOCK_DOCK[0] * HALL_BIG, LOCK_DOCK[1] * HALL_BIG + 0.22, LOCK_DOCK[2] * HALL_BIG)
+  const a = SHELL_ANGLES[SHELL.indexOf('threat')]!
+  const hub = new Vector3(LOCK_DOCK[0] * HALL_SCALE.triage, LOCK_DOCK[1] * HALL_SCALE.triage, LOCK_DOCK[2] * HALL_SCALE.triage)
   const off = span(B.threat + 0.5, B.threat + 3.5)
-  const tmp = new Vector3()
   drive(tl, off.start, off.duration, (u) => {
     const w = easeInOut(u)
-    tmp.copy(dir).multiplyScalar(SHELL_RADIUS + 1.4 * w).add(hub)
-    tmp.y -= 0.6 * w * w
-    threat.object.position.copy(tmp)
+    const r = SHELL_RING + 1.5 * w
+    threat.object.position.set(hub.x + Math.cos(a) * r, hub.y + 1.2 * w * (1 - w), hub.z + Math.sin(a) * r)
+    threat.object.rotation.x = 1.3 * w
   })
   const gone = span(B.threat + 3, B.threat + 3.6)
   inkOut(tl, threat, gone.start, gone.duration)
@@ -88,4 +87,15 @@ export const runtimeMoves = defineChoreography('08-runtime', (tl, cast, t) => {
     const l = span(B.forge + 2.5 + k * 0.3, B.forge + 3.2 + k * 0.3)
     tl.to(line.reveal, { value: 1, duration: l.duration, ease: 'power2.out' }, l.start)
   })
+  // Two smiths walk out of the hall, round the west of the platform, to the forge; the hall steps down.
+  const walks = [
+    [homeAt(FOLK.smiths[0], HALL_SCALE.triage), [-3.4, 0, 3.1], [-3.6, 0, -3.4], [-3.3, 0, -6.9]],
+    [homeAt(FOLK.smiths[1], HALL_SCALE.triage), [-1.2, 0, 3.0], [-3.5, 0, 3.3], [-3.8, 0, -3.7], [-1.7, 0, -6.9]],
+  ] as const
+  walks.forEach((points, i) => {
+    const walk = span(B.forge + 0.5 + i * 0.3, B.forge + 2.75 + i * 0.3)
+    walkPath(tl, cast, FOLK.smiths[i]!, walk.start, walk.duration, [...points])
+  })
+  const smaller = span(B.forge + 2.25, B.forge + 3.25)
+  hallStep(tl, cast, smaller.start, smaller.duration, HALL_SCALE.triage, HALL_SCALE.forge, homeAfter(FOLK.smiths[1]))
 })

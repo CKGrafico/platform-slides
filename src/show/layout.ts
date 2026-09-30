@@ -13,20 +13,36 @@ export type V3 = readonly [number, number, number]
 // ---- the hall: the agent ---------------------------------------------------------------------
 
 export const HALL: V3 = [0, 0, 0]
-/** Big and closed until part 10 pulls the pieces out of it; then a step smaller for each. */
+/** Big and closed at the start. It steps down each time one of its folk moves out (hall.ts). */
 export const HALL_BIG = 1.25
-export const HALL_AFTER_EACH = [1.19, 1.13, 1.06, 1.0]
+/** The top of the hall's platform (local units): where its folk and its carts stand. */
+export const PLATFORM_TOP = 0.14
 /** Where things leave the hall: its front door, past the arcade (in the hall's local units). */
 export const HALL_DOOR: V3 = [0, 0.5, 1.6]
-/** The task moons on the platform, in front of the arcade (local units). */
+/** The task carts on the platform, in front of the arcade (local units). */
 export const TASK_SPOTS: V3[] = [
-  [-1.2, 0.45, 1.5],
-  [-0.4, 0.45, 1.5],
-  [0.4, 0.45, 1.5],
-  [1.2, 0.45, 1.5],
+  [-1.2, PLATFORM_TOP, 1.5],
+  [-0.4, PLATFORM_TOP, 1.5],
+  [0.4, PLATFORM_TOP, 1.5],
+  [1.2, PLATFORM_TOP, 1.5],
+]
+/**
+ * The folk of the hall at the start, on the platform (local units): four in
+ * the bays of the arcade, one by each wing, two at the front corners. The
+ * order they leave in is in hall.ts.
+ */
+export const FOLK_SPOTS: V3[] = [
+  [-0.9, PLATFORM_TOP, 0.82],
+  [-0.3, PLATFORM_TOP, 0.82],
+  [0.3, PLATFORM_TOP, 0.82],
+  [0.9, PLATFORM_TOP, 0.82],
+  [-2.15, PLATFORM_TOP, 1.45],
+  [2.15, PLATFORM_TOP, 0.7],
+  [-1.9, PLATFORM_TOP, 1.75],
+  [1.9, PLATFORM_TOP, 1.75],
 ]
 /** The compiled workflow docks on the platform's back left corner (local units). */
-export const LOCK_DOCK: V3 = [-1.95, 0.32, -1.5]
+export const LOCK_DOCK: V3 = [-1.95, PLATFORM_TOP, -1.5]
 /** The top of the turret, where the banner of OpenCode stands (local units). */
 export const TURRET_TOP: V3 = [-1.25, 2.9, -0.75]
 /** The coins burned by the hall, in a pile beside it, outside the platform. */
@@ -52,7 +68,7 @@ export const STATION_TURN = -0.6
 export const STEP_LANDING = [0.3, 0.36, 0.42, 0.48, 0.54, 0.58]
 /** The straight belt of steps that leaves the mill westward (5.2). */
 export const LINE_Z = -6.4
-export const LINE_Y = 0.3
+export const LINE_Y = 0.08
 export const LINE_X = [4.4, 3.6, 2.8, 2.0, 1.2, 0.4]
 export const LINE_FROM: V3 = [5.0, LINE_Y, LINE_Z]
 export const LINE_TO: V3 = [-0.2, LINE_Y, LINE_Z]
@@ -131,18 +147,17 @@ export const MAIN_AT = { gate: mainAt(GATEHOUSE[0]), triage: mainAt(TRIAGE_HOUSE
 
 // ---- people --------------------------------------------------------------------------------------------
 
-/** The person at the exit (6.3), and the pile of work in front of them on the road. */
+/** The person at the exit (6.3), and the carts of work that queue up in front of them on the road. */
 export const REVIEWER: V3 = [9.4, 0, 6.8]
-export const PILE_R = 0.11
 export const PILE: V3[] = [
-  [8.3, PILE_R, 5.6],
-  [7.8, PILE_R, 5.85],
-  [7.3, PILE_R, 5.45],
-  [7.9, PILE_R, 5.3],
-  [7.4, PILE_R, 6.0],
-  [8.05, PILE_R * 3, 5.6],
-  [7.55, PILE_R * 3, 5.7],
-  [7.8, PILE_R * 5, 5.6],
+  [8.4, 0.04, 5.6],
+  [7.8, 0.04, 5.6],
+  [7.2, 0.04, 5.6],
+  [8.1, 0.04, 6.35],
+  [7.5, 0.04, 6.35],
+  [6.6, 0.04, 5.6],
+  [6.9, 0.04, 6.35],
+  [6.0, 0.04, 5.6],
 ]
 /** The three of the team (7.2), by the hamlet of the products. */
 export const TEAM: V3[] = [
@@ -165,25 +180,27 @@ export const HEALTH_PERSON: V3 = [3.8, 0, 8.6]
 
 /** The hall's door in the world, while the hall is big. */
 export const DOOR_BIG: V3 = [HALL_DOOR[0] * HALL_BIG, HALL_DOOR[1] * HALL_BIG, HALL_DOOR[2] * HALL_BIG]
+/** Where a cart leaves the hall: on the platform, at the door, at the hall's first size. */
+export const DOOR_GROUND: V3 = [HALL_DOOR[0] * HALL_BIG, PLATFORM_TOP * HALL_BIG, HALL_DOOR[2] * HALL_BIG]
 /** Three runs of the same prompt: three paths of different shapes and lengths from the door to the pile (6.1). */
 export const RUN_PATHS: V3[][] = [
-  [DOOR_BIG, [1.5, 0.2, 3.2], [3.6, 0.15, 4.6], [6.0, 0.15, 5.4], PILE[0]!],
-  [DOOR_BIG, [-1.6, 0.2, 3.4], [0.6, 0.2, 5.0], [3.2, 0.2, 7.0], [6.4, 0.15, 6.4], PILE[1]!],
-  [DOOR_BIG, [2.4, 0.3, 2.2], [4.9, 0.2, 3.3], [6.9, 0.15, 4.5], PILE[2]!],
+  [DOOR_GROUND, [1.5, 0.06, 3.2], [3.6, 0.06, 4.6], [6.0, 0.06, 5.4], PILE[0]!],
+  [DOOR_GROUND, [-1.6, 0.06, 3.4], [0.6, 0.06, 5.0], [3.2, 0.06, 7.0], [6.4, 0.06, 6.4], PILE[1]!],
+  [DOOR_GROUND, [2.4, 0.06, 2.2], [4.9, 0.06, 3.3], [6.9, 0.06, 4.5], PILE[2]!],
 ]
 /** Every repo improvises: three runs from the hall, three different paths (9.1). */
 export const IMPROVISE_PATHS: V3[][] = [
-  [DOOR_BIG, [-2.2, 0.2, 3.6], [-4.6, 0.2, 4.6], [-6.9, 0.15, 6.2]],
-  [DOOR_BIG, [1.8, 0.2, 3.0], [3.2, 0.2, 5.4], [1.4, 0.15, 7.8]],
-  [DOOR_BIG, [2.6, 0.2, 2.4], [5.6, 0.2, 1.6], [7.6, 0.15, -1.0]],
+  [DOOR_GROUND, [-2.2, 0.06, 3.6], [-4.6, 0.06, 4.6], [-6.9, 0.06, 6.2]],
+  [DOOR_GROUND, [1.8, 0.06, 3.0], [3.2, 0.06, 5.4], [1.4, 0.06, 7.8]],
+  [DOOR_GROUND, [2.6, 0.06, 2.4], [5.6, 0.06, 1.6], [7.6, 0.06, -1.0]],
 ]
 /** "Solve this issue": a cloud of possible paths (9.3). */
 export const CLOUD_PATHS: V3[][] = [
-  [DOOR_BIG, [1.4, 0.2, 3.4], [3.8, 0.2, 4.2], [6.2, 0.15, 3.6]],
-  [DOOR_BIG, [-1.2, 0.2, 3.6], [-0.4, 0.2, 5.6], [1.8, 0.15, 7.2]],
-  [DOOR_BIG, [0.8, 0.2, 3.8], [1.2, 0.2, 6.0], [3.6, 0.15, 7.8]],
-  [DOOR_BIG, [-2.4, 0.2, 3.2], [-4.2, 0.2, 5.4], [-4.6, 0.15, 7.6]],
-  [DOOR_BIG, [2.2, 0.2, 2.6], [5.0, 0.2, 2.2], [7.2, 0.15, 4.4]],
+  [DOOR_GROUND, [1.4, 0.06, 3.4], [3.8, 0.06, 4.2], [6.2, 0.06, 3.6]],
+  [DOOR_GROUND, [-1.2, 0.06, 3.6], [-0.4, 0.06, 5.6], [1.8, 0.06, 7.2]],
+  [DOOR_GROUND, [0.8, 0.06, 3.8], [1.2, 0.06, 6.0], [3.6, 0.06, 7.8]],
+  [DOOR_GROUND, [-2.4, 0.06, 3.2], [-4.2, 0.06, 5.4], [-4.6, 0.06, 7.6]],
+  [DOOR_GROUND, [2.2, 0.06, 2.6], [5.0, 0.06, 2.2], [7.2, 0.06, 4.4]],
 ]
 /** Unsafe commands fly at the parapet from here and bounce off (9.4). */
 export const COMMANDS_FROM: V3[] = [

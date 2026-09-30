@@ -5,16 +5,18 @@
  * rest.ts. The land and its woods are placed here, once: the map exists
  * before the talk starts.
  */
-import type { Object3D } from 'three'
-import { artOf, coinGeometry, createBall, createCoin, createMoon, createSwarm, type Swarm } from '@/art/elements'
+import { Vector3, type Object3D } from 'three'
+import { artOf, coinGeometry, createCoin, createSwarm, type Swarm } from '@/art/elements'
 import { createGhostStacks, createGrid, createSketchLine, createSlot, straight, through, circleXZ } from '@/art/lines'
 import { palette } from '@/art/palette'
 import { inkOf } from '@/art/toon'
 import { beltRun, createBales, createBelt, createBlades, createBushes, createCanopies, createFence, createFields, createFlowers, createGate, createHouse, createLand, createMill, createPines, createRoad, createRocks, createRows, createStall, createTower, createTownCenter, createTrunks, createVillager, createWell, polyline, town } from '@/art/town'
 import { createBanner, createBarn, createCottageRoofs, createCottageWalls, createCrate, createForge, createKiln, createMilestone, createParapet, createScroll } from '@/art/town-props'
+import { createCart, createCartSwarm, createSack, createSeal, createStake, createStone } from '@/art/town-units'
 import { createArch, createWallArc, type Gap } from '@/art/town-walls'
 import { sketchOf } from '@/art/lines'
 import { defineActor, type ActorDef } from '@/world/actors'
+import { FOLK, FOLK_HOME, homePoint } from './hall'
 import { routePoint } from './route'
 import {
   APPS,
@@ -37,7 +39,6 @@ import {
   GHOST_COINS,
   HALL,
   HALL_BIG,
-  HEALTH_PERSON,
   IMPROVISE_PATHS,
   KILNS,
   LAND_SIZE,
@@ -60,7 +61,6 @@ import {
   OUTER_E,
   OUTER_W,
   PILE,
-  PILE_R,
   PINE_TREES,
   REFINE_HOUSE,
   REQUESTER,
@@ -107,11 +107,15 @@ export const TIMELINE_IDS = MILESTONES.map((_, i) => (i < 9 ? `tl.step.${i}` : '
 const at = (o: Object3D, p: V3) => o.position.set(p[0], p[1], p[2])
 
 /**
- * The radius of the blue cart's round on the cover. A plain value that part 3
- * tweens to 0, so the cart goes into the hall when the talk starts.
+ * The size of the blue cart's round on the cover: the dirt track around the
+ * hall. A plain value that part 3 tweens to 0, so the cart goes into the hall
+ * when the talk starts.
  */
 export const COVER_ROUND = 4.2
 export const issueOrbit = { radius: COVER_ROUND }
+const coverRound = polyline([...LOOP, LOOP[0]!])
+const roundPoint = new Vector3()
+const roundAhead = new Vector3()
 
 /** People sway a little. Ambient: inner only. */
 const sway = (seed: number) => (o: Object3D, time: number) => {
@@ -167,6 +171,15 @@ const roadAlongX = (id: string, from: V3, to: V3, width: number) =>
 const roadTimeline = roadAlongX('road.timeline', TIMELINE_ROAD[0]!, TIMELINE_ROAD[1]!, 1.3)
 const roadMain = roadAlongX('road.main', MAIN[0]!, MAIN[1]!, 1.3)
 const roadLoop = defineActor({ id: 'road.loop', create: () => createRoad(LOOP, { width: 1.2, loop: true, cobbled: true }).object })
+/** The dirt track the blue cart wears around the hall on the cover. The cobbled loop covers it in 5.3. */
+const track = defineActor({
+  id: 'track',
+  create: () => {
+    const el = createRoad(LOOP, { width: 0.7, loop: true })
+    el.object.position.y = -0.025
+    return el.object
+  },
+})
 const fields = defineActor({ id: 'fields', create: () => createFields(FIELDS.length).object })
 const rows = defineActor({ id: 'rows', create: () => createRows(FIELDS.length * 3).object })
 const bales = defineActor({ id: 'bales', create: () => createBales(BALES.length).object })
@@ -203,20 +216,51 @@ const banner = defineActor({
     return el.object
   },
 })
-/** The blue cart: the issue. On the cover it goes round the hall (ambient); part 3 closes the round. */
+/** The blue cart: the issue. On the cover it goes round the hall on the track (ambient); part 3 closes the round. */
 const issue = defineActor({
   id: 'issue',
   create: () => {
-    const el = createBall({ radius: 0.26, color: palette.accent })
-    el.object.position.set(0, 0.26, 0)
+    const el = createCart({ load: 'tarp', color: palette.accent })
+    el.object.position.set(0, 0.03, 0)
+    el.object.scale.setScalar(1.2)
     return el.object
   },
   ambient: (o, time) => {
-    const r = issueOrbit.radius
-    const a = time * 0.4
-    artOf(o).inner.position.set(Math.cos(a) * r, 0, Math.sin(a) * r * 0.8)
+    const k = issueOrbit.radius / COVER_ROUND
+    const inner = artOf(o).inner
+    if (k < 0.01) {
+      inner.position.set(0, 0, 0)
+      inner.rotation.y = 0
+      return
+    }
+    const u = (time * 0.05) % 1
+    coverRound(u, roundPoint)
+    coverRound((u + 0.004) % 1, roundAhead)
+    inner.position.set(roundPoint.x * k, 0, roundPoint.z * k)
+    inner.rotation.y = Math.atan2(-(roundAhead.z - roundPoint.z), roundAhead.x - roundPoint.x)
   },
 })
+/** The folk of the hall: at its arcade at the start, then one by one out to their own house (hall.ts). */
+const FOLK_HATS: Record<string, string> = {
+  [FOLK.triage]: palette.lilac,
+  [FOLK.smiths[0]]: town.timber,
+  [FOLK.smiths[1]]: town.tile,
+  [FOLK.router]: palette.sage,
+  [FOLK.refine]: palette.surface,
+  [FOLK.keeper]: palette.peach,
+}
+const folk = FOLK_HOME.filter((f) => f.id in FOLK_HATS).map((f, i) =>
+  defineActor({
+    id: f.id,
+    create: () => {
+      const el = createVillager({ hat: FOLK_HATS[f.id] })
+      homePoint(f.spot, HALL_BIG, el.object.position)
+      el.object.rotation.y = 0.5
+      return el.object
+    },
+    ambient: sway(11 + i * 1.3),
+  }),
+)
 const well = defineActor({
   id: 'well',
   create: () => {
@@ -295,16 +339,11 @@ const blades = defineActor({
     artOf(o).inner.rotation.z = -time * 0.5
   },
 })
-const events = EVENTS.map((name, i) => defineActor({ id: `evt.${name}`, create: () => createBall({ radius: 0.11, color: EVENT_COLORS[i] }).object }))
-const STEP_LOOKS = [
-  { color: palette.butter, pattern: 'bands' },
-  { color: palette.lilac, pattern: 'plain' },
-  { color: palette.peach, pattern: 'spots' },
-  { color: palette.sage, pattern: 'plain' },
-  { color: palette.butter, pattern: 'plain' },
-  { color: palette.lilac, pattern: 'bands' },
-] as const
-const steps = STEPS.map((name, i) => defineActor({ id: `step.${name}`, create: () => createMoon({ radius: 0.17, ...STEP_LOOKS[i]! }).object }))
+/** The events: sacks of grain that fall into the mill. */
+const events = EVENTS.map((name, i) => defineActor({ id: `evt.${name}`, create: () => createSack({ color: EVENT_COLORS[i] }).object }))
+/** The steps: carts with a barrel each, out of the mill onto its road. */
+const STEP_COLORS = [palette.butter, palette.lilac, palette.peach, palette.sage, palette.butter, palette.lilac]
+const steps = STEPS.map((name, i) => defineActor({ id: `step.${name}`, create: () => createCart({ load: 'barrel', color: STEP_COLORS[i] }).object }))
 const straightLine = defineActor({
   id: 'p5.line',
   create: () => createSketchLine({ path: straight(LINE_FROM, LINE_TO), segments: 60, width: 2.5, dashed: true, dashSize: 0.22, gapSize: 0.16, reveal: 0 }).object,
@@ -340,9 +379,8 @@ const scriptorium = defineActor({
     return el.object
   },
 })
-const shell = SHELL.map((name) =>
-  defineActor({ id: `shell.${name}`, create: () => createMoon({ radius: 0.13, color: name === 'ours' ? palette.peach : palette.surface, outline: { width: 2 } }).object }),
-)
+/** The shell: a palisade of stakes around the crate; our own step is the peach one. */
+const shell = SHELL.map((name) => defineActor({ id: `shell.${name}`, create: () => createStake({ band: name === 'ours' ? palette.peach : palette.surface }).object }))
 const triage = defineActor({
   id: 'triage',
   create: () => {
@@ -360,22 +398,10 @@ const runPaths = RUN_PATHS.map((points, i) =>
     create: () => createSketchLine({ path: through(points), segments: 90, wobble: 0.09, width: 2.2, opacity: 0.85, reveal: 0 }).object,
   }),
 )
-const pile = PILE.map((_, i) =>
-  defineActor({ id: `p6.ball.${i}`, create: () => createBall({ radius: PILE_R, color: [palette.peach, palette.lilac, palette.butter, palette.sage][i % 4] }).object }),
-)
-/** The task moons: white at the hall's arcade; part 10 paints them as they land on the loop. */
-const TASK_PATTERNS = ['bands', 'plain', 'spots', 'bands'] as const
-const tasks = TASKS.map((name, i) =>
-  defineActor({
-    id: `task.${name}`,
-    create: () => createMoon({ radius: 0.2, pattern: TASK_PATTERNS[i] }).object,
-    ambient: (o, time) => {
-      const inner = artOf(o).inner
-      inner.rotation.y = Math.sin(time * 0.33 + i * 1.7) * 0.3
-      inner.rotation.x = Math.sin(time * 0.27 + i * 0.9) * 0.2
-    },
-  }),
-)
+/** Pieces of work: carts under a tarp, on the wobbly paths and in the queue at the exit. */
+const pile = PILE.map((_, i) => defineActor({ id: `p6.ball.${i}`, create: () => createCart({ load: 'tarp', color: [palette.peach, palette.lilac, palette.butter, palette.sage][i % 4] }).object }))
+/** The tasks: carts with a white crate at the hall's arcade; part 10 paints them as they land on the loop. */
+const tasks = TASKS.map((name) => defineActor({ id: `task.${name}`, create: () => createCart({ load: 'crate', color: palette.surface }).object }))
 /** Tokens: gold coins that stack up as the agent reasons about simple work (6.2), placed by the parts. */
 const tokens = defineActor({
   id: 'tokens',
@@ -474,8 +500,8 @@ const cleanPath = defineActor({
     return createSketchLine({ path: polyline(raised), segments: 120, wobble: 0.015, width: 3, color: palette.sage, reveal: 0 }).object
   },
 })
-const COMMAND_COLORS = [palette.peach, palette.butter, palette.lilac]
-const commands = COMMANDS_FROM.map((_, i) => defineActor({ id: `cmd.${i}`, create: () => createBall({ radius: 0.12, color: COMMAND_COLORS[i] }).object }))
+/** Unsafe commands: stones thrown at the parapet. */
+const commands = COMMANDS_FROM.map((_, i) => defineActor({ id: `cmd.${i}`, create: () => createStone({ size: 0.12 + (i % 2) * 0.02 }).object }))
 /** The developer, with a copy of the hall and its parapet, small, at their side (9.5). */
 const developer = defineActor({
   id: 'dev',
@@ -590,17 +616,19 @@ const requester = defineActor({
   },
   ambient: sway(3),
 })
+/** The repair crew: one of the hall's folk, at the arcade until the watchtower stands (10.6). */
 const repair = defineActor({
   id: 'repair',
   create: () => {
     const el = createVillager({ hat: palette.butter })
-    at(el.object, LOOP[0]!)
+    homePoint(FOLK_HOME.find((f) => f.id === FOLK.tower)!.spot, HALL_BIG, el.object.position)
+    el.object.rotation.y = 0.5
     return el.object
   },
   ambient: sway(7),
 })
-/** Work items in the pipeline, and the copies of 10.4 that wake every workflow. */
-const flow = defineActor({ id: 'flow', create: () => createSwarm({ count: 12, radius: 0.11, color: palette.butter }).object })
+/** Work items in the pipeline, and the copies of 10.4 that wake every workflow: carts under a tarp. */
+const flow = defineActor({ id: 'flow', create: () => createCartSwarm(12, 'tarp', palette.butter).object })
 
 // ---- part 11: Foundations ---------------------------------------------------------------------------
 
@@ -654,7 +682,7 @@ const messyPaths = [0, 1, 2].map((k) =>
     },
   }),
 )
-const smallWork = defineActor({ id: 'p11.work', create: () => createSwarm({ count: 10, radius: 0.09, color: palette.lilac }).object })
+const smallWork = defineActor({ id: 'p11.work', create: () => createCartSwarm(10, 'sack', palette.lilac).object })
 /** The three phases: the plans of the three walls, dashed on the ground. */
 const phases = RINGS.map((radius, i) =>
   defineActor({
@@ -727,8 +755,9 @@ const verbs = VERBS.map((v) =>
         s.object.rotation.y = Math.PI / 4
         return s.object
       }
-      const el = createMoon({ radius: 0.12, color: palette.butter })
+      const el = createSeal({ radius: 0.12, color: palette.butter })
       el.object.position.set(...v.at)
+      el.object.rotation.y = Math.PI / 4
       return el.object
     },
   }),
@@ -778,12 +807,13 @@ const ghostMetrics = defineActor({
 })
 /** The one coin that part 13 adds: the deployment it counts. */
 const newCoin = defineActor({ id: 'metric.new', create: () => createCoin({ color: METRIC_COLORS[0], scale: METRIC_COIN_SCALE }).object })
+/** The elder: one of the hall's folk, at the arcade until 12.4, when they walk out to the stacks. */
 const elder = defineActor({
   id: 'elder',
   create: () => {
-    const el = createVillager({ hat: palette.butter })
-    at(el.object, HEALTH_PERSON)
-    el.object.rotation.y = Math.PI + 0.5
+    const el = createVillager({ hat: town.thatch })
+    homePoint(FOLK_HOME.find((f) => f.id === FOLK.elder)!.spot, HALL_BIG, el.object.position)
+    el.object.rotation.y = 0.5
     return el.object
   },
   ambient: sway(9),
@@ -813,6 +843,7 @@ export const actors: ActorDef[] = [
   roadTimeline,
   roadMain,
   roadLoop,
+  track,
   fields,
   rows,
   bales,
@@ -821,6 +852,7 @@ export const actors: ActorDef[] = [
   harness,
   banner,
   issue,
+  ...folk,
   well,
   ...milestones,
   tlSlot,

@@ -1,17 +1,21 @@
 /**
  * Part 12 moves. The barn and the stacks of measures, coin by coin; two ghost
- * stacks; the elder who looks at what needs a human; and the audit's report
- * that goes from the watchtower back into the gatehouse: the loop.
+ * stacks; the elder, the last of the hall's folk to move out, who walks to the
+ * stacks to look at what needs a human, and the hall steps down for the last
+ * time; and the audit's report that goes from the watchtower back into the
+ * gatehouse: the loop.
  */
 import { Vector3, type Group } from 'three'
 import { artOf, swarmOf } from '@/art/elements'
 import { segmentsOf, sketchOf } from '@/art/lines'
 import { drive, fade, inkIn } from '@/art/motion'
 import { easeInOut } from '@/art/orbits'
+import { yawAlong } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
 import { METRIC_OFFSET } from '../../actors'
 import { drop, stackPoint, stackTilt } from '../../coins'
-import { METRIC_BASES, METRIC_COIN_SCALE, METRIC_COINS, TOWER } from '../../layout'
+import { FOLK, HALL_SCALE, hallStep, homeAfter, homeAt, walkPath } from '../../hall'
+import { HEALTH_PERSON, METRIC_BASES, METRIC_COIN_SCALE, METRIC_COINS, TOWER } from '../../layout'
 import { routePoint, ROUTE } from '../../route'
 import { B, grid } from '.'
 
@@ -50,9 +54,11 @@ export const projectHealthMoves = defineChoreography('12-project-health', (tl, c
   const ghostIn = span(B.honest + 0.5, B.honest + 1.75)
   fade(tl, ghost.material, 0.85, ghostIn.start, ghostIn.duration)
 
-  // 12.4: the elder, and what still needs them.
-  const elderIn = span(B.human + 0.5, B.human + 1.25)
-  inkIn(tl, el('elder'), elderIn.start, elderIn.duration)
+  // 12.4: the elder walks out of the hall to the stacks, and the hall takes its last step down.
+  const walk = span(B.human + 0.25, B.human + 1.75)
+  walkPath(tl, cast, FOLK.elder, walk.start, walk.duration, [homeAt(FOLK.elder, HALL_SCALE.tower), [1.3, 0, 3.4], [HEALTH_PERSON[0], 0, HEALTH_PERSON[2]]], Math.PI + 0.5)
+  const smaller = span(B.human + 1.25, B.human + 2.25)
+  hallStep(tl, cast, smaller.start, smaller.duration, HALL_SCALE.tower, HALL_SCALE.elder, homeAfter(FOLK.elder))
 
   // 12.6: the audit's report goes down from the tower into the gatehouse, and rides the road like any cart.
   const loop = sketchOf(cast.get<Group>('p12.loop'))
@@ -60,20 +66,25 @@ export const projectHealthMoves = defineChoreography('12-project-health', (tl, c
   tl.to(loop.reveal, { value: 1, duration: draw.duration, ease: 'power2.inOut' }, draw.start)
   const flow = swarmOf(cast.get('flow'))
   const tmp = new Vector3()
-  const all = span(B.loop, grid.totalBeats)
-  drive(tl, all.start, all.duration, (u) => {
-    const beat = B.loop + u * (grid.totalBeats - B.loop)
-    const down = easeInOut(win(beat, B.loop + 0.5, B.loop + 2.4))
+  const prev = new Vector3()
+  const at = (beat: number, out: Vector3) => {
     if (beat < B.loop + 2.4) {
-      loop.point(down, tmp)
+      loop.point(easeInOut(win(beat, B.loop + 0.5, B.loop + 2.4)), out)
     } else {
       // Through the gatehouse and on to refine, like any other issue.
       const w = easeInOut(win(beat, B.loop + 2.4, grid.totalBeats))
-      routePoint(ROUTE.router! + (ROUTE.refine! - ROUTE.router!) * w, tmp)
+      routePoint(ROUTE.router! + (ROUTE.refine! - ROUTE.router!) * w, out)
     }
+    return out
+  }
+  const all = span(B.loop, grid.totalBeats)
+  drive(tl, all.start, all.duration, (u) => {
+    const beat = B.loop + u * (grid.totalBeats - B.loop)
+    at(beat, tmp)
+    at(beat - 0.05, prev)
     const shown = beat > B.loop + 0.5 ? 1 : 0
-    if (!shown) tmp.set(TOWER[0], 0.12, TOWER[2])
-    flow.place(7, tmp.x, tmp.y, tmp.z, shown)
+    if (!shown) tmp.set(TOWER[0], 0.06, TOWER[2])
+    flow.place(7, tmp.x, 0.06, tmp.z, shown, 0, 0, yawAlong(prev, tmp))
     flow.commit()
   })
 })

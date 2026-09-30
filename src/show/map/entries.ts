@@ -9,7 +9,8 @@
 import { Vector3 } from 'three'
 import type { AnchorTarget } from '@/art/anchor'
 import type { MessageKey } from '@/i18n'
-import { COINS, HALL_BIG, KILNS, LOOP, RINGS } from '../layout'
+import { HALL_SCALE } from '../hall'
+import { COINS, KILNS, LOOP, RINGS } from '../layout'
 
 export type Side = 'above' | 'below' | 'left' | 'right'
 
@@ -36,7 +37,7 @@ export const MAP_ENTRIES: MapEntry[] = [
   // A nameplate under the loop, so the name never reaches the map of the talk in the corner.
   { id: 'hall', target: 'hall', offset: [0, -0.05, 4.6], name: 'town.hall', role: 'town.hall.role', side: 'below' },
   { id: 'opencode', target: 'banner', offset: [0.45, 1.1, 0], name: 'map.opencode', role: 'map.opencode.role', side: 'right' },
-  { id: 'harness', target: point(1.9 * HALL_BIG, 0.3, 2.0 * HALL_BIG + 0.35), name: 'map.harness', role: 'map.harness.role', side: 'below' },
+  { id: 'harness', target: point(1.9 * HALL_SCALE.forge, 0.3, 2.0 * HALL_SCALE.forge + 0.35), name: 'map.harness', role: 'map.harness.role', side: 'below' },
   { id: 'coins', target: point(COINS[0] + 0.45, COINS[1] + 0.7, COINS[2]), name: 'town.coins', role: 'town.coins.role', side: 'right' },
   { id: 'lane.automation', target: point(1.7, 0, LOOP[1]![2] - 0.45), name: 'map.lane.automation', side: 'above', lane: true },
 

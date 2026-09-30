@@ -41,7 +41,7 @@ const tokenTop = stackPoint(COINS, TOKEN_COINS - 1).add(new Vector3(0, 0.42, 0))
 const aboveTokens = () => tokenTop
 
 /** What the agent does with its reasoning in 6.2: one name at a time, above its task. */
-const TASK_OFFSET = [0, 0.55, 0] as const
+const TASK_OFFSET = [0, 0.66, 0] as const
 
 function Dom() {
   return (
