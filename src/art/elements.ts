@@ -45,7 +45,8 @@ export interface ArtElement<M extends Material = Material> {
   dispose(): void
 }
 
-function assemble<M extends Material>(name: string, geometry: BufferGeometry, material: M, outline: OutlineOptions = {}): ArtElement<M> {
+/** Builds an element from one geometry: the shared shape of every factory here and in town.ts. */
+export function assemble<M extends Material>(name: string, geometry: BufferGeometry, material: M, outline: OutlineOptions = {}): ArtElement<M> {
   const object = new Group()
   object.name = name
   const inner = new Group()
@@ -295,7 +296,7 @@ export type AstronautPose = 'stand' | 'hold'
 export const ASTRONAUT_SIZE = 1.25
 
 /** A capsule part of the astronaut, placed and turned. */
-function part(radius: number, length: number, at: [number, number, number], rot: [number, number, number] = [0, 0, 0]): BufferGeometry {
+export function part(radius: number, length: number, at: [number, number, number], rot: [number, number, number] = [0, 0, 0]): BufferGeometry {
   const g = new CapsuleGeometry(radius, length, 6, 14)
   g.rotateX(rot[0])
   g.rotateY(rot[1])

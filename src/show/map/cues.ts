@@ -8,6 +8,7 @@
  *   that introduces the element.
  * - focus(ids, pulse): these entries are the subject; the other names step
  *   back while the pulse is up.
+ * - leave(id, cue): the name goes for good (its element left the map).
  */
 import type { ShowModel } from '@/engine/show-model'
 import { level, pulse, type Cue, type Pulse } from '../cues'
@@ -16,6 +17,7 @@ const cues = {
   show: null as Cue | null,
   hide: null as Cue | null,
   appear: new Map<string, Cue>(),
+  leave: new Map<string, Cue>(),
   role: new Map<string, Pulse[]>(),
   focus: [] as Array<{ ids: string[]; pulse: Pulse }>,
 }
@@ -29,6 +31,9 @@ export const mapCues = {
   },
   appear(id: string, cue: Cue) {
     cues.appear.set(id, cue)
+  },
+  leave(id: string, cue: Cue) {
+    cues.leave.set(id, cue)
   },
   role(id: string, p: Pulse) {
     const list = cues.role.get(id) ?? []
@@ -66,7 +71,7 @@ export function mapState(model: ShowModel, position: number): MapState {
     }
   }
   for (const [id, cue] of cues.appear) {
-    const name = level(model, position, cue)
+    const name = level(model, position, cue) * (1 - level(model, position, cues.leave.get(id) ?? null))
     const role = (cues.role.get(id) ?? []).reduce((m, p) => Math.max(m, pulse(model, position, p)), 0)
     const focus = strongest === 0 || focused.includes(id) ? 1 : 1 - strongest
     labels[id] = { name, role, focus }

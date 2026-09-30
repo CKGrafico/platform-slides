@@ -320,5 +320,11 @@
   "map.housekeeping.role": "reintenta lo parado",
   "map.health": "Project Health",
   "map.health.role": "lo mide todo cada día",
-  "p09.map": "El sistema, como un mapa. Cuatro anillos: modelo, agentes, automatización, producción."
+  "p09.map": "El sistema, como un mapa. Cuatro anillos: modelo, agentes, automatización, producción.",
+  "town.hall": "El agente",
+  "town.hall.role": "lo hace todo, al principio",
+  "town.booth": "Responsable",
+  "town.booth.role": "solo si hay riesgo",
+  "town.coins": "Tokens",
+  "town.coins.role": "lo que quema el agente"
 }

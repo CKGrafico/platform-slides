@@ -320,5 +320,11 @@
   "map.housekeeping.role": "retries what stalled",
   "map.health": "Project Health",
   "map.health.role": "it measures every day",
-  "p09.map": "The system, as a map. Four rings: the model, the agents, the automation, production."
+  "p09.map": "The system, as a map. Four rings: the model, the agents, the automation, production.",
+  "town.hall": "The agent",
+  "town.hall.role": "does everything, at first",
+  "town.booth": "The owner",
+  "town.booth.role": "only if there is risk",
+  "town.coins": "Tokens",
+  "town.coins.role": "what the agent burns"
 }

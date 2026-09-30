@@ -42,6 +42,10 @@ export const show = defineShow({
 /** Moves on the shared actors, in show order. The rest state comes first. */
 export const choreographies = [restMoves, coverMoves, stateOfAiMoves, maturityMoves, actionsToAgentsMoves, problemsMoves, changeOfMindMoves, runtimeMoves, mapMoves, harnessMoves, agenticWorkflowsMoves, foundationsMoves, projectHealthMoves, issueToProductionMoves, closingMoves]
 
-export { actors } from './actors'
+import { actors as orbitActors } from './actors'
+import { townActors } from './town/actors'
+
+/** The cast: the world of orbits, then the town (docs/art/town-proposal.md). */
+export const actors = [...orbitActors, ...townActors]
 export { Hud } from './hud/Hud'
 export { MapLabels } from './map/MapLabels'
