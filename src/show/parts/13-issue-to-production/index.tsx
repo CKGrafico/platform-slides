@@ -34,13 +34,18 @@ pulse(2, 5) // CI and the guardrails: Foundations
 pulse(1, 6) // the merge gate: Agentic Workflows
 pulse(3, 7) // production, counted: Project Health
 
-const WIDE: CameraShot = { position: [-1.5, 5.6, 17], target: [-0.8, -0.3, 0], fov: 36 }
+// High and wide: the ball far on the left, the whole system above the caption.
+const WIDE: CameraShot = { position: [-3.0, 5.8, 20.5], target: [-2.2, -1.9, 0], fov: 36 }
+/**
+ * One shot per step. Each one looks down on the disc, so the sky is at the
+ * top: the step captions sit top left, and no planet sits behind the map.
+ */
 const SHOTS: CameraShot[] = [
   { position: [-5.4, 2.0, 8.2], target: [-5.2, 0, 1.2], fov: 36 },
   { position: [0, 6.2, 11], target: [0, -0.4, 0.4], fov: 36 },
-  { position: [-3.6, 1.6, 7.4], target: [-2.2, -0.4, 0.4], fov: 36 },
+  { position: [-3.28, 2.5, 8.9], target: [-1.6, 0.1, 0.5], fov: 36 },
   { position: [1.6, 2.2, 7], target: [0.3, 0, 0.4], fov: 36 },
-  { position: [3.8, 3.0, 9.8], target: [3.6, -1.1, 1.5], fov: 36 },
+  { position: [3.2, 2.2, 11.5], target: [3.4, -0.6, 2.4], fov: 36 },
   { position: [5.0, 1.6, 6.8], target: [5.7, 0, 1.3], fov: 36 },
   { position: [2.4, 3.6, 16.5], target: [6.4, 1.6, -0.6], fov: 38 },
 ]
@@ -58,7 +63,7 @@ function Dom() {
             <BurnCaption
               key={n}
               k={`p13.step.${n}` as MessageKey}
-              corner="bottom-left"
+              corner="top-left"
               width={84}
               height={12}
               className="art-caption--lead"
