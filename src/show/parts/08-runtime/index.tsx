@@ -6,10 +6,10 @@
  * call goes through, with the models behind it.
  *
  * Stops, on the beat grid:
- *   1. (4) the title; the shell's pieces light up one by one.      8.1
- *   2. (5) threat detection comes off and fades.                    8.1
- *   3. (5) the OpenCode ring closes around the core.                8.2
- *   4. (6) Forge: the direct call to a vendor breaks; the models.   8.3
+ *   1. (9) the title; the shell's pieces light up one by one;
+ *      threat detection comes off and fades.                        8.1
+ *   2. (5) the OpenCode ring closes around the core.                8.2
+ *   3. (6) Forge: the direct call to a vendor breaks; the models.   8.3
  */
 import { Vector3 } from 'three'
 import { range } from '@/animation/progress'
@@ -23,7 +23,7 @@ import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { SHELL } from '../../actors'
 import { FORGE_POS, LOCK_DOCK, MODELS, OPENCODE, SHELL_DIRS, VENDOR_POS } from '../../layout'
 
-export const grid = beatStops([4, 5, 5, 6])
+export const grid = beatStops([9, 5, 6])
 const { b } = grid
 export const B = { light: 0, threat: 4, opencode: 9, forge: 14 }
 
@@ -47,7 +47,7 @@ function Dom() {
   return (
     <div className="scene-root">
       <Stage>
-        <PartTitle kicker="p08.kicker" title="p08.title" level={burnWindow(b(1), b(2.5), b(B.threat), b(B.threat + 0.75))} />
+        <PartTitle kicker="p08.kicker" title="p08.title" level={burnWindow(b(1), b(2.5), b(B.threat + 0.75), b(B.threat + 1.5))} />
         {/* Top left: the shell shot looks up at the workflow, and the core fills the bottom. */}
         <BurnCaption k="p08.adapt" corner="top-left" width={80} height={15} className="art-caption--lead" seed={101} source="p08.adapt.source" level={burnWindow(b(B.threat + 2), b(B.threat + 3), b(B.opencode), b(B.opencode + 0.6))} />
         <BurnCaption k="p08.opencode" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={102} level={burnWindow(b(B.opencode + 2), b(B.opencode + 3), b(B.forge), b(B.forge + 0.6))} />

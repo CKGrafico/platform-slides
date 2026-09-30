@@ -77,7 +77,7 @@ export const stateOfAiMoves = defineChoreography('03-state-of-ai', (tl, cast, t)
     }
   })
 
-  // Stop 12: the first half dims and steps back; the second half lights up.
+  // The two halves: the first dims and steps back; the second lights up.
   const halves = span(SPLIT_BEAT, SPLIT_BEAT + 2)
   TIMELINE_IDS.forEach((id, k) => {
     const first = k < TIMELINE_SPLIT

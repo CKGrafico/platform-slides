@@ -6,12 +6,14 @@
  * (Guardrails to Autonomous loops) is a system around the model. The last step
  * is an empty dashed slot: "?".
  *
- * Stops, on the beat grid:
- *   1.     (4 beats) the name burns out, the blue ball spirals into the core,
- *          the camera pulls back, the title burns in.
- *   2-11.  (2 beats each) one step of the timeline, with its line.
- *   12.    (4 beats) the two halves: the first dims, the second lights up.
- *   13.    (4 beats) "today: the second half".
+ * Stops, on the beat grid. The steps come faster and faster (script 3.1):
+ *   1. (15 beats) the blue ball spirals into the core, the title burns in,
+ *      and the first half draws itself, Models to Agents.
+ *   2. (5.5) the second half, faster: Guardrails to Autonomous loops.
+ *   3. (3)   a breath, then the "?".
+ *   4. (4)   the two halves: the first dims, the second lights up.
+ *   5. (4)   "today: the second half".
+ * Only the last step of each click keeps its line; the names stay on the arc.
  */
 import { range } from '@/animation/progress'
 import { beatStops } from '@/animation/beat'
@@ -24,14 +26,20 @@ import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { TIMELINE_RADIUS, TIMELINE_SPLIT } from '../../layout'
 import { TIMELINE_IDS } from '../../actors'
 
-/** Beats: intro 4, ten steps of 2, the halves 4, today 4. */
-export const grid = beatStops([4, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 4, 4])
+/** Beats: the intro and the first half 15, the second half 5.5, the "?" 3, the halves 4, today 4. */
+export const grid = beatStops([15, 5.5, 3, 4, 4])
 const { b } = grid
 
-/** Beat where step k (0..9) starts. */
-export const stepBeat = (k: number) => 4 + 2 * k
-export const SPLIT_BEAT = 24
-export const TODAY_BEAT = 28
+/**
+ * Beat where step k (0..9) starts: years at the start, months at the end. The
+ * gaps never go under 1 beat, so the arc's reveal tweens never overlap.
+ */
+const STEP_BEATS = [4, 7, 9.5, 11.5, 13, 15, 16.5, 17.75, 18.75, 21.5]
+export const stepBeat = (k: number) => STEP_BEATS[k]!
+export const SPLIT_BEAT = 23.5
+export const TODAY_BEAT = 27.5
+/** The steps that end a click: only their lines show. */
+const LINE_AT = new Set([4, 8, 9])
 
 const WIDE: CameraShot = { position: [-0.2, 0.6, 14.2], target: [-0.1, -0.35, 0.8], fov: 34 }
 const SECOND_HALF: CameraShot = { position: [0.5, 0.7, 13.6], target: [0.7, -0.3, 0.8], fov: 34 }
@@ -68,10 +76,11 @@ function Dom() {
   return (
     <div className="scene-root">
       <Stage>
-        <PartTitle kicker="p03.kicker" title="p03.title" level={burnWindow(b(2), b(3.5), b(4), b(4.75))} />
+        <PartTitle kicker="p03.kicker" title="p03.title" level={burnWindow(b(2), b(3.5), b(12.25), b(13))} />
         {LINE_KEYS.map((k, i) => {
+          if (!LINE_AT.has(i)) return null
           const s = stepBeat(i)
-          const end = i === 9 ? SPLIT_BEAT : s + 2
+          const end = i === 9 ? SPLIT_BEAT : stepBeat(i + 1)
           return (
             <BurnCaption
               key={k}

@@ -8,13 +8,12 @@
  * the first phase to the last breaks apart.
  *
  * Stops, on the beat grid:
- *   1. (4) the title; slot 3.
- *   2. (6) AI amplifies what you already have.             11.1
- *   3. (6) three phases: who may start a change.            11.2
- *   4. (5) the disc and its grid.                           11.3
- *   5. (6) hard guardrails.                                 11.4
- *   6. (5) verbs, not trust.                                11.5
- *   7. (5) you cannot skip to autonomy.                     11.6
+ *   1. (10) the title; slot 3; AI amplifies what you already have.  11.1
+ *   2. (6) three phases: who may start a change.            11.2
+ *   3. (5) the disc and its grid.                           11.3
+ *   4. (6) hard guardrails.                                 11.4
+ *   5. (5) verbs, not trust.                                11.5
+ *   6. (5) you cannot skip to autonomy.                     11.6
  */
 import { Vector3 } from 'three'
 import { range } from '@/animation/progress'
@@ -28,7 +27,7 @@ import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { GROUND_Y, MESSY_POS, PHASE_RADII, TEAM_Y, TIDY_POS, VERBS, WALL_ANGLES, WALL_RADIUS } from '../../layout'
 
-export const grid = beatStops([4, 6, 6, 5, 6, 5, 5])
+export const grid = beatStops([10, 6, 5, 6, 5, 5])
 const { b } = grid
 export const B = { title: 0, amplify: 4, phases: 10, disc: 16, walls: 21, verbs: 27, skip: 32 }
 
@@ -62,7 +61,7 @@ function Dom() {
   return (
     <div className="scene-root">
       <Stage>
-        <PartTitle kicker="p11.kicker" title="p11.title" level={burnWindow(b(1), b(2.5), b(B.amplify), b(B.amplify + 0.75))} />
+        <PartTitle kicker="p11.kicker" title="p11.title" level={burnWindow(b(1), b(2.5), b(B.amplify + 1.5), b(B.amplify + 2.25))} />
         <BurnCaption k="p11.amplify" corner="top-left" width={84} height={12} className="art-caption--lead" seed={131} source="p11.amplify.source" level={burnWindow(b(B.amplify + 3), b(B.amplify + 4), b(B.phases), b(B.phases + 0.6))} />
         <BurnCaption k="p11.phases" corner="top-left" width={84} height={12} className="art-caption--lead" seed={132} source="p11.phases.source" level={burnWindow(b(B.phases + 3), b(B.phases + 4), b(B.disc), b(B.disc + 0.6))} />
         <BurnCaption k="p11.disc" corner="top-left" width={84} height={12} className="art-caption--lead" seed={133} source="p11.disc.source" level={burnWindow(b(B.disc + 2.5), b(B.disc + 3.5), b(B.walls), b(B.walls + 0.6))} />

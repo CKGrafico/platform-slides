@@ -6,11 +6,10 @@
  * timeline with its "?"; the title. Then the last line.
  *
  * Stops, on the beat grid:
- *   1. (6) pull back over the whole system.
- *   2. (5) the four slots, full.
- *   3. (5) the timeline returns, with its "?".
- *   4. (5) the title.
- *   5. (6) the last line.
+ *   1. (11) pull back over the whole system; the four slots, full.
+ *   2. (5) the timeline returns, with its "?".
+ *   3. (5) the title.
+ *   4. (6) the last line.
  */
 import { beatStops } from '@/animation/beat'
 import { Burn, burnWindow } from '@/art/Burn'
@@ -21,7 +20,7 @@ import { T } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 
-export const grid = beatStops([6, 5, 5, 5, 6])
+export const grid = beatStops([11, 5, 5, 6])
 const { b } = grid
 export const B = { back: 0, slots: 6, timeline: 11, title: 16, last: 21 }
 

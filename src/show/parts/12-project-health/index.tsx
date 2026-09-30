@@ -8,13 +8,12 @@
  * into a loop.
  *
  * Stops, on the beat grid:
- *   1. (4) the title; slot 4.
- *   2. (5) autonomy you cannot measure is only a claim.     12.1
- *   3. (6) what it measures.                                 12.2
- *   4. (6) honest numbers: two hollow columns.               12.3
- *   5. (5) what needs a human.                               12.4
- *   6. (7) our numbers, next to the industry.                12.5
- *   7. (6) the loop that maintains the maintainer.           12.6
+ *   1. (9) the title; slot 4; autonomy you cannot measure is only a claim.  12.1
+ *   2. (6) what it measures.                                 12.2
+ *   3. (6) honest numbers: two hollow columns.               12.3
+ *   4. (5) what needs a human.                               12.4
+ *   5. (7) our numbers, next to the industry.                12.5
+ *   6. (6) the loop that maintains the maintainer.           12.6
  */
 import { Vector3 } from 'three'
 import { range } from '@/animation/progress'
@@ -29,7 +28,7 @@ import { hudCues } from '../../hud/cues'
 import { metricBase } from '../../actors'
 import { GROUND_Y, HEALTH_PERSON, METRIC_COINS, METRIC_Z, RELEASE_POS, TEAM_Y } from '../../layout'
 
-export const grid = beatStops([4, 5, 6, 6, 5, 7, 6])
+export const grid = beatStops([9, 6, 6, 5, 7, 6])
 const { b } = grid
 export const B = { title: 0, claim: 4, measure: 9, honest: 15, human: 21, numbers: 26, loop: 33 }
 
@@ -119,7 +118,7 @@ function Dom() {
   return (
     <div className="scene-root">
       <Stage>
-        <PartTitle kicker="p12.kicker" title="p12.title" level={burnWindow(b(1), b(2.5), b(B.claim), b(B.claim + 0.75))} />
+        <PartTitle kicker="p12.kicker" title="p12.title" level={burnWindow(b(1), b(2.5), b(B.claim + 0.75), b(B.claim + 1.5))} />
         {/* Top left: the escape shot has the system and the disc at the bottom left. */}
         <BurnCaption k="p12.claim" corner="top-left" width={84} height={9} className="art-caption--lead" seed={171} level={burnWindow(b(B.claim + 2), b(B.claim + 3), b(B.measure), b(B.measure + 0.6))} />
         <BurnCaption k="p12.measure" corner="bottom-left" width={84} height={9} className="art-caption--lead" seed={172} level={burnWindow(b(B.measure + 3), b(B.measure + 4), b(B.honest), b(B.honest + 0.6))} />

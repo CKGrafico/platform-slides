@@ -8,15 +8,14 @@
  * three clusters, the CI/CD line and two small systems with their own core.
  *
  * Stops, on the beat grid:
- *   1. (4) the core leaves; GitHub Actions appears.        5.1
- *   2. (6) events fall into it.                              5.1
- *   3. (5) it unfolds into a straight line.                  5.2
- *   4. (5) the core arrives; near it, the line curves.       5.3
- *   5. (5) the workflow file leaves the orbit.               5.4
- *   6. (6) it passes the compiler and gets its shell.        5.5
- *   7. (4) our own step snaps on.                            5.6
- *   8. (6) three clusters.                                   5.7
- *   9. (3) "this is where the real story starts".            5.7
+ *   1. (10) the core leaves; GitHub Actions appears; events fall into it.  5.1
+ *   2. (5) it unfolds into a straight line.                  5.2
+ *   3. (5) the core arrives; near it, the line curves.       5.3
+ *   4. (5) the workflow file leaves the orbit.               5.4
+ *   5. (6) it passes the compiler and gets its shell.        5.5
+ *   6. (4) our own step snaps on.                            5.6
+ *   7. (6) three clusters.                                   5.7
+ *   8. (3) "this is where the real story starts".            5.7
  */
 import { Vector3 } from 'three'
 import { range } from '@/animation/progress'
@@ -31,7 +30,7 @@ import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { EVENTS, SHELL, STEPS } from '../../actors'
 import { LINE_X, LINE_Y, LINE_Z, SHELL_DIRS, TRIAGE_POS } from '../../layout'
 
-export const grid = beatStops([4, 6, 5, 5, 5, 6, 4, 6, 3])
+export const grid = beatStops([10, 5, 5, 5, 6, 4, 6, 3])
 const { b } = grid
 
 /** Beat where each stop's move starts. */
@@ -65,7 +64,7 @@ function Dom() {
   return (
     <div className="scene-root">
       <Stage>
-        <PartTitle kicker="p05.kicker" title="p05.title" level={burnWindow(b(1), b(2.5), b(B.events), b(B.events + 0.75))} />
+        <PartTitle kicker="p05.kicker" title="p05.title" level={burnWindow(b(1), b(2.5), b(B.events + 2), b(B.events + 2.75))} />
         <BurnCaption k="p05.events" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={61} level={burnWindow(b(B.events + 1), b(B.events + 2), b(B.unfold), b(B.unfold + 0.6))} />
         <BurnCaption k="p05.steps" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={62} level={burnWindow(b(B.unfold + 1.5), b(B.unfold + 2.5), b(B.core), b(B.core + 0.6))} />
         <BurnCaption k="p05.intent" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={63} level={burnWindow(b(B.core + 2.5), b(B.core + 3.5), b(B.md), b(B.md + 0.6))} />

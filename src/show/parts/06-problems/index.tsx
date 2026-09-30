@@ -8,10 +8,10 @@
  * speeds up: tension.
  *
  * Stops, on the beat grid:
- *   1. (4) the title; the camera goes to the implementation cluster.
- *   2. (6) 6.1 the same prompt, three different runs.
- *   3. (6) 6.2 simple work, and the tokens it costs.
- *   4. (7) 6.3 a human in the loop; the work piles up.
+ *   1. (10) the title; the camera goes to the implementation cluster;
+ *      6.1 the same prompt, three different runs.
+ *   2. (6) 6.2 simple work, and the tokens it costs.
+ *   3. (7) 6.3 a human in the loop; the work piles up.
  */
 import { Vector3 } from 'three'
 import { range } from '@/animation/progress'
@@ -26,7 +26,7 @@ import { TASKS } from '../../actors'
 import { stackPoint } from '../../coins'
 import { CAPSULE_POS, TOKEN_COINS, TOKENS_POS } from '../../layout'
 
-export const grid = beatStops([4, 6, 6, 7])
+export const grid = beatStops([10, 6, 7])
 const { b } = grid
 export const B = { title: 0, runs: 4, cost: 10, human: 16 }
 
@@ -52,7 +52,7 @@ function Dom() {
   return (
     <div className="scene-root">
       <Stage>
-        <PartTitle kicker="p06.kicker" title="p06.title" level={burnWindow(b(1), b(2.5), b(B.runs), b(B.runs + 0.75))} />
+        <PartTitle kicker="p06.kicker" title="p06.title" level={burnWindow(b(1), b(2.5), b(B.runs + 2), b(B.runs + 2.75))} />
         <BurnCaption k="p06.runs" corner="bottom-left" width={80} height={12} className="art-caption--lead" seed={71} source="p06.runs.source" level={burnWindow(b(B.runs + 3), b(B.runs + 4), b(B.cost), b(B.cost + 0.6))} />
         <BurnCaption k="p06.cost" corner="bottom-left" width={80} height={12} className="art-caption--lead" seed={72} source="p06.cost.source" level={burnWindow(b(B.cost + 3), b(B.cost + 4), b(B.human), b(B.human + 0.6))} />
         <BurnCaption k="p06.human" corner="bottom-left" width={80} height={12} className="art-caption--lead" seed={73} source="p06.human.source" level={burnWindow(b(B.human + 3.5), b(B.human + 4.5))} />

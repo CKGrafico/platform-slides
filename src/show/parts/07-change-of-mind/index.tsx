@@ -10,7 +10,8 @@
  *   1. (4) the title; the tension goes.                    7.1
  *   2. (5) the question.                                     7.1
  *   3. (6) three people, many products.                      7.2
- *   4-7. (3 each) Agentic, Autonomous, Asynchronous, Cloud.  7.3
+ *   4. (12) Agentic, Autonomous, Asynchronous, Cloud, one every 3 beats.  7.3
+ * The speaker explains each word with the four on screen, so they have no lines.
  */
 import { Vector3 } from 'three'
 import { range } from '@/animation/progress'
@@ -23,7 +24,7 @@ import { T, type MessageKey } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { TEAM, TEAM_Y } from '../../layout'
 
-export const grid = beatStops([4, 5, 6, 3, 3, 3, 3])
+export const grid = beatStops([4, 5, 6, 12])
 const { b } = grid
 export const B = { title: 0, question: 4, team: 9, words: 15 }
 export const wordBeat = (i: number) => B.words + 3 * i
@@ -65,21 +66,6 @@ function Dom() {
             </p>
           ))}
         </div>
-        {[1, 2, 3, 4].map((n, i) => {
-          const end = i === 3 ? 1e3 : wordBeat(i + 1)
-          return (
-            <BurnCaption
-              key={n}
-              k={`p07.line.${n}` as MessageKey}
-              corner="bottom-left"
-              width={80}
-              height={9}
-              className="art-caption--lead"
-              seed={91 + i}
-              level={burnWindow(b(wordBeat(i) + 1.6), b(wordBeat(i) + 2.4), b(end), b(end + 0.6))}
-            />
-          )
-        })}
       </Stage>
       <Label k="p07.team" target={() => teamLabel} width={24} mono={false} className="p05-name" level={win(B.team + 1.5, B.team + 2.5, B.words, B.words + 1)} />
       <Label k="p07.apps" target={() => appsLabel} width={30} mono={false} className="p05-name" level={win(B.team + 2.5, B.team + 3.5, B.words, B.words + 1)} />

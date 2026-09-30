@@ -6,10 +6,12 @@
  * the talk, and moves to the edge of the frame (the HUD).
  *
  * Stops, on the beat grid:
- *   1.   (4 beats) the timeline leaves, the camera rises, the title burns in.
- *   2-6. (3 beats each) one ring, its name, and its line.
- *   7.   (5 beats) the other rings fade; four empty slots on level 5.
- *   8.   (5 beats) the ring moves to the edge of the frame and stays there.
+ *   1. (13 beats) the timeline leaves, the camera rises, the title burns in,
+ *      and levels 1 to 3 come in, each with its name. Level 3 keeps its line.
+ *   2. (3) level 4, with its name and its line.
+ *   3. (3) level 5, with its name and its line.
+ *   4. (5) the other rings fade; four empty slots on level 5.
+ *   5. (5) the ring moves to the edge of the frame and stays there.
  */
 import { Vector3 } from 'three'
 import { range } from '@/animation/progress'
@@ -24,7 +26,7 @@ import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { LEVEL_LABEL_ANGLE, LEVEL_RADII, SLOT_ANGLES } from '../../layout'
 
-export const grid = beatStops([4, 3, 3, 3, 3, 3, 5, 5])
+export const grid = beatStops([13, 3, 3, 5, 5])
 const { b } = grid
 
 export const levelBeat = (i: number) => 4 + 3 * i
@@ -67,8 +69,10 @@ function Dom() {
   return (
     <div className="scene-root">
       <Stage>
-        <PartTitle kicker="p04.kicker" title="p04.title" level={burnWindow(b(1.5), b(3), b(4), b(4.75))} />
+        <PartTitle kicker="p04.kicker" title="p04.title" level={burnWindow(b(1.5), b(3), b(10), b(10.75))} />
         {[0, 1, 2, 3, 4].map((i) => {
+          // Levels 1 and 2 pass in the same click as level 3: only its line stays.
+          if (i < 2) return null
           const s = levelBeat(i)
           const end = i === 4 ? SLOTS_BEAT : s + 3
           return (

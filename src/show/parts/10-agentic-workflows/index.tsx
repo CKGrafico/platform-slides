@@ -6,11 +6,11 @@
  * on the clean outer orbit. Then GitHub Actions joins them there: we came back
  * to where we started, and the system is a ladder, clean far out, wobbly near
  * the model.
- *   1. (4)  the title; slot 2; the core grows.
- *   2. (10) the tasks leave the core, one every two beats.
- *   3. (6)  the closer to the model, the less a path repeats.
- *   4. (6)  GitHub Actions joins the outer orbit.
- *   5. (5)  the model is the last resort.
+ *   1. (14) the title; slot 2; the core grows; the tasks leave the core,
+ *       one every two beats.
+ *   2. (6)  the closer to the model, the less a path repeats.
+ *   3. (6)  GitHub Actions joins the outer orbit.
+ *   4. (5)  the model is the last resort.
  *
  * pipeline (10.4, 10.6): one router at the entrance, the worker lanes, the
  * person who asks (they decide what gets built), the merge gate, audit and housekeeping.
@@ -37,7 +37,7 @@ import { INNER, OUTER, TASKS } from '../../actors'
 
 // ---- pull-out ------------------------------------------------------------------------------
 
-export const grid = beatStops([4, 10, 6, 6, 5])
+export const grid = beatStops([14, 6, 6, 5])
 const { b } = grid
 export const PB = { title: 0, pop: 4, distance: 14, back: 20, resort: 26 }
 
@@ -68,7 +68,7 @@ function PullOut() {
   return (
     <div className="scene-root">
       <Stage>
-        <PartTitle kicker="p10.kicker" title="p10.title" level={burnWindow(b(0.5), b(2.5), b(PB.pop), b(PB.pop + 1))} />
+        <PartTitle kicker="p10.kicker" title="p10.title" level={burnWindow(b(0.5), b(2.5), b(PB.pop + 2), b(PB.pop + 3))} />
         <BurnCaption k="p10.caption.pieces" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={23} level={burnWindow(b(PB.pop + 3), b(PB.pop + 5), b(PB.distance), b(PB.distance + 1))} />
         <BurnCaption k="p10.caption.distance" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={29} level={burnWindow(b(PB.distance + 1.5), b(PB.distance + 3), b(PB.back), b(PB.back + 0.6))} />
         <BurnCaption k="p10.back" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={31} level={burnWindow(b(PB.back + 3), b(PB.back + 4), b(PB.resort), b(PB.resort + 0.6))} />
