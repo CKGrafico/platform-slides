@@ -12,15 +12,16 @@
  */
 import { Color, Vector3, type Group, type MeshToonMaterial } from 'three'
 import { artOf, swarmOf } from '@/art/elements'
+import { town } from '@/art/town'
 import { sketchOf } from '@/art/lines'
-import { drive, fade, hidden, inkIn, inkOut } from '@/art/motion'
+import { drive, fade, hidden, inkIn, inkOut, shown } from '@/art/motion'
 import { arcPoint, easeInOut } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { defineChoreography } from '@/world/actors'
 import { STEPS, TASKS } from '../../actors'
 import { stackPoint, stackTilt } from '../../coins'
 import { TOKEN_COINS, TOKENS_LEFT } from '../../layout'
-import { BOOTH, COINS, HALL_AFTER_EACH, HALL_BIG, HALL_DOOR, LOOP_LANDING, LOOP_SWEEP, MAIN_AT, SPAGHETTI, STATION, STEP_LANDING } from '../../town/layout'
+import { BALES, BOOTH, BUSHES, COINS, FARMS, FIELDS, FIELD_TILE, FLOWERS, HALL_AFTER_EACH, HALL_BIG, HALL_DOOR, LOOP_LANDING, LOOP_SWEEP, MAIN_AT, PINE_TREES, ROCKS, ROUND_TREES, SPAGHETTI, STATION, STEP_LANDING } from '../../town/layout'
 import { grid, PB, pipeGrid, QB } from '.'
 
 const PULL = '10-agentic-workflows/pull-out'
@@ -29,7 +30,10 @@ const { b } = grid
 const pb = pipeGrid.b
 
 /** The town's art elements: they wait hidden until this part. Belts are lines and start with reveal 0. */
-const TOWN_ART = ['plot', 'hall', 'station', 'gatehouse', 'exit', 'triage', 'refine', 'market', 'booth', 'tower', 'requester', 'repair', 'spagstation.0', 'spagstation.1', 'spagstation.2'].map((n) => `town.${n}`)
+const TOWN_ART = ['plot', 'road.main', 'road.loop', 'hall', 'well', 'station', 'blades', 'gatehouse', 'exit', 'triage', 'refine', 'market', 'booth', 'tower', 'requester', 'repair', 'spagstation.0', 'spagstation.1', 'spagstation.2', ...FARMS.map((_, i) => `fence.${i}`)].map((n) => `town.${n}`)
+/** The land's swarms: placed by a drive, so they start at nothing. Nature first; the fields when the town produces. */
+const NATURE = ['trunks', 'canopies', 'pines', 'bushes', 'rocks', 'flowers'].map((n) => `town.${n}`)
+const FARMLAND = ['fields', 'rows', 'bales'].map((n) => `town.${n}`)
 /** Actors of the world of orbits that the town borrows: the tasks, the steps, the coins, the carts. */
 const BORROWED = new Set<string>(['flow', 'tokens', ...TASKS.map((n) => `task.${n}`), ...STEPS.map((n) => `step.${n}`)])
 
@@ -68,10 +72,11 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   // A hair after the last stop, so the world of orbits is not back on it.
   const back = t.at(PIPE, 1) + 0.01
   for (const id of cast.ids()) {
-    if (id.startsWith('town.') || BORROWED.has(id)) continue
+    if (BORROWED.has(id)) continue
     const o = cast.get(id)
-    tl.set(o, { visible: false }, out)
-    tl.set(o, { visible: true }, back)
+    const isTown = id.startsWith('town.')
+    tl.set(o, { visible: isTown }, out)
+    tl.set(o, { visible: !isTown }, back)
   }
 
   // ---- 10.2: the hall, big and closed; the tasks leave it -----------------------------------
@@ -80,11 +85,38 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   tl.set(hall.object.scale, { x: HALL_BIG, y: HALL_BIG, z: HALL_BIG }, 0)
   const plotIn = span(0.25, 1.25)
   inkIn(tl, plot, plotIn.start, plotIn.duration)
+
+  // An empty map: the woods, bushes, rocks and flowers come up from nothing, a little apart.
+  const swarms = Object.fromEntries([...NATURE, ...FARMLAND].map((id) => [id, swarmOf(cast.get(id))]))
+  const leafTones = [town.leaf, town.leafLight, town.leafDark]
+  const petals = [palette.peach, palette.lilac, palette.butter, palette.surface]
+  ROUND_TREES.forEach((_, i) => swarms['town.canopies']!.paint(i, leafTones[i % 3]!))
+  FLOWERS.forEach((_, i) => swarms['town.flowers']!.paint(i, petals[i % 4]!))
+  const land = span(0.3, 2.4)
+  drive(tl, land.start, land.duration, (u) => {
+    const grow = (i: number, n: number) => easeOut(win(u, (i / n) * 0.55, (i / n) * 0.55 + 0.45))
+    ROUND_TREES.forEach(([x, y, z], i) => {
+      const s = grow(i, ROUND_TREES.length)
+      swarms['town.trunks']!.place(i, x, y, z, s)
+      swarms['town.canopies']!.place(i, x, y, z, s * (0.8 + 0.35 * (((i * 7) % 5) / 5)))
+    })
+    PINE_TREES.forEach(([x, y, z], i) => {
+      const s = grow(i, PINE_TREES.length)
+      swarms['town.trunks']!.place(ROUND_TREES.length + i, x, y, z, s)
+      swarms['town.pines']!.place(i, x, y, z, s * (0.8 + 0.4 * (((i * 3) % 5) / 5)))
+    })
+    BUSHES.forEach(([x, y, z], i) => swarms['town.bushes']!.place(i, x, y, z, grow(i, BUSHES.length)))
+    ROCKS.forEach(([x, y, z], i) => swarms['town.rocks']!.place(i, x, y, z, grow(i, ROCKS.length), 0, ((i * 13) % 7) * 0.4))
+    FLOWERS.forEach(([x, y, z], i) => swarms['town.flowers']!.place(i, x, y, z, grow(i, FLOWERS.length)))
+    for (const id of NATURE) swarms[id]!.commit()
+  })
   const hallIn = span(0.75, 1.75)
   inkIn(tl, hall, hallIn.start, hallIn.duration)
+  inkIn(tl, el('town.well'), hallIn.start + 0.6, hallIn.duration * 0.8)
 
   const loop = sketchOf(cast.get<Group>('town.loop'))
   const loopIn = span(PB.pop, PB.pop + 2)
+  inkIn(tl, el('town.road.loop'), loopIn.start - 0.25, loopIn.duration * 0.6)
   tl.to(loop.reveal, { value: 1, duration: loopIn.duration, ease: 'power2.inOut' }, loopIn.start)
 
   const tasks = TASKS.map((name) => artOf<MeshToonMaterial>(cast.get(`task.${name}`)))
@@ -121,6 +153,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const station = el('town.station')
   const stationIn = span(PB.back + 0.5, PB.back + 1.5)
   inkIn(tl, station, stationIn.start, stationIn.duration)
+  inkIn(tl, el('town.blades'), stationIn.start + stationIn.duration * 0.4, stationIn.duration * 0.6)
   const steps = STEPS.map((name) => el(`step.${name}`))
   const stationDoor = v3(STATION).add(new Vector3(-0.6, 0.3, 0.5))
   steps.forEach((step, k) => {
@@ -192,10 +225,15 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     }
     return r
   }
+  // The road is laid as the belt is drawn: it grows from its west end.
+  const roadMain = el('town.road.main')
   const belt = q(QB.router + 0.5, QB.router + 0.5)
+  shown(tl, roadMain, belt.start)
   drive(tl, belt.start, t.at(PIPE, 1) - belt.start, (u) => {
     const beat = QB.router + 0.5 + u * (pipeGrid.totalBeats - QB.router - 0.5)
-    main.reveal.value = revealed(beat)
+    const r = revealed(beat)
+    main.reveal.value = r
+    roadMain.object.scale.x = Math.max(0.001, r)
   })
   const booth = v3(BOOTH)
   const carts = q(0, pipeGrid.totalBeats)
@@ -253,6 +291,24 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     const a = q(QB.gate + from, QB.gate + to)
     inkIn(tl, el(id), a.start, a.duration)
   }
+  // The town produces: the fields are tilled, fenced, and the hay stacked.
+  const fieldTones = [town.field, town.fieldDark, '#E4D19A']
+  FIELDS.forEach((_, i) => swarms['town.fields']!.paint(i, fieldTones[i % 3]!))
+  const farmland = q(QB.gate + 2, QB.gate + 4.5)
+  drive(tl, farmland.start, farmland.duration, (u) => {
+    const grow = (i: number, n: number) => easeOut(win(u, (i / n) * 0.5, (i / n) * 0.5 + 0.5))
+    FIELDS.forEach(([x, y, z], i) => {
+      const s = grow(i, FIELDS.length)
+      swarms['town.fields']!.place(i, x, y, z, s)
+      for (let r = 0; r < 3; r++) swarms['town.rows']!.place(i * 3 + r, x, y, z + (r - 1) * (FIELD_TILE.d * 0.3), s)
+    })
+    BALES.forEach(([x, y, z], i) => swarms['town.bales']!.place(i, x, y, z, grow(i, BALES.length), 0, ((i * 5) % 3) * 0.3))
+    for (const id of FARMLAND) swarms[id]!.commit()
+  })
+  FARMS.forEach((_, i) => {
+    const a = q(QB.gate + 2.25 + i * 0.3, QB.gate + 3 + i * 0.3)
+    inkIn(tl, el(`town.fence.${i}`), a.start, a.duration)
+  })
 
   // ---- 10.6: the watchtower and the repair crew on the loop -------------------------------------
   const towerIn = q(QB.side + 0.5, QB.side + 1.25)

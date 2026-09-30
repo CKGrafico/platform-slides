@@ -68,17 +68,17 @@ export const MAP_ENTRIES: MapEntry[] = [
 
   // The town (docs/art/town-proposal.md): the slice of part 10.
   // A nameplate under the door, so the name never reaches the map of the talk in the corner.
-  { id: 'town.hall', target: 'town.hall', offset: [0, -0.05, 1.25], name: 'town.hall', role: 'town.hall.role', side: 'below' },
+  { id: 'town.hall', target: 'town.hall', offset: [0, -0.05, 4.6], name: 'town.hall', role: 'town.hall.role', side: 'below' },
   { id: 'town.lane.automation', target: point(1.7, 0, LOOP[1]![2] - 0.45), name: 'map.lane.automation', side: 'above', lane: true },
-  { id: 'town.station', target: 'town.station', offset: [0, 1.4, 0], name: 'map.ga', role: 'map.ga.role', side: 'above' },
+  { id: 'town.station', target: 'town.station', offset: [0, 2.7, 0], name: 'map.ga', role: 'map.ga.role', side: 'above' },
   { id: 'town.coins', target: point(COINS[0] + 0.45, COINS[1] + 0.7, COINS[2]), name: 'town.coins', role: 'town.coins.role', side: 'right' },
-  { id: 'town.gatehouse', target: 'town.gatehouse', offset: [0, 1.9, 0], name: 'map.router', role: 'map.router.role', side: 'above' },
-  { id: 'town.triage', target: 'town.triage', offset: [0, 1.7, 0], name: 'map.triage', role: 'map.triage.role', side: 'above' },
-  { id: 'town.refine', target: 'town.refine', offset: [0, 1.7, 0], name: 'map.refine', role: 'map.refine.role', side: 'above' },
+  { id: 'town.gatehouse', target: 'town.gatehouse', offset: [0, 3.3, 0], name: 'map.router', role: 'map.router.role', side: 'above' },
+  { id: 'town.triage', target: 'town.triage', offset: [0, 2.1, 0], name: 'map.triage', role: 'map.triage.role', side: 'above' },
+  { id: 'town.refine', target: 'town.refine', offset: [0, 1.75, 0], name: 'map.refine', role: 'map.refine.role', side: 'above' },
   { id: 'town.requester', target: 'town.requester', offset: [0, -0.15, 0.6], name: 'map.requester', role: 'map.requester.role', side: 'below' },
-  { id: 'town.exit', target: 'town.exit', offset: [0, 1.9, 0], name: 'map.gate', role: 'map.gate.role', side: 'above' },
-  { id: 'town.market', target: 'town.market', offset: [0, 1.7, 0], name: 'map.release', role: 'map.release.role', side: 'above' },
-  { id: 'town.booth', target: 'town.booth', offset: [0, -0.1, 0.6], name: 'town.booth', role: 'town.booth.role', side: 'below' },
-  { id: 'town.tower', target: 'town.tower', offset: [0, 2.7, 0], name: 'map.audit', role: 'map.audit.role', side: 'above' },
+  { id: 'town.exit', target: 'town.exit', offset: [0, 3.3, 0], name: 'map.gate', role: 'map.gate.role', side: 'above' },
+  { id: 'town.market', target: 'town.market', offset: [0, 1.4, 0], name: 'map.release', role: 'map.release.role', side: 'above' },
+  { id: 'town.booth', target: 'town.booth', offset: [0, -0.1, 1.0], name: 'town.booth', role: 'town.booth.role', side: 'below' },
+  { id: 'town.tower', target: 'town.tower', offset: [0, 4.0, 0], name: 'map.audit', role: 'map.audit.role', side: 'above' },
   { id: 'town.repair', target: 'town.repair', offset: [0, 1.4, 0], name: 'map.housekeeping', role: 'map.housekeeping.role', side: 'above' },
 ]
