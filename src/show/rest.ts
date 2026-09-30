@@ -1,48 +1,21 @@
 /**
- * The state of the cast before the talk starts. Only the core and the blue ball
- * (with its orbit) are on the cover. Every other element waits hidden until the
- * part that brings it in. Lines wait with opacity 0 or reveal 0, set where they
- * are created (actors.ts).
+ * The state of the cast before the talk starts. The map exists: the land, its
+ * woods and the hall in the middle, with the blue cart going round it. Every
+ * other art element waits hidden until the part that brings it in. Lines wait
+ * with opacity 0 or reveal 0, and swarms wait empty, set where they are
+ * created (actors.ts).
  */
-import { artOf } from '@/art/elements'
 import { hidden } from '@/art/motion'
+import type { ArtElement } from '@/art/elements'
 import { defineChoreography } from '@/world/actors'
 
-/** Art elements (moons, cores, balls, rings) that are not on the cover. */
-const HIDDEN = [
-  /^tl\.step\./,
-  /^tl\.ring$/,
-  /^tl\.moon\./,
-  /^task\./,
-  /^ga$/,
-  /^evt\./,
-  /^step\./,
-  /^md$/,
-  /^compiler$/,
-  /^shell\./,
-  /^core\.triage$/,
-  /^p6\.ball\./,
-  /^person\./,
-  /^opencode$/,
-  /^forge$/,
-  /^model\./,
-  /^cmd\./,
-  /^core\.laptop$/,
-  /^router$/,
-  /^gate$/,
-  /^audit$/,
-  /^housekeeping$/,
-  /^tidy\.core$/,
-  /^messy\.core$/,
-  /^disc$/,
-  /^wall\./,
-  /^verb\.(pr|merge|issue)$/,
-  /^metric\.new$/,
-]
+/** Art elements on screen from the first frame. */
+const SHOWN = new Set(['plot', 'hall', 'issue'])
 
 export const restMoves = defineChoreography('rest', (tl, cast) => {
   for (const id of cast.ids()) {
-    if (!HIDDEN.some((r) => r.test(id))) continue
-    hidden(tl, artOf(cast.get(id)))
+    if (SHOWN.has(id)) continue
+    const art = cast.get(id).userData.art as ArtElement | undefined
+    if (art) hidden(tl, art)
   }
 })

@@ -1,14 +1,13 @@
 /**
- * Part 10: Agentic Workflows (script 10.2 to 10.7), as the town
- * (docs/art/town-proposal.md). Two scenes.
+ * Part 10: Agentic Workflows (script 10.2 to 10.7). Two scenes.
  *
  * pull-out (10.2, 10.3): the hall is big and closed, one agent doing
  * everything. One by one, the tasks that need no judgement leave it by the
- * door and land on the belt loop around it; the hall shrinks each time.
- * GitHub Actions comes back as a station on the loop, with its steps.
- *   1. (14) the title; slot 2; the hall; the tasks leave it.
+ * door and land on the belt loop around it; the hall shrinks each time. The
+ * steps of the mill's belt join the loop: back to GitHub Actions.
+ *   1. (14) the title; slot 2; the tasks leave the hall.
  *   2. (6)  the closer to the hall, the less a path repeats.
- *   3. (6)  the GitHub Actions station and its steps join the loop.
+ *   3. (6)  the steps of GitHub Actions join the loop.
  *   4. (5)  the hall is the last resort: most coins go.
  *
  * pipeline (10.4, 10.6): belts everywhere, then one gatehouse; the workshops
@@ -29,7 +28,7 @@ import type { MessageKey } from '@/i18n'
 import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
-import { townShot } from '../../town/shots'
+import { townShot } from '../../shots'
 import { TASKS } from '../../actors'
 
 // ---- pull-out ------------------------------------------------------------------------------
@@ -46,18 +45,13 @@ const HALL_SHOT = townShot([0.4, 0.8, 0.4])
 
 const pullKey = (from: number, to: number) => ({ key: PULL, from: b(from), to: b(to) })
 const pullPulse = (from: number, to: number) => ({ rise: pullKey(from, from + 0.75), fall: pullKey(to, to + 0.75) })
-// The names of the world of orbits leave with it; the town names its own things.
-for (const id of ['lane.model', 'lane.agents', 'lane.automation', 'lane.production', 'core', 'opencode', 'harness', 'ga']) mapCues.leave(id, pullKey(0.05, 0.6))
-mapCues.appear('town.hall', pullKey(1.25, 2))
-mapCues.role('town.hall', pullPulse(1.5, PB.pop + 2))
-mapCues.appear('town.lane.automation', pullKey(PB.pop + 2.5, PB.pop + 3.25))
-mapCues.appear('town.station', pullKey(PB.back + 1.25, PB.back + 2))
-mapCues.role('town.station', pullPulse(PB.back + 1.5, PB.resort))
-mapCues.appear('town.coins', pullKey(PB.resort + 0.5, PB.resort + 1.25))
-mapCues.role('town.coins', pullPulse(PB.resort + 0.75, PB.resort + 4.5))
-mapCues.focus(['town.hall', 'town.lane.automation'], pullPulse(0.5, PB.back))
-mapCues.focus(['town.station', 'town.lane.automation'], pullPulse(PB.back, PB.resort))
-mapCues.focus(['town.coins', 'town.hall'], pullPulse(PB.resort, PB.resort + 4.5))
+mapCues.role('hall', pullPulse(1.5, PB.pop + 2))
+mapCues.role('station', pullPulse(PB.back + 1.5, PB.resort))
+mapCues.appear('coins', pullKey(PB.resort + 0.5, PB.resort + 1.25))
+mapCues.role('coins', pullPulse(PB.resort + 0.75, PB.resort + 4.5))
+mapCues.focus(['hall', 'lane.automation'], pullPulse(0.5, PB.back))
+mapCues.focus(['station', 'lane.automation'], pullPulse(PB.back, PB.resort))
+mapCues.focus(['coins', 'hall'], pullPulse(PB.resort, PB.resort + 4.5))
 
 const from = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, a, bb), 1 - range(local, c, d))
 
@@ -92,12 +86,7 @@ const pullOut = defineScene({
   title: 'Pieces leave the hall, and land on the belt',
   stops: grid.stops,
   parts: { dom: PullOut },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [{ from: 0, to: b(2.5), shot: HALL_SHOT }],
-      local,
-    ),
+  camera: (local, from) => shotSequence(from, [{ from: 0, to: b(2.5), shot: HALL_SHOT }], local),
 })
 
 // ---- pipeline ------------------------------------------------------------------------------
@@ -110,37 +99,37 @@ const PIPE = '10-agentic-workflows/pipeline'
 
 /** Pans across the map, at the one zoom: the whole town, the gatehouse, the row of workshops, the exit, the east side. */
 const WHOLE = townShot([0, 0, 2])
-const ENTRANCE = townShot([-7.5, 0, 4.4])
+const ENTRANCE = townShot([-8.5, 0, 4.6])
 const LANES_SHOT = townShot([-4.5, 0, 3.6])
-const EXIT = townShot([7.5, 0, 4.8])
+const EXIT = townShot([9.5, 0, 4.8])
 const SIDE = townShot([4.0, 0, -1.5])
 
 const pipeKey = (from: number, to: number) => ({ key: PIPE, from: pb(from), to: pb(to) })
 const pipePulse = (from: number, to: number) => ({ rise: pipeKey(from, from + 0.75), fall: pipeKey(to, to + 0.75) })
 // While the belts are everywhere, every name steps back.
 mapCues.focus([], pipePulse(0.25, QB.router))
-mapCues.appear('town.gatehouse', pipeKey(QB.router + 1, QB.router + 1.75))
-mapCues.role('town.gatehouse', pipePulse(QB.router + 1.25, QB.lanes))
-mapCues.focus(['town.gatehouse'], pipePulse(QB.router, QB.lanes))
-mapCues.appear('town.triage', pipeKey(QB.lanes + 0.75, QB.lanes + 1.5))
-mapCues.role('town.triage', pipePulse(QB.lanes + 1, QB.gate))
-mapCues.appear('town.refine', pipeKey(QB.lanes + 1.25, QB.lanes + 2))
-mapCues.role('town.refine', pipePulse(QB.lanes + 1.5, QB.gate))
-mapCues.appear('town.requester', pipeKey(QB.lanes + 2.75, QB.lanes + 3.5))
-mapCues.role('town.requester', pipePulse(QB.lanes + 3, QB.gate))
-mapCues.focus(['town.triage', 'town.refine', 'town.hall', 'town.requester'], pipePulse(QB.lanes, QB.gate))
-mapCues.appear('town.exit', pipeKey(QB.gate + 1, QB.gate + 1.75))
-mapCues.role('town.exit', pipePulse(QB.gate + 1.25, QB.side))
-mapCues.appear('town.market', pipeKey(QB.gate + 2, QB.gate + 2.75))
-mapCues.role('town.market', pipePulse(QB.gate + 2.25, QB.side))
-mapCues.appear('town.booth', pipeKey(QB.gate + 2.5, QB.gate + 3.25))
-mapCues.role('town.booth', pipePulse(QB.gate + 2.75, QB.side))
-mapCues.focus(['town.exit', 'town.market', 'town.booth'], pipePulse(QB.gate, QB.side))
-mapCues.appear('town.tower', pipeKey(QB.side + 0.75, QB.side + 1.5))
-mapCues.role('town.tower', pipePulse(QB.side + 1, QB.side + 4.5))
-mapCues.appear('town.repair', pipeKey(QB.side + 1.25, QB.side + 2))
-mapCues.role('town.repair', pipePulse(QB.side + 1.5, QB.side + 4.5))
-mapCues.focus(['town.tower', 'town.repair'], pipePulse(QB.side, QB.side + 4.5))
+mapCues.appear('gatehouse', pipeKey(QB.router + 1, QB.router + 1.75))
+mapCues.role('gatehouse', pipePulse(QB.router + 1.25, QB.lanes))
+mapCues.focus(['gatehouse'], pipePulse(QB.router, QB.lanes))
+mapCues.appear('triage', pipeKey(QB.lanes + 0.75, QB.lanes + 1.5))
+mapCues.role('triage', pipePulse(QB.lanes + 1, QB.gate))
+mapCues.appear('refine', pipeKey(QB.lanes + 1.25, QB.lanes + 2))
+mapCues.role('refine', pipePulse(QB.lanes + 1.5, QB.gate))
+mapCues.appear('requester', pipeKey(QB.lanes + 2.75, QB.lanes + 3.5))
+mapCues.role('requester', pipePulse(QB.lanes + 3, QB.gate))
+mapCues.focus(['triage', 'refine', 'hall', 'requester'], pipePulse(QB.lanes, QB.gate))
+mapCues.appear('exit', pipeKey(QB.gate + 1, QB.gate + 1.75))
+mapCues.role('exit', pipePulse(QB.gate + 1.25, QB.side))
+mapCues.appear('market', pipeKey(QB.gate + 2, QB.gate + 2.75))
+mapCues.role('market', pipePulse(QB.gate + 2.25, QB.side))
+mapCues.appear('booth', pipeKey(QB.gate + 2.5, QB.gate + 3.25))
+mapCues.role('booth', pipePulse(QB.gate + 2.75, QB.side))
+mapCues.focus(['exit', 'market', 'booth'], pipePulse(QB.gate, QB.side))
+mapCues.appear('tower', pipeKey(QB.side + 0.75, QB.side + 1.5))
+mapCues.role('tower', pipePulse(QB.side + 1, QB.side + 4.5))
+mapCues.appear('repair', pipeKey(QB.side + 1.25, QB.side + 2))
+mapCues.role('repair', pipePulse(QB.side + 1.5, QB.side + 4.5))
+mapCues.focus(['tower', 'repair'], pipePulse(QB.side, QB.side + 4.5))
 
 function Pipeline() {
   return (

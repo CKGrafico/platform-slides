@@ -1,21 +1,22 @@
 /**
  * Part 5: from GitHub Actions to Agentic Workflows (script 5.1 to 5.7).
  *
- * One moon, GitHub Actions, alone in the void. Events fall into it. It unfolds
- * into a straight line of steps. Then the core arrives, and near it the line
- * curves onto an orbit. A workflow file leaves that orbit, passes the compiler
- * ring, and comes out as a lock file with a shell of small moons. At the end:
- * three clusters, the CI/CD line and two small systems with their own core.
+ * The mill, GitHub Actions, stands alone north east of the hall. Events fall
+ * into it. Its steps come out on a straight belt. Then the belt bends into the
+ * loop around the hall: the first agentic workflow. A scroll, the workflow
+ * file, leaves the hall, goes into the scriptorium (the compiler), and comes
+ * out as a crate with a shell of small moons. At the end: three clusters, the
+ * mill's belt, the hall and the triage house.
  *
  * Stops, on the beat grid:
- *   1. (10) the core leaves; GitHub Actions appears; events fall into it.  5.1
- *   2. (5) it unfolds into a straight line.                  5.2
- *   3. (5) the core arrives; near it, the line curves.       5.3
- *   4. (5) the workflow file leaves the orbit.               5.4
- *   5. (6) it passes the compiler and gets its shell.        5.5
- *   6. (4) our own step snaps on.                            5.6
- *   7. (6) three clusters.                                   5.7
- *   8. (3) "this is where the real story starts".            5.7
+ *   1. (10) the mill appears; events fall into it.             5.1
+ *   2. (5) its steps come out on a straight belt.              5.2
+ *   3. (5) the belt bends into the loop around the hall.       5.3
+ *   4. (5) the workflow file leaves the hall.                  5.4
+ *   5. (6) it goes through the compiler and gets its shell.    5.5
+ *   6. (4) our own step snaps on.                              5.6
+ *   7. (6) three clusters.                                     5.7
+ *   8. (3) "this is where the real story starts".              5.7
  */
 import { Vector3 } from 'three'
 import { range } from '@/animation/progress'
@@ -26,9 +27,10 @@ import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
 import { getActorObject } from '@/world/actors'
-import { shotSequence, type CameraShot } from '@/world/camera/shot'
+import { shotSequence } from '@/world/camera/shot'
 import { EVENTS, SHELL, STEPS } from '../../actors'
-import { LINE_X, LINE_Y, LINE_Z, SHELL_DIRS, TRIAGE_POS } from '../../layout'
+import { LINE_X, LINE_Y, LINE_Z, type V3 } from '../../layout'
+import { townShot } from '../../shots'
 
 export const grid = beatStops([10, 5, 5, 5, 6, 4, 6, 3])
 const { b } = grid
@@ -36,29 +38,44 @@ const { b } = grid
 /** Beat where each stop's move starts. */
 export const B = { ga: 0, events: 4, unfold: 10, core: 15, md: 20, compile: 25, ours: 31, clusters: 35, story: 41 }
 
-const GA_SHOT: CameraShot = { position: [-3.8, 0.7, 6.6], target: [-3.8, 0.3, 0.4], fov: 36 }
-const LINE_SHOT: CameraShot = { position: [-4.4, 0.6, 8.2], target: [-4.4, -0.35, 0.4], fov: 36 }
-const AGENT_SHOT: CameraShot = { position: [-2.3, 2.9, 10], target: [-1.9, -0.2, 0.3], fov: 36 }
-const FILE_SHOT: CameraShot = { position: [0.4, 2.4, 8.6], target: [0.6, 0.0, 0.4], fov: 36 }
-const COMPILE_SHOT: CameraShot = { position: [3.9, 0.95, 5.6], target: [4.1, 0.3, 0.5], fov: 36 }
-const WIDE_SHOT: CameraShot = { position: [-1.3, 2.1, 13.8], target: [-1.3, 0.35, 0], fov: 34 }
+/** Where the scroll waits outside the hall (5.4), the crate comes out of the scriptorium (5.5), and the crate docks (5.7, in the hall's local units, scaled by the parts). */
+export const MD_OUT: V3 = [-3.8, 0.4, 2.6]
+export const LOCK_POS: V3 = [-6.4, 0, -2.9]
+/** The shell of small moons around the crate: six from the compiler, then "our changes". */
+export const SHELL_RADIUS = 0.5
+export const SHELL_DIRS: V3[] = [
+  [0, 1, 0.15],
+  [0.87, 0.5, 0.2],
+  [0.87, -0.5, 0.2],
+  [0, -1, 0.15],
+  [-0.87, -0.5, 0.2],
+  [-0.87, 0.5, 0.2],
+  [0.35, 0.2, 0.92],
+]
+
+const GA_SHOT = townShot([4.8, 0.6, -5.6])
+const LINE_SHOT = townShot([2.4, 0.4, -5.4])
+const AGENT_SHOT = townShot([0.6, 0.5, -1.6])
+const FILE_SHOT = townShot([-3.5, 0.4, 0.0])
+const COMPILE_SHOT = townShot([-5.5, 0.4, -2.0])
+const WIDE_SHOT = townShot([-1.5, 0.3, -1.0])
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
 /** A point above an actor, for labels that must follow a moving element. */
-function above(id: string, dy: number) {
+function above(id: string, dy: number, dz = 0) {
   const v = new Vector3()
   return () => {
     const o = getActorObject(id)
     if (!o) return null
     v.copy(o.position)
     v.y += dy
+    v.z += dz
     return v
   }
 }
 
-const lineMid = new Vector3((LINE_X[0]! + LINE_X[4]!) / 2, LINE_Y - 0.7, LINE_Z)
-const triageLabel = new Vector3(TRIAGE_POS[0], TRIAGE_POS[1] + 1.05, TRIAGE_POS[2])
+const lineMid = new Vector3((LINE_X[0]! + LINE_X[5]!) / 2, LINE_Y - 0.1, LINE_Z + 1.0)
 
 function Dom() {
   return (
@@ -75,7 +92,7 @@ function Dom() {
         <BurnCaption k="p05.story" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={68} level={burnWindow(b(B.story + 0.75), b(B.story + 2))} />
       </Stage>
 
-      <Label k="p05.ga" target={above('ga', 0.72)} width={26} mono={false} className="p05-name" level={win(B.ga + 2.5, B.ga + 3.25, B.unfold, B.unfold + 1)} />
+      <Label k="p05.ga" target="station" offset={[0, 2.8, 0]} width={26} mono={false} className="p05-name" level={win(B.ga + 2.5, B.ga + 3.25, B.unfold, B.unfold + 1)} />
       {EVENTS.map((name, i) => (
         <Label
           key={name}
@@ -92,17 +109,17 @@ function Dom() {
           key={name}
           k={`p05.step.${name}` as MessageKey}
           target={`step.${name}`}
-          offset={[0, i % 2 === 0 ? 0.42 : -0.42, 0]}
+          offset={[0, i % 2 === 0 ? 0.55 : -0.5, 0]}
           width={20}
           level={win(B.unfold + 1 + i * 0.25, B.unfold + 1.75 + i * 0.25, B.core, B.core + 1)}
         />
       ))}
-      <Label k="p05.agentic" target={above('core', 1.25)} width={26} mono={false} className="p05-name" level={win(B.core + 2, B.core + 3, B.clusters, B.clusters + 1)} />
-      <Label k="p05.md" target={above('md', 0.5)} width={18} level={win(B.md + 1, B.md + 1.75, B.compile + 2.1, B.compile + 2.4)} />
-      <Label k="p05.front" target={above('md', 1.0)} width={30} level={win(B.md + 2.5, B.md + 3.25, B.compile, B.compile + 0.5)} />
-      <Label k="p05.body" target={above('md', -0.52)} width={30} level={win(B.md + 3, B.md + 3.75, B.compile, B.compile + 0.5)} />
-      <Label k="p05.compilerName" target="compiler" offset={[0, 0.95, 0]} width={16} level={win(B.compile + 0.75, B.compile + 1.5, B.clusters, B.clusters + 1)} />
-      <Label k="p05.lock" target={above('md', 1.22)} width={24} level={win(B.compile + 2.4, B.compile + 3, B.clusters, B.clusters + 1)} />
+      <Label k="p05.agentic" target="hall" offset={[0.4, 4.6, -0.6]} width={26} mono={false} className="p05-name" level={win(B.core + 2, B.core + 3, B.clusters, B.clusters + 1)} />
+      <Label k="p05.md" target={above('md', 0.55)} width={18} level={win(B.md + 1, B.md + 1.75, B.compile + 1.6, B.compile + 1.9)} />
+      <Label k="p05.front" target={above('md', 1.1)} width={30} level={win(B.md + 2.5, B.md + 3.25, B.compile, B.compile + 0.5)} />
+      <Label k="p05.body" target={above('md', -0.4, 0.5)} width={30} level={win(B.md + 3, B.md + 3.75, B.compile, B.compile + 0.5)} />
+      <Label k="p05.compilerName" target="scriptorium" offset={[0, 1.95, 0]} width={16} level={win(B.compile + 0.75, B.compile + 1.5, B.clusters, B.clusters + 1)} />
+      <Label k="p05.lock" target={above('lock', 1.15)} width={24} level={win(B.compile + 2.4, B.compile + 3, B.clusters, B.clusters + 1)} />
       {SHELL.map((name, i) => {
         const d = SHELL_DIRS[i]!
         const len = Math.hypot(d[0], d[1])
@@ -121,27 +138,27 @@ function Dom() {
         )
       })}
       <Label k="p05.cicd" target={() => lineMid} width={18} mono={false} className="p05-name" level={win(B.clusters + 2.5, B.clusters + 3.5)} />
-      <Label k="p05.impl" target={above('core', -1.35)} width={26} mono={false} className="p05-name" level={win(B.clusters + 2.75, B.clusters + 3.75)} />
-      <Label k="p05.triage" target={() => triageLabel} width={18} mono={false} className="p05-name" level={win(B.clusters + 3, B.clusters + 4)} />
+      <Label k="p05.impl" target="hall" offset={[0, 0.2, 3.3]} width={26} mono={false} className="p05-name" level={win(B.clusters + 2.75, B.clusters + 3.75)} />
+      <Label k="p05.triage" target="triage" offset={[0, 2.3, 0]} width={18} mono={false} className="p05-name" level={win(B.clusters + 3, B.clusters + 4)} />
     </div>
   )
 }
 
 const actions = defineScene({
   id: 'actions',
-  title: 'From one action to three clusters',
+  title: 'From one mill to three clusters',
   stops: grid.stops,
   parts: { dom: Dom },
   camera: (local, from) =>
     shotSequence(
       from,
       [
-        { from: 0, to: b(4), shot: GA_SHOT, arc: 1.5 },
+        { from: 0, to: b(4), shot: GA_SHOT },
         { from: b(B.unfold), to: b(B.unfold + 3), shot: LINE_SHOT },
         { from: b(B.core), to: b(B.core + 3), shot: AGENT_SHOT },
         { from: b(B.md), to: b(B.md + 3), shot: FILE_SHOT },
         { from: b(B.compile), to: b(B.compile + 3), shot: COMPILE_SHOT },
-        { from: b(B.clusters), to: b(B.clusters + 3.5), shot: WIDE_SHOT, arc: 1 },
+        { from: b(B.clusters), to: b(B.clusters + 3.5), shot: WIDE_SHOT },
       ],
       local,
     ),

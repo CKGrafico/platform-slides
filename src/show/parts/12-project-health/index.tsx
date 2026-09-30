@@ -1,16 +1,16 @@
 /**
  * Part 12: Pillar 4, Project Health (script 12.1 to 12.6).
  *
- * A question mark over the path to production. Columns rise at the edge of the
- * disc: what we measure. Two stay hollow: what we refuse to fake. A person and
- * a small panel: what still needs a human. Our numbers next to the industry's.
- * Then the audit drops its findings back into the router, and the path closes
- * into a loop.
+ * A question mark over the road to production. Stacks of coins rise by the
+ * barn: what we measure. Two stay hollow: what we refuse to fake. An elder
+ * and a small board: what still needs a human. Our numbers next to the
+ * industry's. Then the audit's report goes from the watchtower back into the
+ * gatehouse, and the path closes into a loop.
  *
  * Stops, on the beat grid:
  *   1. (9) the title; slot 4; autonomy you cannot measure is only a claim.  12.1
  *   2. (6) what it measures.                                 12.2
- *   3. (6) honest numbers: two hollow columns.               12.3
+ *   3. (6) honest numbers: two hollow stacks.                12.3
  *   4. (5) what needs a human.                               12.4
  *   5. (7) our numbers, next to the industry.                12.5
  *   6. (6) the loop that maintains the maintainer.           12.6
@@ -23,12 +23,11 @@ import { BurnCaption, Card, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import { T, type MessageKey } from '@/i18n'
-import { shotSequence, type CameraShot } from '@/world/camera/shot'
+import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
-import { mapShot } from '../../map/shots'
-import { metricBase } from '../../actors'
-import { GROUND_Y, HEALTH_PERSON, METRIC_COINS, METRIC_Z, RELEASE_POS, TEAM_Y } from '../../layout'
+import { HEALTH_PERSON, METRIC_BASES, METRIC_COINS, OUTER_E } from '../../layout'
+import { townShot } from '../../shots'
 
 export const grid = beatStops([9, 6, 6, 5, 7, 6])
 const { b } = grid
@@ -36,37 +35,34 @@ export const B = { title: 0, claim: 4, measure: 9, honest: 15, human: 21, number
 
 const KEY = '12-project-health/health'
 hudCues.fill(3, { key: KEY, from: b(1.5), to: b(3) })
-// The row of measures (12.2 to 12.4) has the merge gate in the top right corner, and the
-// numbers of 12.5 need the whole frame: the map steps out and comes back for the loop.
-hudCues.hide({ rise: { key: KEY, from: b(B.measure), to: b(B.measure + 1) }, fall: { key: KEY, from: b(B.loop), to: b(B.loop + 1) } })
+// The numbers of 12.5 need the whole frame: the map steps out and comes back for the loop.
+hudCues.hide({ rise: { key: KEY, from: b(B.numbers), to: b(B.numbers + 1) }, fall: { key: KEY, from: b(B.loop), to: b(B.loop + 1) } })
 
-/** On the map: the whole, the exit to production, the row of measures, the person. */
-const WHOLE = mapShot([0, -0.6, 0.3], 16)
-const ESCAPE = mapShot([6.5, -0.3, 0.4], 10)
-const BACK = mapShot([0, -2.6, 5.2], 10.5)
-const PERSON = mapShot([-4.2, -2.4, 2.6], 9)
-/** The numbers of 12.5 sit in the sky, on their own. */
-const SKY: CameraShot = { position: [0, TEAM_Y + 1.1, 8.4], target: [0, TEAM_Y - 0.1, 0], fov: 36 }
+/** The town; the road out to production; the stacks by the barn; the elder; a quiet corner for the numbers; the town again. */
+const WHOLE = townShot([0, 0.3, 1.5])
+const ESCAPE = townShot([12, 0.3, 4.5])
+const STACKS = townShot([7.6, 0.3, 3.2])
+const PERSON = townShot([5.0, 0.3, 6.5])
+const QUIET = townShot([-14, 0, -20])
 
 const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
 const mapPulse = (from: number, to: number) => ({ rise: mapKey(from, from + 0.75), fall: mapKey(to, to + 0.75) })
-mapCues.focus(['release'], mapPulse(B.claim, B.measure))
-mapCues.focus(['lane.production'], mapPulse(B.measure, B.human))
+mapCues.focus(['market', 'exit'], mapPulse(B.claim, B.measure))
+mapCues.focus([], mapPulse(B.measure, B.human))
 mapCues.appear('health', mapKey(B.human + 1, B.human + 1.75))
 mapCues.role('health', mapPulse(B.human + 1.25, B.numbers))
 mapCues.focus(['health'], mapPulse(B.human, B.numbers))
-mapCues.focus(['audit', 'router', 'health'], mapPulse(B.loop, B.loop + 5))
+mapCues.focus(['tower', 'gatehouse', 'health'], mapPulse(B.loop, B.loop + 5))
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
-const question = new Vector3(RELEASE_POS[0] - 0.9, RELEASE_POS[1] + 0.9, RELEASE_POS[2])
-/** Names in two rows on the disc behind the stacks: seen from the map camera, behind is above. */
-const NAME_BACK = [1.35, 2.05]
-const metricLabels = METRIC_COINS.map((_, i) => new Vector3(metricBase(i)[0], GROUND_Y + 0.1, METRIC_Z - NAME_BACK[i % 2]!))
-const hollowLabels = [0, 1].map((k) => new Vector3(metricBase(6 + k)[0], GROUND_Y + 0.1, METRIC_Z - NAME_BACK[k % 2]!))
-// "Not collected" under the two ghost stacks, on the disc.
-const notCollected = new Vector3((metricBase(6)[0] + metricBase(7)[0]) / 2, GROUND_Y - 0.3, METRIC_Z + 0.35)
-const panelPoint = new Vector3(HEALTH_PERSON[0] + 0.5, HEALTH_PERSON[1] + 1.15, HEALTH_PERSON[2])
+const question = new Vector3(OUTER_E[0] - 2.0, 2.4, OUTER_E[2])
+/** Names above the stacks: the front row lower, the back row higher. */
+const metricLabels = METRIC_COINS.map((_, i) => new Vector3(METRIC_BASES[i]![0], i < 4 ? 1.45 : 2.1, METRIC_BASES[i]![2]))
+const hollowLabels = [0, 1].map((k) => new Vector3(METRIC_BASES[6 + k]![0], 2.1, METRIC_BASES[6 + k]![2]))
+// "Not collected" under the two ghost stacks, on the ground in front of them.
+const notCollected = new Vector3((METRIC_BASES[6]![0] + METRIC_BASES[7]![0]) / 2, 0.05, METRIC_BASES[7]![2] + 0.75)
+const panelPoint = new Vector3(HEALTH_PERSON[0] + 0.6, 1.3, HEALTH_PERSON[2])
 /** What needs a human, per app: a few pastel dots each. */
 const WAITING = [2, 1, 3]
 const DOTS = ['var(--c-peach)', 'var(--c-lilac)', 'var(--c-butter)']
@@ -130,7 +126,6 @@ function Dom() {
     <div className="scene-root">
       <Stage>
         <PartTitle kicker="p12.kicker" title="p12.title" level={burnWindow(b(1), b(2.5), b(B.claim + 0.75), b(B.claim + 1.5))} />
-        {/* Top left: the escape shot has the system and the disc at the bottom left. */}
         <BurnCaption k="p12.claim" corner="top-left" width={84} height={9} className="art-caption--lead" seed={171} level={burnWindow(b(B.claim + 2), b(B.claim + 3), b(B.measure), b(B.measure + 0.6))} />
         <BurnCaption k="p12.measure" corner="bottom-left" width={84} height={9} className="art-caption--lead" seed={172} level={burnWindow(b(B.measure + 3), b(B.measure + 4), b(B.honest), b(B.honest + 0.6))} />
         <BurnCaption k="p12.honest" corner="bottom-left" width={84} height={15} className="art-caption--lead" seed={173} source="p12.honest.source" level={burnWindow(b(B.honest + 2.5), b(B.honest + 3.5), b(B.human), b(B.human + 0.6))} />
@@ -178,10 +173,10 @@ const health = defineScene({
       [
         { from: 0, to: b(3.5), shot: WHOLE },
         { from: b(B.claim), to: b(B.claim + 3), shot: ESCAPE },
-        { from: b(B.measure), to: b(B.measure + 3), shot: BACK },
+        { from: b(B.measure), to: b(B.measure + 3), shot: STACKS },
         { from: b(B.human), to: b(B.human + 3), shot: PERSON },
-        { from: b(B.numbers), to: b(B.numbers + 3), shot: SKY, arc: 1.5 },
-        { from: b(B.loop), to: b(B.loop + 3.5), shot: WHOLE, arc: 1.5 },
+        { from: b(B.numbers), to: b(B.numbers + 3), shot: QUIET },
+        { from: b(B.loop), to: b(B.loop + 3.5), shot: WHOLE },
       ],
       local,
     ),

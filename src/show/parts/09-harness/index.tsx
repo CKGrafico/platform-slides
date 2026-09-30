@@ -2,18 +2,20 @@
  * The four pillars (intro) and part 9: Agent Harness (script 9.1 to 9.5).
  *
  * The map of the talk comes to the middle: four empty slots, the four things
- * we had to build. Back in its corner, the first slot gets its name. Then:
- * every repo improvises; a frame closes around the core (the Harness) and
- * carries its rules; a cloud of possible paths becomes one nearly clean orbit;
- * unsafe commands bounce off the frame; and the same frame sits on a laptop.
+ * we had to build. Back in its corner, the first slot gets its name, and the
+ * town gets the names of what it has so far. Then: every repo improvises; a
+ * parapet closes around the hall (the Harness) and carries its rules; a cloud
+ * of possible paths becomes one nearly clean path on the loop; unsafe
+ * commands bounce off the parapet; and the same hall, small, stands by a
+ * developer on the road.
  *
  * Stops, on the beat grid:
  *   1. (4) the four slots, large.                          pillars
  *   2. (4) back to the corner; slot 1: Agent Harness.      pillars
  *   3. (5) every repo improvises.                           9.1
- *   4. (6) the frame closes; what it holds.                 9.2
+ *   4. (6) the parapet closes; what it holds.               9.2
  *   5. (5) "Solve this issue": a cloud of paths.            9.3
- *   6. (6) with the Harness: one nearly clean orbit.        9.3
+ *   6. (6) with the Harness: one nearly clean path.         9.3
  *   7. (5) unsafe commands bounce off.                      9.4
  *   8. (6) the same Harness on a laptop and in the cloud.   9.5
  */
@@ -25,11 +27,11 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence, type CameraShot } from '@/world/camera/shot'
+import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
-import { MAP_WHOLE, mapShot } from '../../map/shots'
-import { DEV_POS, HARNESS_RADIUS } from '../../layout'
+import { DEV_POS, HALL_BIG } from '../../layout'
+import { townShot } from '../../shots'
 
 export const grid = beatStops([4, 4, 5, 6, 5, 6, 5, 6])
 const { b } = grid
@@ -39,44 +41,43 @@ const KEY = '09-harness/harness'
 hudCues.center({ rise: { key: KEY, from: b(0.5), to: b(2.5) }, fall: { key: KEY, from: b(B.name), to: b(B.name + 2) } })
 hudCues.fill(0, { key: KEY, from: b(B.name + 1.5), to: b(B.name + 3) })
 
-// The map reveal: from here to the closing, the system is read like a map
-// (map/shots.ts). The names of what exists so far come in and stay.
+// The map reveal: from here to the closing, the town is read like a map. The
+// names of what exists so far come in and stay.
 const cue = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
 const pulseCue = (from: number, to: number) => ({ rise: cue(from, from + 0.75), fall: cue(to, to + 0.75) })
 mapCues.show(cue(B.name + 0.5, B.name + 2))
-// The four lanes are named at once, from the center out: the map comes before its parts.
-mapCues.appear('lane.model', cue(B.name + 1.5, B.name + 2.25))
-mapCues.appear('lane.agents', cue(B.name + 1.8, B.name + 2.55))
+mapCues.appear('hall', cue(B.name + 1.5, B.name + 2.25))
+mapCues.appear('opencode', cue(B.name + 1.8, B.name + 2.55))
 mapCues.appear('lane.automation', cue(B.name + 2.1, B.name + 2.85))
-mapCues.appear('lane.production', cue(B.name + 2.4, B.name + 3.15))
-mapCues.appear('core', cue(B.name + 1.75, B.name + 2.5))
-mapCues.appear('opencode', cue(B.name + 2, B.name + 2.75))
-mapCues.appear('ga', cue(B.name + 2.25, B.name + 3))
+mapCues.appear('station', cue(B.name + 2.25, B.name + 3))
+mapCues.appear('forge', cue(B.name + 2.4, B.name + 3.15))
+mapCues.appear('models', cue(B.name + 2.6, B.name + 3.35))
 mapCues.role('opencode', pulseCue(B.name + 2.25, B.improvise))
-mapCues.role('ga', pulseCue(B.name + 2.5, B.improvise))
+mapCues.role('station', pulseCue(B.name + 2.5, B.improvise))
 mapCues.appear('harness', cue(B.frame + 2.25, B.frame + 3))
 mapCues.role('harness', pulseCue(B.frame + 2.5, B.cloud))
-mapCues.focus(['core', 'opencode', 'harness', 'lane.model'], pulseCue(B.improvise, B.laptop + 0.5))
+mapCues.focus(['hall', 'opencode', 'harness'], pulseCue(B.improvise, B.laptop + 0.5))
 
-/** Up at the empty sky, so the map of the talk has the frame to itself. */
-const SKY: CameraShot = { position: [0, 7.6, 10.5], target: [0, 7.9, 0], fov: 34 }
-/** Close on the center of the map: the core, the frame, the paths of the runs. */
-const CENTER = mapShot([0.2, -0.3, 0.3], 9.5)
-/** The developer with the copy, on the front right of the map. */
-const LAPTOP = mapShot([1.7, -0.7, 1.2], 10)
+/** Out in the woods, so the map of the talk has the frame to itself. */
+const SKY = townShot([-10, 0, -19])
+/** The town, as a map. */
+const MAP_WHOLE = townShot([0, 0.3, 1.5])
+/** Close on the hall: the parapet, the paths of the runs. */
+const CENTER = townShot([0.8, 0.5, 1.4])
+/** The developer with the copy, on the road south of the hall. */
+const LAPTOP = townShot([-1.5, 0.3, 5.5])
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
-/** The ten things the Harness holds, as tags around the frame. */
+/** The ten things the Harness holds, as tags beside the hall. */
 const TAGS = ['rules', 'conventions', 'architecture', 'skills', 'notskills', 'commands', 'team', 'tests', 'pr', 'deploy'] as const
-/** Two columns beside the frame, like the sheet of rules it carries: five on each side. */
-const TAG_X = HARNESS_RADIUS + 0.55
-const tagPoints = TAGS.map((_, i) => new Vector3(i < 5 ? -TAG_X : TAG_X, 1.35 - (i % 5) * 0.55, 0.5))
+/** Two columns beside the parapet, like the sheet of rules it carries: five on each side. */
+const TAG_X = 2.3 * HALL_BIG + 1.0
+const tagPoints = TAGS.map((_, i) => new Vector3(i < 5 ? -TAG_X : TAG_X, 2.5 - (i % 5) * 0.48, 1.2))
 
-const laptopLabel = new Vector3(DEV_POS[0] + 0.1, DEV_POS[1] - 0.32, DEV_POS[2] + 0.3)
-const cloudLabel = new Vector3(0, -1.95, 0.6)
-// Up and to the right of the big frame: the cloud copy. On the left it would sit on the coins.
-const cloudName = new Vector3(HARNESS_RADIUS + 0.1, 1.2, 0.5)
+const cloudLabel = new Vector3(3.6, 0.2, 6.2)
+const laptopLabel = new Vector3(DEV_POS[0] + 0.6, 0, DEV_POS[2] + 0.95)
+const cloudName = new Vector3(2.3 * HALL_BIG + 0.3, 1.7, 0.5)
 
 function Dom() {
   return (
@@ -129,7 +130,7 @@ const harness = defineScene({
     shotSequence(
       from,
       [
-        { from: 0, to: b(3.5), shot: SKY, arc: 1 },
+        { from: 0, to: b(3.5), shot: SKY },
         { from: b(B.name), to: b(B.name + 3), shot: MAP_WHOLE },
         { from: b(B.improvise), to: b(B.improvise + 2.5), shot: CENTER },
         { from: b(B.laptop), to: b(B.laptop + 2.5), shot: LAPTOP },

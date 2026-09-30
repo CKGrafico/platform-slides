@@ -1,79 +1,61 @@
 /**
- * Part 3 moves. The blue ball spirals into the core, then the timeline draws
- * itself one step at a time, then the first half dims and the second lights up.
+ * Part 3 moves. The blue cart goes into the hall, then the road into the town
+ * lays itself one milestone at a time, from the far west to the "?".
  */
 import type { Group } from 'three'
 import { artOf } from '@/art/elements'
-import { segmentsOf, sketchOf } from '@/art/lines'
-import { fade, inkIn, inkOut } from '@/art/motion'
-import { orbitOf } from '@/art/orbits'
+import { sketchOf } from '@/art/lines'
+import { drive, inkIn, inkOut, shown } from '@/art/motion'
 import { defineChoreography } from '@/world/actors'
-import { CORE_BEHIND, TIMELINE_SPLIT, TIMELINE_U } from '../../layout'
+import { MILESTONE_X, TIMELINE_ROAD } from '../../layout'
 import { issueOrbit, TIMELINE_IDS } from '../../actors'
 import { grid, stepBeat } from '.'
 
 const KEY = '03-state-of-ai/timeline'
 const { b } = grid
 
-/** Structures that grow around the model in the second half, per step. */
-const STRUCTURES: Record<number, { art?: string[]; orbits?: string[]; frame?: string }> = {
-  [TIMELINE_SPLIT]: { art: ['tl.ring'] },
-  [TIMELINE_SPLIT + 1]: { frame: 'tl.frame' },
-  [TIMELINE_SPLIT + 2]: { orbits: ['tl.orbit.a'], art: ['tl.moon.a'] },
-  [TIMELINE_SPLIT + 3]: { orbits: ['tl.orbit.b', 'tl.orbit.c'], art: ['tl.moon.b', 'tl.moon.c'] },
+const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
+const win = (beat: number, a: number, bb: number) => clamp01((beat - a) / (bb - a))
+const easeInOut = (t: number) => {
+  const x = clamp01(t)
+  return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2
 }
 
 export const stateOfAiMoves = defineChoreography('03-state-of-ai', (tl, cast, t) => {
   const span = (from: number, to: number) => t.span(KEY, b(from), b(to))
 
-  // Stop 1: the blue ball's orbit closes into the core, and the ball goes in.
+  // Stop 1: the blue cart's round closes into the hall, and the cart goes in.
   const close = span(0, 2.5)
   tl.to(issueOrbit, { radius: 0, duration: close.duration, ease: 'power2.in' }, close.start)
   const inside = span(2.1, 2.6)
   inkOut(tl, artOf(cast.get('issue')), inside.start, inside.duration)
-  const orbitOut = span(0, 1.5)
-  fade(tl, orbitOf(cast.get<Group>('orbit.cover')).material, 0, orbitOut.start, orbitOut.duration)
 
-  // The core steps back, so the timeline is the subject.
-  const back = span(1.5, 4)
-  const core = cast.get('core')
-  tl.to(core.position, { x: CORE_BEHIND.x, y: CORE_BEHIND.y, z: CORE_BEHIND.z, duration: back.duration, ease: 'power3.inOut' }, back.start)
-  tl.to(core.scale, { x: CORE_BEHIND.scale, y: CORE_BEHIND.scale, z: CORE_BEHIND.scale, duration: back.duration, ease: 'power3.inOut' }, back.start)
+  // The road lays itself from the west, reaching each milestone as it comes in.
+  const road = artOf(cast.get('road.timeline'))
+  const x0 = TIMELINE_ROAD[0]![0]
+  const length = TIMELINE_ROAD[1]![0] - x0
+  shown(tl, road, span(2.5, 2.5).start)
+  const laying = span(2.5, stepBeat(9) + 1.5)
+  drive(tl, laying.start, laying.duration, (u) => {
+    const beat = 2.5 + u * (stepBeat(9) + 1.5 - 2.5)
+    let reach = 0.6
+    MILESTONE_X.forEach((x, k) => {
+      const w = easeInOut(win(beat, stepBeat(k), stepBeat(k) + 0.9))
+      const to = x - x0 + 0.9
+      reach = Math.max(reach, Math.min(to, reach + (to - reach) * w))
+    })
+    road.object.scale.x = Math.max(0.001, Math.min(1, reach / length))
+  })
 
-  // Steps: the arc draws to each step, then the step inks in.
-  const splitU = (TIMELINE_U[TIMELINE_SPLIT - 1]! + TIMELINE_U[TIMELINE_SPLIT]!) / 2
-  const arcA = sketchOf(cast.get<Group>('tl.arc.a'))
-  const arcB = sketchOf(cast.get<Group>('tl.arc.b'))
+  // Milestones: each one inks in as the road reaches it. The "?" draws its slot.
   TIMELINE_IDS.forEach((id, k) => {
     const s = stepBeat(k)
-    const u = TIMELINE_U[k]!
-    // The line reaches a little past the step it brings in, and stops short of the "?".
-    const reach = id === 'tl.slot' ? u - 0.02 : Math.min(1, u + 0.012)
-    const draw = span(s, s + 0.9)
-    tl.to(arcA.reveal, { value: Math.min(1, reach / splitU), duration: draw.duration, ease: 'power2.inOut' }, draw.start)
-    if (reach > splitU) tl.to(arcB.reveal, { value: (reach - splitU) / (1 - splitU), duration: draw.duration, ease: 'power2.inOut' }, draw.start)
-
     const enter = span(s + 0.5, s + 1.5)
     if (id === 'tl.slot') {
       tl.to(sketchOf(cast.get<Group>(id)).reveal, { value: 1, duration: enter.duration, ease: 'power2.out' }, enter.start)
     } else {
       inkIn(tl, artOf(cast.get(id)), enter.start, enter.duration)
     }
-
-    const st = STRUCTURES[k]
-    if (!st) return
-    const grow = span(s + 0.9, s + 1.9)
-    st.art?.forEach((a) => inkIn(tl, artOf(cast.get(a)), grow.start, grow.duration))
-    st.orbits?.forEach((o) => {
-      const orbit = orbitOf(cast.get<Group>(o))
-      tl.set(orbit.reveal, { value: 0 }, grow.start)
-      tl.set(orbit.material, { opacity: 0.85 }, grow.start)
-      tl.to(orbit.reveal, { value: 1, duration: grow.duration, ease: 'power2.inOut' }, grow.start)
-    })
-    if (st.frame) {
-      const frame = cast.get<Group>(st.frame)
-      fade(tl, segmentsOf(frame).material, 0.9, grow.start, grow.duration * 0.6)
-      tl.fromTo(frame.scale, { x: 1.6, y: 1.6, z: 1.6 }, { x: 1, y: 1, z: 1, duration: grow.duration, ease: 'power3.out', immediateRender: false }, grow.start)
-    }
   })
 })
+

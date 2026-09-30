@@ -1,9 +1,10 @@
 /**
- * The camera of the town: the view of a strategy game. One angle and one
- * zoom for the whole map: it looks from the south east, along the diagonal of
- * the land, from far away with a narrow field of view, so buildings show two
- * faces and the picture is almost orthographic. It never turns and never
- * zooms: every shot is a pan across the land, like scrolling the map.
+ * The camera of the talk: the view of a strategy game. One angle and one zoom
+ * for the whole map: it looks from the south east, along the diagonal of the
+ * land, from far away with a narrow field of view, so buildings show two faces
+ * and the picture is almost orthographic. It never turns and never zooms:
+ * every shot is a pan across the land, like scrolling the map. The one
+ * exception is the closing, which pulls back to show the whole town.
  */
 import type { CameraShot, Vec3 } from '@/world/camera/shot'
 

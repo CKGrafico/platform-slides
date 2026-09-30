@@ -104,7 +104,7 @@ function landTexture(): CanvasTexture {
 }
 
 /** Ashlar stone: blocks in running bond with soft mortar lines. Eight rows per unit. */
-function stoneTexture(): CanvasTexture {
+export function stoneTexture(): CanvasTexture {
   return canvasTexture('stone', 256, (ctx, n) => {
     const rand = seeded(7)
     const rows = 8
@@ -123,7 +123,7 @@ function stoneTexture(): CanvasTexture {
 }
 
 /** Roof tiles: rows, each a little darker at its lower edge, with staggered joints. Six rows per unit. */
-function tileTexture(): CanvasTexture {
+export function tileTexture(): CanvasTexture {
   return canvasTexture('tiles', 256, (ctx, n) => {
     const rows = 6
     const h = n / rows
@@ -142,7 +142,7 @@ function tileTexture(): CanvasTexture {
 }
 
 /** Cobbles: rounded stones on a darker bed, for the plaza and the loop. */
-function cobbleTexture(): CanvasTexture {
+export function cobbleTexture(): CanvasTexture {
   return canvasTexture('cobble', 256, (ctx, n) => {
     const rand = seeded(19)
     ctx.fillStyle = grey(0.86)
@@ -172,7 +172,7 @@ function stripeTexture(color: ColorRepresentation): CanvasTexture {
 }
 
 /** UVs from the position, in world units, so a texture keeps its size on every box and slope. */
-function worldUVs(g: BufferGeometry, scale = 1): BufferGeometry {
+export function worldUVs(g: BufferGeometry, scale = 1): BufferGeometry {
   if (!g.getAttribute('normal')) g.computeVertexNormals()
   const position = g.getAttribute('position')
   const normal = g.getAttribute('normal')
@@ -198,7 +198,7 @@ function worldUVs(g: BufferGeometry, scale = 1): BufferGeometry {
 // ---- building blocks -----------------------------------------------------------------------------
 
 /** One geometry from many, all made plain first so boxes and slopes merge. The parts go. */
-function merge(parts: BufferGeometry[]): BufferGeometry {
+export function merge(parts: BufferGeometry[]): BufferGeometry {
   const plain = parts.map((g) => (g.index ? g.toNonIndexed() : g))
   const merged = mergeGeometries(plain)!
   for (const g of parts) g.dispose()
@@ -207,7 +207,7 @@ function merge(parts: BufferGeometry[]): BufferGeometry {
 }
 
 /** A box at a place, turned first if asked. */
-function boxAt(sx: number, sy: number, sz: number, x: number, y: number, z: number, rot: { x?: number; y?: number; z?: number } = {}): BufferGeometry {
+export function boxAt(sx: number, sy: number, sz: number, x: number, y: number, z: number, rot: { x?: number; y?: number; z?: number } = {}): BufferGeometry {
   const g = new BoxGeometry(sx, sy, sz)
   if (rot.x) g.rotateX(rot.x)
   if (rot.z) g.rotateZ(rot.z)
@@ -279,7 +279,7 @@ export function gableRoofGeometry(width: number, depth: number, height: number, 
 }
 
 /** The two triangles that close a gable roof, in the wall color. */
-function gableEndsGeometry(width: number, depth: number, height: number): BufferGeometry {
+export function gableEndsGeometry(width: number, depth: number, height: number): BufferGeometry {
   const w = width / 2
   const d = depth / 2
   return flat([
@@ -288,7 +288,7 @@ function gableEndsGeometry(width: number, depth: number, height: number): Buffer
   ])
 }
 
-interface AttachOptions {
+export interface AttachOptions {
   width?: number
   boil?: number
   map?: Texture
@@ -297,7 +297,7 @@ interface AttachOptions {
 }
 
 /** Adds a volume of its own color to an element: a roof, a chimney, the timbers. */
-function attach(el: ArtElement, geometry: BufferGeometry, color: ColorRepresentation, options: AttachOptions = {}): Mesh {
+export function attach(el: ArtElement, geometry: BufferGeometry, color: ColorRepresentation, options: AttachOptions = {}): Mesh {
   const { width = 2.0, boil = 0.25, map, uv = 1 } = options
   if (map) worldUVs(geometry, uv)
   const material = createToonMaterial({ color })
@@ -310,7 +310,7 @@ function attach(el: ArtElement, geometry: BufferGeometry, color: ColorRepresenta
 }
 
 /** The element of a building: its body in `color`, with a texture when asked. */
-function building(name: string, geometry: BufferGeometry, color: ColorRepresentation, map?: Texture, uv = 1): ArtElement {
+export function building(name: string, geometry: BufferGeometry, color: ColorRepresentation, map?: Texture, uv = 1): ArtElement {
   const material = createToonMaterial({ color })
   if (map) {
     worldUVs(geometry, uv)
@@ -320,7 +320,7 @@ function building(name: string, geometry: BufferGeometry, color: ColorRepresenta
 }
 
 /** The parts of a building, by color, attached at the end. */
-class Parts {
+export class Parts {
   stone: BufferGeometry[] = []
   timber: BufferGeometry[] = []
   tiles: BufferGeometry[] = []
@@ -338,7 +338,7 @@ class Parts {
   }
 }
 
-const T = 0.07
+export const T = 0.07
 
 /**
  * The timbers of a half-timbered floor: corner posts, beams at the top and
@@ -346,7 +346,7 @@ const T = 0.07
  * of the front. Returns the centers of the front bays, so windows go in the
  * outer ones.
  */
-function timberFrame(p: Parts, w: number, h: number, d: number, y0: number, z0 = 0, braces = true): number[] {
+export function timberFrame(p: Parts, w: number, h: number, d: number, y0: number, z0 = 0, braces = true): number[] {
   for (const x of [-w / 2, w / 2]) for (const z of [-d / 2, d / 2]) p.timber.push(boxAt(T, h, T, x, y0 + h / 2, z0 + z))
   for (const y of [y0 + T / 2, y0 + h - T / 2]) {
     for (const z of [-d / 2, d / 2]) p.timber.push(boxAt(w + T, T, T, 0, y, z0 + z))
@@ -370,7 +370,7 @@ function timberFrame(p: Parts, w: number, h: number, d: number, y0: number, z0 =
 }
 
 /** A window: dark glass, a timber frame and two shutters, on a face that looks +Z or +X. */
-function addWindow(p: Parts, x: number, y: number, z: number, side = false, w = 0.2, h = 0.22): void {
+export function addWindow(p: Parts, x: number, y: number, z: number, side = false, w = 0.2, h = 0.22): void {
   if (!side) {
     p.dark.push(boxAt(w, h, 0.03, x, y, z + 0.03))
     p.timber.push(boxAt(w + 0.06, h + 0.06, 0.02, x, y, z + 0.02))
@@ -383,25 +383,25 @@ function addWindow(p: Parts, x: number, y: number, z: number, side = false, w = 
 }
 
 /** A door: dark planks in a timber frame, on a face that looks +Z. Its sill is at `y0`. */
-function addDoor(p: Parts, x: number, y0: number, z: number, w = 0.3, h = 0.5): void {
+export function addDoor(p: Parts, x: number, y0: number, z: number, w = 0.3, h = 0.5): void {
   p.dark.push(boxAt(w, h, 0.03, x, y0 + h / 2, z + 0.03))
   p.timber.push(boxAt(w + 0.08, h + 0.04, 0.02, x, y0 + h / 2 + 0.02, z + 0.02))
 }
 
 /** A chimney with a cap, through a roof. */
-function addChimney(p: Parts, x: number, yTop: number, z: number, height = 0.6): void {
+export function addChimney(p: Parts, x: number, yTop: number, z: number, height = 0.6): void {
   p.stone.push(boxAt(0.18, height, 0.18, x, yTop - height / 2, z))
   p.stone.push(boxAt(0.24, 0.05, 0.24, x, yTop + 0.025, z))
 }
 
 /** A flag: a pole and a pennant. The pennant is its own color, so it is attached apart. */
-function addFlag(el: ArtElement, p: Parts, x: number, y: number, z: number, color: ColorRepresentation): void {
+export function addFlag(el: ArtElement, p: Parts, x: number, y: number, z: number, color: ColorRepresentation): void {
   p.timber.push(boxAt(0.035, 0.6, 0.035, x, y + 0.3, z))
   attach(el, boxAt(0.3, 0.15, 0.02, x + 0.17, y + 0.5, z), color, { width: 1.4 })
 }
 
 /** A dormer on the front slope of a roof: a small box with a gable across the slope and a window. */
-function addDormer(p: Parts, x: number, roofY: number, roofH: number, roofDepth: number): void {
+export function addDormer(p: Parts, x: number, roofY: number, roofH: number, roofDepth: number): void {
   const zs = roofDepth / 4
   const ys = roofY + roofH / 2
   p.plaster.push(boxAt(0.34, 0.3, 0.36, x, ys + 0.05, zs))
@@ -502,7 +502,8 @@ export function createHouse(options: HouseOptions = {}) {
  * two chimneys, a turret with a flag, and two lower wings. Big and closed:
  * the hall. Its front faces +Z.
  */
-export function createTownCenter() {
+export function createTownCenter(options: { flag?: ColorRepresentation | false } = {}) {
+  const { flag = false } = options
   const groundY = 0.14
   const groundH = 0.78
   const upperY = groundY + groundH
@@ -539,7 +540,7 @@ export function createTownCenter() {
   turretRoof.translate(tx, groundY + 2.3, tz)
   p.tilesDark.push(turretRoof)
   p.dark.push(boxAt(0.1, 0.22, 0.03, tx, groundY + 1.9, tz + 0.315))
-  addFlag(el, p, tx, groundY + 2.75, tz, palette.peach)
+  if (flag) addFlag(el, p, tx, groundY + 2.75, tz, flag)
   // The wings: the left one a little forward, so it shows past the main block.
   for (const [x, z] of [[-2.15, 0.5], [2.15, -0.3]] as const) {
     p.stone.push(boxAt(1.1, 0.34, 1.4, x, groundY + 0.17, z))

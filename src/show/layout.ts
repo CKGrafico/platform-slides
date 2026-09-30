@@ -1,275 +1,471 @@
 /**
- * The world map: where things stand in the one persistent world. Parts read
- * these numbers so that an element placed in one part is where the next part
- * expects it. The model (the core) sits at the origin for most of the talk.
+ * The map of the town: where everything stands in the one persistent world
+ * (docs/art/town-proposal.md). The hall sits at the origin; x runs east, z
+ * runs south, toward the camera. The main road runs west to east along the
+ * south of the hall; three ring walls rise around the hall in part 11, with
+ * gates where the road crosses them; the woods close the land beyond.
+ *
+ * The camera never zooms (shots.ts), so a frame shows a diamond of about
+ * 16 units around its target: |x - z| < 15.9 and |x + z| < 16.3 from it.
  */
-import { Vector3 } from 'three'
-import { through } from '@/art/lines'
+export type V3 = readonly [number, number, number]
 
-// ---- part 3: the timeline -------------------------------------------------------------
+// ---- the hall: the agent ---------------------------------------------------------------------
 
-/**
- * The timeline arc: it starts low on the left, passes in front of the core,
- * and rises on the right. Each step is closer to the last, the way the steps
- * came faster in real life.
- */
-export const TIMELINE_PATH = through([
-  [-7.0, -1.1, 0.6],
-  [-4.6, -2.25, 1.4],
-  [-1.6, -2.7, 1.8],
-  [1.4, -2.35, 1.8],
-  [3.9, -1.25, 1.4],
-  [5.5, 0.35, 0.9],
-  [6.2, 2.0, 0.4],
-])
+export const HALL: V3 = [0, 0, 0]
+/** Big and closed until part 10 pulls the pieces out of it; then a step smaller for each. */
+export const HALL_BIG = 1.25
+export const HALL_AFTER_EACH = [1.19, 1.13, 1.06, 1.0]
+/** Where things leave the hall: its front door, past the arcade (in the hall's local units). */
+export const HALL_DOOR: V3 = [0, 0.5, 1.6]
+/** The task moons on the platform, in front of the arcade (local units). */
+export const TASK_SPOTS: V3[] = [
+  [-1.2, 0.45, 1.5],
+  [-0.4, 0.45, 1.5],
+  [0.4, 0.45, 1.5],
+  [1.2, 0.45, 1.5],
+]
+/** The compiled workflow docks on the platform's back left corner (local units). */
+export const LOCK_DOCK: V3 = [-1.95, 0.32, -1.5]
+/** The top of the turret, where the banner of OpenCode stands (local units). */
+export const TURRET_TOP: V3 = [-1.25, 2.9, -0.75]
+/** The coins burned by the hall, in a pile beside it, outside the platform. */
+export const COINS: V3 = [3.35, 0, 0.8]
 
-const GAP_RATIO = 0.9
-const gaps = Array.from({ length: 9 }, (_, i) => Math.pow(GAP_RATIO, i))
-const gapSum = gaps.reduce((a, b) => a + b, 0)
+/** The belt loop around the hall: the automation ring. Clockwise from the south west corner. */
+export const LOOP: V3[] = [
+  [-4.4, 0, 3.4],
+  [-4.4, 0, -3.4],
+  [4.4, 0, -3.4],
+  [4.4, 0, 3.4],
+]
+/** Where each task lands on the loop (as a fraction of its length), and how far it rides in stop 2. */
+export const LOOP_LANDING = [0.62, 0.72, 0.82, 0.92]
+export const LOOP_SWEEP = 0.12
 
-/** Path position (0..1) of each of the ten steps. */
-export const TIMELINE_U: number[] = [0.03]
-for (const g of gaps) TIMELINE_U.push(TIMELINE_U[TIMELINE_U.length - 1]! + (g / gapSum) * 0.94)
+// ---- GitHub Actions: the mill and its line of steps ---------------------------------------------
 
-/** World position of each step. */
-export const TIMELINE_POINTS = TIMELINE_U.map((u) => TIMELINE_PATH(u, new Vector3()))
-
-/** In part 3 the core steps back, so the timeline is the subject. */
-export const CORE_BEHIND = { x: -0.4, y: 0.9, z: -5, scale: 0.8 }
-
-/** Radius of the sphere of each step (steps 1 to 9). Single objects grow in the first half. */
-export const TIMELINE_RADIUS = [0.2, 0.23, 0.26, 0.29, 0.32, 0.27, 0.27, 0.27, 0.27]
-
-/** Where the first half ends: steps 0 to 4 are single objects, 5 to 8 a system around one, 9 is "?". */
-export const TIMELINE_SPLIT = 5
-
-// ---- part 4: the maturity levels ------------------------------------------------------------
-
-/** Five rings around the core, level 1 the smallest. */
-export const LEVEL_RADII = [1.45, 2.05, 2.65, 3.25, 3.9]
-/** Labels sit along one ray, so they never overlap. */
-export const LEVEL_LABEL_ANGLE = 0.3 * Math.PI
-/** The four empty slots on the level 5 ring. */
-export const SLOT_ANGLES = [0.62, 0.86, 1.1, 1.34].map((f) => f * Math.PI)
-
-// ---- the core through the talk ---------------------------------------------------------
-
-/** Scale of the core when part 10 starts (what part 9 leaves): the implementation core's scale. */
-export const CORE_SCALE_BEFORE_P10 = 0.8 as const
-/** Scale of the core once part 10 has pulled the tasks out of it. */
-export const CORE_SCALE_AFTER_P10 = 0.86
-
-// ---- part 5: from GitHub Actions to Agentic Workflows -------------------------------------
-
-type V3 = readonly [number, number, number]
-
-/** GitHub Actions, alone in the void (5.1). */
-export const GA_POS: V3 = [-3.8, -0.7, 0.4]
-/** The straight line of moons it unfolds into (5.2). Index 0 is the head, where GitHub Actions ends up. */
-export const LINE_Y = -0.7
-export const LINE_Z = 0.4
-export const LINE_X = [-7.2, -6.3, -5.4, -4.5, -3.6, -2.7, -1.8]
-/** Near the core the line curves onto the core's orbit (5.3). The last two moons move here. */
+/** The mill, north east of the loop, its sails toward it. */
+export const STATION: V3 = [5.6, 0, -6.4]
+export const STATION_TURN = -0.6
+/** Where its steps land on the loop (10.3). */
+export const STEP_LANDING = [0.3, 0.36, 0.42, 0.48, 0.54, 0.58]
+/** The straight belt of steps that leaves the mill westward (5.2). */
+export const LINE_Z = -6.4
+export const LINE_Y = 0.3
+export const LINE_X = [4.4, 3.6, 2.8, 2.0, 1.2, 0.4]
+export const LINE_FROM: V3 = [5.0, LINE_Y, LINE_Z]
+export const LINE_TO: V3 = [-0.2, LINE_Y, LINE_Z]
+/** Near the hall the line bends onto the loop (5.3). The last two steps move here. */
 export const LINE_BENT: V3[] = [
-  [-2.62, -0.42, 0.42],
-  [-1.5, -0.08, 0.5],
+  [0.6, LINE_Y, -5.3],
+  [-0.2, LINE_Y, -4.2],
 ]
-/** The file leaves the orbit here (5.4), passes the compiler ring (5.5), and comes out as the lock file. */
-export const MD_OUT: V3 = [2.5, 0.3, 0.5]
-export const COMPILER_POS: V3 = [3.6, 0.3, 0.5]
-export const LOCK_POS: V3 = [4.9, 0.3, 0.5]
-/** Where the compiled workflow docks, above the implementation core (5.7, and the vertical axis of part 8). */
-export const LOCK_DOCK: V3 = [0, 2.3, 0]
-/** The shell of small moons around the lock file: six from the compiler, then "our changes". */
-export const SHELL_RADIUS = 0.56
-export const SHELL_DIRS: V3[] = [
-  [0, 1, 0.15],
-  [0.87, 0.5, 0.2],
-  [0.87, -0.5, 0.2],
-  [0, -1, 0.15],
-  [-0.87, -0.5, 0.2],
-  [-0.87, 0.5, 0.2],
-  [0.35, 0.2, 0.92],
+
+// ---- roads -----------------------------------------------------------------------------------------
+
+export const MAIN_Z = 5.6
+/** The main road, west to east along the south of the town, from the outer gate to the outer gate. */
+export const MAIN: V3[] = [
+  [-18.5, 0, MAIN_Z],
+  [18.5, 0, MAIN_Z],
 ]
-/** The triage cluster: a second small core with its own orbit (5.7). */
-export const TRIAGE_POS: V3 = [4.4, 1.2, -1.2]
-export const TRIAGE_ORBIT = { radius: 0.95, tilt: 0.3 }
-/** Core scale while it is the implementation core (5.3 to part 9). Part 10 grows it from here. */
-export const CORE_SCALE_AGENT = CORE_SCALE_BEFORE_P10
+/** The road into the town (part 3): from the far west to the outer gate. */
+export const TIMELINE_ROAD: V3[] = [
+  [-42, 0, MAIN_Z],
+  [-18.5, 0, MAIN_Z],
+]
+/** Along the main belt, as fractions of its length. */
+const mainAt = (x: number) => (x - MAIN[0]![0]) / (MAIN[1]![0] - MAIN[0]![0])
 
-// ---- part 6: the problems -------------------------------------------------------------------
+// ---- the rings: the walls of part 11 -----------------------------------------------------------
 
-/** Where work leaves the implementation core, on its surface, toward the exit. */
-export const EXIT_FROM: V3 = [0.62, -0.1, 0.48]
-/** The person at the exit (6.3), and the pile of work in front of them. */
-export const CAPSULE_POS: V3 = [3.2, -1.25, 1.5]
+/** Radii of the three ring walls around the hall, and where the road crosses each (a gate). */
+export const RINGS = [7.4, 12.4, 19.0]
+export const RING_THICKNESS = 0.5
+const crossing = (r: number) => Math.sqrt(r * r - MAIN_Z * MAIN_Z)
+export const RING_CROSSINGS = RINGS.map(crossing)
+/** Angles (radians, +z toward the camera) where each ring has a tower of its own on the wall. */
+export const RING_TOWERS: number[][] = [
+  [0, -2.0, -2.8, 2.7, 1.57],
+  [-0.52, -1.05, -1.57, -2.09, -2.62, Math.PI, 1.57, 1.05, 2.09],
+  [-0.52, -1.05, -1.57, -2.09, -2.62, Math.PI, 1.05, 1.57, 2.09],
+]
+/** Each ring is built as arcs, so it can rise around the town. */
+export const RING_ARCS = 8
+const deg = (d: number) => (d * Math.PI) / 180
+
+// ---- buildings ---------------------------------------------------------------------------------------
+
+export const GATEHOUSE: V3 = [-RING_CROSSINGS[1]!, 0, MAIN_Z]
+export const EXIT_GATE: V3 = [RING_CROSSINGS[1]!, 0, MAIN_Z]
+export const ARCH_W: V3 = [-RING_CROSSINGS[0]!, 0, MAIN_Z]
+export const ARCH_E: V3 = [RING_CROSSINGS[0]!, 0, MAIN_Z]
+export const OUTER_W: V3 = [-RING_CROSSINGS[2]!, 0, MAIN_Z]
+export const OUTER_E: V3 = [RING_CROSSINGS[2]!, 0, MAIN_Z]
+export const TRIAGE_HOUSE: V3 = [-8.6, 0, 3.4]
+export const REFINE_HOUSE: V3 = [-6.3, 0, 3.3]
+export const REQUESTER: V3 = [-6.6, 0, 7.4]
+export const MARKET: V3 = [14.2, 0, 3.6]
+/** The person a risky change is sent to: a booth south of the exit gate. */
+export const BOOTH: V3 = [8.0, 0, 7.8]
+export const WELL: V3 = [-9.6, 0, 1.4]
+/** The compiler: a scriptorium north west of the loop. */
+export const SCRIPTORIUM: V3 = [-8.0, 0, -4.5]
+export const SCRIPTORIUM_DOOR: V3 = [-8.0, 0.3, -3.5]
+/** Forge, and the kilns of the models behind it. */
+export const FORGE: V3 = [-2.5, 0, -8.2]
+export const KILNS: V3[] = [
+  [-5.0, 0, -10.0],
+  [-2.9, 0, -10.6],
+  [-0.8, 0, -10.2],
+]
+/** Before Forge, the agent called a vendor straight away, far to the east. */
+export const VENDOR: V3 = [22, 0.3, -6]
+/** The watchtower of the audit: on the first ring, north of the hall. */
+export const TOWER_ANGLE = deg(-75)
+export const TOWER: V3 = [Math.cos(TOWER_ANGLE) * RINGS[0]!, 0, Math.sin(TOWER_ANGLE) * RINGS[0]!]
+/** The barn and the stacks of measures beside it, between the first ring and the exit gate (part 12). */
+export const BARN: V3 = [8.6, 0, 2.0]
+export const MAIN_AT = { gate: mainAt(GATEHOUSE[0]), triage: mainAt(TRIAGE_HOUSE[0]), refine: mainAt(REFINE_HOUSE[0]), hall: 0.5, exit: mainAt(EXIT_GATE[0]), market: mainAt(MARKET[0]) }
+
+// ---- people --------------------------------------------------------------------------------------------
+
+/** The person at the exit (6.3), and the pile of work in front of them on the road. */
+export const REVIEWER: V3 = [9.4, 0, 6.8]
 export const PILE_R = 0.11
-/** Pile places, bottom row first. The first three are the balls of 6.1. */
 export const PILE: V3[] = [
-  [2.62, -1.14, 1.72],
-  [2.62, -1.14, 1.48],
-  [2.62, -1.14, 1.24],
-  [2.4, -1.14, 1.6],
-  [2.4, -1.14, 1.36],
-  [2.62, -0.94, 1.6],
-  [2.62, -0.94, 1.36],
-  [2.5, -0.75, 1.48],
+  [8.3, PILE_R, 5.6],
+  [7.8, PILE_R, 5.85],
+  [7.3, PILE_R, 5.45],
+  [7.9, PILE_R, 5.3],
+  [7.4, PILE_R, 6.0],
+  [8.05, PILE_R * 3, 5.6],
+  [7.55, PILE_R * 3, 5.7],
+  [7.8, PILE_R * 5, 5.6],
 ]
-/** Three runs of the same prompt: three paths of different shapes and lengths (6.1). */
-export const RUN_PATHS: V3[][] = [
-  [EXIT_FROM, [1.3, 0.25, 0.9], [2.05, -0.45, 1.35], PILE[0]!],
-  [EXIT_FROM, [1.05, 0.95, 0.9], [1.95, 1.2, 1.0], [2.9, 0.45, 1.3], [2.55, -0.45, 1.6], PILE[1]!],
-  [EXIT_FROM, [0.95, -0.85, 1.1], [1.7, -1.5, 1.7], [2.35, -1.3, 1.9], PILE[2]!],
-]
-/** The stack of token coins beside the core, above the line of steps (6.2): its base, three coins per simple task. */
-export const TOKENS_POS: V3 = [-2.9, 0.3, -0.6]
-export const TOKEN_COINS = 12
-/** Coins left once the simple work leaves the agent (10.3). */
-export const TOKENS_LEFT = 3
-
-/**
- * Where the four task moons sit in the core's surface, from 6.2 until part 10
- * pulls them out: near the edge of the silhouette, one per quarter.
- */
-export const TASK_DIRS: V3[] = [
-  [-0.86, 0.42, 0.3],
-  [0.88, 0.3, 0.34],
-  [-0.8, -0.46, 0.36],
-  [0.84, -0.42, 0.32],
-]
-/** Radius of the core at scale 1. */
-export const CORE_R = 0.95
-/** Share of the core radius where a task sits: just under the surface, half showing. */
-export const TASK_DEPTH = 0.97
-
-// ---- part 7: the change of mind ---------------------------------------------------------
-
-/** 7.2 happens in the empty space above the system. */
-export const TEAM_Y = 8.3
-/** Three people on one side. */
+/** The three of the team (7.2), by the hamlet of the products. */
 export const TEAM: V3[] = [
-  [-3.75, TEAM_Y - 0.62, 0.3],
-  [-2.85, TEAM_Y - 0.62, -0.15],
-  [-1.95, TEAM_Y - 0.62, 0.3],
+  [13.6, 0, -2.9],
+  [14.6, 0, -2.3],
+  [15.6, 0, -2.9],
 ]
-/** More than ten small systems (the apps) on the other side. */
+/** More than ten products: cottages in a hamlet outside the second ring, north east. */
 export const APPS: V3[] = Array.from({ length: 11 }, (_, i) => {
-  const row = i < 6 ? 0 : 1
-  const col = row === 0 ? i : i - 6
-  return [0.1 + col * 1.0 + row * 0.5, TEAM_Y + (row === 0 ? 0.55 : -0.55), (col % 2) * 0.4 - 0.2] as const
+  const row = Math.floor(i / 4)
+  const col = i % 4
+  return [12.5 + col * 1.0 + (row % 2) * 0.5, 0, -4.5 - row * 2.0] as const
 })
+/** The developer with the copy of the hall (9.5), south of the road. */
+export const DEV_POS: V3 = [-2.5, 0, 8.0]
+/** The elder who looks at what needs a human (12.4), by the stacks. */
+export const HEALTH_PERSON: V3 = [4.6, 0, 7.6]
 
-// ---- part 8: our runtime ----------------------------------------------------------------------
+// ---- the paths of the story --------------------------------------------------------------------------
 
-/** OpenCode: one runtime around the implementation core, a thin ring tilted like a planet's. */
-export const OPENCODE = { radius: 1.3, tilt: 0.5 }
-/** Forge, the AI gateway: a ringed planet below the core, the hub every model call goes through. */
-export const FORGE_POS: V3 = [0, -1.75, 0.35]
-/** The models behind Forge: three planets in a low arc, so all three read. */
-export const MODELS: V3[] = [
-  [-1.95, -2.3, -0.4],
-  [0, -2.45, -1.1],
-  [1.95, -2.3, -0.4],
+/** The hall's door in the world, while the hall is big. */
+export const DOOR_BIG: V3 = [HALL_DOOR[0] * HALL_BIG, HALL_DOOR[1] * HALL_BIG, HALL_DOOR[2] * HALL_BIG]
+/** Three runs of the same prompt: three paths of different shapes and lengths from the door to the pile (6.1). */
+export const RUN_PATHS: V3[][] = [
+  [DOOR_BIG, [1.5, 0.2, 3.2], [3.6, 0.15, 4.6], [6.0, 0.15, 5.4], PILE[0]!],
+  [DOOR_BIG, [-1.6, 0.2, 3.4], [0.6, 0.2, 5.0], [3.2, 0.2, 7.0], [6.4, 0.15, 6.4], PILE[1]!],
+  [DOOR_BIG, [2.4, 0.3, 2.2], [4.9, 0.2, 3.3], [6.9, 0.15, 4.5], PILE[2]!],
 ]
-/** Before Forge, the agent called a vendor straight away. */
-export const VENDOR_POS: V3 = [5.6, -1.2, -1.6]
-
-// ---- part 9: Agent Harness ---------------------------------------------------------------------
-
-/** The Harness frame around the core and the OpenCode ring. */
-export const HARNESS_RADIUS = 1.55
-/** Every repo improvises: three runs from the same core, three different paths (9.1). */
+/** Every repo improvises: three runs from the hall, three different paths (9.1). */
 export const IMPROVISE_PATHS: V3[][] = [
-  [[-0.55, 0.45, 0.45], [-1.4, 1.4, 1.0], [-2.3, 1.1, 1.6], [-3.0, 1.9, 1.2]],
-  [[-0.7, -0.1, 0.4], [-1.8, -0.6, 1.3], [-2.2, 0.3, 2.0], [-3.2, -0.2, 2.2]],
-  [[0.2, 0.7, 0.45], [0.6, 1.8, 1.0], [-0.4, 2.4, 1.5], [-1.1, 3.0, 0.8]],
+  [DOOR_BIG, [-2.2, 0.2, 3.6], [-4.6, 0.2, 4.6], [-6.9, 0.15, 6.2]],
+  [DOOR_BIG, [1.8, 0.2, 3.0], [3.2, 0.2, 5.4], [1.4, 0.15, 7.8]],
+  [DOOR_BIG, [2.6, 0.2, 2.4], [5.6, 0.2, 1.6], [7.6, 0.15, -1.0]],
 ]
 /** "Solve this issue": a cloud of possible paths (9.3). */
 export const CLOUD_PATHS: V3[][] = [
-  [[0.6, 0.3, 0.5], [1.6, 1.1, 1.0], [2.6, 0.5, 0.8], [3.3, 1.3, 0.2]],
-  [[0.6, -0.2, 0.5], [1.7, -0.9, 1.1], [2.5, -0.3, 1.6], [3.4, -0.8, 1.2]],
-  [[0.3, 0.7, 0.4], [1.0, 1.9, 0.3], [2.1, 2.2, -0.3], [2.8, 2.9, -0.8]],
-  [[0.5, -0.5, 0.3], [1.1, -1.5, 0.2], [2.2, -1.8, 0.8], [2.9, -2.4, 0.4]],
-  [[0.7, 0.05, 0.3], [1.9, 0.2, -0.4], [2.9, -0.4, -0.2], [3.7, 0.2, -0.9]],
+  [DOOR_BIG, [1.4, 0.2, 3.4], [3.8, 0.2, 4.2], [6.2, 0.15, 3.6]],
+  [DOOR_BIG, [-1.2, 0.2, 3.6], [-0.4, 0.2, 5.6], [1.8, 0.15, 7.2]],
+  [DOOR_BIG, [0.8, 0.2, 3.8], [1.2, 0.2, 6.0], [3.6, 0.15, 7.8]],
+  [DOOR_BIG, [-2.4, 0.2, 3.2], [-4.2, 0.2, 5.4], [-4.6, 0.15, 7.6]],
+  [DOOR_BIG, [2.2, 0.2, 2.6], [5.0, 0.2, 2.2], [7.2, 0.15, 4.4]],
 ]
-/** After the Harness: one nearly clean orbit. */
-export const CLEAN_ORBIT = { radius: 2.15, tilt: 0.35 }
-/** Unsafe commands fly at the frame from here and bounce off (9.4). */
+/** Unsafe commands fly at the parapet from here and bounce off (9.4). */
 export const COMMANDS_FROM: V3[] = [
-  [4.8, 1.6, 1.2],
-  [5.2, 0.1, 1.6],
-  [4.6, -1.5, 1.0],
+  [7.2, 1.3, 6.4],
+  [8.6, 0.9, 3.4],
+  [6.0, 1.7, 8.6],
 ]
-/** The developer: an astronaut who holds a copy of the Harness and the core, on a laptop (9.5). */
-export const DEV_POS: V3 = [3.1, -1.35, 2.3]
-/** Where the developer's hands hold the copy, from DEV_POS. */
-export const DEV_HOLD: V3 = [0, 0.45, 0.38]
 
-// ---- part 10: Agentic Workflows -----------------------------------------------------------------
+/** 10.4 before the router: belts everywhere, each with a station that woke on every cart. */
+export const SPAGHETTI: V3[][] = [
+  [[-17, 0, -5], [-8.6, 0, -1.2], [-0.5, 0, 9.0]],
+  [[-14, 0, 9], [-5.9, 0, -2.4], [7.5, 0, -9.5]],
+  [[-17, 0, 3], [2.2, 0, -10.2], [16, 0, -12]],
+]
+export const SPAGHETTI_STATIONS: V3[] = [
+  [-8.6, 0, -1.2],
+  [-5.9, 0, -2.4],
+  [2.2, 0, -10.2],
+]
 
-/** The triage cluster steps aside while the tasks leave the core (10.2). */
-export const TRIAGE_ASIDE: V3 = [5.9, 1.7, -2.6]
-/** The worker lanes, from the outside in: the closer to the core, the more a path wobbles. */
-export const LANES = {
-  triage: { radius: 2.9, wobble: 0.035 },
-  refine: { radius: 2.25, wobble: 0.08 },
-}
-/** The router: one capture ring at the entrance (10.4). Events come from far on the left. */
-export const ROUTER_POS: V3 = [-5.7, 0, 1.3]
-export const EVENTS_FROM: V3 = [-11, 0.4, 1.3]
-/** The merge gate on the way out, and release beyond it (10.6). */
-export const GATE_POS: V3 = [5.7, 0, 1.3]
-export const RELEASE_POS: V3 = [8.6, 1.6, 0.2]
-/** The person who asked, by the lanes between refine and implement: they decide what gets built. */
-export const REQUESTER_POS: V3 = [-2.1, -1.2, 0.55]
-/** Audit and housekeeping circle to one side, on a steep orbit. */
-export const SIDE_ORBIT = { center: [0, 0.4, -1.2] as V3, radius: 4.7, tilt: 1.15 }
-/** Where audit and housekeeping are on their orbit when 10.6 ends (angles, radians). */
-export const AUDIT_END = 1.3 * Math.PI + 0.5
-export const HOUSEKEEPING_END = 1.58 * Math.PI + 0.5
+/** The audit's report goes into the gatehouse as a new cart (12.6): from the watchtower, around the west. */
+export const AUDIT_LOOP: V3[] = [TOWER, [-1.0, 0, -8.7], [-6.5, 0, -7.5], [-10.5, 0, -3.0], [-11.5, 0, 2.0], [GATEHOUSE[0], 0, GATEHOUSE[2] - 1.3]]
 
-// ---- part 11: Foundations ----------------------------------------------------------------------
+/** After release, the issue goes on to production: east, out of the outer gate. */
+export const PRODUCTION: V3 = [26, 0.14, MAIN_Z]
 
-/** 11.1 happens in the sky again: a tidy system and a messy one, side by side. */
-export const TIDY_POS: V3 = [-2.3, TEAM_Y, 0]
-export const MESSY_POS: V3 = [2.3, TEAM_Y, 0]
-export const SMALL_ORBITS = [0.75, 1.15]
-/** The ground: where the disc forms (11.3), and the three phase circles lie (11.2). */
-export const GROUND_Y = -2.95
-export const DISC_RADIUS = 7.4
-export const PHASE_RADII = [2.4, 4.4, 6.6]
-/** Guardrails: low walls on the disc around the lanes, across the front half (11.4). */
-export const WALL_RADIUS = 4.25
-export const WALL_ANGLES = [0.12, 0.3, 0.5, 0.7, 0.88].map((f) => f * Math.PI)
+// ---- part 4: the levels, and part 11: the phases and the verbs -------------------------------------
+
+/** Five rings on the ground around the hall, level 1 the smallest. Levels 3 and 5 sit where walls will rise. */
+export const LEVEL_RADII = [4.0, 5.8, RINGS[0]!, 9.8, RINGS[1]!]
+/** The four empty slots on the level 5 ring, on the side the camera sees. */
+export const SLOT_ANGLES = [deg(15), deg(55), deg(95), deg(135)]
+/** The three phases: the plans of the three walls. Their labels sit on one ray toward the camera. */
+export const PHASE_LABEL_DIR: V3 = [-0.6, 0, 0.8]
+export const PHASE_LABEL_R = [5.6, 10.0, 14.6]
 /** Verbs (11.5): what a worker may do, as small moons; what it may not, as hollow slots. */
 export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [
-  { id: 'pr', at: [1.95, 1.55, 1.4], hollow: false },
-  { id: 'merge-no', at: [1.95, 1.15, 1.4], hollow: true },
-  { id: 'main-no', at: [1.95, 0.75, 1.4], hollow: true },
-  { id: 'merge', at: [5.55, 1.35, 1.3], hollow: false },
-  { id: 'issue', at: [-4.1, 2.6, 0.4], hollow: false },
-  { id: 'code-no', at: [-4.1, 2.2, 0.4], hollow: true },
+  { id: 'pr', at: [2.6, 1.7, 2.9], hollow: false },
+  { id: 'merge-no', at: [2.6, 1.3, 2.9], hollow: true },
+  { id: 'main-no', at: [2.6, 0.9, 2.9], hollow: true },
+  { id: 'merge', at: [EXIT_GATE[0], 3.1, EXIT_GATE[2] + 0.4], hollow: false },
+  { id: 'issue', at: [TRIAGE_HOUSE[0], 2.4, TRIAGE_HOUSE[2] + 0.6], hollow: false },
+  { id: 'code-no', at: [TRIAGE_HOUSE[0], 2.0, TRIAGE_HOUSE[2] + 0.6], hollow: true },
+]
+/** Where the five guardrail names sit: on wall segments the camera sees (ring index, angle). */
+export const GUARDRAIL_SPOTS: Array<{ ring: number; angle: number }> = [
+  { ring: 0, angle: deg(100) },
+  { ring: 0, angle: deg(-25) },
+  { ring: 1, angle: deg(70) },
+  { ring: 1, angle: deg(112) },
+  { ring: 2, angle: deg(88) },
+]
+/** 11.6: a shortcut from the first phase straight to the last, in two halves that break apart. */
+export const SHORTCUT: V3[] = [
+  [-3.6, 0.05, -4.2],
+  [-9.2, 0.05, -8.4],
+  [-14.6, 0.05, -12.4],
 ]
 
-// ---- part 12: Project Health ---------------------------------------------------------------------
+// ---- part 11: tidy and messy ---------------------------------------------------------------------------
+
+export const TIDY_POS: V3 = [-16, 0, -5]
+export const MESSY_POS: V3 = [-12, 0, -9]
+
+// ---- part 12: the measures -------------------------------------------------------------------------------
 
 /**
- * Measures stack up in a straight row at the front of the disc, like a bar
- * chart: six collected, then two that are not. X of each stack; all at METRIC_Z.
+ * Measures stack up in two rows by the barn, like the stores of a game: four
+ * in front, then two more with the two that are not collected behind them.
  */
-export const METRIC_X = [-3.65, -2.6, -1.55, -0.5, 0.55, 1.6, 2.75, 3.8]
-export const METRIC_Z = 5.75
+export const METRIC_BASES: V3[] = [
+  [6.0, 0, 3.35],
+  [7.05, 0, 3.35],
+  [8.1, 0, 3.35],
+  [9.15, 0, 3.35],
+  [6.5, 0, 4.4],
+  [7.55, 0, 4.4],
+  [8.6, 0, 4.4],
+  [9.65, 0, 4.4],
+]
 /** Coins in each collected measure, and in each ghost stack of a measure that is not collected. */
 export const METRIC_COINS = [9, 6, 7, 11, 5, 7]
 export const GHOST_COINS = 8
 /** Metric coins are bigger than token coins. */
 export const METRIC_COIN_SCALE = 1.5
-/** The person who looks at what needs a human (12.4), on the front left of the disc. */
-export const HEALTH_PERSON: V3 = [-5.0, -2.95, 2.9]
+/** The stack of token coins beside the hall (6.2): three coins per simple task. */
+export const TOKEN_COINS = 12
+/** Coins left once the simple work leaves the agent (10.3). */
+export const TOKENS_LEFT = 3
 
-// ---- parts 13 and 14 --------------------------------------------------------------------------
+// ---- part 3: the milestones on the road ------------------------------------------------------------------
 
-/** After release, the blue ball escapes to production: up and away. */
-export const PRODUCTION_POS: V3 = [13.5, 6.2, -5]
-/** In the closing, the timeline comes back in the sky, above the system. */
-export const TIMELINE_LIFT: V3 = [0, 9.2, -3]
+const GAP_RATIO = 0.9
+const gaps = Array.from({ length: 9 }, (_, i) => Math.pow(GAP_RATIO, i))
+const gapSum = gaps.reduce((a, b) => a + b, 0)
+/** X of each of the ten milestones on the road into the town: each closer to the last. */
+export const MILESTONE_X: number[] = [-40.2]
+for (const g of gaps) MILESTONE_X.push(MILESTONE_X[MILESTONE_X.length - 1]! + (g / gapSum) * 20)
+/** The milestones stand on the north side of the road, so their names sit above it. */
+export const MILESTONE_Z = MAIN_Z - 1.15
+export const MILESTONES: V3[] = MILESTONE_X.map((x) => [x, 0, MILESTONE_Z] as const)
+/** Steps 0 to 4 are single objects, 5 to 8 a system around one, 9 is "?". */
+export const TIMELINE_SPLIT = 5
+
+// ---- the land --------------------------------------------------------------------------------------------
+
+/** Size of the land plane. */
+export const LAND_SIZE = 130
+
+/** Deterministic 2D value noise, -1..1. */
+function noise2(x: number, z: number): number {
+  const i = Math.floor(x)
+  const j = Math.floor(z)
+  const fx = x - i
+  const fz = z - j
+  const h = (a: number, b: number) => {
+    const s = Math.sin(a * 127.1 + b * 311.7) * 43758.5453
+    return (s - Math.floor(s)) * 2 - 1
+  }
+  const sx = fx * fx * (3 - 2 * fx)
+  const sz = fz * fz * (3 - 2 * fz)
+  const a = h(i, j) + (h(i + 1, j) - h(i, j)) * sx
+  const b = h(i, j + 1) + (h(i + 1, j + 1) - h(i, j + 1)) * sx
+  return a + (b - a) * sz
+}
+
+const smooth = (t: number) => {
+  const x = Math.min(1, Math.max(0, t))
+  return x * x * (3 - 2 * x)
+}
+
+/** How far a point is outside the flat land: the town, the road into it, the hamlets. Negative inside. */
+function outsideFlat(x: number, z: number): number {
+  const town = Math.hypot(x, z) - (RINGS[2]! + 2.5)
+  const road = Math.max(Math.abs(x + 30) - 14, Math.abs(z - MAIN_Z) - 3.5)
+  const west = Math.hypot(x + 14, z + 7) - 6
+  return Math.min(town, road, west)
+}
+
+/** Height of the land at a point: flat in the town and along the road, gentle hills beyond. */
+export function landHeight(x: number, z: number): number {
+  const mask = smooth(outsideFlat(x, z) / 9)
+  const n = 0.8 * noise2(x * 0.08 + 3.1, z * 0.08 + 7.3) + 0.35 * noise2(x * 0.19 + 11, z * 0.19 + 2)
+  return mask * (0.8 + n * 1.3)
+}
+
+/** Fields: farm plots around the town, each a few tiles inside a fence. */
+export const FIELD_TILE = { w: 1.9, d: 1.3 }
+const GAP = 0.15
+export interface Farm {
+  tiles: V3[]
+  fence: V3[]
+  bales: V3[]
+}
+function farm(cx: number, cz: number, cols: number, rows: number): Farm {
+  const tiles: V3[] = []
+  for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) tiles.push([cx + (i - (cols - 1) / 2) * (FIELD_TILE.w + GAP), 0, cz + (j - (rows - 1) / 2) * (FIELD_TILE.d + GAP)])
+  const hw = (cols * (FIELD_TILE.w + GAP)) / 2 + 0.3
+  const hd = (rows * (FIELD_TILE.d + GAP)) / 2 + 0.3
+  const fence: V3[] = [
+    [cx - hw, 0, cz + hd],
+    [cx - hw, 0, cz - hd],
+    [cx + hw, 0, cz - hd],
+    [cx + hw, 0, cz + hd],
+  ]
+  const bales: V3[] = [
+    [cx + hw + 0.4, 0, cz + hd - 0.3],
+    [cx + hw + 0.4, 0, cz + hd - 0.75],
+  ]
+  return { tiles, fence, bales }
+}
+export const FARMS: Farm[] = [farm(-15.5, 0.2, 2, 3), farm(-11, 9.6, 3, 2), farm(1.5, 9.8, 3, 2), farm(15.5, 1.0, 2, 3), farm(9.6, -1.6, 2, 2), farm(-6.5, -13.4, 3, 2)]
+export const FIELDS: V3[] = FARMS.flatMap((f) => f.tiles)
+export const BALES: V3[] = FARMS.flatMap((f) => f.bales)
+
+/**
+ * Things nothing may stand on: buildings, roads, the loop, the rings, the
+ * fields. Rectangles [x, z, half width, half depth], a little wider toward
+ * the camera (south east), so no tree stands in front of a building.
+ */
+const rect = (p: V3, hw: number, hd: number, lean = 0.4): [number, number, number, number] => [p[0] + lean, p[2] + lean, hw, hd]
+const KEEP_CLEAR: Array<[number, number, number, number]> = [
+  [0.4, 0.4, 6.4, 5.4], // the hall and its loop
+  [0, MAIN_Z, 44, 1.8], // the roads, into the town and through it
+  rect(GATEHOUSE, 1.8, 3.4, 0.3),
+  rect(EXIT_GATE, 1.8, 3.4, 0.3),
+  rect(OUTER_W, 1.8, 3.4, 0.3),
+  rect(OUTER_E, 1.8, 3.4, 0.3),
+  rect(ARCH_W, 1.2, 2.6, 0.2),
+  rect(ARCH_E, 1.2, 2.6, 0.2),
+  rect(TRIAGE_HOUSE, 2.0, 1.8),
+  rect(REFINE_HOUSE, 1.8, 1.7),
+  rect(REQUESTER, 1.2, 1.2),
+  rect(MARKET, 2.0, 1.6, 0.5),
+  rect(BOOTH, 1.5, 1.4, 0.3),
+  rect(TOWER, 1.8, 1.8, 0.5),
+  rect(STATION, 2.2, 2.0, 0.5),
+  rect(WELL, 1.2, 1.2, 0.3),
+  rect(SCRIPTORIUM, 1.8, 1.6),
+  rect(FORGE, 2.0, 1.8),
+  ...KILNS.map((k) => rect(k, 1.2, 1.2, 0.3)),
+  rect(BARN, 2.0, 1.8, 0.5),
+  [7.8, 3.9, 3.0, 1.2], // the stacks of measures
+  rect(REVIEWER, 1.4, 1.4, 0.3),
+  rect(DEV_POS, 1.2, 1.2, 0.3),
+  rect(HEALTH_PERSON, 1.2, 1.2, 0.3),
+  [14.6, -6.0, 3.4, 4.2], // the hamlet and the team
+  rect(TIDY_POS, 2.6, 2.4),
+  rect(MESSY_POS, 2.6, 2.4),
+  [3.4, LINE_Z, 3.8, 1.4], // the line of steps
+  ...SPAGHETTI_STATIONS.map((p) => rect(p, 1.3, 1.2, 0.3)),
+  ...MILESTONES.map((p) => rect(p, 0.9, 1.0, 0.2)),
+  ...FARMS.map((f) => {
+    const [ax, , az] = f.fence[0]!
+    const [cx, , cz] = f.fence[2]!
+    return [(ax + cx) / 2, (az + cz) / 2, Math.abs(cx - ax) / 2 + 0.8, Math.abs(cz - az) / 2 + 0.8] as [number, number, number, number]
+  }),
+]
+const clear = (x: number, z: number) => {
+  if (KEEP_CLEAR.some(([cx, cz, hw, hd]) => Math.abs(x - cx) <= hw && Math.abs(z - cz) <= hd)) return false
+  const r = Math.hypot(x, z)
+  return RINGS.every((ring) => Math.abs(r - ring) > 1.3)
+}
+
+function seeded(seed: number): () => number {
+  let s = seed
+  return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296)
+}
+
+/** Lone trees between two distances from the hall. Seeded, so the same every time. */
+function plant(count: number, seed: number, inner: number, outer: number): V3[] {
+  const rand = seeded(seed)
+  const out: V3[] = []
+  let guard = 0
+  while (out.length < count && guard++ < count * 40) {
+    const a = rand() * Math.PI * 2
+    const r = inner + Math.sqrt(rand()) * (outer - inner)
+    const x = Math.cos(a) * r * 1.3
+    const z = Math.sin(a) * r
+    if (!clear(x, z)) continue
+    out.push([x, landHeight(x, z), z])
+  }
+  return out
+}
+
+/** A grove: trees packed around a point. */
+function grove(cx: number, cz: number, count: number, radius: number, seed: number): V3[] {
+  const rand = seeded(seed)
+  const out: V3[] = []
+  let guard = 0
+  while (out.length < count && guard++ < count * 40) {
+    const a = rand() * Math.PI * 2
+    const r = Math.sqrt(rand()) * radius
+    const x = cx + Math.cos(a) * r * 1.3
+    const z = cz + Math.sin(a) * r
+    if (!clear(x, z)) continue
+    if (out.some(([ox, , oz]) => Math.hypot(ox - x, oz - z) < 0.75)) continue
+    out.push([x, landHeight(x, z), z])
+  }
+  return out
+}
+
+/** The woods: groves around the town and along the road, and lone trees between. Round trees and pines. */
+const GROVES = [
+  ...grove(-22, -14, 30, 6, 101),
+  ...grove(-27, 0, 22, 5, 103),
+  ...grove(-20, 14, 24, 5, 105),
+  ...grove(-8, -20, 28, 6, 107),
+  ...grove(8, -22, 30, 6, 109),
+  ...grove(22, -14, 26, 5.5, 111),
+  ...grove(26, 4, 22, 5, 113),
+  ...grove(18, 16, 22, 5, 115),
+  ...grove(3, 21, 20, 5, 117),
+  ...grove(-36, -3, 26, 6, 119),
+  ...grove(-30, 12, 24, 6, 121),
+  ...grove(-44, 10, 20, 5, 123),
+  ...grove(-46, -2, 18, 5, 125),
+]
+const LONE = [...plant(40, 7, 5.5, 20), ...plant(70, 13, 20, 40)]
+const ALL_TREES = [...LONE, ...GROVES]
+export const ROUND_TREES: V3[] = ALL_TREES.filter((_, i) => i % 5 !== 2 && i % 5 !== 4)
+export const PINE_TREES: V3[] = ALL_TREES.filter((_, i) => i % 5 === 2 || i % 5 === 4)
+export const BUSHES: V3[] = [...plant(50, 29, 4.5, 30), ...grove(-30, 6, 12, 8, 127)]
+export const ROCKS: V3[] = plant(18, 31, 8, 34)
+export const FLOWERS: V3[] = [...plant(110, 37, 3.5, 20), ...grove(-30, 5.6, 40, 9, 129)]

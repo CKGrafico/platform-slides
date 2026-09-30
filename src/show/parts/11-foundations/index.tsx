@@ -1,17 +1,18 @@
 /**
  * Part 11: Pillar 3, Foundations (script 11.1 to 11.6).
  *
- * In the sky: a tidy system and a messy one; work arrives faster in both, and
- * only the messy one breaks. Back at the system: three circles on the ground
- * (the phases), then the disc forms under everything with its grid, low walls
- * rise around the lanes, the workers show their verbs, and a shortcut from
- * the first phase to the last breaks apart.
+ * Out west: a tidy house and a messy one; work arrives faster at both, and
+ * only the messy one loses its paths. Back at the town: three circles on the
+ * ground (the phases, the plans of the walls), then the grid of the land,
+ * then three ring walls rise around the town with their towers and gates,
+ * the workers show their verbs, and a shortcut from the first ring straight
+ * out of the last breaks apart.
  *
  * Stops, on the beat grid:
  *   1. (10) the title; slot 3; AI amplifies what you already have.  11.1
  *   2. (6) three phases: who may start a change.            11.2
- *   3. (5) the disc and its grid.                           11.3
- *   4. (6) hard guardrails.                                 11.4
+ *   3. (5) the land and its grid.                           11.3
+ *   4. (6) hard guardrails: the walls.                      11.4
  *   5. (5) verbs, not trust.                                11.5
  *   6. (5) you cannot skip to autonomy.                     11.6
  */
@@ -23,11 +24,11 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence, type CameraShot } from '@/world/camera/shot'
+import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
-import { mapShot } from '../../map/shots'
-import { GROUND_Y, MESSY_POS, PHASE_RADII, TEAM_Y, TIDY_POS, VERBS, WALL_ANGLES, WALL_RADIUS } from '../../layout'
+import { GUARDRAIL_SPOTS, MESSY_POS, PHASE_LABEL_DIR, PHASE_LABEL_R, RINGS, SHORTCUT, TIDY_POS, VERBS } from '../../layout'
+import { townShot } from '../../shots'
 
 export const grid = beatStops([10, 6, 5, 6, 5, 5])
 const { b } = grid
@@ -36,30 +37,31 @@ export const B = { title: 0, amplify: 4, phases: 10, disc: 16, walls: 21, verbs:
 const KEY = '11-foundations/foundations'
 hudCues.fill(2, { key: KEY, from: b(1.5), to: b(3) })
 
-/** On the map: the whole, the ground with its three circles, the walls, the verbs. */
-const WHOLE = mapShot([0, -0.5, 0.2], 15.5)
-/** 11.1 happens in the sky: a tidy system and a messy one, side by side. */
-const SKY: CameraShot = { position: [0, TEAM_Y + 1.1, 8.4], target: [0, TEAM_Y - 0.1, 0], fov: 36 }
-const GROUND = mapShot([0, -2.4, 0.6], 18)
-const WALLS = mapShot([0, -2.2, 3.2], 11)
-const VERBS_SHOT = mapShot([0.6, -0.2, 0.6], 12.5)
+/** The town; then out west for the two houses; the ground south of the hall; the walls; the verbs; the shortcut north west. */
+const WHOLE = townShot([0, 0.3, 1.5])
+const WEST = townShot([-14, 0.3, -7])
+const GROUND = townShot([-2, 0, 5])
+const WALLS = townShot([-1, 0, 7])
+const VERBS_SHOT = townShot([1.2, 0.5, 4.0])
+const SKIP = townShot([-8, 0, -7])
 
 const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
 const mapPulse = (from: number, to: number) => ({ rise: mapKey(from, from + 0.75), fall: mapKey(to, to + 0.75) })
-mapCues.focus(['lane.production'], mapPulse(B.phases, B.walls))
+mapCues.focus([], mapPulse(B.amplify, B.walls))
 mapCues.appear('walls', mapKey(B.walls + 1.5, B.walls + 2.25))
 mapCues.role('walls', mapPulse(B.walls + 1.75, B.verbs))
-mapCues.focus(['walls', 'lane.production'], mapPulse(B.walls, B.verbs))
-mapCues.focus(['implement', 'gate', 'router'], mapPulse(B.verbs, B.skip))
+mapCues.focus(['walls'], mapPulse(B.walls, B.verbs))
+mapCues.focus(['hall', 'exit', 'triage'], mapPulse(B.verbs, B.skip))
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
-const tidyLabel = new Vector3(TIDY_POS[0], TIDY_POS[1] - 1.55, TIDY_POS[2])
-const messyLabel = new Vector3(MESSY_POS[0], MESSY_POS[1] - 1.55, MESSY_POS[2])
-/** Phase labels on the ground, at the front of each circle. */
-const phasePoints = PHASE_RADII.map((r) => new Vector3(0, GROUND_Y + 0.1, r))
-const wallPoints = WALL_ANGLES.map((a) => new Vector3(Math.cos(a) * (WALL_RADIUS + 0.75), GROUND_Y + 0.25, Math.sin(a) * (WALL_RADIUS + 0.75)))
-const shortcutLabel = new Vector3(PHASE_RADII[1]! * 0.72 + 0.4, GROUND_Y + 0.4, PHASE_RADII[1]! * 0.72)
+const tidyLabel = new Vector3(TIDY_POS[0], 0, TIDY_POS[2] + 2.7)
+const messyLabel = new Vector3(MESSY_POS[0], 0, MESSY_POS[2] + 2.5)
+/** Phase labels on the ground, on one ray from the hall toward the camera's left. */
+const phasePoints = PHASE_LABEL_R.map((r) => new Vector3(PHASE_LABEL_DIR[0] * r, 0.1, PHASE_LABEL_DIR[2] * r))
+/** Guardrail names on wall segments the camera sees. */
+const wallPoints = GUARDRAIL_SPOTS.map(({ ring, angle }) => new Vector3(Math.cos(angle) * RINGS[ring]!, 1.7, Math.sin(angle) * RINGS[ring]!))
+const shortcutLabel = new Vector3(SHORTCUT[1]![0] + 0.7, 0.35, SHORTCUT[1]![2] + 0.3)
 const VERB_TEXT: Record<string, MessageKey> = {
   pr: 'p11.verb.pr',
   'merge-no': 'p11.verb.merge',
@@ -113,10 +115,9 @@ function Dom() {
   )
 }
 
-
 const foundationsScene = defineScene({
   id: 'foundations',
-  title: 'The method, the ground, the guardrails, the verbs',
+  title: 'The method, the ground, the walls, the verbs',
   stops: grid.stops,
   parts: { dom: Dom },
   camera: (local, from) =>
@@ -124,11 +125,11 @@ const foundationsScene = defineScene({
       from,
       [
         { from: 0, to: b(3.5), shot: WHOLE },
-        { from: b(B.amplify), to: b(B.amplify + 3), shot: SKY, arc: 1.5 },
+        { from: b(B.amplify), to: b(B.amplify + 3), shot: WEST },
         { from: b(B.phases), to: b(B.phases + 3.5), shot: GROUND },
         { from: b(B.walls), to: b(B.walls + 3), shot: WALLS },
         { from: b(B.verbs), to: b(B.verbs + 3), shot: VERBS_SHOT },
-        { from: b(B.skip), to: b(B.skip + 3), shot: GROUND },
+        { from: b(B.skip), to: b(B.skip + 3), shot: SKIP },
       ],
       local,
     ),

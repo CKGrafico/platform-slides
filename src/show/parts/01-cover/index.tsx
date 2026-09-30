@@ -1,11 +1,11 @@
 /**
  * Parts 1 and 2 of the script: the cover, then who is speaking.
  *
- * The cover is the start of the playhead: the core alone, the blue ball circling
- * it, the title. The first press burns the title out and burns in the name,
- * the role, and the company (script 2.1). That frame holds until the next
- * press, which starts part 3 and burns it out (the outro).
- * Part 2 is this first stop, so it has no folder of its own.
+ * The cover is the start of the playhead: the map with the hall alone in the
+ * middle, the blue cart going round it, the title. The first press burns the
+ * title out and burns in the name, the role, and the company (script 2.1).
+ * That frame holds until the next press, which starts part 3 and burns it out
+ * (the outro). Part 2 is this first stop, so it has no folder of its own.
  */
 import { Burn, burnWindow } from '@/art/Burn'
 import { Caption } from '@/art/Caption'
@@ -13,10 +13,10 @@ import { beatStops } from '@/animation/beat'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import { T } from '@/i18n'
-import type { CameraShot } from '@/world/camera/shot'
+import { townShot } from '../../shots'
 
-// The core sits in the right third, so the text has the left side.
-const COVER_SHOT: CameraShot = { position: [-1.9, 1.1, 9.5], target: [-1.9, 0.45, 0], fov: 32 }
+/** The hall sits in the right third of the frame, so the text has the left side. */
+const COVER_SHOT = townShot([-2.6, 0.6, 2.6])
 
 export const coverGrid = beatStops([4])
 const { b } = coverGrid

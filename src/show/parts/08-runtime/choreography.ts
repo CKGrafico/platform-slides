@@ -1,16 +1,16 @@
 /**
  * Part 8 moves. The shell lights up piece by piece and threat detection comes
- * off; the OpenCode ring draws itself around the core with its moons; the
- * direct call to a vendor breaks, and Forge and the models take its place.
+ * off; the banner of OpenCode rises on the hall's turret; the direct call to
+ * a vendor breaks, and Forge and its kilns take its place.
  */
 import { Vector3, type Group } from 'three'
 import { artOf } from '@/art/elements'
 import { sketchOf } from '@/art/lines'
 import { drive, fade, inkIn, inkOut } from '@/art/motion'
-import { orbitOf } from '@/art/orbits'
 import { defineChoreography } from '@/world/actors'
 import { SHELL } from '../../actors'
-import { LOCK_DOCK, MODELS, PILE, SHELL_DIRS, SHELL_RADIUS } from '../../layout'
+import { HALL_BIG, KILNS, LOCK_DOCK, PILE } from '../../layout'
+import { SHELL_DIRS, SHELL_RADIUS } from '../05-actions-to-agents'
 import { B, grid, pulseAt } from '.'
 
 const KEY = '08-runtime/stack'
@@ -32,10 +32,8 @@ export const runtimeMoves = defineChoreography('08-runtime', (tl, cast, t) => {
     const out = span(0.25 + k * 0.08, 0.75 + k * 0.08)
     inkOut(tl, el(`p6.ball.${k}`), out.start, out.duration)
   })
-  inkOut(tl, el('person.exit'), clear.start, clear.duration * 0.6)
+  inkOut(tl, el('reviewer'), clear.start, clear.duration * 0.6)
   for (let k = 0; k < 3; k++) fade(tl, sketchOf(cast.get<Group>(`p6.path.${k}`)).material, 0, clear.start, clear.duration)
-  // The implement orbit goes quiet while the runtime is built around the core.
-  fade(tl, orbitOf(cast.get<Group>('orbit.inner')).material, 0.15, clear.start, clear.duration)
 
   // 8.1: each piece of the shell lights up in turn (a small pulse).
   SHELL.forEach((name, i) => {
@@ -52,24 +50,22 @@ export const runtimeMoves = defineChoreography('08-runtime', (tl, cast, t) => {
   const i = SHELL.indexOf('threat')
   const d = SHELL_DIRS[i]!
   const dir = new Vector3(d[0], d[1], d[2]).normalize()
-  const dock = new Vector3(LOCK_DOCK[0], LOCK_DOCK[1], LOCK_DOCK[2])
+  const hub = new Vector3(LOCK_DOCK[0] * HALL_BIG, LOCK_DOCK[1] * HALL_BIG + 0.22, LOCK_DOCK[2] * HALL_BIG)
   const off = span(B.threat + 0.5, B.threat + 3.5)
   const tmp = new Vector3()
   drive(tl, off.start, off.duration, (u) => {
     const w = easeInOut(u)
-    tmp.copy(dir).multiplyScalar(SHELL_RADIUS + 1.2 * w).add(dock)
-    tmp.y -= 0.5 * w * w
+    tmp.copy(dir).multiplyScalar(SHELL_RADIUS + 1.4 * w).add(hub)
+    tmp.y -= 0.6 * w * w
     threat.object.position.copy(tmp)
   })
   const gone = span(B.threat + 3, B.threat + 3.6)
   inkOut(tl, threat, gone.start, gone.duration)
 
-  // 8.2: the OpenCode ring appears wide and closes in around the core.
-  const ring = el('opencode')
-  const ringIn = span(B.opencode + 0.5, B.opencode + 1.25)
-  inkIn(tl, ring, ringIn.start, ringIn.duration)
-  const close = span(B.opencode + 0.5, B.opencode + 2.25)
-  tl.fromTo(ring.object.scale, { x: 1.7, y: 1.7, z: 1.7 }, { x: 1, y: 1, z: 1, duration: close.duration, ease: 'power3.out', immediateRender: false }, close.start)
+  // 8.2: the banner of OpenCode rises on the turret.
+  const banner = el('banner')
+  const bannerIn = span(B.opencode + 0.5, B.opencode + 1.5)
+  inkIn(tl, banner, bannerIn.start, bannerIn.duration)
 
   // 8.3: the direct call to a vendor is drawn, then breaks in two and fades.
   const halves = [0, 1].map((h) => cast.get<Group>(`p8.direct.${h}`))
@@ -78,19 +74,19 @@ export const runtimeMoves = defineChoreography('08-runtime', (tl, cast, t) => {
     const call = span(B.forge + 0.25 + k * 0.35, B.forge + 0.7 + k * 0.35)
     tl.to(line.reveal, { value: 1, duration: call.duration, ease: 'none' }, call.start)
     const breakAt = span(B.forge + 1.5, B.forge + 2.75)
-    tl.to(h.position, { x: k === 0 ? -0.2 : 0.35, y: k === 0 ? -0.25 : 0.3, z: 0, duration: breakAt.duration, ease: 'power2.out' }, breakAt.start)
-    tl.to(h.rotation, { z: k === 0 ? -0.08 : 0.1, duration: breakAt.duration, ease: 'power2.out' }, breakAt.start)
+    tl.to(h.position, { x: k === 0 ? -0.2 : 0.35, y: k === 0 ? 0.1 : 0.4, z: k === 0 ? 0.3 : -0.3, duration: breakAt.duration, ease: 'power2.out' }, breakAt.start)
+    tl.to(h.rotation, { y: k === 0 ? -0.08 : 0.1, duration: breakAt.duration, ease: 'power2.out' }, breakAt.start)
     fade(tl, line.material, 0, breakAt.start + breakAt.duration * 0.35, breakAt.duration * 0.65)
   })
-  // Forge takes its place: every call goes through it to one of the models.
+  // Forge takes its place: every call goes through it to one of the kilns.
   const forge = el('forge')
   const forgeIn = span(B.forge + 1.25, B.forge + 2)
   inkIn(tl, forge, forgeIn.start, forgeIn.duration)
   const toForge = sketchOf(cast.get<Group>('p8.forge'))
   const link = span(B.forge + 1.75, B.forge + 2.35)
   tl.to(toForge.reveal, { value: 1, duration: link.duration, ease: 'power2.out' }, link.start)
-  MODELS.forEach((_, k) => {
-    const m = el(`model.${k}`)
+  KILNS.forEach((_, k) => {
+    const m = el(`kiln.${k}`)
     const a = span(B.forge + 2.25 + k * 0.3, B.forge + 3 + k * 0.3)
     inkIn(tl, m, a.start, a.duration)
     const line = sketchOf(cast.get<Group>(`p8.model.${k}`))

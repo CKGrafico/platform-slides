@@ -1,243 +1,300 @@
 /**
- * The cast: every element that lives for the whole talk (docs/art/elements.md).
- * Parts move them in their choreography files, never here. Where things stand
- * is in layout.ts. What is hidden at the start is in rest.ts.
+ * The cast: every element that lives for the whole talk (docs/art/elements.md),
+ * on the map of the town. Parts move them in their choreography files, never
+ * here. Where things stand is in layout.ts. What is hidden at the start is in
+ * rest.ts. The land and its woods are placed here, once: the map exists
+ * before the talk starts.
  */
-import { artOf, coinGeometry, createAstronaut, createBall, createCoin, createCore, createDisc, createMoon, createRing, createSwarm, createWall } from '@/art/elements'
-import { circleXZ, createFrame, createGhostStacks, createGrid, createSketchLine, createSlot, straight, through } from '@/art/lines'
-import { createOrbitLine, orbitPoint } from '@/art/orbits'
+import type { Object3D } from 'three'
+import { artOf, coinGeometry, createBall, createCoin, createMoon, createSwarm, type Swarm } from '@/art/elements'
+import { createGhostStacks, createGrid, createSketchLine, createSlot, straight, through, circleXZ } from '@/art/lines'
 import { palette } from '@/art/palette'
 import { inkOf } from '@/art/toon'
-import { TorusGeometry, type Object3D } from 'three'
-import { routePoint } from './route'
+import { beltRun, createBales, createBelt, createBlades, createBushes, createCanopies, createFence, createFields, createFlowers, createGate, createHouse, createLand, createMill, createPines, createRoad, createRocks, createRows, createStall, createTower, createTownCenter, createTrunks, createVillager, createWell, polyline, town } from '@/art/town'
+import { createBanner, createBarn, createCottageRoofs, createCottageWalls, createCrate, createForge, createKiln, createMilestone, createParapet, createScroll } from '@/art/town-props'
+import { createArch, createWallArc, type Gap } from '@/art/town-walls'
+import { sketchOf } from '@/art/lines'
 import { defineActor, type ActorDef } from '@/world/actors'
+import { routePoint } from './route'
 import {
-  REQUESTER_POS,
   APPS,
-  AUDIT_END,
-  CAPSULE_POS,
-  CLEAN_ORBIT,
+  ARCH_E,
+  ARCH_W,
+  AUDIT_LOOP,
+  BALES,
+  BARN,
+  BOOTH,
+  BUSHES,
   CLOUD_PATHS,
   COMMANDS_FROM,
-  COMPILER_POS,
-  DISC_RADIUS,
-  DEV_HOLD,
   DEV_POS,
-  FORGE_POS,
-  GATE_POS,
+  EXIT_GATE,
+  FARMS,
+  FIELDS,
+  FLOWERS,
+  FORGE,
+  GATEHOUSE,
   GHOST_COINS,
-  GROUND_Y,
-  HARNESS_RADIUS,
+  HALL,
+  HALL_BIG,
   HEALTH_PERSON,
   IMPROVISE_PATHS,
-  LANES,
+  KILNS,
+  LAND_SIZE,
+  landHeight,
   LEVEL_RADII,
   LINE_BENT,
-  LINE_X,
+  LINE_FROM,
+  LINE_TO,
   LINE_Y,
   LINE_Z,
+  LOOP,
+  MAIN,
+  MAIN_Z,
+  MARKET,
   MESSY_POS,
+  METRIC_BASES,
   METRIC_COIN_SCALE,
   METRIC_COINS,
-  METRIC_X,
-  METRIC_Z,
-  MODELS,
-  OPENCODE,
-  PHASE_RADII,
+  MILESTONES,
+  OUTER_E,
+  OUTER_W,
   PILE,
   PILE_R,
-  ROUTER_POS,
+  PINE_TREES,
+  REFINE_HOUSE,
+  REQUESTER,
+  REVIEWER,
+  RING_ARCS,
+  RING_CROSSINGS,
+  RING_TOWERS,
+  RINGS,
+  ROCKS,
+  ROUND_TREES,
   RUN_PATHS,
-  SIDE_ORBIT,
-  SMALL_ORBITS,
+  SCRIPTORIUM,
+  SHORTCUT,
+  SPAGHETTI,
+  SPAGHETTI_STATIONS,
+  STATION,
+  STATION_TURN,
   TEAM,
-  TIMELINE_PATH,
-  TIMELINE_POINTS,
-  TIMELINE_RADIUS,
-  TIMELINE_SPLIT,
   TIDY_POS,
-  TIMELINE_U,
+  TIMELINE_ROAD,
+  TIMELINE_SPLIT,
   TOKEN_COINS,
-  TRIAGE_ORBIT,
-  TRIAGE_POS,
-  VENDOR_POS,
+  TOWER,
+  TOWER_ANGLE,
+  TRIAGE_HOUSE,
+  TURRET_TOP,
+  VENDOR,
   VERBS,
-  WALL_ANGLES,
-  WALL_RADIUS,
+  WELL,
+  type V3,
 } from './layout'
 
 /** The four tasks that leave the agent in part 10, in the order they leave. */
 export const TASKS = ['labels', 'assign', 'comment', 'status'] as const
-
-/** Outer orbit: clean, deterministic. Inner orbit: close to the core, it wobbles. */
-export const OUTER = { radius: 3.6 }
-export const INNER = { radius: 1.55 }
-export const COVER_ORBIT = { radius: 1.45, tilt: 0.28 }
-
-/**
- * The radius of the blue ball's orbit on the cover. A plain value that part 3
- * tweens to 0, so the ball spirals into the core when the talk starts.
- */
-export const issueOrbit = { radius: COVER_ORBIT.radius }
-
-// ---- the model and the issue --------------------------------------------------------
-
-const core = defineActor({
-  id: 'core',
-  // Its surface deforms by itself (createCore), so it needs no ambient hook.
-  create: () => createCore({ radius: 0.95, segments: 80 }).object,
-})
-
-const issue = defineActor({
-  id: 'issue',
-  create: () => createBall({ radius: 0.14, color: palette.accent }).object,
-  // The one pre-show exception to "only the core moves by time": on the cover
-  // the blue ball circles the core while the room fills. Part 3 closes the
-  // orbit (issueOrbit.radius to 0), and from then on only choreographies place it.
-  ambient: (o, time) => {
-    const r = issueOrbit.radius
-    const a = time * 0.55
-    artOf(o).inner.position.set(Math.cos(a) * r, -Math.sin(a) * r * Math.sin(COVER_ORBIT.tilt), Math.sin(a) * r * Math.cos(COVER_ORBIT.tilt))
-  },
-})
-
-const coverOrbit = defineActor({
-  id: 'orbit.cover',
-  create: () => createOrbitLine({ spec: COVER_ORBIT, width: 3, opacity: 0.85 }).object,
-})
-
-// ---- part 3: the timeline -----------------------------------------------------------
-
-/** Ids of the ten steps of the timeline, in order. The last one is the "?" slot. */
-export const TIMELINE_IDS = TIMELINE_POINTS.map((_, i) => (i < 9 ? `tl.step.${i}` : 'tl.slot'))
-
-const at = (i: number) => TIMELINE_POINTS[i]!
-
-// Every step stands still at its place on the arc. Parts only show, hide, and scale them.
-const timelineSteps = TIMELINE_RADIUS.map((radius, i) =>
-  defineActor({
-    id: `tl.step.${i}`,
-    create: () => {
-      const el = createBall({ radius, color: palette.surface, outline: { width: 3 } })
-      el.object.position.copy(at(i))
-      return el.object
-    },
-  }),
-)
-
-// Guardrails: a ring around the model.
-const tlRing = defineActor({
-  id: 'tl.ring',
-  create: () => {
-    const el = createRing({ radius: 0.5, tube: 0.04, color: palette.sage })
-    el.object.position.copy(at(TIMELINE_SPLIT))
-    el.object.rotation.set(0.35, 0, 0.25)
-    return el.object
-  },
-})
-
-// Harnesses: a frame around the model.
-const tlFrame = defineActor({
-  id: 'tl.frame',
-  create: () => {
-    const f = createFrame({ radius: 0.48, width: 2, opacity: 0 })
-    f.object.position.copy(at(TIMELINE_SPLIT + 1))
-    return f.object
-  },
-})
-
-// Loop engineering: one loop. Autonomous loops: two loops that work together.
-const LOOPS = [
-  { id: 'a', step: TIMELINE_SPLIT + 2, radius: 0.5, tilt: 0.45, speed: 0.6 },
-  { id: 'b', step: TIMELINE_SPLIT + 3, radius: 0.46, tilt: 0.5, speed: 0.7 },
-  { id: 'c', step: TIMELINE_SPLIT + 3, radius: 0.64, tilt: -0.35, speed: -0.45 },
-]
-const tlLoops = LOOPS.flatMap((l) => {
-  const spec = { radius: l.radius, tilt: l.tilt }
-  return [
-    defineActor({
-      id: `tl.orbit.${l.id}`,
-      create: () => {
-        const o = createOrbitLine({ spec, width: 2.5, opacity: 0 })
-        o.object.position.copy(at(l.step))
-        return o.object
-      },
-    }),
-    defineActor({
-      id: `tl.moon.${l.id}`,
-      create: () => {
-        const m = createMoon({ radius: 0.09, color: palette.peach, outline: { width: 2 } })
-        m.object.position.copy(at(l.step))
-        return m.object
-      },
-      // Ambient: the moon goes round its loop. The choreography only places the
-      // loop's center (object.position) and shows it.
-      ambient: (o, time) => {
-        const a = time * l.speed + l.radius * 7
-        artOf(o).inner.position.set(Math.cos(a) * l.radius, -Math.sin(a) * l.radius * Math.sin(l.tilt), Math.sin(a) * l.radius * Math.cos(l.tilt))
-      },
-    }),
-  ]
-})
-
-const tlSlot = defineActor({
-  id: 'tl.slot',
-  create: () => {
-    const s = createSlot({ radius: 0.34, width: 3 })
-    s.reveal.value = 0
-    s.object.position.copy(at(9))
-    return s.object
-  },
-})
-
-// The arc, in two halves, so the first half can dim while the second lights up.
-const splitU = (TIMELINE_U[TIMELINE_SPLIT - 1]! + TIMELINE_U[TIMELINE_SPLIT]!) / 2
-const tlArcA = defineActor({
-  id: 'tl.arc.a',
-  create: () => createSketchLine({ path: (u, out) => TIMELINE_PATH(u * splitU, out), segments: 90, width: 2.5, opacity: 0.9, reveal: 0 }).object,
-})
-const tlArcB = defineActor({
-  id: 'tl.arc.b',
-  create: () =>
-    createSketchLine({ path: (u, out) => TIMELINE_PATH(splitU + u * (1 - splitU), out), segments: 90, width: 2.5, opacity: 0.9, reveal: 0 }).object,
-})
-
-// ---- part 4: the maturity levels ------------------------------------------------------
-
-const levelRings = LEVEL_RADII.map((radius, i) =>
-  defineActor({
-    id: `level.${i + 1}`,
-    create: () => {
-      const o = createOrbitLine({ spec: { radius }, width: i === 4 ? 3.5 : 2.5, opacity: 0.9 })
-      o.reveal.value = 0
-      return o.object
-    },
-  }),
-)
-const levelSlots = [1, 2, 3, 4].map((n) =>
-  defineActor({
-    id: `level.slot.${n}`,
-    create: () => {
-      const s = createSlot({ radius: 0.34, width: 3 })
-      s.reveal.value = 0
-      return s.object
-    },
-  }),
-)
-
-// ---- part 5: from GitHub Actions to Agentic Workflows --------------------------------------
-
 /** The six events that fall into GitHub Actions (5.1). */
 export const EVENTS = ['issue', 'pr', 'push', 'label', 'merge', 'release'] as const
 /** The six kinds of step it unfolds into (5.2). */
 export const STEPS = ['marketplace', 'ours', 'scripts', 'clis', 'code', 'apis'] as const
 /** The shell the compiler builds around the agent (5.5), then our own step (5.6). */
 export const SHELL = ['permissions', 'firewall', 'outputs', 'threat', 'telemetry', 'runtime', 'ours'] as const
+/** The ten milestones of the road, in order. The last one is the "?" slot. */
+export const TIMELINE_IDS = MILESTONES.map((_, i) => (i < 9 ? `tl.step.${i}` : 'tl.slot'))
+
+const at = (o: Object3D, p: V3) => o.position.set(p[0], p[1], p[2])
+
+/**
+ * The radius of the blue cart's round on the cover. A plain value that part 3
+ * tweens to 0, so the cart goes into the hall when the talk starts.
+ */
+export const COVER_ROUND = 4.2
+export const issueOrbit = { radius: COVER_ROUND }
+
+/** People sway a little. Ambient: inner only. */
+const sway = (seed: number) => (o: Object3D, time: number) => {
+  const inner = artOf(o).inner
+  inner.rotation.y = 0.08 * Math.sin(time * 0.9 + seed)
+}
+
+// ---- the land and its woods -------------------------------------------------------------------
+
+const land = defineActor({
+  id: 'plot',
+  create: () => {
+    const el = createLand({ size: LAND_SIZE, height: landHeight, segments: 130 })
+    el.object.position.set(0, -0.02, 0)
+    return el.object
+  },
+})
+
+/** A swarm placed once, at creation: the map exists before the talk. */
+function planted(id: string, make: (count: number) => Swarm, points: V3[], paint?: (i: number) => string, scale?: (i: number) => number): ActorDef {
+  return defineActor({
+    id,
+    create: () => {
+      const sw = make(points.length)
+      points.forEach(([x, y, z], i) => {
+        if (paint) sw.paint(i, paint(i))
+        sw.place(i, x, y, z, scale ? scale(i) : 1)
+      })
+      sw.commit()
+      return sw.object
+    },
+  })
+}
+const leafTones = [town.leaf, town.leafLight, town.leafDark]
+const petals = [palette.peach, palette.lilac, palette.butter, palette.surface]
+const trunks = planted('trunks', createTrunks, [...ROUND_TREES, ...PINE_TREES])
+const canopies = planted('canopies', createCanopies, ROUND_TREES, (i) => leafTones[i % 3]!, (i) => 0.8 + 0.35 * (((i * 7) % 5) / 5))
+const pines = planted('pines', createPines, PINE_TREES, undefined, (i) => 0.8 + 0.4 * (((i * 3) % 5) / 5))
+const bushes = planted('bushes', createBushes, BUSHES)
+const rocks = planted('rocks', createRocks, ROCKS)
+const flowers = planted('flowers', createFlowers, FLOWERS, (i) => petals[i % 4]!)
+
+/** Roads start at their west end, so a choreography can lay them by their scale along X. */
+const roadAlongX = (id: string, from: V3, to: V3, width: number) =>
+  defineActor({
+    id,
+    create: () => {
+      const el = createRoad([[0, 0, 0], [to[0] - from[0], 0, 0]], { width })
+      el.object.position.set(from[0], 0, from[2])
+      return el.object
+    },
+  })
+const roadTimeline = roadAlongX('road.timeline', TIMELINE_ROAD[0]!, TIMELINE_ROAD[1]!, 1.3)
+const roadMain = roadAlongX('road.main', MAIN[0]!, MAIN[1]!, 1.3)
+const roadLoop = defineActor({ id: 'road.loop', create: () => createRoad(LOOP, { width: 1.2, loop: true, cobbled: true }).object })
+const fields = defineActor({ id: 'fields', create: () => createFields(FIELDS.length).object })
+const rows = defineActor({ id: 'rows', create: () => createRows(FIELDS.length * 3).object })
+const bales = defineActor({ id: 'bales', create: () => createBales(BALES.length).object })
+const fences = FARMS.map((farm, i) => defineActor({ id: `fence.${i}`, create: () => createFence(farm.fence, { closed: true }).object }))
+
+// ---- the hall: the agent -------------------------------------------------------------------------
+
+const hall = defineActor({
+  id: 'hall',
+  create: () => {
+    const el = createTownCenter()
+    at(el.object, HALL)
+    el.object.scale.setScalar(HALL_BIG)
+    return el.object
+  },
+})
+/** The parapet of the hall: the Harness. It scales with the hall. */
+const harness = defineActor({
+  id: 'harness',
+  create: () => {
+    const el = createParapet()
+    at(el.object, HALL)
+    el.object.scale.setScalar(HALL_BIG)
+    return el.object
+  },
+})
+/** The banner of OpenCode on the turret. It moves with the hall's scale. */
+const banner = defineActor({
+  id: 'banner',
+  create: () => {
+    const el = createBanner({ color: palette.butter })
+    el.object.position.set(TURRET_TOP[0] * HALL_BIG, TURRET_TOP[1] * HALL_BIG, TURRET_TOP[2] * HALL_BIG)
+    el.object.scale.setScalar(HALL_BIG)
+    return el.object
+  },
+})
+/** The blue cart: the issue. On the cover it goes round the hall (ambient); part 3 closes the round. */
+const issue = defineActor({
+  id: 'issue',
+  create: () => {
+    const el = createBall({ radius: 0.16, color: palette.accent })
+    el.object.position.set(0, 0.16, 0)
+    return el.object
+  },
+  ambient: (o, time) => {
+    const r = issueOrbit.radius
+    const a = time * 0.4
+    artOf(o).inner.position.set(Math.cos(a) * r, 0, Math.sin(a) * r * 0.8)
+  },
+})
+const well = defineActor({
+  id: 'well',
+  create: () => {
+    const el = createWell()
+    at(el.object, WELL)
+    return el.object
+  },
+})
+
+// ---- part 3: the milestones on the road ----------------------------------------------------------
+
+const milestones = MILESTONES.slice(0, 9).map((p, i) =>
+  defineActor({
+    id: `tl.step.${i}`,
+    create: () => {
+      const el = createMilestone({ stone: i >= TIMELINE_SPLIT, pennant: [palette.peach, palette.lilac, palette.sage, palette.butter][i % 4] })
+      at(el.object, p)
+      return el.object
+    },
+  }),
+)
+const tlSlot = defineActor({
+  id: 'tl.slot',
+  create: () => {
+    const s = createSlot({ radius: 0.55, width: 3 })
+    s.reveal.value = 0
+    const p = MILESTONES[9]!
+    s.object.position.set(p[0], 1.0, p[2])
+    // Turned to face the camera.
+    s.object.rotation.y = Math.PI / 4
+    return s.object
+  },
+})
+
+// ---- part 4: the levels ---------------------------------------------------------------------------
+
+const levelRings = LEVEL_RADII.map((radius, i) =>
+  defineActor({
+    id: `level.${i + 1}`,
+    create: () => createSketchLine({ path: circleXZ([0, 0.06, 0], radius), segments: 160, width: i === 4 ? 3.5 : 2.5, dashed: true, dashSize: 0.5, gapSize: 0.3, opacity: 0.9, reveal: 0 }).object,
+  }),
+)
+const levelSlots = [1, 2, 3, 4].map((n) =>
+  defineActor({
+    id: `level.slot.${n}`,
+    create: () => {
+      const s = createSlot({ radius: 0.5, width: 3 })
+      s.reveal.value = 0
+      s.object.rotation.x = -Math.PI / 2
+      return s.object
+    },
+  }),
+)
+
+// ---- part 5: GitHub Actions, the workflow, the compiler --------------------------------------------
 
 const EVENT_COLORS = [palette.peach, palette.lilac, palette.butter, palette.sage, palette.peach, palette.lilac]
-
-// GitHub Actions: the big banded planet everyone knows.
-const ga = defineActor({ id: 'ga', create: () => createMoon({ radius: 0.42, color: palette.sage, pattern: 'bands', ring: palette.butter, outline: { width: 3 } }).object })
+const mill = defineActor({
+  id: 'station',
+  create: () => {
+    const el = createMill()
+    at(el.object, STATION)
+    el.object.rotation.y = STATION_TURN
+    return el.object
+  },
+})
+const blades = defineActor({
+  id: 'blades',
+  create: () => {
+    const el = createBlades()
+    el.object.position.set(STATION[0] + Math.sin(STATION_TURN) * 0.56, 1.4, STATION[2] + Math.cos(STATION_TURN) * 0.56)
+    el.object.rotation.y = STATION_TURN
+    return el.object
+  },
+  ambient: (o, time) => {
+    artOf(o).inner.rotation.z = -time * 0.5
+  },
+})
 const events = EVENTS.map((name, i) => defineActor({ id: `evt.${name}`, create: () => createBall({ radius: 0.11, color: EVENT_COLORS[i] }).object }))
 const STEP_LOOKS = [
   { color: palette.butter, pattern: 'bands' },
@@ -248,183 +305,152 @@ const STEP_LOOKS = [
   { color: palette.lilac, pattern: 'bands' },
 ] as const
 const steps = STEPS.map((name, i) => defineActor({ id: `step.${name}`, create: () => createMoon({ radius: 0.17, ...STEP_LOOKS[i]! }).object }))
-
-const lineStart = [LINE_X[0]!, LINE_Y, LINE_Z] as const
-const lineEnd = [LINE_X[LINE_X.length - 1]!, LINE_Y, LINE_Z] as const
 const straightLine = defineActor({
   id: 'p5.line',
-  create: () => createSketchLine({ path: straight(lineStart, lineEnd), segments: 60, width: 2.5, reveal: 0 }).object,
+  create: () => createSketchLine({ path: straight(LINE_FROM, LINE_TO), segments: 60, width: 2.5, dashed: true, dashSize: 0.22, gapSize: 0.16, reveal: 0 }).object,
 })
-// Near the core the same line bends onto the core's orbit.
+/** Near the hall the same line bends onto the loop. */
 const curvedLine = defineActor({
   id: 'p5.curve',
   create: () =>
     createSketchLine({
-      path: through([lineStart, [LINE_X[3]!, LINE_Y, LINE_Z], [LINE_X[4]!, LINE_Y + 0.02, LINE_Z], LINE_BENT[0]!, LINE_BENT[1]!, [-1.1, 0.0, 1.05]]),
+      path: through([LINE_FROM, [1.6, LINE_Y, LINE_Z], LINE_BENT[0]!, LINE_BENT[1]!, [-0.6, LINE_Y, -3.4]]),
       segments: 90,
       width: 2.5,
+      dashed: true,
+      dashSize: 0.22,
+      gapSize: 0.16,
       opacity: 0,
     }).object,
 })
-
-const md = defineActor({ id: 'md', create: () => createMoon({ radius: 0.26, color: palette.butter, pattern: 'bands', outline: { width: 3 } }).object })
-const compiler = defineActor({
-  id: 'compiler',
+const md = defineActor({ id: 'md', create: () => createScroll().object })
+const lock = defineActor({ id: 'lock', create: () => createCrate().object })
+const scriptorium = defineActor({
+  id: 'scriptorium',
   create: () => {
-    const el = createRing({ radius: 0.62, tube: 0.07, color: palette.lilac, facing: 'x' })
-    el.object.position.set(...COMPILER_POS)
+    const el = createHouse({ width: 1.6, depth: 1.3, storeys: 1, roof: 'gable', color: town.wallWarm, roofColor: town.tileDark, windows: 1, dormer: false })
+    at(el.object, SCRIPTORIUM)
     return el.object
   },
 })
 const shell = SHELL.map((name) =>
   defineActor({ id: `shell.${name}`, create: () => createMoon({ radius: 0.1, color: name === 'ours' ? palette.peach : palette.surface, outline: { width: 2 } }).object }),
 )
-
-const triageCore = defineActor({
-  id: 'core.triage',
+const triage = defineActor({
+  id: 'triage',
   create: () => {
-    const el = createCore({ radius: 0.5, segments: 40, outline: { width: 3 } })
-    el.object.position.set(...TRIAGE_POS)
+    const el = createHouse({ width: 2.0, depth: 1.5, storeys: 2, roof: 'gable' })
+    at(el.object, TRIAGE_HOUSE)
     return el.object
   },
 })
-const triageOrbit = defineActor({
-  id: 'orbit.triage',
-  create: () => {
-    const o = createOrbitLine({ spec: TRIAGE_ORBIT, wobble: 0.12, width: 2.5, opacity: 0.85 })
-    o.reveal.value = 0
-    o.object.position.set(...TRIAGE_POS)
-    return o.object
-  },
-})
 
-// ---- part 6: the problems ---------------------------------------------------------------------
+// ---- part 6: the problems -------------------------------------------------------------------------
 
 const runPaths = RUN_PATHS.map((points, i) =>
   defineActor({
     id: `p6.path.${i}`,
-    // Wobbly: the same prompt never takes the same path twice.
-    create: () => createSketchLine({ path: through(points), segments: 90, wobble: 0.07, width: 2.2, opacity: 0.85, reveal: 0 }).object,
+    create: () => createSketchLine({ path: through(points), segments: 90, wobble: 0.09, width: 2.2, opacity: 0.85, reveal: 0 }).object,
   }),
 )
 const pile = PILE.map((_, i) =>
   defineActor({ id: `p6.ball.${i}`, create: () => createBall({ radius: PILE_R, color: [palette.peach, palette.lilac, palette.butter, palette.sage][i % 4] }).object }),
 )
+/** The task moons: white at the hall's arcade; part 10 paints them as they land on the loop. */
+const TASK_PATTERNS = ['bands', 'plain', 'spots', 'bands'] as const
+const tasks = TASKS.map((name, i) =>
+  defineActor({
+    id: `task.${name}`,
+    create: () => createMoon({ radius: 0.2, pattern: TASK_PATTERNS[i] }).object,
+    ambient: (o, time) => {
+      const inner = artOf(o).inner
+      inner.rotation.y = Math.sin(time * 0.33 + i * 1.7) * 0.3
+      inner.rotation.x = Math.sin(time * 0.27 + i * 0.9) * 0.2
+    },
+  }),
+)
 /** Tokens: gold coins that stack up as the agent reasons about simple work (6.2), placed by the parts. */
 const tokens = defineActor({
   id: 'tokens',
-  create: () => {
-    const sw = createSwarm({ count: TOKEN_COINS, geometry: coinGeometry(), color: palette.butter, outline: { width: 2.2, color: inkOf(palette.butter, palette.outline), boil: 0.25 } })
-    return sw.object
-  },
+  create: () => createSwarm({ count: TOKEN_COINS, geometry: coinGeometry(), color: palette.butter, outline: { width: 2.2, color: inkOf(palette.butter, palette.outline), boil: 0.25 } }).object,
 })
-
-/** People float a little, the only life they have besides the boil. Ambient: inner only. */
-const floating = (seed: number) => (o: Object3D, time: number) => {
-  const inner = artOf(o).inner
-  inner.position.y = 0.035 * Math.sin(time * 1.1 + seed)
-  inner.rotation.z = 0.04 * Math.sin(time * 0.7 + seed * 1.3)
-}
 const reviewer = defineActor({
-  id: 'person.exit',
+  id: 'reviewer',
   create: () => {
-    const el = createAstronaut({ patch: palette.peach })
-    el.object.position.set(...CAPSULE_POS)
+    const el = createVillager({ hat: palette.peach })
+    at(el.object, REVIEWER)
+    el.object.rotation.y = -Math.PI / 2 + 0.3
     return el.object
   },
-  ambient: floating(1),
+  ambient: sway(1),
 })
 
-// ---- part 7: the change of mind --------------------------------------------------------------
+// ---- part 7: the team and the products ------------------------------------------------------------
 
-const team = TEAM.map((_, i) =>
+const team = TEAM.map((p, i) =>
   defineActor({
-    id: `person.team.${i}`,
-    create: () => createAstronaut({ patch: [palette.lilac, palette.sage, palette.peach][i] }).object,
-    ambient: floating(2 + i * 1.7),
+    id: `team.${i}`,
+    create: () => {
+      const el = createVillager({ hat: [palette.lilac, palette.sage, palette.peach][i] })
+      at(el.object, p)
+      el.object.rotation.y = 0.6 - i * 0.4
+      return el.object
+    },
+    ambient: sway(2 + i * 1.7),
   }),
 )
-/** More than ten apps: small planets, each with a ring. Two swarms, four draw calls. */
-const APP_COLORS = [palette.sage, palette.peach, palette.lilac, palette.butter]
-const apps = defineActor({
-  id: 'apps',
-  create: () => {
-    const sw = createSwarm({ count: APPS.length, radius: 0.2, bands: true })
-    APPS.forEach((_, i) => sw.paint(i, APP_COLORS[i % APP_COLORS.length]!))
-    return sw.object
-  },
-})
-const appRings = defineActor({
-  id: 'apps.rings',
-  create: () => {
-    const g = new TorusGeometry(0.34, 0.02, 8, 48)
-    g.rotateX(Math.PI / 2)
-    const sw = createSwarm({ count: APPS.length, geometry: g })
-    APPS.forEach((_, i) => sw.paint(i, APP_COLORS[(i + 2) % APP_COLORS.length]!))
-    return sw.object
-  },
-})
+const apps = defineActor({ id: 'apps', create: () => createCottageWalls(APPS.length).object })
+const appRoofs = defineActor({ id: 'apps.roofs', create: () => createCottageRoofs(APPS.length).object })
 
-// ---- part 8: our runtime -----------------------------------------------------------------------
+// ---- part 8: the runtime -----------------------------------------------------------------------------
 
-/** OpenCode: a thin ring around the core, tilted like a planet's ring (as the Guardrails ring of part 3). */
-const opencode = defineActor({
-  id: 'opencode',
-  create: () => {
-    const el = createRing({ radius: OPENCODE.radius, tube: 0.034, color: palette.butter, outline: { color: inkOf(palette.butter, palette.outline), width: 2.5 } })
-    el.object.rotation.set(OPENCODE.tilt, 0, -0.22)
-    return el.object
-  },
-})
-/** Forge: the gateway, a ringed planet that every model call goes through. */
 const forge = defineActor({
   id: 'forge',
   create: () => {
-    const el = createMoon({ radius: 0.3, color: palette.lilac, pattern: 'bands', ring: palette.peach, ringTilt: 0.5 })
-    el.object.position.set(...FORGE_POS)
+    const el = createForge()
+    at(el.object, FORGE)
     return el.object
   },
 })
-/** The models: in the grammar a model is a core, so three smaller cores, spread in a low arc. */
-const models = MODELS.map((p, i) =>
+const kilns = KILNS.map((p, i) =>
   defineActor({
-    id: `model.${i}`,
+    id: `kiln.${i}`,
     create: () => {
-      const el = createCore({ radius: [0.36, 0.42, 0.34][i], segments: 40, outline: { width: 3 } })
-      el.object.position.set(...p)
+      const el = createKiln()
+      at(el.object, p)
+      el.object.rotation.y = (i - 1) * 0.35
       return el.object
     },
   }),
 )
-/** Before Forge: a straight call from the agent to a vendor, in two halves that break apart. */
-const DIRECT_FROM = [0.75, -0.3, 0.2] as const
-const DIRECT_MID = [(DIRECT_FROM[0] + VENDOR_POS[0]) / 2, (DIRECT_FROM[1] + VENDOR_POS[1]) / 2, (DIRECT_FROM[2] + VENDOR_POS[2]) / 2] as const
+/** Before Forge: a straight call from the hall to a vendor, in two halves that break apart. */
+const DIRECT_FROM: V3 = [1.2, 0.3, -3.0]
+const DIRECT_MID: V3 = [(DIRECT_FROM[0] + VENDOR[0]) / 2, (DIRECT_FROM[1] + VENDOR[1]) / 2, (DIRECT_FROM[2] + VENDOR[2]) / 2]
 const direct = [0, 1].map((half) =>
   defineActor({
     id: `p8.direct.${half}`,
-    create: () =>
-      createSketchLine({ path: half === 0 ? straight(DIRECT_FROM, DIRECT_MID) : straight(DIRECT_MID, VENDOR_POS), segments: 24, width: 2.5, dashed: true, reveal: 0 }).object,
+    create: () => createSketchLine({ path: half === 0 ? straight(DIRECT_FROM, DIRECT_MID) : straight(DIRECT_MID, VENDOR), segments: 30, width: 2.5, dashed: true, reveal: 0 }).object,
   }),
 )
-/** After Forge: every call goes from the core to Forge, then to one of the models. */
+/** After Forge: every call goes from the hall to Forge, then to one of the kilns. */
+const FORGE_DOOR: V3 = [FORGE[0], 0.3, FORGE[2] + 1.0]
 const toForge = defineActor({
   id: 'p8.forge',
-  create: () => createSketchLine({ path: straight([0, -0.72, 0.1], [FORGE_POS[0], FORGE_POS[1] + 0.3, FORGE_POS[2]]), segments: 20, width: 2.5, reveal: 0 }).object,
+  create: () => createSketchLine({ path: through([[-0.9, 0.3, -2.9], [-1.6, 0.3, -5.0], FORGE_DOOR]), segments: 40, width: 2.5, reveal: 0 }).object,
 })
-const forgeLines = MODELS.map((p, i) =>
+const forgeLines = KILNS.map((p, i) =>
   defineActor({
     id: `p8.model.${i}`,
-    create: () => createSketchLine({ path: straight(FORGE_POS, p), segments: 30, width: 2.2, opacity: 0.85, reveal: 0 }).object,
+    create: () => createSketchLine({ path: straight([FORGE[0], 0.3, FORGE[2] - 0.7], [p[0], 0.3, p[2] + 0.5]), segments: 20, width: 2.2, opacity: 0.85, reveal: 0 }).object,
   }),
 )
 
-// ---- part 9: Agent Harness ----------------------------------------------------------------------
+// ---- part 9: Agent Harness --------------------------------------------------------------------------
 
-const harness = defineActor({ id: 'harness', create: () => createFrame({ radius: HARNESS_RADIUS, width: 2.2, opacity: 0 }).object })
 const improvise = IMPROVISE_PATHS.map((points, i) =>
   defineActor({
     id: `p9.path.${i}`,
-    create: () => createSketchLine({ path: through(points), segments: 70, wobble: 0.09, width: 2.2, opacity: 0.85, reveal: 0 }).object,
+    create: () => createSketchLine({ path: through(points), segments: 70, wobble: 0.1, width: 2.2, opacity: 0.85, reveal: 0 }).object,
   }),
 )
 const cloud = CLOUD_PATHS.map((points, i) =>
@@ -433,168 +459,256 @@ const cloud = CLOUD_PATHS.map((points, i) =>
     create: () => createSketchLine({ path: through(points), segments: 70, wobble: 0.12, width: 2, opacity: 0.7, reveal: 0 }).object,
   }),
 )
-const cleanOrbit = defineActor({
-  id: 'p9.orbit',
+/** With the Harness: one nearly clean path, on the loop. */
+const cleanPath = defineActor({
+  id: 'p9.clean',
   create: () => {
-    const o = createOrbitLine({ spec: CLEAN_ORBIT, wobble: 0.015, width: 2.5, opacity: 0.9 })
-    o.reveal.value = 0
-    return o.object
+    const raised = [...LOOP, LOOP[0]!].map(([x, y, z]) => [x, y + 0.1, z] as V3)
+    return createSketchLine({ path: polyline(raised), segments: 120, wobble: 0.015, width: 3, color: palette.sage, reveal: 0 }).object
   },
 })
 const COMMAND_COLORS = [palette.peach, palette.butter, palette.lilac]
-const commands = COMMANDS_FROM.map((_, i) =>
-  defineActor({ id: `cmd.${i}`, create: () => createBall({ radius: 0.12, color: COMMAND_COLORS[i] }).object }),
-)
-/** The developer: an astronaut who holds the same Harness and the same core, on a laptop (9.5). */
-const HOLD_AT = [DEV_POS[0] + DEV_HOLD[0], DEV_POS[1] + DEV_HOLD[1], DEV_POS[2] + DEV_HOLD[2]] as const
+const commands = COMMANDS_FROM.map((_, i) => defineActor({ id: `cmd.${i}`, create: () => createBall({ radius: 0.12, color: COMMAND_COLORS[i] }).object }))
+/** The developer, with a copy of the hall and its parapet, small, at their side (9.5). */
 const developer = defineActor({
-  id: 'person.dev',
+  id: 'dev',
   create: () => {
-    const el = createAstronaut({ patch: palette.lilac, pose: 'hold' })
-    el.object.position.set(...DEV_POS)
-    // Turned a little toward the big system.
-    el.object.rotation.y = -0.45
+    const el = createVillager({ hat: palette.lilac })
+    at(el.object, DEV_POS)
+    el.object.rotation.y = Math.PI - 0.5
+    return el.object
+  },
+  ambient: sway(5),
+})
+const DEV_COPY: V3 = [DEV_POS[0] + 0.75, 0, DEV_POS[2] - 0.15]
+const DEV_SCALE = 0.16
+const devHall = defineActor({
+  id: 'dev.hall',
+  create: () => {
+    const el = createTownCenter()
+    at(el.object, DEV_COPY)
+    el.object.scale.setScalar(DEV_SCALE)
     return el.object
   },
 })
-const laptopCore = defineActor({
-  id: 'core.laptop',
+const devHarness = defineActor({
+  id: 'dev.harness',
   create: () => {
-    const el = createCore({ radius: 0.13, segments: 28, outline: { width: 2.2 } })
-    el.object.position.set(...HOLD_AT)
+    const el = createParapet()
+    at(el.object, DEV_COPY)
+    el.object.scale.setScalar(DEV_SCALE)
     return el.object
   },
 })
-const laptopHarness = defineActor({
-  id: 'harness.laptop',
-  create: () => {
-    const f = createFrame({ radius: 0.24, width: 1.8, opacity: 0 })
-    f.object.position.set(...HOLD_AT)
-    return f.object
-  },
-})
 
-// ---- part 10: Agentic Workflows ----------------------------------------------------------------
+// ---- part 10: the pipeline --------------------------------------------------------------------------
 
-const laneTriage = defineActor({
-  id: 'lane.triage',
-  create: () => {
-    const o = createOrbitLine({ spec: { radius: LANES.triage.radius }, wobble: LANES.triage.wobble, width: 2.5, opacity: 0.85 })
-    o.reveal.value = 0
-    return o.object
-  },
-})
-const laneRefine = defineActor({
-  id: 'lane.refine',
-  create: () => {
-    const o = createOrbitLine({ spec: { radius: LANES.refine.radius }, wobble: LANES.refine.wobble, width: 2.5, opacity: 0.85 })
-    o.reveal.value = 0
-    return o.object
-  },
-})
-const router = defineActor({
-  id: 'router',
-  create: () => {
-    const el = createRing({ radius: 0.62, tube: 0.085, color: palette.peach, facing: 'x' })
-    el.object.position.set(...ROUTER_POS)
-    return el.object
-  },
-})
-const gate = defineActor({
-  id: 'gate',
-  create: () => {
-    const el = createRing({ radius: 0.62, tube: 0.085, color: palette.sage, facing: 'x' })
-    el.object.position.set(...GATE_POS)
-    return el.object
-  },
-})
-const requester = defineActor({
-  id: 'person.requester',
-  create: () => {
-    const el = createAstronaut({ patch: palette.sage })
-    el.object.position.set(...REQUESTER_POS)
-    return el.object
-  },
-  ambient: floating(7),
-})
-/** Work items in the pipeline, and the copies of 10.4 that wake every workflow. */
-const flow = defineActor({ id: 'flow', create: () => createSwarm({ count: 12, radius: 0.11, color: palette.butter }).object })
-const audit = defineActor({ id: 'audit', create: () => createMoon({ radius: 0.2, color: palette.peach, pattern: 'bands', ring: palette.lilac }).object })
-const housekeeping = defineActor({ id: 'housekeeping', create: () => createMoon({ radius: 0.17, color: palette.sage, pattern: 'spots' }).object })
-
-// ---- part 11: Foundations -----------------------------------------------------------------------
-
-/** 11.1: a tidy system (clean orbits) and a messy one (wobbly orbits), each with its own small core. */
-const smallSystems = (['tidy', 'messy'] as const).flatMap((kind) => {
-  const at = kind === 'tidy' ? TIDY_POS : MESSY_POS
-  return [
-    defineActor({
-      id: `${kind}.core`,
-      create: () => {
-        const el = createCore({ radius: 0.34, segments: 32, outline: { width: 2.5 } })
-        el.object.position.set(...at)
-        return el.object
-      },
-    }),
-    ...SMALL_ORBITS.map((radius, i) =>
-      defineActor({
-        id: `${kind}.orbit.${i}`,
-        create: () => {
-          const o = createOrbitLine({ spec: { radius, tilt: 0.35 }, wobble: kind === 'tidy' ? 0.01 : 0.16, width: 2.2, opacity: 0.85 })
-          o.reveal.value = 0
-          o.object.position.set(...at)
-          return o.object
-        },
-      }),
-    ),
-  ]
-})
-/** The moons of both small systems, and the work that arrives faster and faster. */
-const smallMoons = defineActor({
-  id: 'p11.moons',
-  create: () => {
-    const sw = createSwarm({ count: 6, radius: 0.12 })
-    const colors = [palette.sage, palette.peach, palette.butter]
-    for (let i = 0; i < 6; i++) sw.paint(i, colors[i % 3]!)
-    return sw.object
-  },
-})
-const smallWork = defineActor({ id: 'p11.work', create: () => createSwarm({ count: 10, radius: 0.08, color: palette.lilac }).object })
-
-const phases = PHASE_RADII.map((radius, i) =>
+const belt = (id: string, points: V3[], loop = false) =>
   defineActor({
-    id: `phase.${i}`,
-    create: () => createSketchLine({ path: circleXZ([0, GROUND_Y + 0.03, 0], radius), segments: 140, width: 2.5, dashed: i === 2, reveal: 0 }).object,
-  }),
-)
-const disc = defineActor({
-  id: 'disc',
-  create: () => {
-    const el = createDisc({ radius: DISC_RADIUS, color: palette.surface })
-    el.object.position.set(0, GROUND_Y, 0)
-    return el.object
-  },
-})
-const grid = defineActor({
-  id: 'disc.grid',
-  create: () => {
-    const g = createGrid({ radius: DISC_RADIUS * 0.97, opacity: 0 })
-    g.object.position.set(0, GROUND_Y + 0.02, 0)
-    return g.object
-  },
-})
-const walls = WALL_ANGLES.map((a, i) =>
+    id,
+    create: () => createBelt(points, { loop }).object,
+    ambient: (o, time) => beltRun(sketchOf(o), time),
+  })
+const loopBelt = belt('loop', LOOP, true)
+const mainBelt = belt('main', MAIN)
+const spaghetti = SPAGHETTI.map((points, i) => belt(`spag.${i}`, points))
+const spaghettiStations = SPAGHETTI_STATIONS.map((p, i) =>
   defineActor({
-    id: `wall.${i}`,
+    id: `spagstation.${i}`,
     create: () => {
-      const el = createWall({ length: 1.35, height: 0.42, color: [palette.sage, palette.lilac, palette.butter, palette.peach, palette.sage][i] })
-      el.object.position.set(Math.cos(a) * WALL_RADIUS, GROUND_Y, Math.sin(a) * WALL_RADIUS)
-      // Tangent to the circle, so the walls ring the lanes.
-      el.object.rotation.y = -a + Math.PI / 2
+      const el = createHouse({ width: 1.1, depth: 0.9, storeys: 1, roof: i % 2 ? 'hip' : 'gable', windows: 1, dormer: false, roofColor: [town.tile, town.thatch, town.tileDark][i]! })
+      at(el.object, p)
+      el.object.rotation.y = [0.3, -0.4, 0.2][i]!
       return el.object
     },
   }),
 )
+const gatehouse = defineActor({
+  id: 'gatehouse',
+  create: () => {
+    const el = createGate({ flag: palette.sage })
+    at(el.object, GATEHOUSE)
+    return el.object
+  },
+})
+const exitGate = defineActor({
+  id: 'exit',
+  create: () => {
+    const el = createGate({ roofColor: town.tile, flag: palette.peach })
+    at(el.object, EXIT_GATE)
+    return el.object
+  },
+})
+const refine = defineActor({
+  id: 'refine',
+  create: () => {
+    const el = createHouse({ width: 1.8, depth: 1.4, storeys: 1, roof: 'hip', color: town.wallWarm, roofColor: town.tileDark })
+    at(el.object, REFINE_HOUSE)
+    return el.object
+  },
+})
+const market = defineActor({
+  id: 'market',
+  create: () => {
+    const el = createStall({ width: 1.4, depth: 0.95, awning: palette.butter })
+    at(el.object, MARKET)
+    return el.object
+  },
+})
+const booth = defineActor({
+  id: 'booth',
+  create: () => {
+    const el = createStall({ width: 0.9, depth: 0.7, awning: palette.peach, goods: [palette.lilac] })
+    at(el.object, BOOTH)
+    el.object.rotation.y = Math.PI
+    return el.object
+  },
+})
+const tower = defineActor({
+  id: 'tower',
+  create: () => {
+    const el = createTower()
+    at(el.object, TOWER)
+    el.object.rotation.y = -TOWER_ANGLE
+    return el.object
+  },
+})
+const requester = defineActor({
+  id: 'requester',
+  create: () => {
+    const el = createVillager({ hat: palette.sage })
+    at(el.object, REQUESTER)
+    el.object.rotation.y = Math.PI
+    return el.object
+  },
+  ambient: sway(3),
+})
+const repair = defineActor({
+  id: 'repair',
+  create: () => {
+    const el = createVillager({ hat: palette.butter })
+    at(el.object, LOOP[0]!)
+    return el.object
+  },
+  ambient: sway(7),
+})
+/** Work items in the pipeline, and the copies of 10.4 that wake every workflow. */
+const flow = defineActor({ id: 'flow', create: () => createSwarm({ count: 12, radius: 0.11, color: palette.butter }).object })
+
+// ---- part 11: Foundations ---------------------------------------------------------------------------
+
+/** 11.1: a tidy house with a fence and one path, and a messy one with a broken fence and three paths. */
+const tidyHouse = defineActor({
+  id: 'tidy.house',
+  create: () => {
+    const el = createHouse({ width: 1.6, depth: 1.3, storeys: 1, roof: 'hip', windows: 1, dormer: false })
+    at(el.object, TIDY_POS)
+    return el.object
+  },
+})
+const messyHouse = defineActor({
+  id: 'messy.house',
+  create: () => {
+    const el = createHouse({ width: 1.6, depth: 1.3, storeys: 1, roof: 'gable', color: town.wallWarm, roofColor: town.tileDark, windows: 1, dormer: false })
+    at(el.object, MESSY_POS)
+    el.object.rotation.y = 0.2
+    return el.object
+  },
+})
+const tidyFence = defineActor({
+  id: 'tidy.fence',
+  create: () => {
+    const [x, , z] = TIDY_POS
+    return createFence([[x - 2.1, 0, z + 2.0], [x - 2.1, 0, z - 1.6], [x + 2.1, 0, z - 1.6], [x + 2.1, 0, z + 2.0], [x + 0.5, 0, z + 2.0]]).object
+  },
+})
+const messyFence = defineActor({
+  id: 'messy.fence',
+  create: () => {
+    const [x, , z] = MESSY_POS
+    return createFence([[x - 2.2, 0, z + 1.4], [x - 2.2, 0, z - 1.5], [x - 0.6, 0, z - 1.5]]).object
+  },
+})
+const tidyPath = defineActor({
+  id: 'tidy.path',
+  create: () => {
+    const [x, , z] = TIDY_POS
+    return createSketchLine({ path: through([[x - 0.5, 0.06, z + 5.0], [x - 0.5, 0.06, z + 2.8], [x - 0.3, 0.06, z + 1.0]]), segments: 40, width: 2.2, opacity: 0.85, reveal: 0 }).object
+  },
+})
+const messyPaths = [0, 1, 2].map((k) =>
+  defineActor({
+    id: `messy.path.${k}`,
+    create: () => {
+      const [x, , z] = MESSY_POS
+      const starts: V3[] = [[x - 3.6, 0.06, z + 4.4], [x + 0.4, 0.06, z + 5.2], [x + 3.4, 0.06, z + 3.6]]
+      const mids: V3[] = [[x - 1.8, 0.06, z + 2.2], [x + 1.4, 0.06, z + 2.6], [x + 2.2, 0.06, z + 0.4]]
+      return createSketchLine({ path: through([starts[k]!, mids[k]!, [x - 0.2 + k * 0.2, 0.06, z + 1.0]]), segments: 50, wobble: 0.14, width: 2.2, opacity: 0.85, reveal: 0 }).object
+    },
+  }),
+)
+const smallWork = defineActor({ id: 'p11.work', create: () => createSwarm({ count: 10, radius: 0.09, color: palette.lilac }).object })
+/** The three phases: the plans of the three walls, dashed on the ground. */
+const phases = RINGS.map((radius, i) =>
+  defineActor({
+    id: `phase.${i}`,
+    create: () => createSketchLine({ path: circleXZ([0, 0.05, 0], radius), segments: 200, width: 2.5, dashed: true, dashSize: 0.6, gapSize: 0.35, reveal: 0 }).object,
+  }),
+)
+const grid = defineActor({
+  id: 'grid',
+  create: () => {
+    const g = createGrid({ radius: RINGS[2]! - 1, step: 1.6, opacity: 0 })
+    g.object.position.set(0, 0.03, 0)
+    return g.object
+  },
+})
+/** The walls: three rings, each in eight arcs, with their towers, open where a gate or the watchtower stands. */
+const gapAt = (angle: number, half: number): Gap => [angle - half, angle + half]
+const ringWalls = RINGS.flatMap((radius, r) => {
+  const cross = RING_CROSSINGS[r]!
+  const gateHalf = [0.36, 0.27, 0.18][r]!
+  const gaps: Gap[] = [gapAt(Math.atan2(MAIN_Z, cross), gateHalf), gapAt(Math.atan2(MAIN_Z, -cross), gateHalf)]
+  if (r === 0) gaps.push(gapAt(TOWER_ANGLE, 0.14))
+  return Array.from({ length: RING_ARCS }, (_, k) => {
+    const from = -Math.PI + (k * 2 * Math.PI) / RING_ARCS
+    const to = from + (2 * Math.PI) / RING_ARCS
+    const towers = RING_TOWERS[r]!.filter((a) => a >= from && a < to)
+    return defineActor({ id: `ring.${r}.${k}`, create: () => createWallArc({ radius, from, to, towers, gaps }).object })
+  })
+})
+const archW = defineActor({
+  id: 'arch.w',
+  create: () => {
+    const el = createArch()
+    at(el.object, ARCH_W)
+    return el.object
+  },
+})
+const archE = defineActor({
+  id: 'arch.e',
+  create: () => {
+    const el = createArch()
+    at(el.object, ARCH_E)
+    return el.object
+  },
+})
+const outerW = defineActor({
+  id: 'outer.w',
+  create: () => {
+    const el = createGate({ roofColor: town.tileDark })
+    at(el.object, OUTER_W)
+    return el.object
+  },
+})
+const outerE = defineActor({
+  id: 'outer.e',
+  create: () => {
+    const el = createGate({ roofColor: town.tileDark })
+    at(el.object, OUTER_E)
+    return el.object
+  },
+})
 const verbs = VERBS.map((v) =>
   defineActor({
     id: `verb.${v.id}`,
@@ -603,6 +717,7 @@ const verbs = VERBS.map((v) =>
         const s = createSlot({ radius: 0.12, width: 2.2 })
         s.reveal.value = 0
         s.object.position.set(...v.at)
+        s.object.rotation.y = Math.PI / 4
         return s.object
       }
       const el = createMoon({ radius: 0.12, color: palette.butter })
@@ -611,26 +726,27 @@ const verbs = VERBS.map((v) =>
     },
   }),
 )
-/** 11.6: a shortcut from discovery straight to maintenance mode, in two halves that break apart. */
+/** 11.6: a shortcut from the first phase straight to the last, in two halves that break apart. */
 const shortcut = [0, 1].map((half) =>
   defineActor({
     id: `shortcut.${half}`,
-    create: () => {
-      const a = [PHASE_RADII[0]! * 0.7, GROUND_Y + 0.05, PHASE_RADII[0]! * 0.7] as const
-      const m = [((PHASE_RADII[0]! + PHASE_RADII[2]!) / 2) * 0.7, GROUND_Y + 0.05, ((PHASE_RADII[0]! + PHASE_RADII[2]!) / 2) * 0.7] as const
-      const c = [PHASE_RADII[2]! * 0.7, GROUND_Y + 0.05, PHASE_RADII[2]! * 0.7] as const
-      return createSketchLine({ path: half === 0 ? straight(a, m) : straight(m, c), segments: 30, width: 3.5, color: palette.outline, reveal: 0 }).object
-    },
+    create: () => createSketchLine({ path: half === 0 ? straight(SHORTCUT[0]!, SHORTCUT[1]!) : straight(SHORTCUT[1]!, SHORTCUT[2]!), segments: 30, width: 3.5, color: palette.outline, dashed: true, reveal: 0 }).object,
   }),
 )
 
-// ---- part 12: Project Health ----------------------------------------------------------------------
+// ---- part 12: Project Health -------------------------------------------------------------------------
 
 const METRIC_COLORS = [palette.sage, palette.lilac, palette.butter, palette.peach, palette.sage, palette.lilac]
-/** Where a measure stands: in the row at the front of the disc. */
-export const metricBase = (i: number) => [METRIC_X[i]!, GROUND_Y, METRIC_Z] as const
 /** Every coin of every collected measure, in one swarm. Coin k of measure i is METRIC_OFFSET[i] + k. */
 export const METRIC_OFFSET = METRIC_COINS.map((_, i) => METRIC_COINS.slice(0, i).reduce((x, y) => x + y, 0))
+const barn = defineActor({
+  id: 'barn',
+  create: () => {
+    const el = createBarn()
+    at(el.object, BARN)
+    return el.object
+  },
+})
 const metrics = defineActor({
   id: 'metrics',
   create: () => {
@@ -649,140 +765,125 @@ const ghostMetrics = defineActor({
   id: 'metrics.ghost',
   create: () =>
     createGhostStacks(
-      [0, 1].map((k) => ({ base: metricBase(6 + k), count: GHOST_COINS })),
+      [0, 1].map((k) => ({ base: METRIC_BASES[6 + k]!, count: GHOST_COINS })),
       { radius: 0.182 * METRIC_COIN_SCALE, step: 0.062 * METRIC_COIN_SCALE, width: 2.2 },
     ).object,
 })
 /** The one coin that part 13 adds: the deployment it counts. */
 const newCoin = defineActor({ id: 'metric.new', create: () => createCoin({ color: METRIC_COLORS[0], scale: METRIC_COIN_SCALE }).object })
-const healthPerson = defineActor({
-  id: 'person.health',
+const elder = defineActor({
+  id: 'elder',
   create: () => {
-    const el = createAstronaut({ patch: palette.butter })
-    el.object.position.set(...HEALTH_PERSON)
-    el.object.rotation.y = 0.35
+    const el = createVillager({ hat: palette.butter })
+    at(el.object, HEALTH_PERSON)
+    el.object.rotation.y = Math.PI + 0.5
     return el.object
   },
-  ambient: floating(9),
+  ambient: sway(9),
 })
-/** The loop that maintains the maintainer (12.6): from audit, back into the router. */
+/** The loop that maintains the maintainer (12.6): from the watchtower, back into the gatehouse. */
 const auditLoop = defineActor({
   id: 'p12.loop',
-  create: () => {
-    const a = orbitPoint(SIDE_ORBIT, AUDIT_END)
-    return createSketchLine({
-      path: through([[a.x, a.y, a.z], [-2.6, 3.4, 1.6], [-5.2, 1.6, 1.6], [ROUTER_POS[0] - 0.6, ROUTER_POS[1] + 0.1, ROUTER_POS[2]]]),
-      segments: 80,
-      width: 2.5,
-      dashed: true,
-      reveal: 0,
-    }).object
-  },
+  create: () => createSketchLine({ path: through(AUDIT_LOOP.map(([x, , z]) => [x, 0.12, z] as V3)), segments: 100, width: 2.5, dashed: true, reveal: 0 }).object,
 })
 
-// ---- part 13: from issue to production --------------------------------------------------------
+// ---- part 13: from issue to production -------------------------------------------------------------
 
-/** The lit path of the blue ball through the whole system: the one place, with the ball, that is blue. */
+/** The lit path of the blue cart through the whole town: the one place, with the cart, that is blue. */
 const litPath = defineActor({
   id: 'p13.path',
-  create: () => createSketchLine({ path: (u, out) => routePoint(u, out), segments: 260, width: 3.5, color: palette.accent, opacity: 0.9, reveal: 0 }).object,
+  create: () => createSketchLine({ path: (u, out) => routePoint(u, out), segments: 300, width: 3.5, color: palette.accent, opacity: 0.9, reveal: 0 }).object,
 })
-
-// ---- the orbits of the ladder -------------------------------------------------------------
-
-const outerOrbit = defineActor({
-  id: 'orbit.outer',
-  create: () => createOrbitLine({ spec: OUTER, width: 3, opacity: 0 }).object,
-})
-
-const innerOrbit = defineActor({
-  id: 'orbit.inner',
-  create: () => createOrbitLine({ spec: INNER, wobble: 0.16, width: 3, opacity: 0 }).object,
-})
-
-/** The task moons start white in the core's surface; part 10 paints them as they land. */
-const TASK_PATTERNS = ['bands', 'plain', 'spots', 'bands'] as const
-const tasks = TASKS.map((name, i) =>
-  defineActor({
-    id: `task.${name}`,
-    create: () => createMoon({ radius: 0.2, pattern: TASK_PATTERNS[i] }).object,
-    // A small bounded sway, so a moon never shows one fixed face. Ambient: inner only.
-    ambient: (o, time) => {
-      const inner = artOf(o).inner
-      inner.rotation.y = Math.sin(time * 0.33 + i * 1.7) * 0.3
-      inner.rotation.x = Math.sin(time * 0.27 + i * 0.9) * 0.2
-    },
-  }),
-)
 
 export const actors: ActorDef[] = [
-  core,
+  land,
+  trunks,
+  canopies,
+  pines,
+  bushes,
+  rocks,
+  flowers,
+  roadTimeline,
+  roadMain,
+  roadLoop,
+  fields,
+  rows,
+  bales,
+  ...fences,
+  hall,
+  harness,
+  banner,
   issue,
-  coverOrbit,
-  ...timelineSteps,
-  tlRing,
-  tlFrame,
-  ...tlLoops,
+  well,
+  ...milestones,
   tlSlot,
-  tlArcA,
-  tlArcB,
   ...levelRings,
   ...levelSlots,
-  ga,
+  mill,
+  blades,
   ...events,
   ...steps,
   straightLine,
   curvedLine,
   md,
-  compiler,
+  lock,
+  scriptorium,
   ...shell,
-  triageCore,
-  triageOrbit,
+  triage,
   ...runPaths,
   ...pile,
+  ...tasks,
   tokens,
   reviewer,
   ...team,
   apps,
-  appRings,
-  opencode,
+  appRoofs,
   forge,
-  ...models,
+  ...kilns,
   ...direct,
   toForge,
   ...forgeLines,
-  harness,
   ...improvise,
   ...cloud,
-  cleanOrbit,
+  cleanPath,
   ...commands,
   developer,
-  laptopCore,
-  laptopHarness,
-  laneTriage,
-  laneRefine,
-  router,
-  gate,
+  devHall,
+  devHarness,
+  loopBelt,
+  mainBelt,
+  ...spaghetti,
+  ...spaghettiStations,
+  gatehouse,
+  exitGate,
+  refine,
+  market,
+  booth,
+  tower,
   requester,
+  repair,
   flow,
-  audit,
-  housekeeping,
-  ...smallSystems,
-  smallMoons,
+  tidyHouse,
+  messyHouse,
+  tidyFence,
+  messyFence,
+  tidyPath,
+  ...messyPaths,
   smallWork,
   ...phases,
-  disc,
   grid,
-  ...walls,
+  ...ringWalls,
+  archW,
+  archE,
+  outerW,
+  outerE,
   ...verbs,
   ...shortcut,
+  barn,
   metrics,
   ghostMetrics,
   newCoin,
-  healthPerson,
+  elder,
   auditLoop,
   litPath,
-  outerOrbit,
-  innerOrbit,
-  ...tasks,
 ]

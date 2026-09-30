@@ -1,14 +1,15 @@
 /**
  * Part 3: the state of AI (script 3.1 and 3.2).
  *
- * Ten steps appear one at a time along an arc, each closer to the last. The
- * first half (Models to Agents) is the model alone, growing. The second half
- * (Guardrails to Autonomous loops) is a system around the model. The last step
- * is an empty dashed slot: "?".
+ * The road into the town. Ten milestones stand along it one at a time, each
+ * closer to the last. The first half (Models to Agents) are plain signposts.
+ * The second half (Guardrails to Autonomous loops) stand on stone: structures.
+ * The last one is an empty dashed slot where the road reaches the town: "?".
  *
- * One stop, like a transition (14.5 beats): the blue ball spirals into the
- * core, the title burns in, and the ten steps draw themselves one a beat,
- * Models to the "?". Only the "?" keeps its line; the names stay on the arc.
+ * One stop, like a transition (14.5 beats): the blue cart goes into the hall,
+ * the camera pans west to the road, the title burns in, and the road lays
+ * itself milestone by milestone, Models to the "?". Only the "?" keeps its
+ * line; the names stay on the road.
  */
 import { range } from '@/animation/progress'
 import { beatStops } from '@/animation/beat'
@@ -17,35 +18,30 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence, type CameraShot } from '@/world/camera/shot'
-import { TIMELINE_RADIUS } from '../../layout'
+import { shotSequence } from '@/world/camera/shot'
+import { townShot } from '../../shots'
+import { MILESTONE_X, MILESTONE_Z } from '../../layout'
 import { TIMELINE_IDS } from '../../actors'
 
-/** Beats: the intro, then ten steps one a beat, then the line of the "?". */
+/** Beats: the intro, then ten milestones one a beat, then the line of the "?". */
 export const grid = beatStops([14.5])
 const { b } = grid
 
-/**
- * Beat where step k (0..9) starts: one a beat, the shortest gap that keeps the
- * arc's reveal tweens (0.9 beats) from overlapping.
- */
+/** Beat where milestone k (0..9) starts: one a beat. */
 export const stepBeat = (k: number) => 3 + k
 /** Only the "?" keeps its line. */
 const LINE_AT = new Set([9])
 
-const WIDE: CameraShot = { position: [-0.2, 0.6, 14.2], target: [-0.1, -0.35, 0.8], fov: 34 }
+/** The road, with all ten milestones in the frame. */
+const ROAD = townShot([(MILESTONE_X[0]! + MILESTONE_X[9]!) / 2, 0.6, MILESTONE_Z + 0.8])
 
-/** Where each label sits from its step: under the arc where it is low, inside the curve where it rises. */
-const LABEL_OFFSETS: Array<readonly [number, number, number]> = TIMELINE_RADIUS.map((r, i) => {
-  if (i < 6) return [0, -(r + 0.5), 0] as const
-  return [-(r + 1.75), -0.05, 0] as const
-})
-LABEL_OFFSETS.push([-1.1, 0, 0])
+/** Names above the signposts, at two heights, so close neighbours never touch. */
+const LABEL_OFFSETS: Array<readonly [number, number, number]> = MILESTONE_X.map((_, i) => (i === 9 ? ([0, 0, 0] as const) : ([0, i % 2 ? 2.7 : 1.95, 0] as const)))
 
 const NAME_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.name` as MessageKey)
 const LINE_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.line` as MessageKey)
 
-/** Label level: in with its step. */
+/** Label level: in with its milestone. */
 function labelLevel(k: number) {
   const a = b(stepBeat(k) + 0.75)
   return (local: number) => range(local, a, a + b(0.75))
@@ -92,17 +88,10 @@ function Dom() {
 
 const timeline = defineScene({
   id: 'timeline',
-  title: 'The timeline, in one move',
+  title: 'The road into the town, in one move',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: b(0.5), to: b(4), shot: WIDE, arc: 1.5 },
-      ],
-      local,
-    ),
+  camera: (local, from) => shotSequence(from, [{ from: b(0.5), to: b(4), shot: ROAD }], local),
 })
 
 export const stateOfAi = defineChapter({ id: '03-state-of-ai', title: 'The state of AI', scenes: [timeline] })

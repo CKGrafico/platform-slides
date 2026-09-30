@@ -1,29 +1,30 @@
 /**
  * Part 4: AI maturity levels (script 4.1 and 4.2).
  *
- * Five rings around the core, level 1 the smallest: each level covers more of
- * the organisation. Then the level 5 ring keeps four empty slots, the map of
- * the talk, and moves to the edge of the frame (the HUD).
+ * Five rings drawn on the ground around the hall, level 1 the smallest: each
+ * level covers more of the land, like the plan of a town that grows. Then the
+ * level 5 ring keeps four empty slots, the map of the talk, and moves to the
+ * corner of the frame (the HUD).
  *
  * Stops, on the beat grid:
- *   1. (11 beats) one click, like a transition: the timeline leaves, the
- *      camera rises, the title burns in, and the five rings come in fast, each
- *      with its name. Level 5 keeps its line.
+ *   1. (11 beats) one click, like a transition: the camera pans back to the
+ *      hall, the title burns in, and the five rings come in fast, each with
+ *      its name. Level 5 keeps its line.
  *   2. (5) the other rings fade; four empty slots on level 5.
- *   3. (5) the ring moves to the edge of the frame and stays there.
+ *   3. (5) the rings leave the ground; the map of the talk goes to the corner.
  */
 import { Vector3 } from 'three'
 import { range } from '@/animation/progress'
 import { beatStops } from '@/animation/beat'
 import { burnWindow } from '@/art/Burn'
 import { BurnCaption, Label, PartTitle } from '@/art/Caption'
-import { orbitPoint } from '@/art/orbits'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence, type CameraShot } from '@/world/camera/shot'
+import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
-import { LEVEL_LABEL_ANGLE, LEVEL_RADII, SLOT_ANGLES } from '../../layout'
+import { townShot } from '../../shots'
+import { LEVEL_RADII, SLOT_ANGLES } from '../../layout'
 
 export const grid = beatStops([11, 5, 5])
 const { b } = grid
@@ -35,16 +36,16 @@ export const MAP_BEAT = 16
 const KEY = '04-maturity/levels'
 hudCues.appear({ key: KEY, from: b(MAP_BEAT + 1), to: b(MAP_BEAT + 3) })
 
-const ABOVE: CameraShot = { position: [0.6, 8.0, 7.2], target: [0.6, -0.6, 0.5], fov: 36 }
-// A little further back than ABOVE: the level names on the right and the slot names under the ring must fit.
-const SLOTS: CameraShot = { position: [-0.6, 9.25, 8.5], target: [-0.6, -0.5, 0.3], fov: 36 }
-const MAP: CameraShot = { position: [0, 3.2, 10.5], target: [0, 0.1, 0], fov: 34 }
+/** Back at the hall, with the rings around it: the biggest one fills the frame. */
+const RINGS_SHOT = townShot([0.5, 0, 3.0])
 
-const levelPoints = LEVEL_RADII.map((r) => orbitPoint({ radius: r }, LEVEL_LABEL_ANGLE, new Vector3()).add(new Vector3(0.1, 0.05, 0)))
+/** Labels sit along one ray toward the camera's right, so they never overlap. */
+const LEVEL_LABEL_ANGLE = 0.12 * Math.PI
+const levelPoints = LEVEL_RADII.map((r) => new Vector3(Math.cos(LEVEL_LABEL_ANGLE) * r + 0.2, 0.1, Math.sin(LEVEL_LABEL_ANGLE) * r))
 const levelTargets = levelPoints.map((p) => () => p)
-export const slotPoints = SLOT_ANGLES.map((a) => orbitPoint({ radius: LEVEL_RADII[4]! }, a, new Vector3()))
+export const slotPoints = SLOT_ANGLES.map((a) => new Vector3(Math.cos(a) * LEVEL_RADII[4]!, 0.08, Math.sin(a) * LEVEL_RADII[4]!))
 const slotLabelTargets = slotPoints.map((p) => {
-  const v = p.clone().add(new Vector3(0, 0, 0.62))
+  const v = p.clone().add(new Vector3(0, 0, 0.9))
   return () => v
 })
 
@@ -87,7 +88,6 @@ function Dom() {
             />
           )
         })}
-        {/* Top left: the slot names under the ring take the bottom of this shot. */}
         <BurnCaption k="p04.slots" corner="top-left" width={64} height={9} className="art-caption--lead" seed={57} level={burnWindow(b(SLOTS_BEAT + 1), b(SLOTS_BEAT + 2), b(MAP_BEAT), b(MAP_BEAT + 0.6))} />
         <BurnCaption k="p04.map" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={59} level={burnWindow(b(MAP_BEAT + 2), b(MAP_BEAT + 3.25))} />
       </Stage>
@@ -106,16 +106,7 @@ const levels = defineScene({
   title: 'Five levels, then level 5 as the map',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: b(4), shot: ABOVE, arc: 1 },
-        { from: b(SLOTS_BEAT), to: b(SLOTS_BEAT + 3), shot: SLOTS },
-        { from: b(MAP_BEAT), to: b(MAP_BEAT + 4), shot: MAP },
-      ],
-      local,
-    ),
+  camera: (local, from) => shotSequence(from, [{ from: 0, to: b(4), shot: RINGS_SHOT }], local),
 })
 
 export const maturity = defineChapter({ id: '04-maturity', title: 'AI maturity levels', scenes: [levels] })

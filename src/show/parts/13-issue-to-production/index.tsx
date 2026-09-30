@@ -1,14 +1,15 @@
 /**
  * Part 13: from issue to production (script 13.1).
  *
- * One real issue travels the whole system: the blue ball, which circled the
- * core on the cover. It comes in from far away, is captured by the router,
- * rides triage and refine, passes the person who asked, spirals in
- * to implement inside the Harness, crosses the guardrails, passes the merge
- * gate, and escapes to production. The path lights up behind it, and each
- * pillar lights up on the map as the ball passes it.
+ * One real issue travels the whole town: the blue cart, which went round the
+ * hall on the cover. It comes in along the road from the west, through the
+ * gatehouse, stops at triage and refine, passes the person who asked, goes
+ * round the loop to the hall, out through the inner arch and the walls, the
+ * merge gate, the market, and on through the outer gate to production. The
+ * road lights up behind it, and each pillar lights up on the map as the cart
+ * passes it.
  *
- * Stops, on the beat grid: the title and the ball (4 beats), then the seven
+ * Stops, on the beat grid: the title and the cart (4 beats), then the seven
  * steps in pairs (8 beats each: 1 and 2, 3 and 4, 5 and 6), then step 7 (4).
  * Each pair has one caption, so no text passes in the middle of a click.
  */
@@ -22,7 +23,7 @@ import type { MessageKey } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
-import { mapShot } from '../../map/shots'
+import { townShot } from '../../shots'
 
 export const grid = beatStops([4, 8, 8, 8, 4])
 const { b } = grid
@@ -38,20 +39,20 @@ pulse(2, 5) // CI and the guardrails: Foundations
 pulse(1, 6) // the merge gate: Agentic Workflows
 pulse(3, 7) // production, counted: Project Health
 
-/** The whole map, with the ball far on the left. */
-const WIDE = mapShot([-1.5, -0.8, 0.4], 19)
-/** One shot per step, on the map: the router, the lanes, the requester, the core, the walls, the gate, production. */
+/** The road west of the town, with the cart far on the left. */
+const WIDE = townShot([-14, 0.3, 4.5])
+/** One pan per step: the gatehouse, the workshops, the requester, the hall, the walls, the gate, production. */
 const SHOTS: CameraShot[] = [
-  mapShot([-5.0, -0.3, 0.8], 9),
-  mapShot([0, -0.3, 0.5], 11),
-  mapShot([-2.0, -0.5, 0.6], 9),
-  mapShot([0.2, -0.2, 0.3], 8),
-  mapShot([0.5, -2.0, 2.8], 11),
-  mapShot([5.8, -0.2, 0.6], 9),
-  mapShot([7.0, 0.6, -0.5], 15),
+  townShot([-9.5, 0.3, 4.6]),
+  townShot([-6.5, 0.3, 4.0]),
+  townShot([-5.0, 0.3, 5.5]),
+  townShot([0.4, 0.6, 1.5]),
+  townShot([4.5, 0.3, 4.5]),
+  townShot([10.0, 0.3, 4.8]),
+  townShot([16.5, 0.3, 4.8]),
 ]
 /** Who is the subject of each step. */
-const FOCUS: string[][] = [['router'], ['triage', 'refine'], ['requester'], ['core', 'harness', 'opencode', 'implement'], ['walls'], ['gate'], ['release', 'health']]
+const FOCUS: string[][] = [['gatehouse'], ['triage', 'refine'], ['requester'], ['hall', 'harness', 'opencode'], ['walls'], ['exit'], ['market', 'health']]
 FOCUS.forEach((ids, i) => {
   const n = i + 1
   const end = n === 7 ? stepBeat(7) + 3.5 : stepBeat(n + 1)
