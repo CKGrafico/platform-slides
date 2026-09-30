@@ -124,7 +124,9 @@ function Dom() {
         const d = SHELL_DIRS[i]!
         const len = Math.hypot(d[0], d[1])
         const off = [(d[0] / (len || 1)) * 0.42, (d[1] / (len || 1)) * 0.28, 0] as const
+        // One name at a time, as each piece snaps on; "our changes" stays until the clusters.
         const inAt = name === 'ours' ? B.ours + 1 : B.compile + 3 + i * 0.25
+        const outAt = name === 'ours' ? B.clusters : inAt + 0.5
         return (
           <Label
             key={name}
@@ -133,7 +135,7 @@ function Dom() {
             offset={name === 'ours' ? [0.62, 0.1, 0] : off}
             width={20}
             className={d[0] > 0.3 ? 'label-left' : d[0] < -0.3 ? 'label-right' : undefined}
-            level={win(inAt, inAt + 0.75, B.clusters, B.clusters + 0.75)}
+            level={win(inAt, inAt + 0.3, outAt, outAt + 0.3)}
           />
         )
       })}

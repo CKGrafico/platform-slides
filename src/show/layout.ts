@@ -212,12 +212,12 @@ export const PRODUCTION: V3 = [26, 0.14, MAIN_Z]
 
 // ---- part 4: the levels, and part 11: the phases and the verbs -------------------------------------
 
-/** Five rings on the ground around the hall, level 1 the smallest. Levels 3 and 5 sit where walls will rise. */
-export const LEVEL_RADII = [4.0, 5.8, RINGS[0]!, 9.8, RINGS[1]!]
-/** The four empty slots on the level 5 ring, on the side the camera sees. */
-export const SLOT_ANGLES = [deg(15), deg(55), deg(95), deg(135)]
-/** The three phases: the plans of the three walls. Their labels sit on one ray toward the camera. */
-export const PHASE_LABEL_DIR: V3 = [-0.6, 0, 0.8]
+/** Five rings on the ground around the hall, level 1 the smallest. The biggest fits the frame. */
+export const LEVEL_RADII = [3.4, 5.0, 6.6, 8.4, 10.4]
+/** The four empty slots on the level 5 ring, on its west arc, where the frame has room for their names. */
+export const SLOT_ANGLES = [deg(125), deg(140), deg(155), deg(170)]
+/** The three phases: the plans of the three walls. Their labels sit at the front of each circle, one below the other. */
+export const PHASE_LABEL_DIR: V3 = [0, 0, 1]
 export const PHASE_LABEL_R = [5.6, 10.0, 14.6]
 /** Verbs (11.5): what a worker may do, as small moons; what it may not, as hollow slots. */
 export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [

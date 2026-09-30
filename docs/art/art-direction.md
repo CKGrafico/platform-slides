@@ -1,8 +1,8 @@
-# Art direction: Elements in orbit
+# Art direction: The town
 
 This is the style bible of the keynote. Every visual decision follows it. The meaning of each element is in [elements.md](elements.md). The script is in [../script/script.md](../script/script.md).
 
-Decided with the user on 2026-09-29, after four rounds: a technical drawing (rejected, the user wants The Monolith Project's art), four literal worlds (rejected, too literal), four abstract directions ("Elements in a void" chosen, "Orbits" also liked, so they were merged), and three palettes ("Lilac and sage" chosen).
+Decided with the user on 2026-09-29, after four rounds: a technical drawing (rejected, the user wants The Monolith Project's art), four literal worlds (rejected, too literal), four abstract directions ("Elements in a void" chosen, "Orbits" also liked, so they were merged), and three palettes ("Lilac and sage" chosen). On 2026-09-30 the world of orbits was replaced by the town ([town-proposal.md](town-proposal.md)): the same craft, the same palette and type, on the map of a strategy game.
 
 ## Design read
 
@@ -12,9 +12,17 @@ Dials (design-taste-frontend): DESIGN_VARIANCE 6, MOTION_INTENSITY 7, VISUAL_DEN
 
 ## Concept
 
-The talk builds one abstract system in a soft void. At its center sits the model: a near-black core with slow noise moving inside. It is the only thing that moves by time and not by the presenter. Everything else is a simple element: moons, balls, rings, a disc. The system grows around the core until the core is one small part of it.
+The talk builds one town on a map, seen the way a strategy game shows a base. The map starts almost empty: a green land with its woods, and one big house in the middle, the hall: the agent, which does everything at first. Part by part the town grows around it: a road in from the west, a mill, a belt loop, workshops, gates, a watchtower, fields, and at the end three ring walls with their towers, like a fortified city. The hall shrinks as pieces leave it, until it is one small part of the town.
 
-Why orbits: the timeline of part 3 ends in "Loop engineering" and "Autonomous loops". An orbit is a loop: the same path every time, with no one pushing it. Deterministic work lives on clean outer orbits. Near the core, orbits wobble. The talk is the story of pushing work outward, onto orbits that repeat.
+Why a town: a wall is a wall and a gate is a gate. The audience learns nothing to read it. Deterministic work rides belts and roads; only the hall reasons. The talk is the story of moving work out of the hall onto belts that repeat, and of building what protects the town. The reasons are in [town-proposal.md](town-proposal.md) and [clarity-review.md](clarity-review.md).
+
+## The town
+
+- **Buildings** are toon volumes with the detail of a medieval village: stone bases with an ashlar texture, half-timbered walls, tiled roofs with a ridge cap and dormers, chimneys with caps, shutters, hoardings and tiled roofs on the towers, striped awnings on the stalls. Parts that share a color are one geometry. Subtle canvas textures (stone, tiles, cobbles, stripes) multiply the toon color, with UVs in world units. The kit is in `src/art/town.ts`, `src/art/town-props.ts` and `src/art/town-walls.ts`.
+- **The land** is a green plane with soft patches, flat in the town and along the road, with gentle hills beyond. Groves of round trees and pines, bushes, rocks and flowers are placed once, at creation: the map exists before the talk starts.
+- **Roads** are strips of sand, laid from their west end as the belts are drawn. The loop around the hall is cobbled. Belts are dashed ink lines whose dashes travel.
+- **Walls** are rings of stone around the hall, built as arcs so they rise piece by piece, with merlons, towers, and gates where the road crosses them. Three rings: the three phases of Foundations.
+- **People** are round chibi villagers with a hat and no face.
 
 ## Palette: Lilac and sage
 
@@ -61,7 +69,7 @@ Rules:
 - **Beat grid:** 120 BPM, so one beat is 0.5 s. Durations: quick 0.25 s, standard 0.5 s, slow 1 s. Moves between stops take 1, 1.5, or 2 s. Staggers go in 0.125 s steps and stay under 0.5 s in total.
 - **Entrance, "inking":** the outline appears first (a quarter beat), then the fill, then a small settle.
 - **Exit:** the element shrinks to a point in a quarter beat, with three small dust balls as the secondary layer.
-- **Camera:** a long lens (FOV 30 to 40). Dwell, then travel: the camera holds still while people read, and moves only between stops. Long moves arc: pull back, pan, push in. No move crosses more than a third of the screen without a change of direction. The FOV widens a little while the camera travels.
+- **Camera:** one angle and one zoom for the whole talk (`src/show/shots.ts`): from the south east, about 33 degrees above the ground, a narrow field of view from far away, so the picture is almost orthographic and buildings show two faces. The camera never turns and never zooms: every move is a pan across the map, like scrolling a strategy game. Dwell, then travel: it holds still while people read, and pans only between stops. The one exception is the closing, which pulls back over the whole walled town.
 - **Three layers:** primary (the move the presenter triggered), secondary (labels settling, dust, satellites adjusting), ambient (boil, grain, core noise, a few degrees of orbital drift).
 - **Determinism:** positions come from progress. Time drives only the ambient layer. At a stop, the composition is always the same.
 

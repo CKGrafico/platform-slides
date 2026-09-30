@@ -21,7 +21,9 @@ Each beat has these fields:
 
 ## The one system
 
-The whole talk is one system of simple elements that grows in a soft void, in the art of [art-direction.md](../art/art-direction.md). It starts with one moon, "GitHub Actions", alone. Elements appear, split, move, and leave, until the screen shows the real system: the work router, the deterministic jobs, the agentic workers, OpenCode, the Harness, Forge, the models, the guardrails, and the metrics, all in orbit around one core: the model.
+The whole talk is one town on a map that grows, in the art of [art-direction.md](../art/art-direction.md). Since 2026-09-30 the "On screen" lines below describe the world of orbits the web was first built on; the town version of each beat is in [elements.md](../art/elements.md) and [town-proposal.md](../art/town-proposal.md): the core is the hall, GitHub Actions is the mill, the compiler is the scriptorium, the Harness is the parapet of the hall, the router and the merge gate are gatehouses, the guardrails are three ring walls, the measures are stacks by the barn, and the blue ball is the blue cart on the road. The beats, the stops and the words are the same.
+
+It starts with one house, the hall, alone on the land. Elements appear, move, and stay, until the screen shows the real system: the work router, the deterministic jobs, the agentic workers, OpenCode, the Harness, Forge, the models, the guardrails, and the metrics, all around one hall: the agent.
 
 Rules for the system:
 
