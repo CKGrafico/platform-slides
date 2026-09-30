@@ -3,8 +3,9 @@
  * for the whole map: it looks from the south east, along the diagonal of the
  * land, from far away with a narrow field of view, so buildings show two faces
  * and the picture is almost orthographic. It never turns and never zooms:
- * every shot is a pan across the land, like scrolling the map. The one
- * exception is the closing, which pulls back to show the whole town.
+ * every shot is a pan across the land, like scrolling the map. Two
+ * exceptions pull back: the map of the maturity levels (part 4) and the
+ * closing, which shows the whole town.
  */
 import type { CameraShot, Vec3 } from '@/world/camera/shot'
 

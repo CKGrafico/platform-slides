@@ -63,13 +63,13 @@ export const foundationsMoves = defineChoreography('11-foundations', (tl, cast, 
   })
 
   // ---- 11.2: three phase circles on the ground: the plans of the walls -------------------------
-  // The footings rise round the hall arc by arc; the walls rise on them later and cover them.
+  // The plans of the walls: each ring rises low round the town, arc by arc. 11.4 raises them whole.
   RINGS.forEach((_, r) => {
     for (let k = 0; k < RING_ARCS; k++) {
-      const f = el(`phase.${r}.${k}`)
-      const rise = span(B.phases + 0.75 + r * 0.6 + k * 0.1, B.phases + 1.5 + r * 0.6 + k * 0.1)
-      inkIn(tl, f, rise.start, rise.duration)
-      tl.fromTo(f.object.scale, { y: 0.001 }, { y: 1, duration: rise.duration, ease: 'power3.out', immediateRender: false }, rise.start)
+      const w = el(`ring.${r}.${k}`)
+      const plan = span(B.phases + 0.75 + r * 0.6 + k * 0.1, B.phases + 1.5 + r * 0.6 + k * 0.1)
+      inkIn(tl, w, plan.start, plan.duration)
+      tl.fromTo(w.object.scale, { y: 0.001 }, { y: 0.22, duration: plan.duration, ease: 'power3.out', immediateRender: false }, plan.start)
     }
   })
 
@@ -78,13 +78,12 @@ export const foundationsMoves = defineChoreography('11-foundations', (tl, cast, 
   const gridIn = span(B.disc + 0.5, B.disc + 2)
   fade(tl, gridLines.material, 0.22, gridIn.start, gridIn.duration)
 
-  // ---- 11.4: the walls rise around the town, ring by ring, arc by arc --------------------------------
+  // ---- 11.4: the walls rise to their full height around the town, ring by ring, arc by arc --------------
   RINGS.forEach((_, r) => {
     for (let k = 0; k < RING_ARCS; k++) {
       const w = el(`ring.${r}.${k}`)
       const rise = span(B.walls + 0.4 + r * 1.2 + k * 0.12, B.walls + 1.4 + r * 1.2 + k * 0.12)
-      inkIn(tl, w, rise.start, rise.duration)
-      tl.fromTo(w.object.scale, { y: 0.001 }, { y: 1, duration: rise.duration, ease: 'power3.out', immediateRender: false }, rise.start)
+      tl.to(w.object.scale, { y: 1, duration: rise.duration, ease: 'power3.out' }, rise.start)
     }
   })
   for (const [id, r] of [['arch.w', 0], ['arch.e', 0], ['outer.w', 2], ['outer.e', 2]] as const) {

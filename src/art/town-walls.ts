@@ -72,14 +72,6 @@ export function createWallArc(options: WallArcOptions) {
   return el
 }
 
-/**
- * A low ring wall between two angles: a kerb of stone with small merlons, no
- * towers. A maturity level in part 4; the footing a ring wall rises on in
- * part 11.
- */
-export function createLowWall(options: Pick<WallArcOptions, 'radius' | 'from' | 'to' | 'gaps'>) {
-  return createWallArc({ ...options, height: 0.34, thickness: 0.3, merlon: 0.11, merlonEvery: 0.4 })
-}
 
 /**
  * An arch over a road that runs along X: two stone jambs, a lintel with

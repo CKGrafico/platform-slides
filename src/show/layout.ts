@@ -229,8 +229,8 @@ export const PRODUCTION: V3 = [26, 0.14, MAIN_Z]
 
 // ---- part 4: the levels, and part 11: the phases and the verbs -------------------------------------
 
-/** Five rings on the ground around the hall, level 1 the smallest. The biggest fits the frame. */
-export const LEVEL_RADII = [3.4, 5.0, 6.6, 8.4, 10.4]
+/** Five ring walls round the land, level 1 the smallest, far apart. Part 4 pulls the camera back to show them all. */
+export const LEVEL_RADII = [5.5, 9.5, 13.5, 17.5, 21]
 /** The four empty slots on the level 5 ring, on its west arc, where the frame has room for their names. */
 export const SLOT_ANGLES = [deg(125), deg(140), deg(155), deg(170)]
 /** The three phases: the plans of the three walls. Their labels sit at the front of each circle, one below the other. */

@@ -36,8 +36,8 @@ export const MAP_BEAT = 16
 const KEY = '04-maturity/levels'
 hudCues.appear({ key: KEY, from: b(MAP_BEAT + 1), to: b(MAP_BEAT + 3) })
 
-/** The hall to the right of the frame, so the south and west arcs of the rings have room, and their names with them. */
-const RINGS_SHOT = townShot([-3, 0, 5.5])
+/** The map of the levels: the camera pulls back (the one zoom besides the closing) so all five walls round the land fit. */
+const RINGS_SHOT = townShot([0, 0, 3], 100)
 
 /** Level names along the ray south of the hall, each a step lower and further left, so they never overlap. */
 const LEVEL_LABEL_ANGLE = Math.PI / 2
@@ -45,7 +45,8 @@ const levelPoints = LEVEL_RADII.map((r) => new Vector3(Math.cos(LEVEL_LABEL_ANGL
 const levelTargets = levelPoints.map((p) => () => p)
 export const slotPoints = SLOT_ANGLES.map((a) => new Vector3(Math.cos(a) * LEVEL_RADII[4]!, 0.08, Math.sin(a) * LEVEL_RADII[4]!))
 const slotLabelTargets = slotPoints.map((p) => {
-  const v = p.clone().add(new Vector3(-0.5, 0.15, 0))
+  // The names read inward from the west arc, over the land inside the wall.
+  const v = p.clone().add(new Vector3(0.7, 0.15, 0))
   return () => v
 })
 
@@ -104,7 +105,7 @@ function Dom() {
         />
       ))}
       {slotLabelTargets.map((target, n) => (
-        <Label key={n} k={`p04.slot.${n + 1}` as MessageKey} target={target} width={40} mono={false} level={slotLabel(n)} className="slot-label label-right" />
+        <Label key={n} k={`p04.slot.${n + 1}` as MessageKey} target={target} width={40} mono={false} level={slotLabel(n)} className="slot-label label-left" />
       ))}
     </div>
   )

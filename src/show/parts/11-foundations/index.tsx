@@ -93,7 +93,7 @@ function Dom() {
           width={48}
           mono={false}
           className="phase-label"
-          level={win(B.phases + 1 + i * 0.6, B.phases + 1.75 + i * 0.6, B.disc, B.disc + 1)}
+          level={win(B.phases + 1.6 + i * 0.6, B.phases + 2.35 + i * 0.6, B.disc, B.disc + 1)}
         />
       ))}
       {wallPoints.map((p, i) => (

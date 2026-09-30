@@ -28,9 +28,9 @@ The look of each element follows [art-direction.md](art-direction.md). The syste
 | Seal | a verb: a right a worker holds | a flat butter disc that faces the camera; a dashed ring where the right is not given |
 | The market and the booth | production, and the person a risky change goes to | a stall with a striped awning outside the second ring; a small stall by the merge gate |
 | The watchtower and the repair crew | the audit, and housekeeping | a stone tower with a hoarding on the first ring; one of the hall's folk who leaves it to walk the loop |
-| Ring wall | a guardrail; the three rings are the three phases of Foundations | a ring of stone with merlons and towers, raised arc by arc, with the gates where the road crosses it |
+| Ring wall | a guardrail; the three rings are the three phases of Foundations | a ring of stone with merlons and towers, with the gates where the road crosses it. It rises low first, as the plan of the phase (11.2), then whole, arc by arc (11.4) |
 | Milestone | a step of the timeline | a signpost on the road into the town; the second half stand on stone; the last is a dashed slot, "?" |
-| Low wall | a maturity level (part 4); the footing a ring wall rises on (part 11) | a low ring of stone with small merlons, raised round the hall arc by arc. The levels sink back into the ground when the map keeps them; the footings stay under the walls |
+| Level wall | a maturity level (part 4) | one of five ring walls of the town's stone round the land, level 1 the smallest, far apart, seen from further back. They rise arc by arc and sink back into the ground when the map keeps them |
 | Measure | a measurement: tokens, Project Health | a stack of coins by the hall, or by the barn. A ghost stack of dashed rings when a metric is not collected |
 | Villager | a person: the one who asks, the reviewer, the developer, the team, the elder, and the folk of the hall | a round chibi with a hat, no face. Eight folk stand at the hall's arcade at the start; one by one they walk out to the house that does their job now, and stay by it |
 | Cottage | a product the team runs | a small house in the hamlet north east of the town |
@@ -48,14 +48,14 @@ The look of each element follows [art-direction.md](art-direction.md). The syste
 - **Every element enters and leaves the same way:** "inking" in, shrink out. Use the helpers in `src/art/motion.ts`. Walls rise from the ground; roads are laid from their west end.
 - **Every building with a job flies a pennant** in the color that names it (the hall's banner is butter; triage lilac; refine and Forge peach; the scriptorium, the barn and the tidy house sage; the mill and the outer gates butter; the cottages take turns), so buildings can be told apart from a distance, with their name on the map.
 - **People are villagers.** A hat, no face. No avatars, no icons of people.
-- **The camera never turns and never zooms.** One angle, one distance (`src/show/shots.ts`, a frame about 27 units wide), pans only. The one exception is the closing pull-back. Build for that distance: walls heavy enough to read, buildings with room between them.
+- **The camera never turns and never zooms.** One angle, one distance (`src/show/shots.ts`, a frame about 27 units wide), pans only. Two exceptions pull back: the map of the levels in part 4 and the closing. Build for that distance: walls heavy enough to read, buildings with room between them.
 
 ## Do and do not
 
 | Do | Do not |
 |---|---|
 | Show a piece of work as a cart on a road, facing the way it goes | Draw a ball, a dot, a moon, or an orbit |
-| Show where work went as a trail worn in the grass, and a level as a low wall of stone | Draw a dashed ink line, a wire in the air, or a circle that floats |
+| Show where work went as a trail worn in the grass, and a level as a ring wall round the land | Draw a dashed ink line, a wire in the air, a circle that floats, or a low kerb of blocks |
 | Show the router as a gatehouse on the wall that lets one cart onto the road | Draw a router icon, an arrow junction, or a box with the word "router" |
 | Show a guardrail as a ring wall with towers | Show a padlock or a shield icon |
 | Show a missing metric as a ghost stack of dashed rings | Show a grey stack, a red cross, or an empty chart |

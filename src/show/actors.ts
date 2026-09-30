@@ -13,7 +13,7 @@ import { inkOf } from '@/art/toon'
 import { createBales, createBlades, createBushes, createCanopies, createFence, createFields, createFlowers, createGate, createHouse, createLand, createMill, createPines, createRoad, createRocks, createRows, createStall, createTower, createTownCenter, createTrail, createTrunks, createVillager, createWell, polyline, town } from '@/art/town'
 import { createBanner, createBarn, createCrate, createForge, createKiln, createMilestone, createParapet, createScroll } from '@/art/town-props'
 import { createCart, createCartSwarm, createSack, createSeal, createStake, createStone } from '@/art/town-units'
-import { createArch, createLowWall, createWallArc, type Gap } from '@/art/town-walls'
+import { createArch, createWallArc, type Gap } from '@/art/town-walls'
 import { defineActor, type ActorDef } from '@/world/actors'
 import { FOLK, FOLK_HOME, homePoint } from './hall'
 import { routePoint } from './route'
@@ -314,15 +314,27 @@ const tlSlot = defineActor({
 
 // ---- part 4: the levels ---------------------------------------------------------------------------
 
-/** The levels: five low ring walls of stone round the hall, each in arcs, so it rises round the hall. */
-export const LEVEL_ARCS = 6
-const levelRings = LEVEL_RADII.flatMap((radius, i) =>
-  Array.from({ length: LEVEL_ARCS }, (_, k) => {
+/**
+ * The levels: five ring walls of the town's stone round the land, with towers,
+ * open where the road crosses them, each in arcs so it rises round the hall.
+ */
+export const LEVEL_ARCS = 8
+const LEVEL_TOWER_ANGLES = [-150, -90, -30, 30, 90, 150].map((d) => (d * Math.PI) / 180)
+const levelRings = LEVEL_RADII.flatMap((radius, i) => {
+  const gaps: Gap[] = []
+  if (radius > MAIN_Z + 0.8) {
+    const cross = Math.sqrt(radius * radius - MAIN_Z * MAIN_Z)
+    const half = 1.6 / radius
+    gaps.push([Math.atan2(MAIN_Z, cross) - half, Math.atan2(MAIN_Z, cross) + half], [Math.atan2(MAIN_Z, -cross) - half, Math.atan2(MAIN_Z, -cross) + half])
+  }
+  const inGap = (a: number) => gaps.some(([g0, g1]) => a >= g0 - 0.2 && a <= g1 + 0.2)
+  return Array.from({ length: LEVEL_ARCS }, (_, k) => {
     const from = -Math.PI + (k * 2 * Math.PI) / LEVEL_ARCS
     const to = from + (2 * Math.PI) / LEVEL_ARCS
-    return defineActor({ id: `level.${i + 1}.${k}`, create: () => createLowWall({ radius, from, to }).object })
-  }),
-)
+    const towers = LEVEL_TOWER_ANGLES.filter((a) => a >= from && a < to && !inGap(a))
+    return defineActor({ id: `level.${i + 1}.${k}`, create: () => createWallArc({ radius, from, to, towers, gaps }).object })
+  })
+})
 const levelSlots = [1, 2, 3, 4].map((n) =>
   defineActor({
     id: `level.slot.${n}`,
@@ -704,14 +716,6 @@ const ringGaps = (r: number): Gap[] => {
   if (r === 0) gaps.push(gapAt(TOWER_ANGLE, 0.14))
   return gaps
 }
-/** The three phases: the footings of the three walls, low rings of stone the walls rise on. */
-const phases = RINGS.flatMap((radius, r) =>
-  Array.from({ length: RING_ARCS }, (_, k) => {
-    const from = -Math.PI + (k * 2 * Math.PI) / RING_ARCS
-    const to = from + (2 * Math.PI) / RING_ARCS
-    return defineActor({ id: `phase.${r}.${k}`, create: () => createLowWall({ radius, from, to, gaps: ringGaps(r) }).object })
-  }),
-)
 const grid = defineActor({
   id: 'grid',
   create: () => {
@@ -925,7 +929,6 @@ export const actors: ActorDef[] = [
   tidyPath,
   ...messyPaths,
   smallWork,
-  ...phases,
   grid,
   ...ringWalls,
   archW,

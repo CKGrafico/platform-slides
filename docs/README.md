@@ -14,7 +14,9 @@ npm install
 npm run dev
 ```
 
-Open `http://localhost:5173`. The debug panel is open in development. Press `D` to hide it.
+Open `http://localhost:5173`. Press `D` to open the debug panel (it starts closed).
+
+The bottom right corner shows the stop chip, for the speaker: the number of the stop the talk is at (1 to N over the whole talk, so a stop can be named without a screenshot), and, while a press is still playing, a bar that fills. Do not press again until the bar is gone. The chip lives in `src/engine/StopChip.tsx`.
 
 Before you commit, run these commands. Each one must pass. `build` also runs the language check:
 

@@ -16,6 +16,7 @@ import { bindInput } from './input'
 import { LanguageSwitch } from './LanguageSwitch'
 import { Layer } from './layers-component'
 import { Presentation } from './presentation'
+import { StopChip } from './StopChip'
 import type { ShowDef } from './types'
 
 const debugAllowed = import.meta.env.DEV || new URLSearchParams(window.location.search).has('debug')
@@ -127,6 +128,7 @@ export function Keynote({ show, actors, choreographies, world, overlay, grain }:
         <Layer name="overlay">
           {overlay}
           <LanguageSwitch />
+          <StopChip />
         </Layer>
         {grain ? <Layer name="grain">{grain}</Layer> : null}
         {DebugPanel && debugOpen ? (
