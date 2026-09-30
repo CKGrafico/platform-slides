@@ -10,7 +10,7 @@ import { orbitOf } from '@/art/orbits'
 import { defineChoreography } from '@/world/actors'
 import { CORE_BEHIND, TIMELINE_SPLIT, TIMELINE_U } from '../../layout'
 import { issueOrbit, TIMELINE_IDS } from '../../actors'
-import { grid, SPLIT_BEAT, stepBeat } from '.'
+import { grid, stepBeat } from '.'
 
 const KEY = '03-state-of-ai/timeline'
 const { b } = grid
@@ -76,16 +76,4 @@ export const stateOfAiMoves = defineChoreography('03-state-of-ai', (tl, cast, t)
       tl.fromTo(frame.scale, { x: 1.6, y: 1.6, z: 1.6 }, { x: 1, y: 1, z: 1, duration: grow.duration, ease: 'power3.out', immediateRender: false }, grow.start)
     }
   })
-
-  // The two halves: the first dims and steps back; the second lights up.
-  const halves = span(SPLIT_BEAT, SPLIT_BEAT + 2)
-  TIMELINE_IDS.forEach((id, k) => {
-    const first = k < TIMELINE_SPLIT
-    const s = first ? 0.72 : 1.18
-    const targets = [id, ...(STRUCTURES[k]?.art ?? []), ...(STRUCTURES[k]?.orbits ?? []), ...(STRUCTURES[k]?.frame ? [STRUCTURES[k]!.frame!] : [])]
-    for (const target of targets) {
-      tl.to(cast.get(target).scale, { x: s, y: s, z: s, duration: halves.duration, ease: 'power3.inOut' }, halves.start + (first ? 0 : b(0.5)))
-    }
-  })
-  fade(tl, arcA.material, 0.28, halves.start, halves.duration)
 })
