@@ -19,6 +19,8 @@ import { Stage } from '@/engine/Stage'
 import { T } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
+import { mapCues } from '../../map/cues'
+import { mapShot } from '../../map/shots'
 
 export const grid = beatStops([11, 5, 5, 6])
 const { b } = grid
@@ -27,7 +29,10 @@ export const B = { back: 0, slots: 6, timeline: 11, title: 16, last: 21 }
 const KEY = '14-closing/closing'
 hudCues.center({ rise: { key: KEY, from: b(B.slots + 0.5), to: b(B.slots + 2.5) }, fall: { key: KEY, from: b(B.timeline), to: b(B.timeline + 2) } })
 
-const FAR: CameraShot = { position: [0, 13, 24], target: [0, -1.2, 0], fov: 34 }
+/** The whole map, as far as it goes. Then the film returns: the sky, the timeline, the title. */
+const FAR = mapShot([0, -0.9, 0.3], 26)
+// The names of the map leave with it, when the camera rises to the sky.
+mapCues.hide({ key: KEY, from: b(B.slots), to: b(B.slots + 1.5) })
 const SKY: CameraShot = { position: [-0.6, 8.2, 21.5], target: [-0.6, 8.3, -2], fov: 38 }
 const ALL: CameraShot = { position: [0.4, 8.4, 27], target: [0.2, 4.4, -1.5], fov: 38 }
 
@@ -62,7 +67,7 @@ const closingScene = defineScene({
     shotSequence(
       from,
       [
-        { from: 0, to: b(5), shot: FAR, arc: 2 },
+        { from: 0, to: b(5), shot: FAR },
         { from: b(B.slots), to: b(B.slots + 3.5), shot: SKY },
         { from: b(B.title), to: b(B.title + 4), shot: ALL },
       ],

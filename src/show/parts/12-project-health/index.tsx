@@ -25,6 +25,8 @@ import { Stage } from '@/engine/Stage'
 import { T, type MessageKey } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
+import { mapCues } from '../../map/cues'
+import { mapShot } from '../../map/shots'
 import { metricBase } from '../../actors'
 import { GROUND_Y, HEALTH_PERSON, METRIC_COINS, METRIC_Z, RELEASE_POS, TEAM_Y } from '../../layout'
 
@@ -38,21 +40,30 @@ hudCues.fill(3, { key: KEY, from: b(1.5), to: b(3) })
 // numbers of 12.5 need the whole frame: the map steps out and comes back for the loop.
 hudCues.hide({ rise: { key: KEY, from: b(B.measure), to: b(B.measure + 1) }, fall: { key: KEY, from: b(B.loop), to: b(B.loop + 1) } })
 
-const WHOLE: CameraShot = { position: [0, 5.4, 15.8], target: [0.2, -0.7, 0], fov: 36 }
-const ESCAPE: CameraShot = { position: [3.8, 2.4, 11.2], target: [5.4, 0.8, 0.6], fov: 36 }
-/** Looks at the measures on the front right edge of the disc. */
-/** In front of the row of stacks, low, so they read like a chart with the system behind. */
-const BACK: CameraShot = { position: [0.1, -1.25, 14.2], target: [0.1, -2.15, 5.6], fov: 34 }
-const PERSON: CameraShot = { position: [-3.2, 0.2, 8.6], target: [-4.6, -2.1, 2.7], fov: 36 }
+/** On the map: the whole, the exit to production, the row of measures, the person. */
+const WHOLE = mapShot([0, -0.6, 0.3], 16)
+const ESCAPE = mapShot([6.5, -0.3, 0.4], 10)
+const BACK = mapShot([0, -2.6, 5.2], 10.5)
+const PERSON = mapShot([-4.2, -2.4, 2.6], 9)
+/** The numbers of 12.5 sit in the sky, on their own. */
 const SKY: CameraShot = { position: [0, TEAM_Y + 1.1, 8.4], target: [0, TEAM_Y - 0.1, 0], fov: 36 }
+
+const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
+const mapPulse = (from: number, to: number) => ({ rise: mapKey(from, from + 0.75), fall: mapKey(to, to + 0.75) })
+mapCues.focus(['release'], mapPulse(B.claim, B.measure))
+mapCues.focus(['lane.production'], mapPulse(B.measure, B.human))
+mapCues.appear('health', mapKey(B.human + 1, B.human + 1.75))
+mapCues.role('health', mapPulse(B.human + 1.25, B.numbers))
+mapCues.focus(['health'], mapPulse(B.human, B.numbers))
+mapCues.focus(['audit', 'router', 'health'], mapPulse(B.loop, B.loop + 5))
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
 const question = new Vector3(RELEASE_POS[0] - 0.9, RELEASE_POS[1] + 0.9, RELEASE_POS[2])
-/** Names in two rows above the row of stacks, like the labels of a chart. */
-const NAME_Y = [-1.72, -1.36]
-const metricLabels = METRIC_COINS.map((_, i) => new Vector3(metricBase(i)[0], NAME_Y[i % 2]!, METRIC_Z))
-const hollowLabels = [0, 1].map((k) => new Vector3(metricBase(6 + k)[0], NAME_Y[k % 2]!, METRIC_Z))
+/** Names in two rows on the disc behind the stacks: seen from the map camera, behind is above. */
+const NAME_BACK = [1.35, 2.05]
+const metricLabels = METRIC_COINS.map((_, i) => new Vector3(metricBase(i)[0], GROUND_Y + 0.1, METRIC_Z - NAME_BACK[i % 2]!))
+const hollowLabels = [0, 1].map((k) => new Vector3(metricBase(6 + k)[0], GROUND_Y + 0.1, METRIC_Z - NAME_BACK[k % 2]!))
 // "Not collected" under the two ghost stacks, on the disc.
 const notCollected = new Vector3((metricBase(6)[0] + metricBase(7)[0]) / 2, GROUND_Y - 0.3, METRIC_Z + 0.35)
 const panelPoint = new Vector3(HEALTH_PERSON[0] + 0.5, HEALTH_PERSON[1] + 1.15, HEALTH_PERSON[2])
@@ -167,7 +178,7 @@ const health = defineScene({
       [
         { from: 0, to: b(3.5), shot: WHOLE },
         { from: b(B.claim), to: b(B.claim + 3), shot: ESCAPE },
-        { from: b(B.measure), to: b(B.measure + 3), shot: BACK, arc: 1 },
+        { from: b(B.measure), to: b(B.measure + 3), shot: BACK },
         { from: b(B.human), to: b(B.human + 3), shot: PERSON },
         { from: b(B.numbers), to: b(B.numbers + 3), shot: SKY, arc: 1.5 },
         { from: b(B.loop), to: b(B.loop + 3.5), shot: WHOLE, arc: 1.5 },

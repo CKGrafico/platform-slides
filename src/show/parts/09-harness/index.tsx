@@ -27,6 +27,8 @@ import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
+import { mapCues } from '../../map/cues'
+import { MAP_WHOLE, mapShot } from '../../map/shots'
 import { DEV_POS, HARNESS_RADIUS } from '../../layout'
 
 export const grid = beatStops([4, 4, 5, 6, 5, 6, 5, 6])
@@ -37,14 +39,31 @@ const KEY = '09-harness/harness'
 hudCues.center({ rise: { key: KEY, from: b(0.5), to: b(2.5) }, fall: { key: KEY, from: b(B.name), to: b(B.name + 2) } })
 hudCues.fill(0, { key: KEY, from: b(B.name + 1.5), to: b(B.name + 3) })
 
+// The map reveal: from here to the closing, the system is read like a map
+// (map/shots.ts). The names of what exists so far come in and stay.
+const cue = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
+const pulseCue = (from: number, to: number) => ({ rise: cue(from, from + 0.75), fall: cue(to, to + 0.75) })
+mapCues.show(cue(B.name + 0.5, B.name + 2))
+// The four lanes are named at once, from the center out: the map comes before its parts.
+mapCues.appear('lane.model', cue(B.name + 1.5, B.name + 2.25))
+mapCues.appear('lane.agents', cue(B.name + 1.8, B.name + 2.55))
+mapCues.appear('lane.automation', cue(B.name + 2.1, B.name + 2.85))
+mapCues.appear('lane.production', cue(B.name + 2.4, B.name + 3.15))
+mapCues.appear('core', cue(B.name + 1.75, B.name + 2.5))
+mapCues.appear('opencode', cue(B.name + 2, B.name + 2.75))
+mapCues.appear('ga', cue(B.name + 2.25, B.name + 3))
+mapCues.role('opencode', pulseCue(B.name + 2.25, B.improvise))
+mapCues.role('ga', pulseCue(B.name + 2.5, B.improvise))
+mapCues.appear('harness', cue(B.frame + 2.25, B.frame + 3))
+mapCues.role('harness', pulseCue(B.frame + 2.5, B.cloud))
+mapCues.focus(['core', 'opencode', 'harness', 'lane.model'], pulseCue(B.improvise, B.laptop + 0.5))
+
 /** Up at the empty sky, so the map of the talk has the frame to itself. */
 const SKY: CameraShot = { position: [0, 7.6, 10.5], target: [0, 7.9, 0], fov: 34 }
-// Far enough back that the whole column (the workflow on top, the core, Forge and
-// the models below) sits above the caption at the bottom left.
-const CORE: CameraShot = { position: [2.42, 1.2, 12.66], target: [0.1, -0.65, 0], fov: 36 }
-const FRAME: CameraShot = { position: [1.87, 0.75, 11.78], target: [0.1, -0.7, 0.2], fov: 36 }
-const OUT: CameraShot = { position: [3.52, 0.8, 12.6], target: [1.2, -0.65, 0.4], fov: 36 }
-const LAPTOP: CameraShot = { position: [2.2, 1.3, 10], target: [1.4, -0.35, 0.8], fov: 36 }
+/** Close on the center of the map: the core, the frame, the paths of the runs. */
+const CENTER = mapShot([0.2, -0.3, 0.3], 9.5)
+/** The developer with the copy, on the front right of the map. */
+const LAPTOP = mapShot([1.7, -0.7, 1.2], 10)
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
@@ -64,6 +83,7 @@ function Dom() {
     <div className="scene-root">
       <Stage>
         <BurnCaption k="p09.pillars" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={111} level={burnWindow(b(1), b(2.25), b(B.name), b(B.name + 0.6))} />
+        <BurnCaption k="p09.map" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={118} level={burnWindow(b(B.name + 1.5), b(B.name + 2.75), b(B.improvise), b(B.improvise + 0.6))} />
         <PartTitle kicker="p09.kicker" title="p09.title" level={burnWindow(b(B.name + 1), b(B.name + 2.5), b(B.improvise), b(B.improvise + 0.75))} />
         <BurnCaption k="p09.improvise" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={112} level={burnWindow(b(B.improvise + 2), b(B.improvise + 3), b(B.frame), b(B.frame + 0.6))} />
         <BurnCaption k="p09.frame" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={113} level={burnWindow(b(B.frame + 3.5), b(B.frame + 4.5), b(B.cloud), b(B.cloud + 0.6))} />
@@ -110,10 +130,9 @@ const harness = defineScene({
       from,
       [
         { from: 0, to: b(3.5), shot: SKY, arc: 1 },
-        { from: b(B.name), to: b(B.name + 3.5), shot: CORE, arc: 1 },
-        { from: b(B.frame), to: b(B.frame + 3), shot: FRAME },
-        { from: b(B.cloud), to: b(B.cloud + 3), shot: OUT },
-        { from: b(B.laptop), to: b(B.laptop + 3), shot: LAPTOP },
+        { from: b(B.name), to: b(B.name + 3), shot: MAP_WHOLE },
+        { from: b(B.improvise), to: b(B.improvise + 2.5), shot: CENTER },
+        { from: b(B.laptop), to: b(B.laptop + 2.5), shot: LAPTOP },
       ],
       local,
     ),

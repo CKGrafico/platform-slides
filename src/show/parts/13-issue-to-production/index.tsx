@@ -21,6 +21,8 @@ import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
+import { mapCues } from '../../map/cues'
+import { mapShot } from '../../map/shots'
 
 export const grid = beatStops([4, 8, 8, 8, 4])
 const { b } = grid
@@ -36,21 +38,25 @@ pulse(2, 5) // CI and the guardrails: Foundations
 pulse(1, 6) // the merge gate: Agentic Workflows
 pulse(3, 7) // production, counted: Project Health
 
-// High and wide: the ball far on the left, the whole system above the caption.
-const WIDE: CameraShot = { position: [-3.0, 5.8, 20.5], target: [-2.2, -1.9, 0], fov: 36 }
-/**
- * One shot per step. Each one looks down on the disc, so the sky is at the
- * top: the step captions sit top left, and no planet sits behind the map.
- */
+/** The whole map, with the ball far on the left. */
+const WIDE = mapShot([-1.5, -0.8, 0.4], 19)
+/** One shot per step, on the map: the router, the lanes, the requester, the core, the walls, the gate, production. */
 const SHOTS: CameraShot[] = [
-  { position: [-5.4, 2.0, 8.2], target: [-5.2, 0, 1.2], fov: 36 },
-  { position: [0, 6.2, 11], target: [0, -0.4, 0.4], fov: 36 },
-  { position: [-3.28, 2.5, 8.9], target: [-1.6, 0.1, 0.5], fov: 36 },
-  { position: [1.6, 2.2, 7], target: [0.3, 0, 0.4], fov: 36 },
-  { position: [3.2, 2.2, 11.5], target: [3.4, -0.6, 2.4], fov: 36 },
-  { position: [5.0, 1.6, 6.8], target: [5.7, 0, 1.3], fov: 36 },
-  { position: [2.4, 3.6, 16.5], target: [6.4, 1.6, -0.6], fov: 38 },
+  mapShot([-5.0, -0.3, 0.8], 9),
+  mapShot([0, -0.3, 0.5], 11),
+  mapShot([-2.0, -0.5, 0.6], 9),
+  mapShot([0.2, -0.2, 0.3], 8),
+  mapShot([0.5, -2.0, 2.8], 11),
+  mapShot([5.8, -0.2, 0.6], 9),
+  mapShot([7.0, 0.6, -0.5], 15),
 ]
+/** Who is the subject of each step. */
+const FOCUS: string[][] = [['router'], ['triage', 'refine'], ['requester'], ['core', 'harness', 'opencode', 'implement'], ['walls'], ['gate'], ['release', 'health']]
+FOCUS.forEach((ids, i) => {
+  const n = i + 1
+  const end = n === 7 ? stepBeat(7) + 3.5 : stepBeat(n + 1)
+  mapCues.focus(ids, { rise: { key: KEY, from: b(stepBeat(n)), to: b(stepBeat(n) + 0.75) }, fall: { key: KEY, from: b(end), to: b(end + 0.75) } })
+})
 
 /** One caption per click: it burns in with the first step of its pair and stays to the end. */
 const CAPTIONS: Array<{ k: MessageKey; source: MessageKey; from: number; to: number | null }> = [
@@ -97,7 +103,7 @@ const journey = defineScene({
     shotSequence(
       from,
       [
-        { from: 0, to: b(3.5), shot: WIDE, arc: 1 },
+        { from: 0, to: b(3.5), shot: WIDE },
         ...SHOTS.map((shot, i) => ({ from: b(stepBeat(i + 1)), to: b(stepBeat(i + 1) + 3), shot })),
       ],
       range(local, 0, 1),

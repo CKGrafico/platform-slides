@@ -3,21 +3,10 @@
  * progress inside one scene. The windows come from the parts, so they sit on
  * each part's beat grid.
  */
-import { range } from '@/animation/progress'
-import { findScene, type ShowModel } from '@/engine/show-model'
+import type { ShowModel } from '@/engine/show-model'
+import { level, pulse, type Cue, type Pulse } from '../cues'
 
-export interface Cue {
-  /** "chapter/scene" */
-  key: string
-  from: number
-  to: number
-}
-
-/** A cue that rises over `rise` and falls over `fall`. */
-export interface Pulse {
-  rise: Cue
-  fall: Cue
-}
+export type { Cue, Pulse }
 
 const cues = {
   /** The ring appears at the edge of the frame (script 4.2). */
@@ -51,16 +40,6 @@ export const hudCues = {
   },
 }
 
-function level(model: ShowModel, position: number, cue: Cue | null): number {
-  if (!cue) return 0
-  const scene = findScene(model, cue.key)
-  if (!scene) return 0
-  const a = scene.start + cue.from * scene.duration
-  const b = scene.start + cue.to * scene.duration
-  return range(position, a, b)
-}
-
-const pulse = (model: ShowModel, position: number, p: Pulse) => Math.min(level(model, position, p.rise), 1 - level(model, position, p.fall))
 
 export interface HudState {
   shown: number

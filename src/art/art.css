@@ -604,3 +604,63 @@ body,
   font-size: calc(var(--su) * 9.5);
   line-height: 0.95;
 }
+
+/* ---- the system map: names that stay (src/show/map) ------------------------------ */
+
+.map-root {
+  pointer-events: none;
+}
+
+.map-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--su) * 0.2);
+  text-align: center;
+  white-space: nowrap;
+  will-change: opacity;
+}
+
+.map-label--above { transform: translate(-50%, -100%); }
+.map-label--below { transform: translate(-50%, 0); }
+.map-label--left { transform: translate(-100%, -50%); align-items: flex-end; text-align: right; }
+.map-label--right { transform: translate(0, -50%); align-items: flex-start; text-align: left; }
+
+/* The name: the display face, outlined like every label, a little smaller. */
+.map-name {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: calc(var(--su) * 2.5);
+  line-height: 1.2;
+  color: var(--c-surface);
+  -webkit-text-stroke: 0.2em var(--c-outline);
+  paint-order: stroke fill;
+}
+
+/* The one-line role, on a chip of paper, only on the stop that introduces the element. */
+.map-role {
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: calc(var(--su) * 1.9);
+  line-height: 1.3;
+  color: var(--c-outline);
+  background: color-mix(in srgb, var(--c-surface) 88%, transparent);
+  border-radius: calc(var(--su) * 0.5);
+  padding: calc(var(--su) * 0.15) calc(var(--su) * 0.7);
+  will-change: opacity;
+}
+
+/* A lane name: small caps in the label face, no outline, like the name of a region on a map. */
+.map-label--lane .map-name {
+  font-family: var(--font-label);
+  font-weight: 700;
+  font-size: calc(var(--su) * 2);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--c-outline);
+  -webkit-text-stroke: 0;
+  opacity: 0.8;
+}

@@ -31,6 +31,7 @@ import { issueToProduction } from './parts/13-issue-to-production'
 import { issueToProductionMoves } from './parts/13-issue-to-production/choreography'
 import { closing } from './parts/14-closing'
 import { closingMoves } from './parts/14-closing/choreography'
+import { mapMoves } from './map/choreography'
 import { restMoves } from './rest'
 
 export const show = defineShow({
@@ -39,7 +40,8 @@ export const show = defineShow({
 })
 
 /** Moves on the shared actors, in show order. The rest state comes first. */
-export const choreographies = [restMoves, coverMoves, stateOfAiMoves, maturityMoves, actionsToAgentsMoves, problemsMoves, changeOfMindMoves, runtimeMoves, harnessMoves, agenticWorkflowsMoves, foundationsMoves, projectHealthMoves, issueToProductionMoves, closingMoves]
+export const choreographies = [restMoves, coverMoves, stateOfAiMoves, maturityMoves, actionsToAgentsMoves, problemsMoves, changeOfMindMoves, runtimeMoves, mapMoves, harnessMoves, agenticWorkflowsMoves, foundationsMoves, projectHealthMoves, issueToProductionMoves, closingMoves]
 
 export { actors } from './actors'
 export { Hud } from './hud/Hud'
+export { MapLabels } from './map/MapLabels'

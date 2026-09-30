@@ -25,14 +25,13 @@ import { range } from '@/animation/progress'
 import { beatStops } from '@/animation/beat'
 import { burnWindow } from '@/art/Burn'
 import { BurnCaption, Label, PartTitle } from '@/art/Caption'
-import { orbitPoint } from '@/art/orbits'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { getActorObject } from '@/world/actors'
-import { shotSequence, type CameraShot } from '@/world/camera/shot'
+import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
-import { GATE_POS, LANES, RELEASE_POS, REQUESTER_POS, ROUTER_POS } from '../../layout'
+import { mapCues } from '../../map/cues'
+import { mapShot } from '../../map/shots'
 import { INNER, OUTER, TASKS } from '../../actors'
 
 // ---- pull-out ------------------------------------------------------------------------------
@@ -44,24 +43,20 @@ export const PB = { title: 0, pop: 4, distance: 14, back: 20, resort: 26 }
 const PULL = '10-agentic-workflows/pull-out'
 hudCues.fill(1, { key: PULL, from: b(1.5), to: b(3) })
 
-/** Close for the extraction, then back to see the whole outer orbit. */
-const CLOSE: CameraShot = { position: [0, 1.6, 7.6], target: [0, 0.1, 0], fov: 34 }
-// Both a little to the right, so the Refinement core stays out of the map's corner.
-export const P10_SHOT: CameraShot = { position: [0.6, 3.3, 11.8], target: [0.6, 0.1, 0], fov: 36 }
-const LADDER: CameraShot = { position: [0.3, 4.4, 12.4], target: [0.6, -0.2, 0], fov: 36 }
+/** Close on the core for the extraction, then back to see the whole automation ring. */
+const CLOSE = mapShot([0, -0.2, 0.3], 8.5)
+// Centred a little in front of the core, so the front of the ring clears the caption.
+const RING = mapShot([0, -0.4, 1.3], 12.5)
+const LADDER = mapShot([-0.3, -0.4, 1.2], 13.5)
+
+const pullKey = (from: number, to: number) => ({ key: PULL, from: b(from), to: b(to) })
+mapCues.focus(['core', 'lane.model', 'lane.automation', 'ga'], { rise: pullKey(0.5, 1.25), fall: pullKey(PB.resort + 4, PB.resort + 5) })
 
 const from = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, a, bb), 1 - range(local, c, d))
 
-const coreTop = new Vector3()
-function aboveCore(): Vector3 | null {
-  const m = getActorObject('core')
-  if (!m) return null
-  // Beside the core, not above it: grown, its top reaches the title.
-  return coreTop.set(m.position.x + 0.95 * m.scale.x + 0.3, m.position.y + 0.55 * m.scale.y, m.position.z)
-}
-
-const outerLabelPoint = new Vector3(0, -0.42, OUTER.radius)
-const innerLabelPoint = new Vector3(INNER.radius * 0.7, 0.1, INNER.radius * 1.02)
+// On the right side of each ring: the front of a ring is the bottom of the map, under the caption.
+const outerLabelPoint = new Vector3(OUTER.radius * 0.92, -0.1, OUTER.radius * 0.42)
+const innerLabelPoint = new Vector3(INNER.radius * 1.15, 0.1, INNER.radius * 0.45)
 const TASK_OFFSET = [0, 0.42, 0] as const
 
 function PullOut() {
@@ -75,7 +70,6 @@ function PullOut() {
         <BurnCaption k="p10.resort" corner="bottom-left" width={80} height={12} className="art-caption--lead" seed={33} source="p10.resort.source" level={burnWindow(b(PB.resort + 1), b(PB.resort + 2.5))} />
       </Stage>
 
-      <Label k="p10.core" target={aboveCore} width={14} className="label-left" level={from(b(2), b(3))} />
       {TASKS.map((name, i) => (
         <Label
           key={name}
@@ -101,8 +95,8 @@ const pullOut = defineScene({
     shotSequence(
       from,
       [
-        { from: 0, to: b(4), shot: CLOSE, arc: 1 },
-        { from: b(6.5), to: b(11), shot: P10_SHOT },
+        { from: 0, to: b(3), shot: CLOSE },
+        { from: b(6.5), to: b(11), shot: RING },
         { from: b(PB.back), to: b(PB.back + 3), shot: LADDER },
       ],
       local,
@@ -115,35 +109,39 @@ export const pipeGrid = beatStops([5, 6, 6, 5, 5])
 const pb = pipeGrid.b
 export const QB = { before: 0, router: 5, lanes: 11, gate: 17, side: 22 }
 
-const WAKE: CameraShot = { position: [-1.2, 3.0, 13.2], target: [-0.6, 0, 0], fov: 36 }
-const ENTRANCE: CameraShot = { position: [-3.6, 2.6, 10.4], target: [-3.2, -0.1, 0.4], fov: 36 }
-const LANES_SHOT: CameraShot = { position: [0, 5.2, 10.6], target: [0, -0.3, 0.3], fov: 36 }
-const EXIT: CameraShot = { position: [4.0, 3.4, 11.8], target: [3.6, 0.1, 0.3], fov: 36 }
-const WHOLE: CameraShot = { position: [0, 4.9, 16.2], target: [0.4, 0.3, 0], fov: 36 }
+/** The pipeline on the map: the whole, the entrance, the lanes, the exit, the side orbit. */
+const WAKE = mapShot([-1.2, -0.4, 0.3], 15)
+const ENTRANCE = mapShot([-4.0, -0.3, 0.8], 9)
+const LANES_SHOT = mapShot([0, -0.3, 0.5], 11)
+const EXIT = mapShot([6.6, 0.1, 0.5], 10)
+// High enough to take in the side orbit at the back, where audit and housekeeping circle.
+const WHOLE = mapShot([0, 0.3, -1.5], 17)
 
-const pwin = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, pb(a), pb(bb)), 1 - range(local, pb(c), pb(d)))
-/**
- * A label that leaves when the camera moves on to the next piece (its element
- * is at the edge of that shot) and comes back for the whole picture.
- */
-const untilNext = (a: number, bb: number, next: number) => {
-  const own = pwin(a, bb, next, next + 0.75)
-  const whole = pwin(QB.side + 0.5, QB.side + 1.25)
-  return (local: number) => Math.max(own(local), whole(local))
-}
-
-const routerLabel = new Vector3(ROUTER_POS[0], ROUTER_POS[1] + 0.95, ROUTER_POS[2])
-const gateLabel = new Vector3(GATE_POS[0], GATE_POS[1] + 0.95, GATE_POS[2])
-// Under the release, so it stays clear of the map of the talk in the top right corner.
-const releaseLabel = new Vector3(RELEASE_POS[0], RELEASE_POS[1] - 0.5, RELEASE_POS[2])
-const requesterLabel = new Vector3(REQUESTER_POS[0] - 0.4, REQUESTER_POS[1] + 0.45, REQUESTER_POS[2])
-const laneLabel = (r: number, turn: number) => orbitPoint({ radius: r }, turn * Math.PI, new Vector3()).add(new Vector3(0, 0.2, 0))
-/** Each lane is named at its own angle, so the names never stack. */
-const LANE_LABELS = [
-  { k: 'p10.lane.triage', p: laneLabel(LANES.triage.radius, 0.14) },
-  { k: 'p10.lane.refine', p: laneLabel(LANES.refine.radius, 0.3) },
-  { k: 'p10.lane.implement', p: laneLabel(INNER.radius, 0.47) },
-] as const
+// The names of the pipeline come in with their pieces and stay (map/cues.ts).
+const PIPE = '10-agentic-workflows/pipeline'
+const pipeKey = (from: number, to: number) => ({ key: PIPE, from: pb(from), to: pb(to) })
+const pipePulse = (from: number, to: number) => ({ rise: pipeKey(from, from + 0.75), fall: pipeKey(to, to + 0.75) })
+mapCues.appear('router', pipeKey(QB.router + 1, QB.router + 1.75))
+mapCues.role('router', pipePulse(QB.router + 1.25, QB.lanes))
+mapCues.focus(['router', 'lane.automation'], pipePulse(QB.router, QB.lanes))
+const LANE_NAMES = ['triage', 'refine', 'implement'] as const
+LANE_NAMES.forEach((lane, i) => {
+  mapCues.appear(lane, pipeKey(QB.lanes + 1 + i * 0.5, QB.lanes + 1.75 + i * 0.5))
+  mapCues.role(lane, pipePulse(QB.lanes + 1.25 + i * 0.5, QB.gate))
+})
+mapCues.appear('requester', pipeKey(QB.lanes + 2.5, QB.lanes + 3.25))
+mapCues.role('requester', pipePulse(QB.lanes + 2.75, QB.gate))
+mapCues.focus([...LANE_NAMES, 'requester', 'lane.agents', 'core'], pipePulse(QB.lanes, QB.gate))
+mapCues.appear('gate', pipeKey(QB.gate + 1, QB.gate + 1.75))
+mapCues.role('gate', pipePulse(QB.gate + 1.25, QB.side))
+mapCues.appear('release', pipeKey(QB.gate + 2, QB.gate + 2.75))
+mapCues.role('release', pipePulse(QB.gate + 2.25, QB.side))
+mapCues.focus(['gate', 'release', 'lane.automation'], pipePulse(QB.gate, QB.side))
+mapCues.appear('audit', pipeKey(QB.side + 1, QB.side + 1.75))
+mapCues.role('audit', pipePulse(QB.side + 1.25, QB.side + 4.5))
+mapCues.appear('housekeeping', pipeKey(QB.side + 1.25, QB.side + 2))
+mapCues.role('housekeeping', pipePulse(QB.side + 1.5, QB.side + 4.5))
+mapCues.focus(['audit', 'housekeeping'], pipePulse(QB.side, QB.side + 4.5))
 
 function Pipeline() {
   return (
@@ -155,15 +153,6 @@ function Pipeline() {
         <BurnCaption k="p10.gate" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={124} source="p10.gate.source" level={burnWindow(pb(QB.gate + 2.5), pb(QB.gate + 3.5), pb(QB.side), pb(QB.side + 0.6))} />
         <BurnCaption k="p10.side" corner="bottom-left" width={84} height={9} className="art-caption--lead" seed={125} level={burnWindow(pb(QB.side + 2), pb(QB.side + 3))} />
       </Stage>
-      <Label k="p10.routerName" target={() => routerLabel} width={14} mono={false} className="p05-name" level={untilNext(QB.router + 1, QB.router + 1.75, QB.lanes)} />
-      {LANE_LABELS.map((l, i) => (
-        <Label key={l.k} k={l.k} target={() => l.p} width={16} level={pwin(QB.lanes + 1 + i * 0.5, QB.lanes + 1.75 + i * 0.5)} />
-      ))}
-      <Label k="p10.requester" target={() => requesterLabel} width={36} className="label-right" level={untilNext(QB.lanes + 2.5, QB.lanes + 3.25, QB.gate)} />
-      <Label k="p10.gateName" target={() => gateLabel} width={16} mono={false} className="p05-name" level={pwin(QB.gate + 1, QB.gate + 1.75)} />
-      <Label k="p10.release" target={() => releaseLabel} width={14} level={pwin(QB.gate + 2, QB.gate + 2.75)} />
-      <Label k="p10.audit" target="audit" offset={[0, 0.45, 0]} width={16} level={pwin(QB.side + 1, QB.side + 1.75)} />
-      <Label k="p10.housekeeping" target="housekeeping" offset={[0, 0.42, 0]} width={20} level={pwin(QB.side + 1.25, QB.side + 2)} />
     </div>
   )
 }
@@ -179,9 +168,9 @@ const pipeline = defineScene({
       [
         { from: 0, to: pb(3), shot: WAKE },
         { from: pb(QB.router), to: pb(QB.router + 3), shot: ENTRANCE },
-        { from: pb(QB.lanes), to: pb(QB.lanes + 3), shot: LANES_SHOT, arc: 1 },
+        { from: pb(QB.lanes), to: pb(QB.lanes + 3), shot: LANES_SHOT },
         { from: pb(QB.gate), to: pb(QB.gate + 3), shot: EXIT },
-        { from: pb(QB.side), to: pb(QB.side + 3.5), shot: WHOLE, arc: 1 },
+        { from: pb(QB.side), to: pb(QB.side + 3.5), shot: WHOLE },
       ],
       local,
     ),

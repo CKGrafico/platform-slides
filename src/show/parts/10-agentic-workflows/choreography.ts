@@ -268,6 +268,11 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const origin = new Vector3(0, 0, 0)
   const wakeAt = (e: number) => QB.before + 0.5 + e * 0.9
 
+  // The triage cluster comes back for the pipeline (the map hid it in part 9).
+  const triageBack = q(0, 0.75)
+  inkIn(tl, triage, triageBack.start, triageBack.duration)
+  fade(tl, orbitOf(cast.get<Group>('orbit.triage')).material, 0.85, triageBack.start, triageBack.duration)
+
   // 10.4 before: every event wakes both workflows. Each one pulses as it wakes.
   // A drive, not tweens: the core's scale is written by drives (the extraction),
   // and a tween going back would restore a value recorded before any drive ran.

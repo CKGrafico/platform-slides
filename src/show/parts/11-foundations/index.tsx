@@ -25,6 +25,8 @@ import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
+import { mapCues } from '../../map/cues'
+import { mapShot } from '../../map/shots'
 import { GROUND_Y, MESSY_POS, PHASE_RADII, TEAM_Y, TIDY_POS, VERBS, WALL_ANGLES, WALL_RADIUS } from '../../layout'
 
 export const grid = beatStops([10, 6, 5, 6, 5, 5])
@@ -34,11 +36,21 @@ export const B = { title: 0, amplify: 4, phases: 10, disc: 16, walls: 21, verbs:
 const KEY = '11-foundations/foundations'
 hudCues.fill(2, { key: KEY, from: b(1.5), to: b(3) })
 
-const WHOLE: CameraShot = { position: [0, 4.4, 14.6], target: [0.2, -0.4, 0], fov: 36 }
+/** On the map: the whole, the ground with its three circles, the walls, the verbs. */
+const WHOLE = mapShot([0, -0.5, 0.2], 15.5)
+/** 11.1 happens in the sky: a tidy system and a messy one, side by side. */
 const SKY: CameraShot = { position: [0, TEAM_Y + 1.1, 8.4], target: [0, TEAM_Y - 0.1, 0], fov: 36 }
-const GROUND: CameraShot = { position: [0.4, 8.6, 13.4], target: [0.4, -2.0, 0.4], fov: 38 }
-const WALLS: CameraShot = { position: [0.2, 5.2, 12.6], target: [0.2, -1.6, 0.8], fov: 38 }
-const VERBS_SHOT: CameraShot = { position: [0.6, 3.6, 12.4], target: [0.8, 0.6, 0.4], fov: 38 }
+const GROUND = mapShot([0, -2.4, 0.6], 18)
+const WALLS = mapShot([0, -2.2, 3.2], 11)
+const VERBS_SHOT = mapShot([0.6, -0.2, 0.6], 12.5)
+
+const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
+const mapPulse = (from: number, to: number) => ({ rise: mapKey(from, from + 0.75), fall: mapKey(to, to + 0.75) })
+mapCues.focus(['lane.production'], mapPulse(B.phases, B.walls))
+mapCues.appear('walls', mapKey(B.walls + 1.5, B.walls + 2.25))
+mapCues.role('walls', mapPulse(B.walls + 1.75, B.verbs))
+mapCues.focus(['walls', 'lane.production'], mapPulse(B.walls, B.verbs))
+mapCues.focus(['implement', 'gate', 'router'], mapPulse(B.verbs, B.skip))
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
@@ -113,7 +125,7 @@ const foundationsScene = defineScene({
       [
         { from: 0, to: b(3.5), shot: WHOLE },
         { from: b(B.amplify), to: b(B.amplify + 3), shot: SKY, arc: 1.5 },
-        { from: b(B.phases), to: b(B.phases + 3.5), shot: GROUND, arc: 1.5 },
+        { from: b(B.phases), to: b(B.phases + 3.5), shot: GROUND },
         { from: b(B.walls), to: b(B.walls + 3), shot: WALLS },
         { from: b(B.verbs), to: b(B.verbs + 3), shot: VERBS_SHOT },
         { from: b(B.skip), to: b(B.skip + 3), shot: GROUND },
