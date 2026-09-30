@@ -3,7 +3,7 @@
  *
  * One real issue travels the whole system: the blue ball, which circled the
  * core on the cover. It comes in from far away, is captured by the router,
- * rides triage and refine, waits for a person to approve the story, spirals in
+ * rides triage and refine, passes the person who asked, spirals in
  * to implement inside the Harness, crosses the guardrails, passes the merge
  * gate, and escapes to production. The path lights up behind it, and each
  * pillar lights up on the map as the ball passes it.

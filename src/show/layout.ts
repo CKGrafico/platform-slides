@@ -220,8 +220,8 @@ export const EVENTS_FROM: V3 = [-11, 0.4, 1.3]
 /** The merge gate on the way out, and release beyond it (10.6). */
 export const GATE_POS: V3 = [5.7, 0, 1.3]
 export const RELEASE_POS: V3 = [8.6, 1.6, 0.2]
-/** Where a human approves the story: between refine and implement. */
-export const APPROVER_POS: V3 = [-2.1, -1.2, 0.55]
+/** The person who asked, by the lanes between refine and implement: they decide what gets built. */
+export const REQUESTER_POS: V3 = [-2.1, -1.2, 0.55]
 /** Audit and housekeeping circle to one side, on a steep orbit. */
 export const SIDE_ORBIT = { center: [0, 0.4, -1.2] as V3, radius: 4.7, tilt: 1.15 }
 /** Where audit and housekeeping are on their orbit when 10.6 ends (angles, radians). */

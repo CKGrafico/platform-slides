@@ -158,6 +158,6 @@ A check of every stop found text that the old checks could not see: a first line
 - **Captions have a halo of paper.** A soft glow in the surface color sits around the letters. On the plain void it does not show. Where a line or a planet passes behind the words, it keeps them readable.
 - **A caption goes where the frame is empty.** The bottom left is the default. When a shot fills it, the caption moves to the top left for that stop (4.6, 8.1, 12.1), like the split in part 3.
 - **The map's corner stays clear.** No planet sits behind the map of the talk in the top right. Shots move a little to keep it clear (6, 8.3, 10). When a shot needs the corner, the map steps out and comes back (12.2 to 12.5).
-- **A label leaves with its subject.** When the camera moves on and a label's element is at the edge of the new shot, the label fades out. It comes back for the wide shot of the whole system (the router and the approver in part 10).
+- **A label leaves with its subject.** When the camera moves on and a label's element is at the edge of the new shot, the label fades out. It comes back for the wide shot of the whole system (the router and the person who asks, in part 10).
 - **Part 9 is wider.** The camera is far enough back that the whole column (the workflow, the core, Forge, and the models) sits above the caption.
 

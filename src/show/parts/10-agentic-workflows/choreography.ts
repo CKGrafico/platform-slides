@@ -10,8 +10,8 @@
  * from the beat alone, so any frame is always the same. A second drive then
  * brings GitHub Actions and its steps onto the same orbit.
  *
- * pipeline. Events wake every workflow; then one router; the lanes; a person
- * who approves; the merge gate; audit and housekeeping on their own orbit.
+ * pipeline. Events wake every workflow; then one router; the lanes; the person
+ * who asked; the merge gate; audit and housekeeping on their own orbit.
  */
 import { Color, Vector3, type Group, type MeshToonMaterial } from 'three'
 import { artOf, coreOf, swarmOf } from '@/art/elements'
@@ -22,7 +22,7 @@ import { palette } from '@/art/palette'
 import { defineChoreography } from '@/world/actors'
 import { OUTER, STEPS, TASKS } from '../../actors'
 import {
-  APPROVER_POS,
+  REQUESTER_POS,
   AUDIT_END,
   CORE_R,
   CORE_SCALE_AFTER_P10,
@@ -300,11 +300,12 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const drawR = q(QB.lanes + 0.25, QB.lanes + 1.75)
   tl.to(laneR.reveal, { value: 1, duration: drawR.duration, ease: 'power2.inOut' }, drawR.start)
 
-  // A human approves the story before implement starts.
-  const approver = el('person.approver')
-  tl.set(approver.object.position, { x: APPROVER_POS[0], y: APPROVER_POS[1], z: APPROVER_POS[2] }, 0)
-  const approverIn = q(QB.lanes + 1.5, QB.lanes + 2.25)
-  inkIn(tl, approver, approverIn.start, approverIn.duration)
+  // The person who asked stands by the lanes: they decide what gets built,
+  // and after refine the story starts on its own.
+  const requester = el('person.requester')
+  tl.set(requester.object.position, { x: REQUESTER_POS[0], y: REQUESTER_POS[1], z: REQUESTER_POS[2] }, 0)
+  const requesterIn = q(QB.lanes + 1.5, QB.lanes + 2.25)
+  inkIn(tl, requester, requesterIn.start, requesterIn.duration)
 
   // 10.6: the merge gate on the way out.
   const gateEl = el('gate')

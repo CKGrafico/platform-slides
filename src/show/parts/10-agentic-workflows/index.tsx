@@ -12,11 +12,11 @@
  *   4. (6)  GitHub Actions joins the outer orbit.
  *   5. (5)  the model is the last resort.
  *
- * pipeline (10.4, 10.6): one router at the entrance, the worker lanes, a
- * person who approves what gets built, the merge gate, audit and housekeeping.
+ * pipeline (10.4, 10.6): one router at the entrance, the worker lanes, the
+ * person who asks (they decide what gets built), the merge gate, audit and housekeeping.
  *   1. (5) before: every workflow wakes up on every event.
  *   2. (6) one router: one event, one decision, at most one agent.
- *   3. (6) the lanes: triage, refine, implement; a human approves the story.
+ *   3. (6) the lanes: triage, refine, implement; the person who asks decides.
  *   4. (5) the merge gate, then release.
  *   5. (5) audit and housekeeping.
  */
@@ -32,7 +32,7 @@ import type { MessageKey } from '@/i18n'
 import { getActorObject } from '@/world/actors'
 import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
-import { APPROVER_POS, GATE_POS, LANES, RELEASE_POS, ROUTER_POS } from '../../layout'
+import { GATE_POS, LANES, RELEASE_POS, REQUESTER_POS, ROUTER_POS } from '../../layout'
 import { INNER, OUTER, TASKS } from '../../actors'
 
 // ---- pull-out ------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ const routerLabel = new Vector3(ROUTER_POS[0], ROUTER_POS[1] + 0.95, ROUTER_POS[
 const gateLabel = new Vector3(GATE_POS[0], GATE_POS[1] + 0.95, GATE_POS[2])
 // Under the release, so it stays clear of the map of the talk in the top right corner.
 const releaseLabel = new Vector3(RELEASE_POS[0], RELEASE_POS[1] - 0.5, RELEASE_POS[2])
-const approverLabel = new Vector3(APPROVER_POS[0] - 0.4, APPROVER_POS[1] + 0.45, APPROVER_POS[2])
+const requesterLabel = new Vector3(REQUESTER_POS[0] - 0.4, REQUESTER_POS[1] + 0.45, REQUESTER_POS[2])
 const laneLabel = (r: number, turn: number) => orbitPoint({ radius: r }, turn * Math.PI, new Vector3()).add(new Vector3(0, 0.2, 0))
 /** Each lane is named at its own angle, so the names never stack. */
 const LANE_LABELS = [
@@ -159,7 +159,7 @@ function Pipeline() {
       {LANE_LABELS.map((l, i) => (
         <Label key={l.k} k={l.k} target={() => l.p} width={16} level={pwin(QB.lanes + 1 + i * 0.5, QB.lanes + 1.75 + i * 0.5)} />
       ))}
-      <Label k="p10.approver" target={() => approverLabel} width={36} className="label-right" level={untilNext(QB.lanes + 2.5, QB.lanes + 3.25, QB.gate)} />
+      <Label k="p10.requester" target={() => requesterLabel} width={36} className="label-right" level={untilNext(QB.lanes + 2.5, QB.lanes + 3.25, QB.gate)} />
       <Label k="p10.gateName" target={() => gateLabel} width={16} mono={false} className="p05-name" level={pwin(QB.gate + 1, QB.gate + 1.75)} />
       <Label k="p10.release" target={() => releaseLabel} width={14} level={pwin(QB.gate + 2, QB.gate + 2.75)} />
       <Label k="p10.audit" target="audit" offset={[0, 0.45, 0]} width={16} level={pwin(QB.side + 1, QB.side + 1.75)} />

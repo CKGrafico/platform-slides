@@ -17,7 +17,7 @@ export const ROUTE = {
   router: 0.1,
   lanes: 0.16,
   refine: 0.37,
-  approve: 0.57,
+  requester: 0.57,
   implement: 0.6,
   exit: 0.78,
   gate: 0.9,

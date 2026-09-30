@@ -23,7 +23,7 @@ const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
 const win = (beat: number, a: number, bb: number) => clamp01((beat - a) / (bb - a))
 
 /** Where the ball is on the route at the end of each step (1..7). */
-const STEP_U = [0, ROUTE.router + 0.02, ROUTE.approve - 0.01, ROUTE.implement, ROUTE.exit, (ROUTE.exit + ROUTE.gate) / 2 + 0.02, ROUTE.gate + 0.02, 1]
+const STEP_U = [0, ROUTE.router + 0.02, ROUTE.requester - 0.01, ROUTE.implement, ROUTE.exit, (ROUTE.exit + ROUTE.gate) / 2 + 0.02, ROUTE.gate + 0.02, 1]
 
 export const issueToProductionMoves = defineChoreography('13-issue-to-production', (tl, cast, t) => {
   const span = (from: number, to: number) => t.span(KEY, b(from), b(to))
@@ -64,7 +64,7 @@ export const issueToProductionMoves = defineChoreography('13-issue-to-production
     tint(tl, color, base, off.start, off.duration)
   }
   flash(el('router').body.material.color, palette.peach, 1, 1.8)
-  flash(el('person.approver').body.material.color, palette.surface, 3, 1.5)
+  flash(el('person.requester').body.material.color, palette.surface, 3, 1.5)
   flash(el('opencode').body.material.color, palette.butter, 4, 1.8)
   WALL_ANGLES.forEach((_, i) => {
     const wall = el(`wall.${i}`)

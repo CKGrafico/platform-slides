@@ -394,7 +394,7 @@ The agent runs read-only. Every write is a request that the framework checks aga
 - **On screen:** behind the router, orbit lanes line up: triage (outer), refine, implement (near the core), then a checkpoint ring on the way out (the merge gate) and release. A weekly audit satellite and a housekeeping satellite circle to one side. Small tags (labels) ride on the balls from lane to lane.
 - **Say:**
   - Triage checks a request from outside the team. Refine turns it into a user story grounded in the code, with an estimate, or asks the author questions.
-  - A human still decides **what** gets built: someone approves the story. No human reads the code.
+  - A human still decides **what** gets built: the person who asks. After refinement the story starts on its own, with no approval by hand (94% of our issues). No human reads the code.
   - Implement writes the code, runs the full verification, opens one pull request, and stops. Merging is a different decision.
   - The merge gate reads the risk from the paths and the size of the change, with no model, then an agent looks for defects, and a validator decides: merge, send to a human, or block.
 - **Proof:** the first merge gate auto-merged 31% of its decisions and found zero defects. It was not reviewing, it was approving. We rebuilt it to decide on evidence.
@@ -519,17 +519,16 @@ The real problem was never bad decisions. It was silence: work that stopped and 
 ### 13.1 One real issue
 
 - **Goal:** one issue travels the whole system, and each pillar lights up as it takes part.
-- **On screen:** the whole system. The blue ball comes in from far away, with its real times: captured by the router, spiraling in to implement, out through the walls and the merge gate ring, and escaping to production. No project names: "a real issue from one of our apps".
+- **On screen:** the whole system. The blue ball comes in from far away: captured by the router, spiraling in to implement, out through the walls and the merge gate ring, and escaping to production. No project names: "a real issue from one of our apps".
 - **Say:**
   1. Someone in the business files a request. They have never opened the repo.
   2. Triage checks it. Refine turns it into a story and asks one question. The author answers. (Agentic Workflows)
-  3. The story is approved: a human decides what gets built.
+  3. The person who asked decides what gets built. The story starts on its own, with no approval by hand.
   4. The implement worker opens OpenCode with the Harness, writes the code, verifies it, and opens one pull request. (Agent Harness)
   5. CI runs the linting, the tests, the scanners, and the guardrails. (Foundations)
   6. The merge gate reads the risk and the evidence, and merges. (Agentic Workflows)
   7. It reaches production, and Project Health counts it. (Project Health)
 - **Bridge:** to the closing.
-- **Open:** pick the issue, with its real times from request to production.
 
 **System on screen:** the whole system, with the path of the blue ball lit end to end.
 
@@ -579,6 +578,7 @@ Facts already used in the script:
 | 25% more AI adoption, 7.2% less stability | 11.1 | DORA 2024 |
 | 3 of 5 DORA metrics collected, 2 refused | 12.3 | Foundations, Analytics |
 | 140 phantom agent runs removed | 12.3 | project-health, collector |
+| After refinement, the story starts on its own in 94% of issues (120 of 127) | 10.6, 13.1 | our-numbers.md, the approval step |
 
 More public figures are in [benchmarks.md](../knowledge/benchmarks.md). Our anonymised numbers, with their windows and what not to claim, are in [our-numbers.md](../knowledge/our-numbers.md).
 
@@ -594,7 +594,9 @@ More public figures are in [benchmarks.md](../knowledge/benchmarks.md). Our anon
 | 2026-09-29 | The web runs in English and Spanish, with the same space in both. |
 | 2026-09-29 | The whole talk is one diagram that grows. Each part ends with a "System on screen" contract. |
 | 2026-09-29 | The four slots of level 5 are the map of the talk. Each pillar fills one. |
-| 2026-09-29 | A human still approves what gets built (the story). No human reads the code. |
+| 2026-09-29 | A human still approves what gets built (the story). No human reads the code. (Replaced on 2026-09-30.) |
 | 2026-09-29 | About me: only name, role, and company. |
 | 2026-09-29 | Beat 8.4 (the runner) is cut. |
 | 2026-09-29 | People are astronauts; measures are stacks of coins; text is sized for a conference room. |
+| 2026-09-30 | The person who asks decides what gets built. After refinement the story starts on its own in 94% of our issues, so nobody approves it by hand. No human reads the code. |
+| 2026-09-30 | Part 13 shows the seven steps with no real times. |

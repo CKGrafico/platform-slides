@@ -12,7 +12,7 @@ import { TorusGeometry, type Object3D } from 'three'
 import { routePoint } from './route'
 import { defineActor, type ActorDef } from '@/world/actors'
 import {
-  APPROVER_POS,
+  REQUESTER_POS,
   APPS,
   AUDIT_END,
   CAPSULE_POS,
@@ -508,11 +508,11 @@ const gate = defineActor({
     return el.object
   },
 })
-const approver = defineActor({
-  id: 'person.approver',
+const requester = defineActor({
+  id: 'person.requester',
   create: () => {
     const el = createAstronaut({ patch: palette.sage })
-    el.object.position.set(...APPROVER_POS)
+    el.object.position.set(...REQUESTER_POS)
     return el.object
   },
   ambient: floating(7),
@@ -763,7 +763,7 @@ export const actors: ActorDef[] = [
   laneRefine,
   router,
   gate,
-  approver,
+  requester,
   flow,
   audit,
   housekeeping,
