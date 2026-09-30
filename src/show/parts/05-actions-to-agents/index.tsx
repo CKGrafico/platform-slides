@@ -37,6 +37,8 @@ const { b } = grid
 
 /** Beat where each stop's move starts. */
 export const B = { ga: 0, events: 4, unfold: 10, core: 15, md: 20, compile: 25, ours: 31, clusters: 35, story: 41 }
+/** When each piece of the shell leaves the scriptorium in 5.5 (it lands one beat later). */
+export const snapAt = (i: number) => B.compile + 2.2 + i * 0.45
 
 /** Where the scroll waits outside the hall (5.4), the crate comes out of the scriptorium (5.5), and the crate docks (5.7, in the hall's local units, scaled by the parts). */
 export const MD_OUT: V3 = [-3.8, 0.4, 2.6]
@@ -92,7 +94,7 @@ function Dom() {
         <BurnCaption k="p05.story" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={68} level={burnWindow(b(B.story + 0.75), b(B.story + 2))} />
       </Stage>
 
-      <Label k="p05.ga" target="station" offset={[0, 2.8, 0]} width={26} mono={false} className="p05-name" level={win(B.ga + 2.5, B.ga + 3.25, B.unfold, B.unfold + 1)} />
+      <Label k="p05.ga" target="station" offset={[-1.4, 2.5, 0]} width={26} mono={false} className="p05-name label-right" level={win(B.ga + 2.5, B.ga + 3.25, B.unfold, B.unfold + 1)} />
       {EVENTS.map((name, i) => (
         <Label
           key={name}
@@ -111,7 +113,7 @@ function Dom() {
           target={`step.${name}`}
           offset={[0, 0.6, 0]}
           width={20}
-          level={win(B.unfold + 0.9 + i * 0.55, B.unfold + 1.2 + i * 0.55, B.unfold + 1.5 + i * 0.55, B.unfold + 1.8 + i * 0.55)}
+          level={win(B.unfold + 0.9 + i * 0.6, B.unfold + 1.1 + i * 0.6, B.unfold + 1.3 + i * 0.6, B.unfold + 1.5 + i * 0.6)}
         />
       ))}
       <Label k="p05.agentic" target="hall" offset={[0.4, 4.6, -0.6]} width={26} mono={false} className="p05-name" level={win(B.core + 2, B.core + 3, B.md, B.md + 0.6)} />
@@ -119,14 +121,16 @@ function Dom() {
       <Label k="p05.front" target={above('md', 1.5)} width={30} level={win(B.md + 2.5, B.md + 3.25, B.compile, B.compile + 0.5)} />
       <Label k="p05.body" target={above('md', -0.5, 0.7)} width={30} level={win(B.md + 3, B.md + 3.75, B.compile, B.compile + 0.5)} />
       <Label k="p05.compilerName" target="scriptorium" offset={[0, 1.95, 0]} width={16} level={win(B.compile + 0.75, B.compile + 1.5, B.clusters, B.clusters + 1)} />
-      <Label k="p05.lock" target={above('lock', 1.15)} width={24} level={win(B.compile + 2.4, B.compile + 3, B.clusters, B.clusters + 1)} />
+      <Label k="p05.lock" target={above('lock', 1.15)} width={24} level={win(B.compile + 5.5, B.compile + 5.9, B.clusters, B.clusters + 1)} />
       {SHELL.map((name, i) => {
         const d = SHELL_DIRS[i]!
         const len = Math.hypot(d[0], d[1])
         const off = [(d[0] / (len || 1)) * 0.6, (d[1] / (len || 1)) * 0.42, 0] as const
-        // One name at a time, as each piece snaps on; "our changes" stays until the clusters.
-        const inAt = name === 'ours' ? B.ours + 1 : B.compile + 3 + i * 0.25
-        const outAt = name === 'ours' ? B.clusters : inAt + 0.5
+        // One name at a time, a flash as each piece lands; "our changes" stays until the clusters.
+        const quick = name !== 'ours'
+        const inAt = quick ? snapAt(i) + 0.55 : B.ours + 1
+        const outAt = quick ? inAt + 0.35 : B.clusters
+        const fade = quick ? 0.1 : 0.3
         return (
           <Label
             key={name}
@@ -135,7 +139,7 @@ function Dom() {
             offset={name === 'ours' ? [0.62, 0.1, 0] : off}
             width={20}
             className={d[0] > 0.3 ? 'label-left' : d[0] < -0.3 ? 'label-right' : undefined}
-            level={win(inAt, inAt + 0.3, outAt, outAt + 0.3)}
+            level={win(inAt, inAt + fade, outAt, outAt + fade)}
           />
         )
       })}

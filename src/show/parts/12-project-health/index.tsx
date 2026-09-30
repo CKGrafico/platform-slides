@@ -36,7 +36,7 @@ export const B = { title: 0, claim: 4, measure: 9, honest: 15, human: 21, number
 const KEY = '12-project-health/health'
 hudCues.fill(3, { key: KEY, from: b(1.5), to: b(3) })
 // The numbers of 12.5 need the whole frame: the map steps out and comes back for the loop.
-hudCues.hide({ rise: { key: KEY, from: b(B.numbers), to: b(B.numbers + 1) }, fall: { key: KEY, from: b(B.loop), to: b(B.loop + 1) } })
+hudCues.hide({ rise: { key: KEY, from: b(B.numbers), to: b(B.numbers + 1) }, fall: { key: KEY, from: b(B.loop + 0.75), to: b(B.loop + 1.75) } })
 
 /** The town; the road out to production; the stacks by the barn; the elder; a quiet corner for the numbers; the town again. */
 const WHOLE = townShot([0, 0.3, 1.5])
@@ -137,14 +137,14 @@ function Dom() {
         </div>
         <BurnCaption k="p12.loop" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={175} source="p12.loop.source" level={burnWindow(b(B.loop + 3), b(B.loop + 4))} />
       </Stage>
-      <Label k="p12.question" target={() => question} width={8} mono={false} className="tl-question" level={win(B.claim + 0.75, B.claim + 1.5, B.measure, B.measure + 1)} />
+      <Label k="p12.question" target={() => question} width={8} mono={false} className="tl-question" level={win(B.claim + 2, B.claim + 2.75, B.measure, B.measure + 1)} />
       {metricLabels.map((p, i) => (
         <Label key={i} k={`p12.metric.${i + 1}` as MessageKey} target={() => p} width={18} level={win(B.measure + 1 + i * 0.3, B.measure + 1.6 + i * 0.3, B.human, B.human + 1)} />
       ))}
       {hollowLabels.map((p, i) => (
         <Label key={i} k={`p12.hollow.${i + 1}` as MessageKey} target={() => p} width={24} className="verb-no" level={win(B.honest + 1 + i * 0.4, B.honest + 1.6 + i * 0.4, B.human, B.human + 1)} />
       ))}
-      <Label k="p12.notCollected" target={() => notCollected} width={20} level={win(B.honest + 1.75, B.honest + 2.25, B.human, B.human + 1)} />
+      <Label k="p12.notCollected" target={() => notCollected} width={20} level={win(B.honest + 1.75, B.honest + 2.25, B.human, B.human + 0.5)} />
       <Card fit="p12.panel" target={() => panelPoint} width={25} height={14.5} className="health-card" level={win(B.human + 1, B.human + 1.75, B.numbers, B.numbers + 1)}>
         <p className="health-card-title">
           <T k="p12.panel" />

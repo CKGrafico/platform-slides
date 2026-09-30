@@ -26,7 +26,7 @@ function Dom() {
     <div className="scene-root">
       <Stage>
         <h1 className="art-title cover-title" data-fit="cover title">
-          <Burn level={burnWindow(-1, 0, b(0.25), b(1.75))} seed={11}>
+          <Burn level={burnWindow(-1, 0, b(0.25), b(1.4))} seed={11}>
             <T k="p01.title" />
           </Burn>
         </h1>
@@ -42,7 +42,7 @@ function Dom() {
         </Caption>
 
         <div className="about" data-fit="about">
-          <Burn level={burnWindow(b(1.5), b(3.25))} seed={7}>
+          <Burn level={burnWindow(b(1.65), b(3.25))} seed={7}>
             <p className="about-name art-title">
               <T k="p02.name" />
             </p>

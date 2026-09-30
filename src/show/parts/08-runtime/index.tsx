@@ -38,7 +38,7 @@ const FORGE_SHOT = townShot([-1.5, 0.3, -6.5])
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
-const vendorLabel = new Vector3(12, 0.7, -4.6)
+const vendorLabel = new Vector3(8.5, 0.75, -4.05)
 const modelsLabel = new Vector3(KILNS[1]![0], 1.35, KILNS[1]![2])
 
 function Dom() {
@@ -50,7 +50,7 @@ function Dom() {
         <BurnCaption k="p08.opencode" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={102} level={burnWindow(b(B.opencode + 2), b(B.opencode + 3), b(B.forge), b(B.forge + 0.6))} />
         <BurnCaption k="p08.forge" corner="bottom-left" width={80} height={12} className="art-caption--lead" seed={103} source="p08.forge.source" level={burnWindow(b(B.forge + 3), b(B.forge + 4))} />
       </Stage>
-      <Label k="p08.lock" target="lock" offset={[0, 1.15, 0]} width={24} level={win(1, 1.75, B.opencode, B.opencode + 1)} />
+      <Label k="p08.lock" target="lock" offset={[0, 1.15, 0]} width={24} level={win(pulseAt(5) + 1.1, pulseAt(5) + 1.6, B.opencode, B.opencode + 1)} />
       {SHELL.map((name, i) => {
         if (name === 'ours' || name === 'threat') return null
         const d = SHELL_DIRS[i]!

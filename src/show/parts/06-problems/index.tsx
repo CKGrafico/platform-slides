@@ -59,10 +59,10 @@ function Dom() {
           target={`task.${name}`}
           offset={TASK_OFFSET}
           width={26}
-          level={win(B.cost + 0.6 + i * 0.5, B.cost + 0.9 + i * 0.5, B.cost + 1.45 + i * 0.5, B.cost + 1.75 + i * 0.5)}
+          level={win(B.cost + 0.8 + i * 0.6, B.cost + 1.05 + i * 0.6, B.cost + 1.25 + i * 0.6, B.cost + 1.5 + i * 0.6)}
         />
       ))}
-      <Label k="p06.tokens" target={aboveTokens} width={14} mono={false} className="p05-name" level={win(B.cost + 1.5, B.cost + 2.25)} />
+      <Label k="p06.tokens" target={aboveTokens} width={14} mono={false} className="p05-name" level={win(B.cost + 3.3, B.cost + 3.8)} />
       <Label k="p06.person" target="reviewer" offset={[0, 1.55, 0]} width={32} mono={false} className="p05-name" level={win(B.human + 1, B.human + 1.75)} />
     </div>
   )

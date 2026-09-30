@@ -83,8 +83,8 @@ function Dom() {
         <BurnCaption k="p11.verbs" corner="bottom-left" width={84} height={12} className="art-caption--lead" seed={135} source="p11.verbs.source" level={burnWindow(b(B.verbs + 2.5), b(B.verbs + 3.5), b(B.skip), b(B.skip + 0.6))} />
         <BurnCaption k="p11.skip" corner="top-left" width={84} height={12} className="art-caption--lead" seed={136} source="p11.skip.source" level={burnWindow(b(B.skip + 2.5), b(B.skip + 3.5))} />
       </Stage>
-      <Label k="p11.tidy" target={() => tidyLabel} width={20} mono={false} className="p05-name" level={win(B.amplify + 1, B.amplify + 1.75, B.phases, B.phases + 1)} />
-      <Label k="p11.messy" target={() => messyLabel} width={20} mono={false} className="p05-name" level={win(B.amplify + 1.25, B.amplify + 2, B.phases, B.phases + 1)} />
+      <Label k="p11.tidy" target={() => tidyLabel} width={20} mono={false} className="p05-name" level={win(B.amplify + 2.25, B.amplify + 3, B.phases, B.phases + 1)} />
+      <Label k="p11.messy" target={() => messyLabel} width={20} mono={false} className="p05-name" level={win(B.amplify + 2.5, B.amplify + 3.25, B.phases, B.phases + 1)} />
       {phasePoints.map((p, i) => (
         <Label
           key={i}

@@ -10,7 +10,7 @@ import { arcPoint, easeInOut } from '@/art/orbits'
 import { defineChoreography } from '@/world/actors'
 import { EVENTS, SHELL, STEPS } from '../../actors'
 import { DOOR_BIG, HALL_BIG, LINE_BENT, LINE_X, LINE_Y, LINE_Z, LOCK_DOCK, SCRIPTORIUM_DOOR, STATION, STATION_TURN } from '../../layout'
-import { B, grid, LOCK_POS, MD_OUT, SHELL_DIRS, SHELL_RADIUS } from '.'
+import { B, grid, LOCK_POS, MD_OUT, SHELL_DIRS, SHELL_RADIUS, snapAt } from '.'
 
 const KEY = '05-actions-to-agents/actions'
 const { b } = grid
@@ -127,7 +127,7 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
 
   const shell = SHELL.map((name) => el(`shell.${name}`))
   shell.forEach((s, i) => {
-    const at = SHELL[i] === 'ours' ? B.ours + 0.5 : B.compile + 2.75 + i * 0.25
+    const at = SHELL[i] === 'ours' ? B.ours + 0.5 : snapAt(i)
     const a = span(at, at + 0.6)
     inkIn(tl, s, a.start, a.duration)
   })
@@ -159,7 +159,7 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
     lock.object.position.copy(crateCenter)
     const hub = tmp.copy(crateCenter).add(new Vector3(0, 0.22, 0))
     shell.forEach((s, i) => {
-      const at = SHELL[i] === 'ours' ? B.ours + 0.5 : B.compile + 2.75 + i * 0.25
+      const at = SHELL[i] === 'ours' ? B.ours + 0.5 : snapAt(i)
       // Each piece comes from the scriptorium and snaps onto the shell.
       const snap = easeOut(win(beat, at, at + 1))
       const from = SHELL[i] === 'ours' ? center.copy(hub).add(new Vector3(1.4, 0.2, 0.6)) : center.copy(scriptDoor)

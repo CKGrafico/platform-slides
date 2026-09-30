@@ -27,8 +27,8 @@ import { TIMELINE_IDS } from '../../actors'
 export const grid = beatStops([14.5])
 const { b } = grid
 
-/** Beat where milestone k (0..9) starts: one a beat. */
-export const stepBeat = (k: number) => 3 + k
+/** Beat where milestone k (0..9) starts: one a beat, once the title has left the top left corner. */
+export const stepBeat = (k: number) => 3.5 + k
 /** Only the "?" keeps its line. */
 const LINE_AT = new Set([9])
 
@@ -43,7 +43,7 @@ const LINE_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.line` 
 
 /** Label level: in with its milestone. */
 function labelLevel(k: number) {
-  const a = b(stepBeat(k) + 0.75)
+  const a = b(stepBeat(k) + 1)
   return (local: number) => range(local, a, a + b(0.75))
 }
 
@@ -51,7 +51,7 @@ function Dom() {
   return (
     <div className="scene-root">
       <Stage>
-        <PartTitle kicker="p03.kicker" title="p03.title" level={burnWindow(b(1.5), b(2.75), b(10.25), b(11))} />
+        <PartTitle kicker="p03.kicker" title="p03.title" level={burnWindow(b(0.5), b(1.5), b(3.25), b(4))} />
         {LINE_KEYS.map((k, i) => {
           if (!LINE_AT.has(i)) return null
           const s = stepBeat(i)
