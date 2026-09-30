@@ -61,10 +61,13 @@ function writeStageVars(v: Viewport) {
 
 const EnvironmentContext = createContext<Environment | null>(null)
 
+/** `?motion=reduced` turns reduced motion on, like `?tier=low` forces a tier. */
+const motionForced = () => new URLSearchParams(window.location.search).get('motion') === 'reduced'
+
 export function EnvironmentProvider({ children }: { children: ReactNode }) {
   const [viewport, setViewport] = useState(measure)
   const [reducedMotion, setReducedMotion] = useState(
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+    () => motionForced() || window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   )
   const [tier, setTier] = useState<Tier>(detectTier)
 
@@ -89,7 +92,7 @@ export function EnvironmentProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const onChange = () => setReducedMotion(query.matches)
+    const onChange = () => setReducedMotion(motionForced() || query.matches)
     query.addEventListener('change', onChange)
     return () => query.removeEventListener('change', onChange)
   }, [])

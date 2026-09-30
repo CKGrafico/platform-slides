@@ -27,6 +27,7 @@ The debug panel loads only in development or with `?debug` in the URL. In produc
 - The scene list jumps to any scene.
 - The slider scrubs the whole timeline. Use it to check that each position always looks the same.
 - `?tier=low` forces a tier. The panel also has a tier select.
+- `?motion=reduced` turns reduced motion on without changing the system setting: each stop is a cut, and the ambient life, the boil, and the grain stop. Use it to check the talk the way a viewer with reduced motion sees it. It also works in production, if the laptop at the venue cannot keep the moves smooth.
 
 The panel shows:
 
