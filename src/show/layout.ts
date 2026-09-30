@@ -231,7 +231,7 @@ export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [
 /** Where the five guardrail names sit: on wall segments the camera sees (ring index, angle). */
 export const GUARDRAIL_SPOTS: Array<{ ring: number; angle: number }> = [
   { ring: 0, angle: deg(100) },
-  { ring: 0, angle: deg(-25) },
+  { ring: 0, angle: deg(55) },
   { ring: 1, angle: deg(70) },
   { ring: 1, angle: deg(112) },
   { ring: 2, angle: deg(88) },

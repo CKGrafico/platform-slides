@@ -35,8 +35,8 @@ const LINE_AT = new Set([9])
 /** The road, with all ten milestones in the frame. */
 const ROAD = townShot([(MILESTONE_X[0]! + MILESTONE_X[9]!) / 2, 0.6, MILESTONE_Z + 0.8])
 
-/** Names above the signposts, at two heights, so close neighbours never touch. */
-const LABEL_OFFSETS: Array<readonly [number, number, number]> = MILESTONE_X.map((_, i) => (i === 9 ? ([0, 0, 0] as const) : ([0, i % 2 ? 2.7 : 1.95, 0] as const)))
+/** Names above the signposts, at three heights, so close neighbours never touch. */
+const LABEL_OFFSETS: Array<readonly [number, number, number]> = MILESTONE_X.map((_, i) => (i === 9 ? ([0, 0, 0] as const) : ([0, 1.9 + (i % 3) * 0.8, 0] as const)))
 
 const NAME_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.name` as MessageKey)
 const LINE_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.line` as MessageKey)

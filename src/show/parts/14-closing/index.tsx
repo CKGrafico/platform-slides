@@ -64,7 +64,7 @@ function Dom() {
           key={id}
           k={NAME_KEYS[k]!}
           target={id}
-          offset={k === 9 ? [0, 0, 0] : [0, k % 2 ? 4.2 : 2.4, 0]}
+          offset={k === 9 ? [0, 0, 0] : [0, 2.4 + (k % 3) * 1.3, 0]}
           width={k === 9 ? 6 : 26}
           mono={false}
           level={win(B.timeline + 1.5 + k * 0.15, B.timeline + 2.25 + k * 0.15, B.title, B.title + 0.75)}
