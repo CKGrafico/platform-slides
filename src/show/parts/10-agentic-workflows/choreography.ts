@@ -23,6 +23,7 @@ import { palette } from '@/art/palette'
 import { faceAlong, faceOnPath, yawAlong, yawOnPath, type PathAt } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
 import { STEPS, TASKS } from '../../actors'
+import { loopAt, mainAt as mainPath } from '../../route'
 import { stackPoint, stackTilt } from '../../coins'
 import { FOLK, FOLK_HOME, HALL_SCALE, hallStep, homeAfter, homeAt, homePoint, setHallScale, walkPath } from '../../hall'
 import { BALES, BOOTH, COINS, FARMS, FIELDS, FIELD_TILE, HALL_DOOR, LINE_BENT, LINE_X, LINE_Y, LINE_Z, LOOP_LANDING, LOOP_SWEEP, MAIN_AT, PLATFORM_TOP, SPAGHETTI, STEP_LANDING, TOKEN_COINS, TOKENS_LEFT } from '../../layout'
@@ -72,8 +73,6 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const hall = el('hall')
   const parapet = el('harness')
   const banner = el('banner')
-  const loop = sketchOf(cast.get<Group>('loop'))
-  const loopAt: PathAt = (u, out) => loop.point(u, out)
   const tasks = TASKS.map((name) => artOf<MeshToonMaterial>(cast.get(`task.${name}`)))
   const home = homeAfter(FOLK.smiths[1]).map((id) => ({ object: cast.get(id), spot: FOLK_HOME.find((f) => f.id === id)!.spot }))
   const door = new Vector3()
@@ -103,8 +102,8 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
         return
       }
       const ride = LOOP_LANDING[i]! + LOOP_SWEEP * easeInOut(win(beat, PB.distance, PB.back))
-      loop.point(ride, landing)
-      landing.y += 0.03
+      loopAt(ride, landing)
+      landing.y = 0.08
       if (v < 1) {
         // Out of the door, down off the platform, then across to the loop.
         const e = easeInOut(v)
@@ -126,9 +125,6 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
 
   // ---- 10.3: the carts of GitHub Actions join the loop -----------------------------------------
   const steps = STEPS.map((name) => el(`step.${name}`))
-  const curve = sketchOf(cast.get<Group>('p5.curve'))
-  const curveOut = span(PB.back + 1, PB.back + 2.5)
-  fade(tl, curve.material, 0, curveOut.start, curveOut.duration)
   const starts = STEPS.map((_, i) => {
     const k = i - (STEPS.length - 2)
     return k >= 0 ? v3(LINE_BENT[k]!) : new Vector3(LINE_X[i]!, LINE_Y, LINE_Z)
@@ -140,8 +136,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       const a = PB.back + 1 + k * 0.25
       const w = easeInOut(win(beat, a, a + 1.6))
       const at = STEP_LANDING[k]! + 0.04 * easeInOut(win(beat, PB.resort, grid.totalBeats))
-      loop.point(at, tmp2)
-      tmp2.y += 0.03
+      loopAt(at, tmp2)
       tmp.lerpVectors(starts[k]!, tmp2, w)
       if (w < 1) faceAlong(step.object, starts[k]!, tmp2)
       else faceOnPath(step.object, loopAt, at)
@@ -184,8 +179,6 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     inkOut(tl, s, gone.start, gone.duration * 0.6)
   })
   const flow = swarmOf(cast.get('flow'))
-  const main = sketchOf(cast.get<Group>('main'))
-  const mainAt: PathAt = (u, out) => main.point(u, out)
   const mainSteps: Array<[number, number, number]> = [
     [QB.router + 0.5, QB.router + 2, MAIN_AT.gate + 0.03],
     [QB.lanes, QB.lanes + 1.5, MAIN_AT.hall + 0.05],
@@ -208,9 +201,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   shown(tl, roadMain, belt.start)
   drive(tl, belt.start, t.at(PIPE, 1) - belt.start, (u) => {
     const beat = QB.router + 0.5 + u * (pipeGrid.totalBeats - QB.router - 0.5)
-    const r = revealed(beat)
-    main.reveal.value = r
-    roadMain.object.scale.x = Math.max(0.001, r)
+    roadMain.object.scale.x = Math.max(0.001, revealed(beat))
   })
   const booth = v3(BOOTH)
   const carts = q(0, pipeGrid.totalBeats)
@@ -241,12 +232,10 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       const p = (beat - (QB.router + 1.5) - k * 1.7) * 0.05
       const shownCart = p >= 0 && p <= drawn ? 1 : 0
       const pc = clamp01(p)
-      main.point(pc, tmp)
-      tmp.y += 0.02
-      let yaw = yawOnPath(mainAt, pc)
+      mainPath(pc, tmp)
+      let yaw = yawOnPath(mainPath, pc)
       if (k === 2 && p > MAIN_AT.exit) {
-        main.point(MAIN_AT.exit, tmp2)
-        tmp2.y += 0.02
+        mainPath(MAIN_AT.exit, tmp2)
         tmp.lerpVectors(tmp2, booth, clamp01((p - MAIN_AT.exit) / 0.08))
         yaw = yawAlong(tmp2, booth)
       }
@@ -323,8 +312,8 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       return
     }
     const p = frac(0.5 + ((beat - (QB.side + 1.5)) / (pipeGrid.totalBeats - QB.side - 1.5)) * 0.35)
-    loop.point(p, tmp)
-    loop.point(p + 0.01, tmp2)
+    loopAt(p, tmp)
+    loopAt(p + 0.01, tmp2)
     tmp.x += 0.55
     tmp.z += 0.55
     repair.object.position.copy(tmp)

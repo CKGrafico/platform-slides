@@ -5,18 +5,15 @@
  */
 import type { Group, MeshToonMaterial } from 'three'
 import { boil } from '@/art/clock'
-import { artOf, swarmOf } from '@/art/elements'
+import { artOf } from '@/art/elements'
 import { sketchOf } from '@/art/lines'
-import { drive, fade, inkIn, inkOut, tint } from '@/art/motion'
+import { fade, inkIn, inkOut, tint } from '@/art/motion'
 import { defineChoreography } from '@/world/actors'
 import { APPS, PILE, TEAM } from '../../layout'
 import { B, grid } from '.'
 
 const KEY = '07-change-of-mind/change'
 const { b } = grid
-
-const clamp01 = (v: number) => Math.min(1, Math.max(0, v))
-const easeOut = (t: number) => 1 - Math.pow(1 - clamp01(t), 3)
 
 /** The person at the exit, faint: a paler tone. */
 const FAINT = '#E4E1E6'
@@ -43,19 +40,8 @@ export const changeOfMindMoves = defineChoreography('07-change-of-mind', (tl, ca
     const a = span(B.team + 0.75 + i * 0.25, B.team + 1.5 + i * 0.25)
     inkIn(tl, el, a.start, a.duration)
   })
-  const walls = swarmOf(cast.get('apps'))
-  const roofs = swarmOf(cast.get('apps.roofs'))
-  const end = B.team + 4
-  const appsWin = span(B.team, end)
-  drive(tl, appsWin.start, appsWin.duration, (u) => {
-    const beat = B.team + u * (end - B.team)
-    APPS.forEach((p, i) => {
-      const inAt = B.team + 1.25 + i * 0.12
-      const s = easeOut((beat - inAt) / 0.6)
-      walls.place(i, p[0], p[1], p[2], s)
-      roofs.place(i, p[0], p[1], p[2], s)
-    })
-    walls.commit()
-    roofs.commit()
+  APPS.forEach((_, i) => {
+    const a = span(B.team + 1.25 + i * 0.12, B.team + 1.9 + i * 0.12)
+    inkIn(tl, artOf(cast.get(`app.${i}`)), a.start, a.duration)
   })
 })

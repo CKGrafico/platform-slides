@@ -45,7 +45,7 @@ export function Hud() {
   const root = useRef<HTMLDivElement>(null)
   const turbulence = useRef<SVGFETurbulenceElement>(null)
   const slots = useRef<Array<SVGGElement | null>>([])
-  const fills = useRef<Array<SVGCircleElement | null>>([])
+  const fills = useRef<Array<SVGPathElement | null>>([])
   const names = useRef<Array<HTMLDivElement | null>>([])
   const last = useRef('')
 
@@ -77,7 +77,7 @@ export function Hud() {
     el.style.transform = `translate(calc(var(--su) * ${x * c}), calc(var(--su) * ${y * c})) scale(${scale})`
     s.fill.forEach((f, i) => {
       const lit = s.lit[i]!
-      fills.current[i]?.setAttribute('r', String(7.5 * Math.min(1, f * 1.2)))
+      fills.current[i]?.setAttribute('transform', `scale(${Math.min(1, f * 1.2)})`)
       fills.current[i]?.setAttribute('fill', lit > 0.5 ? palette.accent : SLOT_COLORS[i]!)
       const n = names.current[i]
       if (n) {
@@ -111,12 +111,14 @@ export function Hud() {
               const a = (deg * Math.PI) / 180
               const x = CX + Math.cos(a) * R
               const y = CY + Math.sin(a) * R
+              // A pennant on a pole: a dashed one while the slot is empty, a filled one that rises up the pole when a pillar takes it.
               return (
-                <g key={deg}>
+                <g key={deg} transform={`translate(${x} ${y})`}>
+                  <line x1={0} y1={-10} x2={0} y2={9} stroke={palette.outline} strokeWidth={1.3} strokeLinecap="round" />
                   <g ref={(e) => void (slots.current[i] = e)}>
-                    <circle cx={x} cy={y} r={7.5} fill={palette.surface} stroke={palette.outline} strokeWidth={1.3} strokeDasharray="3 2.2" />
+                    <path d="M0 -10 L13 -6.5 L0 -3 Z" fill={palette.surface} stroke={palette.outline} strokeWidth={1.2} strokeDasharray="2.6 1.8" />
                   </g>
-                  <circle ref={(e) => void (fills.current[i] = e)} cx={x} cy={y} r={0} fill={SLOT_COLORS[i]} stroke={palette.outline} strokeWidth={1.5} />
+                  <path ref={(e) => void (fills.current[i] = e)} d="M0 -10 L13 -6.5 L0 -3 Z" transform="scale(0)" fill={SLOT_COLORS[i]} stroke={palette.outline} strokeWidth={1.3} strokeLinejoin="round" />
                 </g>
               )
             })}

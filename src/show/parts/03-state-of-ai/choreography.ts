@@ -1,14 +1,16 @@
 /**
  * Part 3 moves. The blue cart goes into the hall, then the road into the town
- * lays itself one milestone at a time, from the far west to the "?".
+ * lays itself one milestone at a time, from the far west to the "?", with
+ * three walkers keeping pace with it, milestone by milestone. They stop in
+ * front of the "?", and stay there for the closing.
  */
 import type { Group } from 'three'
 import { artOf } from '@/art/elements'
 import { sketchOf } from '@/art/lines'
 import { drive, inkIn, inkOut, shown } from '@/art/motion'
 import { defineChoreography } from '@/world/actors'
-import { MILESTONE_X, TIMELINE_ROAD } from '../../layout'
-import { issueOrbit, TIMELINE_IDS } from '../../actors'
+import { MAIN_Z, MILESTONE_X, TIMELINE_ROAD } from '../../layout'
+import { issueOrbit, TIMELINE_IDS, WALKER_OFFSETS } from '../../actors'
 import { grid, stepBeat } from '.'
 
 const KEY = '03-state-of-ai/timeline'
@@ -35,6 +37,12 @@ export const stateOfAiMoves = defineChoreography('03-state-of-ai', (tl, cast, t)
   const x0 = TIMELINE_ROAD[0]![0]
   const length = TIMELINE_ROAD[1]![0] - x0
   shown(tl, road, span(2.5, 2.5).start)
+  // Three walkers come in from the west and keep pace with the road's end.
+  const walkers = WALKER_OFFSETS.map((_, i) => artOf(cast.get(`walker.${i}`)))
+  walkers.forEach((w, i) => {
+    const a = span(2.6 + i * 0.15, 3.3 + i * 0.15)
+    inkIn(tl, w, a.start, a.duration)
+  })
   const laying = span(2.5, stepBeat(9) + 1.5)
   drive(tl, laying.start, laying.duration, (u) => {
     const beat = 2.5 + u * (stepBeat(9) + 1.5 - 2.5)
@@ -45,6 +53,12 @@ export const stateOfAiMoves = defineChoreography('03-state-of-ai', (tl, cast, t)
       reach = Math.max(reach, Math.min(to, reach + (to - reach) * w))
     })
     road.object.scale.x = Math.max(0.001, Math.min(1, reach / length))
+    // A little behind the road's end, with a step for every stretch walked.
+    const walked = Math.max(0, reach - 1.6)
+    walkers.forEach((w, i) => {
+      const off = WALKER_OFFSETS[i]!
+      w.object.position.set(x0 + walked + off[0], 0.05 + 0.03 * Math.abs(Math.sin(walked * 2.4 + i * 1.3)), MAIN_Z + off[2])
+    })
   })
 
   // Milestones: each one inks in as the road reaches it. The "?" draws its slot.

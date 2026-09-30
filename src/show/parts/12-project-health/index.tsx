@@ -59,11 +59,11 @@ const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => 
 const question = new Vector3(OUTER_E[0] - 2.0, 2.4, OUTER_E[2])
 /** Names of the front row on the ground before the stacks, at three depths; names of the back row above, at three heights. */
 const FRONT_DEPTH = [0.7, 1.9, 3.1, 0.7]
-const BACK_HEIGHT = [2.0, 3.0, 4.0, 2.0]
+const BACK_HEIGHT = [2.0, 3.6, 2.0, 3.6]
 const metricLabels = METRIC_COINS.map((_, i) => (i < 4 ? new Vector3(METRIC_BASES[i]![0], 0.05, METRIC_BASES[i]![2] + FRONT_DEPTH[i]!) : new Vector3(METRIC_BASES[i]![0], BACK_HEIGHT[i - 4]!, METRIC_BASES[i]![2])))
 const hollowLabels = [0, 1].map((k) => new Vector3(METRIC_BASES[6 + k]![0], BACK_HEIGHT[2 + k]!, METRIC_BASES[6 + k]![2]))
 // "Not collected" above the two ghost stacks' names.
-const notCollected = new Vector3((METRIC_BASES[6]![0] + METRIC_BASES[7]![0]) / 2, 4.9, METRIC_BASES[7]![2])
+const notCollected = new Vector3((METRIC_BASES[6]![0] + METRIC_BASES[7]![0]) / 2, 5.2, METRIC_BASES[7]![2])
 const panelPoint = new Vector3(HEALTH_PERSON[0] + 0.6, 1.3, HEALTH_PERSON[2])
 /** What needs a human, per app: a few pastel dots each. */
 const WAITING = [2, 1, 3]

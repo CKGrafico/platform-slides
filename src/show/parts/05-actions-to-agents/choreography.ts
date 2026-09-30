@@ -6,10 +6,9 @@
  * comes out with its palisade of stakes; the first of the hall's folk walks
  * out to the triage house, and the hall steps down a size.
  */
-import { Vector3, type Group } from 'three'
+import { Vector3 } from 'three'
 import { artOf } from '@/art/elements'
-import { sketchOf } from '@/art/lines'
-import { drive, fade, inkIn, inkOut } from '@/art/motion'
+import { drive, inkIn, inkOut, shown } from '@/art/motion'
 import { arcPoint, easeInOut } from '@/art/orbits'
 import { defineChoreography } from '@/world/actors'
 import { EVENTS, SHELL, STEPS } from '../../actors'
@@ -81,21 +80,20 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
     const a = span(B.unfold + 0.5 + i * 0.25, B.unfold + 1.1 + i * 0.25)
     inkIn(tl, s, a.start, a.duration)
   })
-  const line = sketchOf(cast.get<Group>('p5.line'))
+  const millRoad = el('road.mill')
   const drawLine = span(B.unfold + 0.5, B.unfold + 2.5)
-  tl.to(line.reveal, { value: 1, duration: drawLine.duration, ease: 'power2.inOut' }, drawLine.start)
+  shown(tl, millRoad, drawLine.start)
+  drive(tl, drawLine.start, drawLine.duration, (u) => {
+    millRoad.object.scale.x = Math.max(0.001, easeInOut(u))
+  })
 
   // ---- 5.3: the road bends into the loop around the hall -------------------------------------
-  const loop = sketchOf(cast.get<Group>('loop'))
   const loopIn = span(B.core + 1, B.core + 2.75)
-  inkIn(tl, el('road.loop'), loopIn.start - 0.3, loopIn.duration * 0.6)
-  tl.to(loop.reveal, { value: 1, duration: loopIn.duration, ease: 'power2.inOut' }, loopIn.start)
+  inkIn(tl, el('road.loop'), loopIn.start - 0.3, loopIn.duration)
   const wellIn = span(B.core + 1.5, B.core + 2.25)
   inkIn(tl, el('well'), wellIn.start, wellIn.duration)
-  const curve = sketchOf(cast.get<Group>('p5.curve'))
   const bend = span(B.core + 2, B.core + 3.5)
-  fade(tl, line.material, 0, bend.start, bend.duration)
-  fade(tl, curve.material, 1, bend.start, bend.duration)
+  inkIn(tl, el('road.bend'), bend.start, bend.duration * 0.6)
 
   const lineMoves = span(B.unfold, grid.totalBeats)
   const bent = LINE_BENT.map(v3)

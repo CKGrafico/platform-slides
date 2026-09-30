@@ -19,6 +19,9 @@ export interface WallArcOptions {
   to: number
   height?: number
   thickness?: number
+  /** The size of a merlon along the top, and how far apart they stand. */
+  merlon?: number
+  merlonEvery?: number
   /** Angles where a tower stands on the wall. */
   towers?: number[]
   /** Angles the wall leaves open: gates, and towers that are elements of their own. */
@@ -29,7 +32,7 @@ const inGap = (a: number, gaps: Gap[]) => gaps.some(([g0, g1]) => a >= g0 && a <
 
 /** A ring wall between two angles: blocks of stone with merlons, and towers. Its center is the origin. */
 export function createWallArc(options: WallArcOptions) {
-  const { radius, from, to, height = 0.75, thickness = 0.36, towers = [], gaps = [] } = options
+  const { radius, from, to, height = 1.05, thickness = 0.5, merlon = 0.2, merlonEvery = 0.6, towers = [], gaps = [] } = options
   const stone: BufferGeometry[] = []
   const p = new Parts()
   const length = (to - from) * radius
@@ -44,21 +47,22 @@ export function createWallArc(options: WallArcOptions) {
     // A block along the tangent: turned so its length follows the ring.
     stone.push(boxAt(chord + 0.06, height, thickness, x, height / 2, z, { y: -a }))
     // Merlons along the outer edge.
-    const merlons = Math.max(2, Math.round(chord / 0.5))
+    const merlons = Math.max(2, Math.round(chord / merlonEvery))
     for (let k = 0; k < merlons; k++) {
       const t = (k + 0.5) / merlons - 0.5
       const am = a + t * step
-      const r = radius + thickness / 2 - 0.08
-      stone.push(boxAt(0.14, 0.14, 0.14, Math.cos(am) * r, height + 0.07, Math.sin(am) * r, { y: -am }))
+      const r = radius + thickness / 2 - merlon / 2 - 0.02
+      stone.push(boxAt(merlon, merlon, merlon, Math.cos(am) * r, height + merlon / 2, Math.sin(am) * r, { y: -am }))
     }
   }
   for (const a of towers) {
     const x = Math.cos(a) * radius
     const z = Math.sin(a) * radius
-    const tw = 0.7
-    const th = height + 0.7
+    const tw = thickness + 0.5
+    const th = height + 0.85
     stone.push(boxAt(tw, th, tw, x, th / 2, z, { y: -a }))
-    const roof = hipRoofGeometry(tw + 0.3, tw + 0.3, 0.42, 0)
+    p.timber.push(boxAt(tw + 0.24, 0.16, tw + 0.24, x, th - 0.1, z, { y: -a }))
+    const roof = hipRoofGeometry(tw + 0.36, tw + 0.36, 0.5, 0)
     roof.rotateY(-a)
     roof.translate(x, th, z)
     p.tiles.push(roof)
@@ -66,6 +70,15 @@ export function createWallArc(options: WallArcOptions) {
   const el = building('wall', merge(stone), town.stone, stoneTexture())
   p.attachTo(el, town.stone, town.tileDark)
   return el
+}
+
+/**
+ * A low ring wall between two angles: a kerb of stone with small merlons, no
+ * towers. A maturity level in part 4; the footing a ring wall rises on in
+ * part 11.
+ */
+export function createLowWall(options: Pick<WallArcOptions, 'radius' | 'from' | 'to' | 'gaps'>) {
+  return createWallArc({ ...options, height: 0.34, thickness: 0.3, merlon: 0.11, merlonEvery: 0.4 })
 }
 
 /**

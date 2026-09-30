@@ -8,11 +8,11 @@
  *
  * Nothing here is a sphere on its own. The town has no moons.
  */
-import { BoxGeometry, ConeGeometry, CylinderGeometry, DodecahedronGeometry, Group, SphereGeometry, Vector3, type BufferGeometry, type ColorRepresentation, type Object3D } from 'three'
+import { BoxGeometry, CylinderGeometry, DodecahedronGeometry, Group, SphereGeometry, Vector3, type BufferGeometry, type ColorRepresentation, type Object3D } from 'three'
 import { createSwarm, type ArtElement, type Swarm } from './elements'
 import { palette } from './palette'
 import { inkOf } from './toon'
-import { attach, boxAt, building, merge, town } from './town'
+import { attach, boxAt, building, merge, stakeGeometry, town } from './town'
 
 /** What a cart carries. Barrels are the steps of the mill, crates the tasks, a tarp a piece of work, a sack a delivery. */
 export type Load = 'barrel' | 'crate' | 'sack' | 'tarp'
@@ -166,11 +166,7 @@ export function createSack(options: { color?: ColorRepresentation } = {}): ArtEl
 /** A stake of a palisade: one piece of the shell the compiler builds. A band near the top names it. */
 export function createStake(options: { band?: ColorRepresentation } = {}): ArtElement {
   const { band = palette.surface } = options
-  const post = boxAt(0.09, 0.5, 0.09, 0, 0.25, 0)
-  const tip = new ConeGeometry(0.075, 0.13, 4)
-  tip.rotateY(Math.PI / 4)
-  tip.translate(0, 0.565, 0)
-  const el = building('stake', merge([post, tip]), town.timber)
+  const el = building('stake', stakeGeometry(0.5), town.timber)
   attach(el, boxAt(0.11, 0.09, 0.11, 0, 0.4, 0), band, { width: 1.2 })
   return el
 }

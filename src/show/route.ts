@@ -7,8 +7,9 @@
  * part 12 sends the audit's finding along its first stretch.
  */
 import { Vector3 } from 'three'
+import type { PathFn } from '@/art/lines'
 import { polyline } from '@/art/town'
-import { ARCH_E, ARCH_W, EXIT_GATE, GATEHOUSE, LOOP, MAIN_Z, MARKET, OUTER_E, PRODUCTION, REFINE_HOUSE, REQUESTER, TRIAGE_HOUSE, type V3 } from './layout'
+import { ARCH_E, ARCH_W, EXIT_GATE, GATEHOUSE, LOOP, MAIN, MAIN_Z, MARKET, OUTER_E, PRODUCTION, REFINE_HOUSE, REQUESTER, TRIAGE_HOUSE, type V3 } from './layout'
 
 const Y = 0.14
 const road = (x: number): V3 => [x, Y, MAIN_Z]
@@ -61,3 +62,13 @@ const path = polyline(points)
 export function routePoint(u: number, out = new Vector3()): Vector3 {
   return path(u, out)
 }
+
+/** The height a cart rides at on a road. */
+const RIDE = 0.08
+const raise = (p: V3): V3 => [p[0], RIDE, p[2]]
+
+const loopPath = polyline([...LOOP, LOOP[0]!].map(raise))
+/** The loop road round the hall as a path: closed, so u wraps. Clockwise from the south west corner. */
+export const loopAt: PathFn = (u, out) => loopPath(u - Math.floor(u), out)
+/** The main road, west to east, as a path. */
+export const mainAt: PathFn = polyline(MAIN.map(raise))

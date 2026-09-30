@@ -63,13 +63,14 @@ export const foundationsMoves = defineChoreography('11-foundations', (tl, cast, 
   })
 
   // ---- 11.2: three phase circles on the ground: the plans of the walls -------------------------
-  RINGS.forEach((_, i) => {
-    const c = sketchOf(cast.get<Group>(`phase.${i}`))
-    const draw = span(B.phases + 0.75 + i * 0.6, B.phases + 2.25 + i * 0.6)
-    tl.to(c.reveal, { value: 1, duration: draw.duration, ease: 'power2.inOut' }, draw.start)
-    // The walls take their place.
-    const gone = span(B.walls + 1 + i * 1.2, B.walls + 2.5 + i * 1.2)
-    fade(tl, c.material, 0, gone.start, gone.duration)
+  // The footings rise round the hall arc by arc; the walls rise on them later and cover them.
+  RINGS.forEach((_, r) => {
+    for (let k = 0; k < RING_ARCS; k++) {
+      const f = el(`phase.${r}.${k}`)
+      const rise = span(B.phases + 0.75 + r * 0.6 + k * 0.1, B.phases + 1.5 + r * 0.6 + k * 0.1)
+      inkIn(tl, f, rise.start, rise.duration)
+      tl.fromTo(f.object.scale, { y: 0.001 }, { y: 1, duration: rise.duration, ease: 'power3.out', immediateRender: false }, rise.start)
+    }
   })
 
   // ---- 11.3: the grid of the land ------------------------------------------------------------------

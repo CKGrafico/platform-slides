@@ -8,7 +8,7 @@ import { BoxGeometry, CylinderGeometry, SphereGeometry, type BufferGeometry, typ
 import { assemble, createSwarm, type Swarm } from './elements'
 import { palette } from './palette'
 import { createToonMaterial, inkOf } from './toon'
-import { addChimney, addDoor, attach, boxAt, building, gableEndsGeometry, gableRoofGeometry, hipRoofGeometry, merge, Parts, stoneTexture, town } from './town'
+import { addChimney, addDoor, addFlag, attach, boxAt, building, gableEndsGeometry, gableRoofGeometry, hipRoofGeometry, merge, Parts, stoneTexture, town } from './town'
 
 /** A milestone on the road: a signpost with a board and a pennant. `stone` adds a stone base, for the structures of the second half. */
 export function createMilestone(options: { stone?: boolean; pennant?: ColorRepresentation } = {}) {
@@ -75,10 +75,12 @@ export function createBanner(options: { color?: ColorRepresentation; height?: nu
 }
 
 /** The forge: a stone shed open at the front, a big chimney, an anvil and a fire inside. Its front faces +Z. */
-export function createForge() {
+export function createForge(options: { flag?: ColorRepresentation | false } = {}) {
+  const { flag = false } = options
   const base = boxAt(1.7, 0.7, 1.3, 0, 0.35, -0.25)
   const el = building('forge', base, town.stone, stoneTexture())
   const p = new Parts()
+  if (flag) addFlag(el, p, 0.4, 1.2, 0.05, flag)
   for (const x of [-0.75, 0.75]) p.stone.push(boxAt(0.2, 0.7, 0.2, x, 0.35, 0.65))
   const roof = hipRoofGeometry(2.1, 1.9, 0.5, 0.4)
   roof.translate(0, 0.7, 0.05)
@@ -106,24 +108,51 @@ export function createKiln() {
 }
 
 /**
- * The parapet of the hall: a low stone wall on the edge of its platform, in
- * the hall's local units, with the opening of the arcade at the front. It is
- * the Harness: the rules the hall keeps around the agent. Scale it with the hall.
+ * The curtain wall of the hall: the Harness, the rules the hall keeps around
+ * the agent. A crenellated wall of stone on the edge of the hall's platform,
+ * in its local units, with a tower at each corner and a gate of two towers at
+ * the arcade, where the front stays open. Scale it with the hall.
  */
 export function createParapet(options: { halfWidth?: number; halfDepth?: number; height?: number } = {}) {
-  const { halfWidth = 2.3, halfDepth = 2.0, height = 0.34 } = options
-  const t = 0.16
+  const { halfWidth = 2.3, halfDepth = 2.0, height = 0.72 } = options
+  const t = 0.22
   const y = 0.14
-  const parts: BufferGeometry[] = [
+  const gate = 1.5
+  const stone: BufferGeometry[] = [
     boxAt(halfWidth * 2, height, t, 0, y + height / 2, -halfDepth),
     boxAt(t, height, halfDepth * 2, -halfWidth, y + height / 2, 0),
     boxAt(t, height, halfDepth * 2, halfWidth, y + height / 2, 0),
-    boxAt(halfWidth - 1.5, height, t, -(halfWidth + 1.5) / 2, y + height / 2, halfDepth),
-    boxAt(halfWidth - 1.5, height, t, (halfWidth + 1.5) / 2, y + height / 2, halfDepth),
+    boxAt(halfWidth - gate, height, t, -(halfWidth + gate) / 2, y + height / 2, halfDepth),
+    boxAt(halfWidth - gate, height, t, (halfWidth + gate) / 2, y + height / 2, halfDepth),
   ]
-  for (const x of [-halfWidth, halfWidth]) for (const z of [-halfDepth, halfDepth]) parts.push(boxAt(0.26, height + 0.12, 0.26, x, y + (height + 0.12) / 2, z))
-  for (const x of [-1.5, 1.5]) parts.push(boxAt(0.26, height + 0.12, 0.26, x, y + (height + 0.12) / 2, halfDepth))
-  return building('parapet', merge(parts), town.stone, stoneTexture())
+  // Merlons along every stretch of wall.
+  const merlon = 0.12
+  const along = (x0: number, z0: number, x1: number, z1: number) => {
+    const n = Math.max(2, Math.round(Math.hypot(x1 - x0, z1 - z0) / 0.34))
+    for (let k = 0; k < n; k++) {
+      const u = (k + 0.5) / n
+      stone.push(boxAt(merlon, merlon, merlon, x0 + (x1 - x0) * u, y + height + merlon / 2, z0 + (z1 - z0) * u))
+    }
+  }
+  along(-halfWidth, -halfDepth, halfWidth, -halfDepth)
+  along(-halfWidth, -halfDepth, -halfWidth, halfDepth)
+  along(halfWidth, -halfDepth, halfWidth, halfDepth)
+  along(-halfWidth, halfDepth, -gate, halfDepth)
+  along(gate, halfDepth, halfWidth, halfDepth)
+  // Towers: one at each corner, two smaller ones at the gate, with a hoarding and a tiled roof.
+  const p = new Parts()
+  const tower = (x: number, z: number, w: number, h: number) => {
+    stone.push(boxAt(w, h, w, x, y + h / 2, z))
+    p.timber.push(boxAt(w + 0.16, 0.1, w + 0.16, x, y + h - 0.05, z))
+    const roof = hipRoofGeometry(w + 0.26, w + 0.26, 0.34, 0)
+    roof.translate(x, y + h, z)
+    p.tilesDark.push(roof)
+  }
+  for (const x of [-halfWidth, halfWidth]) for (const z of [-halfDepth, halfDepth]) tower(x, z, 0.56, height + 0.5)
+  for (const x of [-gate, gate]) tower(x, halfDepth, 0.44, height + 0.34)
+  const el = building('parapet', merge(stone), town.stone, stoneTexture())
+  p.attachTo(el, town.stone, town.tileDark)
+  return el
 }
 
 /** Cottages for the hamlet: the walls, as one swarm, and the roofs, as another that shares the positions. */
@@ -142,11 +171,13 @@ export function createCottageRoofs(count: number): Swarm {
 }
 
 /** A small barn: wooden, with a wide door and a thatched roof. Its front faces +Z. */
-export function createBarn() {
+export function createBarn(options: { flag?: ColorRepresentation | false } = {}) {
+  const { flag = false } = options
   const walls = new BoxGeometry(1.8, 0.75, 1.4)
   walls.translate(0, 0.375, 0)
   const el = building('barn', walls, town.wood)
   const p = new Parts()
+  if (flag) addFlag(el, p, 0.75, 1.42, 0, flag)
   const roof = gableRoofGeometry(2.0, 1.8, 0.6)
   roof.translate(0, 0.75, 0)
   p.tiles.push(roof)

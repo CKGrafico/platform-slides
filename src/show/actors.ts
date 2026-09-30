@@ -7,14 +7,13 @@
  */
 import { Vector3, type Object3D } from 'three'
 import { artOf, coinGeometry, createCoin, createSwarm, type Swarm } from '@/art/elements'
-import { createGhostStacks, createGrid, createSketchLine, createSlot, straight, through, circleXZ } from '@/art/lines'
+import { createGhostStacks, createGrid, createSketchLine, createSlot, straight, through } from '@/art/lines'
 import { palette } from '@/art/palette'
 import { inkOf } from '@/art/toon'
-import { beltRun, createBales, createBelt, createBlades, createBushes, createCanopies, createFence, createFields, createFlowers, createGate, createHouse, createLand, createMill, createPines, createRoad, createRocks, createRows, createStall, createTower, createTownCenter, createTrunks, createVillager, createWell, polyline, town } from '@/art/town'
-import { createBanner, createBarn, createCottageRoofs, createCottageWalls, createCrate, createForge, createKiln, createMilestone, createParapet, createScroll } from '@/art/town-props'
+import { createBales, createBlades, createBushes, createCanopies, createFence, createFields, createFlowers, createGate, createHouse, createLand, createMill, createPines, createRoad, createRocks, createRows, createStall, createTower, createTownCenter, createTrail, createTrunks, createVillager, createWell, polyline, town } from '@/art/town'
+import { createBanner, createBarn, createCrate, createForge, createKiln, createMilestone, createParapet, createScroll } from '@/art/town-props'
 import { createCart, createCartSwarm, createSack, createSeal, createStake, createStone } from '@/art/town-units'
-import { createArch, createWallArc, type Gap } from '@/art/town-walls'
-import { sketchOf } from '@/art/lines'
+import { createArch, createLowWall, createWallArc, type Gap } from '@/art/town-walls'
 import { defineActor, type ActorDef } from '@/world/actors'
 import { FOLK, FOLK_HOME, homePoint } from './hall'
 import { routePoint } from './route'
@@ -47,7 +46,6 @@ import {
   LINE_BENT,
   LINE_FROM,
   LINE_TO,
-  LINE_Y,
   LINE_Z,
   LOOP,
   MAIN,
@@ -150,13 +148,13 @@ function planted(id: string, make: (count: number) => Swarm, points: V3[], paint
   })
 }
 const leafTones = [town.leaf, town.leafLight, town.leafDark]
-const petals = [palette.peach, palette.lilac, palette.butter, palette.surface]
+const petals = [palette.peach, town.cloth]
 const trunks = planted('trunks', createTrunks, [...ROUND_TREES, ...PINE_TREES])
 const canopies = planted('canopies', createCanopies, ROUND_TREES, (i) => leafTones[i % 3]!, (i) => 0.8 + 0.35 * (((i * 7) % 5) / 5))
 const pines = planted('pines', createPines, PINE_TREES, undefined, (i) => 0.8 + 0.4 * (((i * 3) % 5) / 5))
 const bushes = planted('bushes', createBushes, BUSHES)
 const rocks = planted('rocks', createRocks, ROCKS)
-const flowers = planted('flowers', createFlowers, FLOWERS, (i) => petals[i % 4]!)
+const flowers = planted('flowers', createFlowers, FLOWERS.filter((_, i) => i % 2 === 0), (i) => petals[i % 2]!)
 
 /** Roads start at their west end, so a choreography can lay them by their scale along X. */
 const roadAlongX = (id: string, from: V3, to: V3, width: number) =>
@@ -282,6 +280,25 @@ const milestones = MILESTONES.slice(0, 9).map((p, i) =>
     },
   }),
 )
+/** Three walkers on the road into the town (part 3): they keep pace with the road as it is laid, and stop before the "?". */
+const WALKER_HATS = [palette.peach, palette.sage, palette.lilac]
+export const WALKER_OFFSETS: V3[] = [
+  [-0.2, 0, 0.35],
+  [0.55, 0, -0.3],
+  [-0.9, 0, -0.05],
+]
+const walkers = WALKER_OFFSETS.map((off, i) =>
+  defineActor({
+    id: `walker.${i}`,
+    create: () => {
+      const el = createVillager({ hat: WALKER_HATS[i], size: 0.95 })
+      el.object.position.set(TIMELINE_ROAD[0]![0] + off[0], 0.05, MAIN_Z + off[2])
+      el.object.rotation.y = Math.PI / 2
+      return el.object
+    },
+    ambient: sway(21 + i * 1.1),
+  }),
+)
 const tlSlot = defineActor({
   id: 'tl.slot',
   create: () => {
@@ -297,10 +314,13 @@ const tlSlot = defineActor({
 
 // ---- part 4: the levels ---------------------------------------------------------------------------
 
-const levelRings = LEVEL_RADII.map((radius, i) =>
-  defineActor({
-    id: `level.${i + 1}`,
-    create: () => createSketchLine({ path: circleXZ([0, 0.06, 0], radius), segments: 160, width: i === 4 ? 3.5 : 2.5, dashed: true, dashSize: 0.5, gapSize: 0.3, opacity: 0.9, reveal: 0 }).object,
+/** The levels: five low ring walls of stone round the hall, each in arcs, so it rises round the hall. */
+export const LEVEL_ARCS = 6
+const levelRings = LEVEL_RADII.flatMap((radius, i) =>
+  Array.from({ length: LEVEL_ARCS }, (_, k) => {
+    const from = -Math.PI + (k * 2 * Math.PI) / LEVEL_ARCS
+    const to = from + (2 * Math.PI) / LEVEL_ARCS
+    return defineActor({ id: `level.${i + 1}.${k}`, create: () => createLowWall({ radius, from, to }).object })
   }),
 )
 const levelSlots = [1, 2, 3, 4].map((n) =>
@@ -321,7 +341,7 @@ const EVENT_COLORS = [palette.peach, palette.lilac, palette.butter, palette.sage
 const mill = defineActor({
   id: 'station',
   create: () => {
-    const el = createMill()
+    const el = createMill({ flag: palette.butter })
     at(el.object, STATION)
     el.object.rotation.y = STATION_TURN
     return el.object
@@ -344,24 +364,17 @@ const events = EVENTS.map((name, i) => defineActor({ id: `evt.${name}`, create: 
 /** The steps: carts with a barrel each, out of the mill onto its road. */
 const STEP_COLORS = [palette.butter, palette.lilac, palette.peach, palette.sage, palette.butter, palette.lilac]
 const steps = STEPS.map((name, i) => defineActor({ id: `step.${name}`, create: () => createCart({ load: 'barrel', color: STEP_COLORS[i] }).object }))
-const straightLine = defineActor({
-  id: 'p5.line',
-  create: () => createSketchLine({ path: straight(LINE_FROM, LINE_TO), segments: 60, width: 2.5, dashed: true, dashSize: 0.22, gapSize: 0.16, reveal: 0 }).object,
+/** The mill's road: from its door westward, laid as the carts come out (5.2). It starts at its east end. */
+const roadMill = defineActor({
+  id: 'road.mill',
+  create: () => {
+    const el = createRoad([[0, 0, 0], [LINE_TO[0] - LINE_FROM[0] - 0.4, 0, 0]], { width: 0.9 })
+    el.object.position.set(LINE_FROM[0] + 0.2, 0, LINE_Z)
+    return el.object
+  },
 })
-/** Near the hall the same line bends onto the loop. */
-const curvedLine = defineActor({
-  id: 'p5.curve',
-  create: () =>
-    createSketchLine({
-      path: through([LINE_FROM, [1.6, LINE_Y, LINE_Z], LINE_BENT[0]!, LINE_BENT[1]!, [-0.6, LINE_Y, -3.4]]),
-      segments: 90,
-      width: 2.5,
-      dashed: true,
-      dashSize: 0.22,
-      gapSize: 0.16,
-      opacity: 0,
-    }).object,
-})
+/** Near the hall a bend joins the mill's road to the loop (5.3). */
+const roadBend = defineActor({ id: 'road.bend', create: () => createRoad([[LINE_TO[0] + 0.6, 0, LINE_Z], [LINE_BENT[1]![0], 0, -3.95]], { width: 0.9 }).object })
 const md = defineActor({
   id: 'md',
   create: () => {
@@ -374,7 +387,7 @@ const lock = defineActor({ id: 'lock', create: () => createCrate({ size: 0.62 })
 const scriptorium = defineActor({
   id: 'scriptorium',
   create: () => {
-    const el = createHouse({ width: 1.6, depth: 1.3, storeys: 1, roof: 'gable', color: town.wallWarm, roofColor: town.tileDark, windows: 1, dormer: false })
+    const el = createHouse({ width: 1.6, depth: 1.3, storeys: 1, roof: 'gable', color: town.wallWarm, roofColor: town.tileDark, windows: 1, dormer: false, flag: palette.sage })
     at(el.object, SCRIPTORIUM)
     return el.object
   },
@@ -384,7 +397,7 @@ const shell = SHELL.map((name) => defineActor({ id: `shell.${name}`, create: () 
 const triage = defineActor({
   id: 'triage',
   create: () => {
-    const el = createHouse({ width: 2.0, depth: 1.5, storeys: 2, roof: 'gable' })
+    const el = createHouse({ width: 2.0, depth: 1.5, storeys: 2, roof: 'gable', flag: palette.lilac })
     at(el.object, TRIAGE_HOUSE)
     return el.object
   },
@@ -392,12 +405,8 @@ const triage = defineActor({
 
 // ---- part 6: the problems -------------------------------------------------------------------------
 
-const runPaths = RUN_PATHS.map((points, i) =>
-  defineActor({
-    id: `p6.path.${i}`,
-    create: () => createSketchLine({ path: through(points), segments: 90, wobble: 0.09, width: 2.2, opacity: 0.85, reveal: 0 }).object,
-  }),
-)
+/** Three runs of the same work: three trails of different shapes in the grass. */
+const runPaths = RUN_PATHS.map((points, i) => defineActor({ id: `p6.path.${i}`, create: () => createTrail(through(points), { wobble: 0.09, reveal: 0 }).object }))
 /** Pieces of work: carts under a tarp, on the wobbly paths and in the queue at the exit. */
 const pile = PILE.map((_, i) => defineActor({ id: `p6.ball.${i}`, create: () => createCart({ load: 'tarp', color: [palette.peach, palette.lilac, palette.butter, palette.sage][i % 4] }).object }))
 /** The tasks: carts with a white crate at the hall's arcade; part 10 paints them as they land on the loop. */
@@ -432,15 +441,35 @@ const team = TEAM.map((p, i) =>
     ambient: sway(2 + i * 1.7),
   }),
 )
-const apps = defineActor({ id: 'apps', create: () => createCottageWalls(APPS.length).object })
-const appRoofs = defineActor({ id: 'apps.roofs', create: () => createCottageRoofs(APPS.length).object })
+/** The hamlet: eleven cottages in the craft of the town's houses, each a little different. */
+const apps = APPS.map((p, i) =>
+  defineActor({
+    id: `app.${i}`,
+    create: () => {
+      const el = createHouse({
+        width: 1.1 + (i % 3) * 0.1,
+        depth: 0.85 + (i % 2) * 0.1,
+        storeys: 1,
+        roof: i % 3 === 1 ? 'hip' : 'gable',
+        color: i % 2 ? town.wallWarm : town.wall,
+        roofColor: [town.tile, town.tileDark, town.thatch][i % 3],
+        windows: 1,
+        dormer: false,
+        flag: [palette.peach, palette.lilac, palette.sage, palette.butter][i % 4],
+      })
+      at(el.object, p)
+      el.object.rotation.y = ((i * 7) % 5) * 0.12 - 0.24
+      return el.object
+    },
+  }),
+)
 
 // ---- part 8: the runtime -----------------------------------------------------------------------------
 
 const forge = defineActor({
   id: 'forge',
   create: () => {
-    const el = createForge()
+    const el = createForge({ flag: palette.peach })
     at(el.object, FORGE)
     return el.object
   },
@@ -457,41 +486,31 @@ const kilns = KILNS.map((p, i) =>
   }),
 )
 /** Before Forge: a straight call from the hall to a vendor, in two halves that break apart. */
-const DIRECT_FROM: V3 = [1.2, 0.3, -3.0]
+const DIRECT_FROM: V3 = [1.2, 0.08, -3.0]
 const DIRECT_MID: V3 = [(DIRECT_FROM[0] + VENDOR[0]) / 2, (DIRECT_FROM[1] + VENDOR[1]) / 2, (DIRECT_FROM[2] + VENDOR[2]) / 2]
 const direct = [0, 1].map((half) =>
   defineActor({
     id: `p8.direct.${half}`,
-    create: () => createSketchLine({ path: half === 0 ? straight(DIRECT_FROM, DIRECT_MID) : straight(DIRECT_MID, VENDOR), segments: 30, width: 2.5, dashed: true, reveal: 0 }).object,
+    create: () => createTrail(half === 0 ? straight(DIRECT_FROM, DIRECT_MID) : straight(DIRECT_MID, VENDOR), { segments: 30, reveal: 0 }).object,
   }),
 )
 /** After Forge: every call goes from the hall to Forge, then to one of the kilns. */
-const FORGE_DOOR: V3 = [FORGE[0], 0.3, FORGE[2] + 1.0]
+const FORGE_DOOR: V3 = [FORGE[0], 0.08, FORGE[2] + 1.0]
 const toForge = defineActor({
   id: 'p8.forge',
-  create: () => createSketchLine({ path: through([[-0.9, 0.3, -2.9], [-1.6, 0.3, -5.0], FORGE_DOOR]), segments: 40, width: 2.5, reveal: 0 }).object,
+  create: () => createTrail(through([[-0.9, 0.08, -2.9], [-1.6, 0.08, -5.0], FORGE_DOOR]), { segments: 40, reveal: 0 }).object,
 })
 const forgeLines = KILNS.map((p, i) =>
   defineActor({
     id: `p8.model.${i}`,
-    create: () => createSketchLine({ path: straight([FORGE[0], 0.3, FORGE[2] - 0.7], [p[0], 0.3, p[2] + 0.5]), segments: 20, width: 2.2, opacity: 0.85, reveal: 0 }).object,
+    create: () => createTrail(straight([FORGE[0], 0.08, FORGE[2] - 0.7], [p[0], 0.08, p[2] + 0.5]), { segments: 20, width: 4, reveal: 0 }).object,
   }),
 )
 
 // ---- part 9: Agent Harness --------------------------------------------------------------------------
 
-const improvise = IMPROVISE_PATHS.map((points, i) =>
-  defineActor({
-    id: `p9.path.${i}`,
-    create: () => createSketchLine({ path: through(points), segments: 70, wobble: 0.1, width: 2.2, opacity: 0.85, reveal: 0 }).object,
-  }),
-)
-const cloud = CLOUD_PATHS.map((points, i) =>
-  defineActor({
-    id: `p9.cloud.${i}`,
-    create: () => createSketchLine({ path: through(points), segments: 70, wobble: 0.12, width: 2, opacity: 0.7, reveal: 0 }).object,
-  }),
-)
+const improvise = IMPROVISE_PATHS.map((points, i) => defineActor({ id: `p9.path.${i}`, create: () => createTrail(through(points), { segments: 70, wobble: 0.1, reveal: 0 }).object }))
+const cloud = CLOUD_PATHS.map((points, i) => defineActor({ id: `p9.cloud.${i}`, create: () => createTrail(through(points), { segments: 70, wobble: 0.12, width: 4, opacity: 0.8, reveal: 0 }).object }))
 /** With the Harness: one nearly clean path, on the loop. */
 const cleanPath = defineActor({
   id: 'p9.clean',
@@ -536,15 +555,8 @@ const devHarness = defineActor({
 
 // ---- part 10: the pipeline --------------------------------------------------------------------------
 
-const belt = (id: string, points: V3[], loop = false) =>
-  defineActor({
-    id,
-    create: () => createBelt(points, { loop }).object,
-    ambient: (o, time) => beltRun(sketchOf(o), time),
-  })
-const loopBelt = belt('loop', LOOP, true)
-const mainBelt = belt('main', MAIN)
-const spaghetti = SPAGHETTI.map((points, i) => belt(`spag.${i}`, points))
+/** Before the router: trails everywhere, a station on each. */
+const spaghetti = SPAGHETTI.map((points, i) => defineActor({ id: `spag.${i}`, create: () => createTrail(polyline(points.map(([x, , z]) => [x, 0.08, z] as V3)), { segments: 90, reveal: 0 }).object }))
 const spaghettiStations = SPAGHETTI_STATIONS.map((p, i) =>
   defineActor({
     id: `spagstation.${i}`,
@@ -575,7 +587,7 @@ const exitGate = defineActor({
 const refine = defineActor({
   id: 'refine',
   create: () => {
-    const el = createHouse({ width: 1.8, depth: 1.4, storeys: 1, roof: 'hip', color: town.wallWarm, roofColor: town.tileDark })
+    const el = createHouse({ width: 1.8, depth: 1.4, storeys: 1, roof: 'hip', color: town.wallWarm, roofColor: town.tileDark, flag: palette.peach })
     at(el.object, REFINE_HOUSE)
     return el.object
   },
@@ -636,7 +648,7 @@ const flow = defineActor({ id: 'flow', create: () => createCartSwarm(12, 'tarp',
 const tidyHouse = defineActor({
   id: 'tidy.house',
   create: () => {
-    const el = createHouse({ width: 1.6, depth: 1.3, storeys: 1, roof: 'hip', windows: 1, dormer: false })
+    const el = createHouse({ width: 1.6, depth: 1.3, storeys: 1, roof: 'hip', windows: 1, dormer: false, flag: palette.sage })
     at(el.object, TIDY_POS)
     return el.object
   },
@@ -668,7 +680,7 @@ const tidyPath = defineActor({
   id: 'tidy.path',
   create: () => {
     const [x, , z] = TIDY_POS
-    return createSketchLine({ path: through([[x - 0.5, 0.06, z + 5.0], [x - 0.5, 0.06, z + 2.8], [x - 0.3, 0.06, z + 1.0]]), segments: 40, width: 2.2, opacity: 0.85, reveal: 0 }).object
+    return createTrail(through([[x - 0.5, 0.06, z + 5.0], [x - 0.5, 0.06, z + 2.8], [x - 0.3, 0.06, z + 1.0]]), { segments: 40, reveal: 0 }).object
   },
 })
 const messyPaths = [0, 1, 2].map((k) =>
@@ -678,16 +690,26 @@ const messyPaths = [0, 1, 2].map((k) =>
       const [x, , z] = MESSY_POS
       const starts: V3[] = [[x - 3.6, 0.06, z + 4.4], [x + 0.4, 0.06, z + 5.2], [x + 3.4, 0.06, z + 3.6]]
       const mids: V3[] = [[x - 1.8, 0.06, z + 2.2], [x + 1.4, 0.06, z + 2.6], [x + 2.2, 0.06, z + 0.4]]
-      return createSketchLine({ path: through([starts[k]!, mids[k]!, [x - 0.2 + k * 0.2, 0.06, z + 1.0]]), segments: 50, wobble: 0.14, width: 2.2, opacity: 0.85, reveal: 0 }).object
+      return createTrail(through([starts[k]!, mids[k]!, [x - 0.2 + k * 0.2, 0.06, z + 1.0]]), { segments: 50, wobble: 0.14, reveal: 0 }).object
     },
   }),
 )
 const smallWork = defineActor({ id: 'p11.work', create: () => createCartSwarm(10, 'sack', palette.lilac).object })
-/** The three phases: the plans of the three walls, dashed on the ground. */
-const phases = RINGS.map((radius, i) =>
-  defineActor({
-    id: `phase.${i}`,
-    create: () => createSketchLine({ path: circleXZ([0, 0.05, 0], radius), segments: 200, width: 2.5, dashed: true, dashSize: 0.6, gapSize: 0.35, reveal: 0 }).object,
+/** Each ring wall leaves the road through, and the first leaves room for the watchtower. */
+const gapAt = (angle: number, half: number): Gap => [angle - half, angle + half]
+const ringGaps = (r: number): Gap[] => {
+  const cross = RING_CROSSINGS[r]!
+  const gateHalf = [0.36, 0.27, 0.18][r]!
+  const gaps: Gap[] = [gapAt(Math.atan2(MAIN_Z, cross), gateHalf), gapAt(Math.atan2(MAIN_Z, -cross), gateHalf)]
+  if (r === 0) gaps.push(gapAt(TOWER_ANGLE, 0.14))
+  return gaps
+}
+/** The three phases: the footings of the three walls, low rings of stone the walls rise on. */
+const phases = RINGS.flatMap((radius, r) =>
+  Array.from({ length: RING_ARCS }, (_, k) => {
+    const from = -Math.PI + (k * 2 * Math.PI) / RING_ARCS
+    const to = from + (2 * Math.PI) / RING_ARCS
+    return defineActor({ id: `phase.${r}.${k}`, create: () => createLowWall({ radius, from, to, gaps: ringGaps(r) }).object })
   }),
 )
 const grid = defineActor({
@@ -699,12 +721,8 @@ const grid = defineActor({
   },
 })
 /** The walls: three rings, each in eight arcs, with their towers, open where a gate or the watchtower stands. */
-const gapAt = (angle: number, half: number): Gap => [angle - half, angle + half]
 const ringWalls = RINGS.flatMap((radius, r) => {
-  const cross = RING_CROSSINGS[r]!
-  const gateHalf = [0.36, 0.27, 0.18][r]!
-  const gaps: Gap[] = [gapAt(Math.atan2(MAIN_Z, cross), gateHalf), gapAt(Math.atan2(MAIN_Z, -cross), gateHalf)]
-  if (r === 0) gaps.push(gapAt(TOWER_ANGLE, 0.14))
+  const gaps = ringGaps(r)
   return Array.from({ length: RING_ARCS }, (_, k) => {
     const from = -Math.PI + (k * 2 * Math.PI) / RING_ARCS
     const to = from + (2 * Math.PI) / RING_ARCS
@@ -731,7 +749,7 @@ const archE = defineActor({
 const outerW = defineActor({
   id: 'outer.w',
   create: () => {
-    const el = createGate({ roofColor: town.tileDark })
+    const el = createGate({ roofColor: town.tileDark, flag: palette.butter })
     at(el.object, OUTER_W)
     return el.object
   },
@@ -739,7 +757,7 @@ const outerW = defineActor({
 const outerE = defineActor({
   id: 'outer.e',
   create: () => {
-    const el = createGate({ roofColor: town.tileDark })
+    const el = createGate({ roofColor: town.tileDark, flag: palette.butter })
     at(el.object, OUTER_E)
     return el.object
   },
@@ -766,7 +784,7 @@ const verbs = VERBS.map((v) =>
 const shortcut = [0, 1].map((half) =>
   defineActor({
     id: `shortcut.${half}`,
-    create: () => createSketchLine({ path: half === 0 ? straight(SHORTCUT[0]!, SHORTCUT[1]!) : straight(SHORTCUT[1]!, SHORTCUT[2]!), segments: 30, width: 3.5, color: palette.outline, dashed: true, reveal: 0 }).object,
+    create: () => createTrail(half === 0 ? straight(SHORTCUT[0]!, SHORTCUT[1]!) : straight(SHORTCUT[1]!, SHORTCUT[2]!), { segments: 30, width: 6, reveal: 0 }).object,
   }),
 )
 
@@ -778,7 +796,7 @@ export const METRIC_OFFSET = METRIC_COINS.map((_, i) => METRIC_COINS.slice(0, i)
 const barn = defineActor({
   id: 'barn',
   create: () => {
-    const el = createBarn()
+    const el = createBarn({ flag: palette.sage })
     at(el.object, BARN)
     return el.object
   },
@@ -821,7 +839,7 @@ const elder = defineActor({
 /** The loop that maintains the maintainer (12.6): from the watchtower, back into the gatehouse. */
 const auditLoop = defineActor({
   id: 'p12.loop',
-  create: () => createSketchLine({ path: through(AUDIT_LOOP.map(([x, , z]) => [x, 0.12, z] as V3)), segments: 100, width: 2.5, dashed: true, reveal: 0 }).object,
+  create: () => createTrail(through(AUDIT_LOOP.map(([x, , z]) => [x, 0.08, z] as V3)), { segments: 100, reveal: 0 }).object,
 })
 
 // ---- part 13: from issue to production -------------------------------------------------------------
@@ -855,6 +873,7 @@ export const actors: ActorDef[] = [
   ...folk,
   well,
   ...milestones,
+  ...walkers,
   tlSlot,
   ...levelRings,
   ...levelSlots,
@@ -862,8 +881,8 @@ export const actors: ActorDef[] = [
   blades,
   ...events,
   ...steps,
-  straightLine,
-  curvedLine,
+  roadMill,
+  roadBend,
   md,
   lock,
   scriptorium,
@@ -875,8 +894,7 @@ export const actors: ActorDef[] = [
   tokens,
   reviewer,
   ...team,
-  apps,
-  appRoofs,
+  ...apps,
   forge,
   ...kilns,
   ...direct,
@@ -889,8 +907,6 @@ export const actors: ActorDef[] = [
   developer,
   devHall,
   devHarness,
-  loopBelt,
-  mainBelt,
   ...spaghetti,
   ...spaghettiStations,
   gatehouse,

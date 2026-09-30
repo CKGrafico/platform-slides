@@ -14,7 +14,7 @@
  * stripes) multiply the toon color; their UVs are in world units, so a
  * pattern keeps its size on any box or slope.
  */
-import { BoxGeometry, BufferAttribute, BufferGeometry, CanvasTexture, Color, ConeGeometry, CylinderGeometry, Mesh, PlaneGeometry, RepeatWrapping, SphereGeometry, SRGBColorSpace, type ColorRepresentation, type Texture } from 'three'
+import { BoxGeometry, BufferAttribute, BufferGeometry, CanvasTexture, Color, ConeGeometry, CylinderGeometry, DodecahedronGeometry, Mesh, PlaneGeometry, RepeatWrapping, SphereGeometry, SRGBColorSpace, type ColorRepresentation, type Texture } from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { assemble, createSwarm, part, type ArtElement, type Swarm } from './elements'
 import { createSketchLine, type PathFn, type SketchLine } from './lines'
@@ -435,8 +435,8 @@ export interface HouseOptions {
  * cap, shutters, a door, a chimney. Its base sits at y = 0 and its front
  * faces +Z. The body is the plaster of the timber floor.
  */
-export function createHouse(options: HouseOptions = {}) {
-  const { width = 2.0, depth = 1.5, storeys = 2, roof = 'hip', color = town.wall, roofColor = town.tile, chimney = true, dormer = storeys === 2, windows = 2, wing = false } = options
+export function createHouse(options: HouseOptions & { flag?: ColorRepresentation | false } = {}) {
+  const { width = 2.0, depth = 1.5, storeys = 2, roof = 'hip', color = town.wall, roofColor = town.tile, chimney = true, dormer = storeys === 2, windows = 2, wing = false, flag = false } = options
   const baseH = storeys === 2 ? 0.42 : 0.14
   const floorH = storeys === 2 ? 0.56 : 0.62
   const jetty = storeys === 2 ? 0.08 : 0
@@ -467,6 +467,8 @@ export function createHouse(options: HouseOptions = {}) {
   }
   if (chimney) addChimney(p, -fw * 0.3, roofY + roofH * 0.7 + 0.25, -fd * 0.15, roofH * 0.7 + 0.3)
   if (dormer) addDormer(p, fw * 0.22, roofY, roofH, roofDepth)
+  // A pennant on the ridge, in the color that names the house.
+  if (flag) addFlag(el, p, roof === 'gable' ? fw / 2 - 0.25 : (fw + 0.36) * 0.18, roofY + roofH + 0.04, 0, flag)
   // The front: windows in the outer bays of the timber floor, the door below or in the first bay.
   const wy = baseH + floorH * 0.55
   const front = fd / 2
@@ -564,8 +566,8 @@ export function createTownCenter(options: { flag?: ColorRepresentation | false }
  * A mill: a tapered stone tower, a half-timbered top with a thatched roof, and
  * a door. Its sails are another element (createBlades), so they can turn.
  */
-export function createMill(options: { color?: ColorRepresentation; roofColor?: ColorRepresentation } = {}) {
-  const { color = town.wall, roofColor = town.thatch } = options
+export function createMill(options: { color?: ColorRepresentation; roofColor?: ColorRepresentation; flag?: ColorRepresentation | false } = {}) {
+  const { color = town.wall, roofColor = town.thatch, flag = false } = options
   const topY = 1.1
   const topH = 0.55
   const top = new BoxGeometry(0.9, topH, 0.9)
@@ -579,6 +581,7 @@ export function createMill(options: { color?: ColorRepresentation; roofColor?: C
   const roof = hipRoofGeometry(1.2, 1.2, 0.42, 0.2)
   roof.translate(0, topY + topH, 0)
   p.tiles.push(roof)
+  if (flag) addFlag(el, p, 0, topY + topH + 0.42, 0, flag)
   addDoor(p, 0, 0, 0.49, 0.28, 0.44)
   addWindow(p, -0.45, topY + topH * 0.55, 0, true, 0.16, 0.18)
   p.attachTo(el, color, roofColor)
@@ -837,19 +840,27 @@ export function createBushes(count: number): Swarm {
   return createSwarm({ count, geometry: g, color: town.leafLight, outline: { width: 1.8, color: inkOf(town.leafLight, palette.outline) } })
 }
 
-/** Rocks: low boulders in a grey lilac. */
+/** Rocks: low grey boulders, angular like the stone of the walls. */
 export function createRocks(count: number): Swarm {
-  const g = new SphereGeometry(0.38, 7, 5)
-  g.scale(1.4, 0.6, 1)
-  g.translate(0, 0.18, 0)
-  return createSwarm({ count, geometry: g, color: '#CBC5D4', outline: { width: 2, color: inkOf('#CBC5D4', palette.outline) } })
+  const g = new DodecahedronGeometry(0.34, 0)
+  g.scale(1.4, 0.55, 1.0)
+  g.translate(0, 0.16, 0)
+  return createSwarm({ count, geometry: g, color: town.stoneDark, outline: { width: 1.8, color: inkOf(town.stoneDark, palette.outline) } })
 }
 
-/** Flowers: dots of pastel on the grass. Paint each one. */
+/** Flowers: small clusters of three dots, low in the grass. Paint each one. */
 export function createFlowers(count: number): Swarm {
-  const g = new SphereGeometry(0.07, 8, 6)
-  g.translate(0, 0.07, 0)
-  return createSwarm({ count, geometry: g, color: palette.peach, outline: { width: 1.2, color: palette.outline } })
+  const dots: BufferGeometry[] = []
+  for (const [x, z, r] of [
+    [0, 0, 0.045],
+    [0.07, 0.03, 0.038],
+    [-0.035, 0.065, 0.036],
+  ] as const) {
+    const d = new SphereGeometry(r, 8, 6)
+    d.translate(x, r, z)
+    dots.push(d)
+  }
+  return createSwarm({ count, geometry: merge(dots), color: palette.peach, outline: { width: 1.0, color: palette.outline } })
 }
 
 // ---- belts ---------------------------------------------------------------------------------------
@@ -898,6 +909,31 @@ export function createBelt(points: V3[], options: { color?: ColorRepresentation;
 export function beltRun(line: SketchLine, time: number, speed = 0.9): void {
   line.material.dashOffset = -time * speed
 }
+
+// ---- trails and ropes ---------------------------------------------------------------------------
+
+/** The tone of a trail worn in the grass. */
+export const ground = { trail: '#C8B896' } as const
+
+/**
+ * A trail: a path worn in the grass where work has gone. A wide line in the
+ * tone of dirt, no dashes, on the ground. `wobble` for a path that did not
+ * repeat.
+ */
+export function createTrail(path: PathFn, options: { segments?: number; wobble?: number; width?: number; color?: ColorRepresentation; opacity?: number; reveal?: number } = {}): SketchLine {
+  const { segments = 90, wobble = 0, width = 5, color = ground.trail, opacity = 1, reveal = 1 } = options
+  return createSketchLine({ path, segments, wobble, width, color, opacity, reveal, variants: 3 })
+}
+
+/** A stake: a square post with a pointed top. The base sits at y = 0. */
+export function stakeGeometry(height = 0.5, side = 0.09): BufferGeometry {
+  const post = boxAt(side, height, side, 0, height / 2, 0)
+  const tip = new ConeGeometry(side * 0.83, side * 1.45, 4)
+  tip.rotateY(Math.PI / 4)
+  tip.translate(0, height + side * 0.72, 0)
+  return merge([post, tip])
+}
+
 
 // ---- people ------------------------------------------------------------------------------------------
 

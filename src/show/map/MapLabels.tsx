@@ -45,7 +45,7 @@ function MapLabel({ entry, state }: { entry: MapEntry; state: React.RefObject<Ma
   )
 }
 
-const REST = 0.2
+const REST = 0.32
 
 function apply(el: HTMLDivElement, on: number, s: MapLabelState | undefined): void {
   const name = on * (s?.name ?? 0)

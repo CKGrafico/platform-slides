@@ -6,7 +6,7 @@
  * gates where the road crosses them; the woods close the land beyond.
  *
  * The camera never zooms (shots.ts), so a frame shows a diamond of about
- * 16 units around its target: |x - z| < 15.9 and |x + z| < 16.3 from it.
+ * 20 units around its target: |x - z| < 19.9 and |x + z| < 20.4 from it.
  */
 export type V3 = readonly [number, number, number]
 
@@ -38,8 +38,8 @@ export const FOLK_SPOTS: V3[] = [
   [0.9, PLATFORM_TOP, 0.82],
   [-2.15, PLATFORM_TOP, 1.45],
   [2.15, PLATFORM_TOP, 0.7],
-  [-1.9, PLATFORM_TOP, 1.75],
-  [1.9, PLATFORM_TOP, 1.75],
+  [-1.25, PLATFORM_TOP, 1.72],
+  [1.25, PLATFORM_TOP, 1.72],
 ]
 /** The compiled workflow docks on the platform's back left corner (local units). */
 export const LOCK_DOCK: V3 = [-1.95, PLATFORM_TOP, -1.5]
@@ -137,7 +137,7 @@ export const KILNS: V3[] = [
   [-0.8, 0, -10.2],
 ]
 /** Before Forge, the agent called a vendor straight away, far to the east. */
-export const VENDOR: V3 = [22, 0.3, -6]
+export const VENDOR: V3 = [22, 0.08, -6]
 /** The watchtower of the audit: on the first ring, north of the hall. */
 export const TOWER_ANGLE = deg(-75)
 export const TOWER: V3 = [Math.cos(TOWER_ANGLE) * RINGS[0]!, 0, Math.sin(TOWER_ANGLE) * RINGS[0]!]
@@ -169,7 +169,7 @@ export const TEAM: V3[] = [
 export const APPS: V3[] = Array.from({ length: 11 }, (_, i) => {
   const row = Math.floor(i / 4)
   const col = i % 4
-  return [12.5 + col * 1.0 + (row % 2) * 0.5, 0, -4.5 - row * 2.0] as const
+  return [12.0 + col * 1.7 + (row % 2) * 0.85, 0, -4.2 - row * 2.3] as const
 })
 /** The developer with the copy of the hall (9.5), south of the road. */
 export const DEV_POS: V3 = [-2.5, 0, 8.0]
@@ -238,12 +238,12 @@ export const PHASE_LABEL_DIR: V3 = [0, 0, 1]
 export const PHASE_LABEL_R = [5.6, 10.0, 14.6]
 /** Verbs (11.5): what a worker may do, as small moons; what it may not, as hollow slots. */
 export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [
-  { id: 'pr', at: [2.6, 2.6, 2.9], hollow: false },
-  { id: 'merge-no', at: [2.6, 1.95, 2.9], hollow: true },
+  { id: 'pr', at: [2.6, 3.0, 2.9], hollow: false },
+  { id: 'merge-no', at: [2.6, 2.15, 2.9], hollow: true },
   { id: 'main-no', at: [2.6, 1.3, 2.9], hollow: true },
   { id: 'merge', at: [EXIT_GATE[0], 3.1, EXIT_GATE[2] + 0.4], hollow: false },
-  { id: 'issue', at: [TRIAGE_HOUSE[0] + 1.6, 1.5, TRIAGE_HOUSE[2] + 0.4], hollow: false },
-  { id: 'code-no', at: [TRIAGE_HOUSE[0] + 1.6, 0.85, TRIAGE_HOUSE[2] + 0.4], hollow: true },
+  { id: 'issue', at: [TRIAGE_HOUSE[0] + 1.6, 1.75, TRIAGE_HOUSE[2] + 0.4], hollow: false },
+  { id: 'code-no', at: [TRIAGE_HOUSE[0] + 1.6, 0.8, TRIAGE_HOUSE[2] + 0.4], hollow: true },
 ]
 /** Where the five guardrail names sit: on wall segments the camera sees (ring index, angle). */
 export const GUARDRAIL_SPOTS: Array<{ ring: number; angle: number }> = [
