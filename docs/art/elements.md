@@ -48,7 +48,7 @@ The look of each element follows [art-direction.md](art-direction.md). The syste
 - **Every element enters and leaves the same way:** "inking" in, shrink out. Use the helpers in `src/art/motion.ts`. Walls rise from the ground; roads are laid from their west end.
 - **Every building with a job flies a pennant** in the color that names it (the hall's banner is butter; triage lilac; refine and Forge peach; the scriptorium, the barn and the tidy house sage; the mill and the outer gates butter; the cottages take turns), so buildings can be told apart from a distance, with their name on the map.
 - **People are villagers.** A hat, no face. No avatars, no icons of people.
-- **The camera never turns and never zooms.** One angle, one distance (`src/show/shots.ts`, a frame about 27 units wide), pans only. Two exceptions pull back: the map of the levels in part 4 and the closing. Build for that distance: walls heavy enough to read, buildings with room between them.
+- **The camera never turns and never zooms.** One angle, one distance (`src/show/shots.ts`, a frame about 35 units wide), pans only. Two exceptions pull back: the map of the levels in part 4 and the closing. Build for that distance: walls heavy enough to read, buildings with room between them.
 
 ## Do and do not
 

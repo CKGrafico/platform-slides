@@ -13,8 +13,8 @@ import type { CameraShot, Vec3 } from '@/world/camera/shot'
 const AZIMUTH = Math.PI / 4
 /** Above the ground: about 33 degrees, like the games. */
 const ELEVATION = 0.58
-/** The one zoom of the map. The frame is about 27 units wide at the target. */
-export const TOWN_DISTANCE = 50
+/** The one zoom of the map. The frame is about 35 units wide at the target. */
+export const TOWN_DISTANCE = 64
 export const TOWN_FOV = 18
 const DIR: Vec3 = [Math.sin(AZIMUTH) * Math.cos(ELEVATION), Math.sin(ELEVATION), Math.cos(AZIMUTH) * Math.cos(ELEVATION)]
 

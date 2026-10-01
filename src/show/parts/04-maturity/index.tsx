@@ -37,7 +37,7 @@ const KEY = '04-maturity/levels'
 hudCues.appear({ key: KEY, from: b(MAP_BEAT + 1), to: b(MAP_BEAT + 3) })
 
 /** The map of the levels: the camera pulls back (the one zoom besides the closing) so all five walls round the land fit. */
-const RINGS_SHOT = townShot([0, 0, 3], 100)
+const RINGS_SHOT = townShot([0, 0, 3], 110)
 
 /** Level names along the ray south of the hall, each a step lower and further left, so they never overlap. */
 const LEVEL_LABEL_ANGLE = Math.PI / 2

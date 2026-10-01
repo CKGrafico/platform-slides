@@ -35,8 +35,8 @@ hudCues.center({ rise: { key: KEY, from: b(B.slots + 0.5), to: b(B.slots + 2.5) 
 mapCues.hide({ key: KEY, from: b(B.slots), to: b(B.slots + 1.5) })
 
 /** The one pull back of the talk: the whole town inside its walls. Then the road of milestones, at the same height. */
-const FAR = townShot([0, 0, 1], 105)
-const ROAD = townShot([(MILESTONE_X[0]! + MILESTONE_X[9]!) / 2 + 4, 0.6, MILESTONE_Z + 2], 62)
+const FAR = townShot([0, 0, 1], 130)
+const ROAD = townShot([(MILESTONE_X[0]! + MILESTONE_X[9]!) / 2 + 4, 0.6, MILESTONE_Z - 0.5], 72)
 
 const NAME_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.name` as MessageKey)
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
@@ -64,7 +64,7 @@ function Dom() {
           key={id}
           k={NAME_KEYS[k]!}
           target={id}
-          offset={k === 9 ? [0, 0, 0] : [0, k % 2 ? 5.0 : 2.4, 0]}
+          offset={k === 9 ? [0, 0, 0] : [0, k % 2 ? 4.4 : 1.9, 0]}
           width={k === 9 ? 6 : 26}
           mono={false}
           level={win(B.timeline + 1.5 + k * 0.15, B.timeline + 2.25 + k * 0.15, B.title, B.title + 0.75)}

@@ -6,7 +6,7 @@
  * gates where the road crosses them; the woods close the land beyond.
  *
  * The camera never zooms (shots.ts), so a frame shows a diamond of about
- * 20 units around its target: |x - z| < 19.9 and |x + z| < 20.4 from it.
+ * 25 units around its target: |x - z| < 25.4 and |x + z| < 26.1 from it.
  */
 export type V3 = readonly [number, number, number]
 
