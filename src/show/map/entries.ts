@@ -58,12 +58,16 @@ export const MAP_ENTRIES: MapEntry[] = [
   // The agents and the people.
   { id: 'triage', target: 'triage', offset: [0, 6.5, 0], name: 'map.triage', role: 'map.triage.role', side: 'above' },
   { id: 'refine', target: 'refine', offset: [0, 1.4, 0], name: 'map.refine', role: 'map.refine.role', side: 'above' },
-  { id: 'requester', target: 'requester', offset: [-2.5, 0.2, 0], name: 'map.requester', role: 'map.requester.role', side: 'left' },
+  { id: 'requester', target: 'requester', offset: [-4.5, 0, 2.3], name: 'map.requester', role: 'map.requester.role', side: 'below' },
   { id: 'booth', target: 'booth', offset: [0, -0.1, 8.5], name: 'town.booth', role: 'town.booth.role', side: 'below' },
 
   // Production and measure.
   { id: 'walls', target: onRing(2, Math.PI / 3, 3.0), name: 'map.walls', role: 'map.walls.role', side: 'above' },
   { id: 'tower', target: 'tower', offset: [0.3, 9.0, 0], name: 'map.audit', role: 'map.audit.role', side: 'above' },
   { id: 'repair', target: 'repair', offset: [0.8, 0.4, 0], name: 'map.housekeeping', role: 'map.housekeeping.role', side: 'right' },
-  { id: 'health', target: 'elder', offset: [-0.7, 1.6, 0], name: 'map.health', role: 'map.health.role', side: 'left' },
+
+  // The other three district signs, named with their pillars. Project Health's name carries the elder's role.
+  { id: 'sign.workflows', target: point(SIGN_SPOTS[1]![0], 0, SIGN_SPOTS[1]![2] + 8.0), name: 'hud.2', side: 'below' },
+  { id: 'sign.foundations', target: point(SIGN_SPOTS[2]![0] - 1.0, 11.0, SIGN_SPOTS[2]![2]), name: 'hud.3', side: 'left' },
+  { id: 'health', target: point(SIGN_SPOTS[3]![0], 0, SIGN_SPOTS[3]![2] + 2.0), name: 'map.health', role: 'map.health.role', side: 'below' },
 ]

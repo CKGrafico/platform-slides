@@ -33,6 +33,7 @@ export const GATE_SCALE = 1.5
 export const ARCH_SCALE = 1.6
 export const TOWER_SCALE = 1.8
 export const MILESTONE_SCALE = 1.8
+export const SIGN_SCALE = 1.8
 
 // ---- the hall: the agent ---------------------------------------------------------------------
 
@@ -231,12 +232,18 @@ export const HEALTH_PERSON: V3 = [-21.5, 0, 29.5]
 
 // ---- the districts: where each pillar's sign stands --------------------------------------------------------
 
-/** One spot per pillar, at the entrance of its district: Agent Harness, Agentic Workflows, Foundations, Project Health. Part 4 draws an empty slot on each. */
+/**
+ * One sign per pillar, at the entrance of its district: Agent Harness inside
+ * the first wall, Agentic Workflows by the road between the gatehouse and
+ * triage, Foundations between the two houses, Project Health before the
+ * barn. Part 4 draws an empty slot on each; the sign stands in it when the
+ * pillar is named.
+ */
 export const SIGN_SPOTS: V3[] = [
   [3.0, 0, 6.5],
-  [-19.5, 0, 9.0],
-  [-22, 0, -17],
-  [-16, 0, 21],
+  [-21, 0, 1.5],
+  [-26, 0, -24],
+  [-12, 0, 22.5],
 ]
 
 // ---- the paths of the story --------------------------------------------------------------------------
@@ -260,8 +267,8 @@ export const IMPROVISE_PATHS: V3[][] = [
 /** "Solve this issue": a cloud of possible paths inside the first wall (9.3). */
 export const CLOUD_PATHS: V3[][] = [
   [DOOR_GROUND, [1.4, 0.06, 3.4], [3.8, 0.06, 4.4], [6.0, 0.06, 3.6]],
-  [DOOR_GROUND, [-1.2, 0.06, 3.6], [-0.4, 0.06, 5.4], [1.6, 0.06, 7.0]],
-  [DOOR_GROUND, [0.8, 0.06, 3.8], [1.4, 0.06, 5.6], [3.4, 0.06, 6.8]],
+  [DOOR_GROUND, [-1.2, 0.06, 3.6], [-0.6, 0.06, 5.4], [0.4, 0.06, 6.8]],
+  [DOOR_GROUND, [0.8, 0.06, 3.8], [1.2, 0.06, 5.2], [1.8, 0.06, 5.6]],
   [DOOR_GROUND, [-2.4, 0.06, 3.2], [-3.8, 0.06, 5.0], [-4.4, 0.06, 6.4]],
   [DOOR_GROUND, [2.2, 0.06, 2.6], [4.8, 0.06, 2.2], [6.6, 0.06, 3.8]],
 ]
@@ -292,9 +299,9 @@ export const PRODUCTION: V3 = [75, 0.14, MAIN_Z]
 
 // ---- part 11: the phases, the guardrails and the verbs ----------------------------------------------
 
-/** The three phases are the three inner walls. Their names sit on the ground just inside each, south west of the hall, reading leftward, each a row lower on screen. */
+/** The three phases are the three inner walls. Their names read leftward in a column at the left of the frame, south west of the hall, one below the other. */
 export const PHASE_LABELS: V3[] = [
-  [-6.5, 0.1, 7.0],
+  [-24.4, 0.1, 25.7],
   [-8.0, 0.1, 20.5],
   [-12.0, 0.1, 37.0],
 ]
@@ -304,13 +311,13 @@ export const VERBS: Array<{ id: string; at: V3; hollow: boolean; side: 'left' | 
   { id: 'merge-no', at: [2.6, 36.0, 2.9], hollow: true, side: 'right' },
   { id: 'main-no', at: [2.6, 30.0, 2.9], hollow: true, side: 'right' },
   { id: 'merge', at: [EXIT_GATE[0], 0.2, EXIT_GATE[2] + 0.4], hollow: false, side: 'right' },
-  { id: 'issue', at: [TRIAGE_HOUSE[0] - 1.6, 5.8, TRIAGE_HOUSE[2] + 0.4], hollow: false, side: 'left' },
-  { id: 'code-no', at: [TRIAGE_HOUSE[0] - 1.6, 1.5, TRIAGE_HOUSE[2] + 0.4], hollow: true, side: 'left' },
+  { id: 'issue', at: [TRIAGE_HOUSE[0] - 4.6, 8.5, TRIAGE_HOUSE[2] + 0.4], hollow: false, side: 'left' },
+  { id: 'code-no', at: [TRIAGE_HOUSE[0] - 4.6, 4.0, TRIAGE_HOUSE[2] + 0.4], hollow: true, side: 'left' },
 ]
 /** Where the five guardrail names sit: one on each wall, on a stretch with room on screen (ring index, angle, height over the wall's foot, and whether the name ends at the spot). */
 export const GUARDRAIL_SPOTS: Array<{ ring: number; angle: number; height: number; end: boolean }> = [
-  { ring: 0, angle: deg(105), height: 2.2, end: true },
-  { ring: 1, angle: deg(155), height: 3.2, end: true },
+  { ring: 0, angle: deg(105), height: 9.5, end: true },
+  { ring: 1, angle: deg(155), height: 7.5, end: true },
   { ring: 2, angle: deg(112), height: 1.5, end: true },
   { ring: 3, angle: deg(80), height: 2.8, end: false },
   { ring: 4, angle: deg(100), height: 2.8, end: false },

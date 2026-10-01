@@ -41,8 +41,8 @@ const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(t
 const mapPulse = (from: number, to: number) => ({ rise: mapKey(from, from + 0.75), fall: mapKey(to, to + 0.75) })
 mapCues.focus(['market', 'exit'], mapPulse(B.claim, B.measure))
 mapCues.focus([], mapPulse(B.measure, B.human))
-// The elder's name comes once they stand by the stacks, at the end of their walk.
-mapCues.appear('health', mapKey(B.human + 1.9, B.human + 2.5))
+// The district's sign is named with the pillar; its role, what still needs a human, comes once the elder stands by the stacks.
+mapCues.appear('health', mapKey(2.25, 3))
 mapCues.role('health', mapPulse(B.human + 2.1, B.numbers))
 mapCues.focus(['health'], mapPulse(B.human, B.numbers))
 mapCues.focus(['tower', 'gatehouse', 'health'], mapPulse(B.loop, B.loop + 5))
@@ -57,7 +57,8 @@ const nameRow = (i: number) => new Vector3(NAME_X, 2 + 5 * i, NAME_Z)
 const metricLabels = METRIC_COINS.map((_, i) => nameRow(i))
 const hollowLabels = [0, 1].map((k) => nameRow(6 + k))
 const notCollected = nameRow(8)
-const panelPoint = new Vector3(HEALTH_PERSON[0] + 0.6, 1.3, HEALTH_PERSON[2])
+/** The small board of what needs a human: out to the south west of the elder, over the fields, where no name stands. */
+const panelPoint = new Vector3(HEALTH_PERSON[0] - 12, 0, HEALTH_PERSON[2] + 16)
 /** What needs a human, per app: a few pastel dots each. */
 const WAITING = [2, 1, 3]
 const DOTS = ['var(--c-peach)', 'var(--c-lilac)', 'var(--c-butter)']

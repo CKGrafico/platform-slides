@@ -12,6 +12,7 @@ import { faceOnPath, type PathAt } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
 import { HALL_SCALE } from '../../hall'
 import { CLOUD_PATHS, COMMANDS_FROM, DEV_POS, IMPROVISE_PATHS, PILE } from '../../layout'
+import { raiseSign } from '../../signs'
 import { B, grid } from '.'
 
 const KEY = '09-harness/harness'
@@ -40,6 +41,9 @@ const DEV_SCALE = 0.16
 export const harnessMoves = defineChoreography('09-harness', (tl, cast, t) => {
   const span = (from: number, to: number) => t.span(KEY, b(from), b(to))
   const el = (id: string) => artOf(cast.get(id))
+
+  // The first pillar is named: its sign stands in the slot that waited for it.
+  raiseSign(tl, cast, 0, span(B.name + 2, B.name + 2.75))
 
   // ---- 9.1: every repo improvises ------------------------------------------------------------
   const carts = [0, 1, 2].map((k) => el(`p6.ball.${k}`))

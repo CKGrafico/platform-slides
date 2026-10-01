@@ -48,7 +48,7 @@ export const slotPoints = SIGN_SPOTS.map((p) => new Vector3(p[0], 0.08, p[2]))
 /** Each slot's name beside it, on the side with room: the two west slots read leftward. */
 const SLOT_SIDE = ['label-left', 'label-right', 'label-left', 'label-right'] as const
 const slotLabelTargets = slotPoints.map((p, n) => {
-  const v = p.clone().add(new Vector3(SLOT_SIDE[n] === 'label-left' ? 2.5 : -2.5, n === 3 ? 1.5 : 0.3, 0))
+  const v = p.clone().add(new Vector3(SLOT_SIDE[n] === 'label-left' ? 2.5 : -2.5, 0.3, 0))
   return () => v
 })
 

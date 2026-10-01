@@ -27,6 +27,23 @@ export function createMilestone(options: { stone?: boolean; pennant?: ColorRepre
   return el
 }
 
+/** A district sign: a tall post with a wide board under a small tiled roof, and a pennant on top. The board faces +Z. */
+export function createSign(options: { pennant?: ColorRepresentation } = {}) {
+  const { pennant = palette.peach } = options
+  const post = boxAt(0.14, 2.4, 0.14, 0, 1.2, 0)
+  const el = building('sign', post, town.timber)
+  const p = new Parts()
+  p.timber.push(boxAt(1.7, 0.62, 0.08, 0, 1.75, 0.06))
+  p.dark.push(boxAt(1.54, 0.46, 0.02, 0, 1.75, 0.11))
+  for (const x of [-0.72, 0.72]) p.timber.push(boxAt(0.06, 0.34, 0.06, x, 2.2, 0.06))
+  const roof = gableRoofGeometry(1.9, 0.5, 0.26, 0.05)
+  roof.translate(0, 2.08, 0.06)
+  p.tiles.push(roof)
+  attach(el, boxAt(0.34, 0.17, 0.02, 0.19, 2.56, 0.02), pennant, { width: 1.4 })
+  p.attachTo(el, town.timber)
+  return el
+}
+
 /** A rolled scroll: the workflow file. It lies along X, its middle at y = 0.1. */
 export function createScroll() {
   const roll = new CylinderGeometry(0.1, 0.1, 0.46, 12)

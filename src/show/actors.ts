@@ -11,7 +11,7 @@ import { createGhostStacks, createGrid, createSketchLine, createSlot, straight, 
 import { palette } from '@/art/palette'
 import { inkOf } from '@/art/toon'
 import { createBales, createBlades, createBushes, createCanopies, createFence, createFields, createFlowers, createGate, createHouse, createLand, createMill, createPines, createRoad, createRocks, createRows, createStall, createTower, createTownCenter, createTrail, createTrunks, createVillager, createWell, polyline, town } from '@/art/town'
-import { createBanner, createBarn, createCrate, createForge, createKiln, createMilestone, createParapet, createScroll } from '@/art/town-props'
+import { createBanner, createBarn, createCrate, createForge, createKiln, createMilestone, createParapet, createScroll, createSign } from '@/art/town-props'
 import { createCart, createCartSwarm, createSack, createSeal, createStake, createStone } from '@/art/town-units'
 import { createArch, createWallArc, type Gap } from '@/art/town-walls'
 import { defineActor, type ActorDef } from '@/world/actors'
@@ -79,6 +79,8 @@ import {
   RUN_PATHS,
   SCRIPTORIUM,
   SHORTCUT,
+  SIGN_SCALE,
+  SIGN_SPOTS,
   SPAGHETTI,
   SPAGHETTI_STATIONS,
   STATION,
@@ -386,6 +388,21 @@ export const RING_GATES: string[][] = [
   ['arch.4.w', 'arch.4.e'],
   ['outer.w', 'outer.e'],
 ]
+/** The four district signs, one per pillar, in the slots that waited for them: each stands when its pillar is named (parts 9 to 12). */
+export const SIGN_IDS = ['sign.harness', 'sign.workflows', 'sign.foundations', 'sign.health'] as const
+const signs = SIGN_IDS.map((id, i) =>
+  defineActor({
+    id,
+    create: () => {
+      const el = createSign({ pennant: [palette.peach, palette.sage, palette.lilac, palette.butter][i] })
+      at(el.object, SIGN_SPOTS[i]!)
+      el.object.scale.setScalar(SIGN_SCALE)
+      // Turned a little toward the road, like a sign by a path.
+      el.object.rotation.y = [0.3, -0.4, 0.6, -0.5][i]!
+      return el.object
+    },
+  }),
+)
 /** The four empty slots of the map of the talk: dashed circles on the ground where each district's sign will stand. */
 const levelSlots = [1, 2, 3, 4].map((n) =>
   defineActor({
@@ -880,6 +897,7 @@ export const actors: ActorDef[] = [
   outerW,
   outerE,
   ...levelSlots,
+  ...signs,
   mill,
   blades,
   ...events,

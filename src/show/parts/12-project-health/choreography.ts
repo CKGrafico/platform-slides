@@ -17,6 +17,7 @@ import { drop, stackPoint, stackTilt } from '../../coins'
 import { FOLK, HALL_SCALE, hallStep, homeAfter, homeAt, walkPath } from '../../hall'
 import { HEALTH_PERSON, METRIC_BASES, METRIC_COIN_SCALE, METRIC_COINS, TOWER } from '../../layout'
 import { routePoint, ROUTE } from '../../route'
+import { raiseSign } from '../../signs'
 import { B, grid } from '.'
 
 const KEY = '12-project-health/health'
@@ -28,6 +29,9 @@ const win = (beat: number, a: number, bb: number) => clamp01((beat - a) / (bb - 
 export const projectHealthMoves = defineChoreography('12-project-health', (tl, cast, t) => {
   const span = (from: number, to: number) => t.span(KEY, b(from), b(to))
   const el = (id: string) => artOf(cast.get(id))
+
+  // The fourth pillar is named: its sign stands before the barn.
+  raiseSign(tl, cast, 3, span(2, 2.75))
 
   // 12.2: the barn, and the measures that stack up beside it, coin by coin.
   const barnIn = span(B.measure + 0.25, B.measure + 1)

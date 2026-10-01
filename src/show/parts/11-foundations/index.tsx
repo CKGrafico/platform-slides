@@ -38,6 +38,7 @@ hudCues.fill(2, { key: KEY, from: b(1.5), to: b(3) })
 
 const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
 const mapPulse = (from: number, to: number) => ({ rise: mapKey(from, from + 0.75), fall: mapKey(to, to + 0.75) })
+mapCues.appear('sign.foundations', mapKey(2.25, 3))
 mapCues.focus([], mapPulse(B.amplify, B.walls))
 mapCues.appear('walls', mapKey(B.walls + 1.5, B.walls + 2.25))
 mapCues.role('walls', mapPulse(B.walls + 1.75, B.verbs))

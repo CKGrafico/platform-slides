@@ -26,6 +26,7 @@ import { STEPS, TASKS } from '../../actors'
 import { loopAt, mainAt as mainPath } from '../../route'
 import { stackPoint, stackTilt } from '../../coins'
 import { FOLK, FOLK_HOME, HALL_SCALE, hallStep, homeAfter, homeAt, homePoint, setHallScale, walkPath } from '../../hall'
+import { raiseSign } from '../../signs'
 import { BALES, BOOTH, COINS, FARMS, FIELDS, FIELD_TILE, HALL_DOOR, LINE_BENT, LINE_X, LINE_Y, LINE_Z, LOOP_LANDING, LOOP_SWEEP, MAIN_AT, PLATFORM_TOP, SPAGHETTI, STEP_LANDING, TOKEN_COINS, TOKENS_LEFT } from '../../layout'
 import { grid, PB, pipeGrid, QB } from '.'
 
@@ -68,6 +69,9 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     const out = span(0.3, 0.9)
     inkOut(tl, el(id), out.start, out.duration)
   }
+
+  // The second pillar is named: its sign stands by the road, south of the workshops.
+  raiseSign(tl, cast, 1, span(2, 2.75))
 
   // ---- 10.2: the hall, big and closed; the task carts leave it -------------------------------
   const hall = el('hall')

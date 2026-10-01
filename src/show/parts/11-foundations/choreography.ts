@@ -13,6 +13,7 @@ import { town } from '@/art/town'
 import { yawOnPath } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
 import { RING_ARCS, RINGS, VERBS } from '../../layout'
+import { raiseSign } from '../../signs'
 import { B, grid } from '.'
 
 const KEY = '11-foundations/foundations'
@@ -27,6 +28,9 @@ const ARRIVALS = Array.from({ length: 10 }, (_, i) => B.amplify + 1.2 + 4 * (1 -
 export const foundationsMoves = defineChoreography('11-foundations', (tl, cast, t) => {
   const span = (from: number, to: number) => t.span(KEY, b(from), b(to))
   const el = (id: string) => artOf(cast.get(id))
+
+  // The third pillar is named: its sign stands between the two houses.
+  raiseSign(tl, cast, 2, span(2, 2.75))
 
   // ---- 11.1: a tidy house and a messy one ------------------------------------------------------
   for (const kind of ['tidy', 'messy'] as const) {

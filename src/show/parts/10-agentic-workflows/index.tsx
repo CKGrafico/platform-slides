@@ -41,6 +41,7 @@ hudCues.fill(1, { key: PULL, from: b(1.5), to: b(3) })
 
 const pullKey = (from: number, to: number) => ({ key: PULL, from: b(from), to: b(to) })
 const pullPulse = (from: number, to: number) => ({ rise: pullKey(from, from + 0.75), fall: pullKey(to, to + 0.75) })
+mapCues.appear('sign.workflows', pullKey(2.25, 3))
 mapCues.role('hall', pullPulse(1.5, PB.pop + 2))
 mapCues.role('station', pullPulse(PB.back + 1.5, PB.resort))
 mapCues.appear('coins', pullKey(PB.resort + 0.5, PB.resort + 1.25))
