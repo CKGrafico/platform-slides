@@ -1,14 +1,38 @@
 /**
  * The map of the town: where everything stands in the one persistent world
  * (docs/art/town-proposal.md). The hall sits at the origin; x runs east, z
- * runs south, toward the camera. The main road runs west to east along the
- * south of the hall; three ring walls rise around the hall in part 11, with
- * gates where the road crosses them; the woods close the land beyond.
+ * runs south, toward the camera. Five ring walls stand round the hall,
+ * fifteen units apart (the maturity levels of part 4), and the town is built
+ * between them, district by district: the agent's precinct inside the first
+ * wall, the workshops in the second band, Foundations and Project Health in
+ * the third, the hamlet and the market in the fourth, farms in the fifth. The
+ * main road runs west to east along the south of the hall, through a gate in
+ * every wall; the road of milestones comes in from the west edge of the frame
+ * to the outer gate; the woods close the land beyond the fifth wall.
  *
- * The camera never zooms (shots.ts), so a frame shows a diamond of about
- * 25 units around its target: |x - z| < 25.4 and |x + z| < 26.1 from it.
+ * The camera never moves (shots.ts): the whole map is in the frame, about 185
+ * units wide at the hall, so everything here is sized for that distance.
  */
 export type V3 = readonly [number, number, number]
+const deg = (d: number) => (d * Math.PI) / 180
+
+// ---- the rings: the five walls -----------------------------------------------------------------
+
+/**
+ * Radii of the five ring walls round the hall, fifteen units apart: the
+ * maturity levels of part 4, level 1 the smallest. They rise in part 4 and
+ * never leave; every district of the town is built between two of them.
+ */
+export const RINGS = [9, 24, 39, 54, 69]
+export const RING_THICKNESS = 1.2
+export const RING_HEIGHT = 2.2
+/** Each ring is built as arcs, so it can rise round the town piece by piece. */
+export const RING_ARCS = 8
+/** Gates, arches, the watchtower and the milestones are sized up for the far camera, so they read against the walls. */
+export const GATE_SCALE = 1.5
+export const ARCH_SCALE = 1.6
+export const TOWER_SCALE = 1.8
+export const MILESTONE_SCALE = 1.8
 
 // ---- the hall: the agent ---------------------------------------------------------------------
 
@@ -59,122 +83,161 @@ export const LOOP: V3[] = [
 export const LOOP_LANDING = [0.62, 0.72, 0.82, 0.92]
 export const LOOP_SWEEP = 0.12
 
-// ---- GitHub Actions: the mill and its line of steps ---------------------------------------------
-
-/** The mill, north east of the loop, its sails toward it. */
-export const STATION: V3 = [5.6, 0, -6.4]
-export const STATION_TURN = -0.6
-/** Where its steps land on the loop (10.3). */
-export const STEP_LANDING = [0.3, 0.36, 0.42, 0.48, 0.54, 0.58]
-/** The straight belt of steps that leaves the mill westward (5.2). */
-export const LINE_Z = -6.4
-export const LINE_Y = 0.08
-export const LINE_X = [4.4, 3.6, 2.8, 2.0, 1.2, 0.4]
-export const LINE_FROM: V3 = [5.0, LINE_Y, LINE_Z]
-export const LINE_TO: V3 = [-0.2, LINE_Y, LINE_Z]
-/** Near the hall the line bends onto the loop (5.3). The last two steps move here. */
-export const LINE_BENT: V3[] = [
-  [0.6, LINE_Y, -5.3],
-  [-0.2, LINE_Y, -4.2],
-]
-
 // ---- roads -----------------------------------------------------------------------------------------
 
 export const MAIN_Z = 5.6
-/** The main road, west to east along the south of the town, from the outer gate to the outer gate. */
+const crossing = (r: number) => Math.sqrt(r * r - MAIN_Z * MAIN_Z)
+/** Where the main road crosses each ring: a gate on each side. */
+export const RING_CROSSINGS = RINGS.map(crossing)
+/** The main road, west to east along the south of the hall, from the outer gate to the outer gate. */
 export const MAIN: V3[] = [
-  [-18.5, 0, MAIN_Z],
-  [18.5, 0, MAIN_Z],
+  [-RING_CROSSINGS[4]!, 0, MAIN_Z],
+  [RING_CROSSINGS[4]!, 0, MAIN_Z],
 ]
-/** The road into the town (part 3): from the far west to the outer gate. */
+/** The road into the town (part 3): from the west edge of the frame to the outer gate. */
 export const TIMELINE_ROAD: V3[] = [
-  [-47.5, 0, MAIN_Z],
-  [-18.5, 0, MAIN_Z],
+  [-105, 0, MAIN_Z],
+  [-RING_CROSSINGS[4]!, 0, MAIN_Z],
 ]
-/** Along the main belt, as fractions of its length. */
+/** Along the main road, as fractions of its length. */
 const mainAt = (x: number) => (x - MAIN[0]![0]) / (MAIN[1]![0] - MAIN[0]![0])
 
-// ---- the rings: the walls of part 11 -----------------------------------------------------------
+// ---- gates: an opening in every wall where the road crosses it ---------------------------------------
 
-/** Radii of the three ring walls around the hall, and where the road crosses each (a gate). */
-export const RINGS = [7.4, 12.4, 19.0]
-export const RING_THICKNESS = 0.5
-const crossing = (r: number) => Math.sqrt(r * r - MAIN_Z * MAIN_Z)
-export const RING_CROSSINGS = RINGS.map(crossing)
-/** Angles (radians, +z toward the camera) where each ring has a tower of its own on the wall. */
-export const RING_TOWERS: number[][] = [
-  [-2.0, 2.7, 1.57],
-  [-0.52, -1.57, -2.62, 1.05, 2.09],
-  [-0.52, -1.57, -2.62, Math.PI, 1.05, 2.09],
+/** Arches on the first, third and fourth wall; the gatehouse and the merge gate on the second; gate towers on the fifth. */
+export const ARCH_W: V3 = [-RING_CROSSINGS[0]!, 0, MAIN_Z]
+export const ARCH_E: V3 = [RING_CROSSINGS[0]!, 0, MAIN_Z]
+export const GATEHOUSE: V3 = [-RING_CROSSINGS[1]!, 0, MAIN_Z]
+export const EXIT_GATE: V3 = [RING_CROSSINGS[1]!, 0, MAIN_Z]
+export const ARCH_3W: V3 = [-RING_CROSSINGS[2]!, 0, MAIN_Z]
+export const ARCH_3E: V3 = [RING_CROSSINGS[2]!, 0, MAIN_Z]
+export const ARCH_4W: V3 = [-RING_CROSSINGS[3]!, 0, MAIN_Z]
+export const ARCH_4E: V3 = [RING_CROSSINGS[3]!, 0, MAIN_Z]
+export const OUTER_W: V3 = [-RING_CROSSINGS[4]!, 0, MAIN_Z]
+export const OUTER_E: V3 = [RING_CROSSINGS[4]!, 0, MAIN_Z]
+/** The mill's road runs west along this line (5.2), into the first wall through a postern. */
+export const LINE_Z = -6.6
+/** Two posterns in the first wall: one north, toward Forge, and one north east, where the mill's road comes in. */
+export const POSTERN_N: V3 = [0, 0, -RINGS[0]!]
+export const POSTERN_NE: V3 = [Math.sqrt(RINGS[0]! * RINGS[0]! - LINE_Z * LINE_Z), 0, LINE_Z]
+/** Half the length of the gap a wall leaves for an arch or a gate, along the wall: the wall ends inside the gate's own stubs. */
+const ARCH_GAP = 2.6
+const GATE_GAP = 3.4
+/** The openings of each wall (ring index): where a gate stands, and the half-length of its gap. */
+export const RING_OPENINGS: Array<Array<{ at: V3; half: number }>> = [
+  [
+    { at: ARCH_W, half: ARCH_GAP },
+    { at: ARCH_E, half: ARCH_GAP },
+    { at: POSTERN_N, half: ARCH_GAP },
+    { at: POSTERN_NE, half: ARCH_GAP },
+  ],
+  [
+    { at: GATEHOUSE, half: GATE_GAP },
+    { at: EXIT_GATE, half: GATE_GAP },
+  ],
+  [
+    { at: ARCH_3W, half: ARCH_GAP },
+    { at: ARCH_3E, half: ARCH_GAP },
+  ],
+  [
+    { at: ARCH_4W, half: ARCH_GAP },
+    { at: ARCH_4E, half: ARCH_GAP },
+  ],
+  [
+    { at: OUTER_W, half: GATE_GAP },
+    { at: OUTER_E, half: GATE_GAP },
+  ],
 ]
-/** Each ring is built as arcs, so it can rise around the town. */
-export const RING_ARCS = 8
-const deg = (d: number) => (d * Math.PI) / 180
+
+// ---- GitHub Actions: the mill and its line of steps ---------------------------------------------
+
+/** The mill, north east of the first wall, its sails toward the hall. */
+export const STATION: V3 = [13.2, 0, -6.6]
+export const STATION_TURN = -0.6
+/** Where its steps land on the loop (10.3). */
+export const STEP_LANDING = [0.3, 0.36, 0.42, 0.48, 0.54, 0.58]
+/** The straight belt of steps that leaves the mill westward (5.2), through the postern. */
+export const LINE_Y = 0.08
+export const LINE_X = [11.2, 8.8, 6.4, 4.0, 1.6, -0.8]
+export const LINE_FROM: V3 = [11.8, LINE_Y, LINE_Z]
+export const LINE_TO: V3 = [-1.4, LINE_Y, LINE_Z]
+/** Near the hall the line bends onto the loop (5.3). The last two steps move here. */
+export const LINE_BENT: V3[] = [
+  [0.2, LINE_Y, -5.3],
+  [-0.8, LINE_Y, -4.2],
+]
 
 // ---- buildings ---------------------------------------------------------------------------------------
 
-export const GATEHOUSE: V3 = [-RING_CROSSINGS[1]!, 0, MAIN_Z]
-export const EXIT_GATE: V3 = [RING_CROSSINGS[1]!, 0, MAIN_Z]
-export const ARCH_W: V3 = [-RING_CROSSINGS[0]!, 0, MAIN_Z]
-export const ARCH_E: V3 = [RING_CROSSINGS[0]!, 0, MAIN_Z]
-export const OUTER_W: V3 = [-RING_CROSSINGS[2]!, 0, MAIN_Z]
-export const OUTER_E: V3 = [RING_CROSSINGS[2]!, 0, MAIN_Z]
-export const TRIAGE_HOUSE: V3 = [-8.6, 0, 3.4]
-export const REFINE_HOUSE: V3 = [-6.3, 0, 3.3]
-export const REQUESTER: V3 = [-6.6, 0, 7.4]
-export const MARKET: V3 = [14.2, 0, 3.6]
-/** The person a risky change is sent to: a booth south of the exit gate. */
-export const BOOTH: V3 = [5.8, 0, 8.3]
-export const WELL: V3 = [-9.6, 0, 1.4]
-/** The compiler: a scriptorium north west of the loop. */
-export const SCRIPTORIUM: V3 = [-8.0, 0, -4.5]
-export const SCRIPTORIUM_DOOR: V3 = [-8.0, 0.3, -3.5]
-/** Forge, and the kilns of the models behind it. */
-export const FORGE: V3 = [-2.5, 0, -8.2]
+/** Inside the first wall, with the hall: the well. */
+export const WELL: V3 = [-6.2, 0, 1.8]
+/** The compiler: a scriptorium north west of the first wall. */
+export const SCRIPTORIUM: V3 = [-12.0, 0, -6.5]
+export const SCRIPTORIUM_DOOR: V3 = [-12.0, 0.3, -5.5]
+/** The workshops on the road, west of the hall, inside the second wall. */
+export const TRIAGE_HOUSE: V3 = [-17.5, 0, 3.2]
+export const REFINE_HOUSE: V3 = [-12.5, 0, 3.3]
+export const REQUESTER: V3 = [-10.0, 0, 8.2]
+/** Forge, north of the first wall, and the kilns of the models behind it. */
+export const FORGE: V3 = [-2.0, 0, -16.5]
 export const KILNS: V3[] = [
-  [-5.0, 0, -10.0],
-  [-2.9, 0, -10.6],
-  [-0.8, 0, -10.2],
+  [-5.5, 0, -19.5],
+  [-2.5, 0, -20.2],
+  [0.5, 0, -19.8],
 ]
 /** Before Forge, the agent called a vendor straight away, far to the east. */
-export const VENDOR: V3 = [22, 0.08, -6]
-/** The watchtower of the audit: on the first ring, north of the hall. */
-export const TOWER_ANGLE = deg(-75)
+export const VENDOR: V3 = [30, 0.08, -12]
+/** The watchtower of the audit: built into the first wall, north west of the hall. */
+export const TOWER_ANGLE = deg(-120)
 export const TOWER: V3 = [Math.cos(TOWER_ANGLE) * RINGS[0]!, 0, Math.sin(TOWER_ANGLE) * RINGS[0]!]
-/** The barn and the stacks of measures beside it, between the first ring and the exit gate (part 12). */
-export const BARN: V3 = [8.8, 0, 0.2]
-export const MAIN_AT = { gate: mainAt(GATEHOUSE[0]), triage: mainAt(TRIAGE_HOUSE[0]), refine: mainAt(REFINE_HOUSE[0]), hall: 0.5, exit: mainAt(EXIT_GATE[0]), market: mainAt(MARKET[0]) }
+/** The market: east on the road, between the third and the fourth wall. */
+export const MARKET: V3 = [46, 0, 3.4]
+/** The person a risky change is sent to: a booth outside the merge gate, south of the road. */
+export const BOOTH: V3 = [31, 0, 10]
+/** The barn and the stacks of measures beside it, south west, between the second and the third wall (part 12): the side of the map the camera spreads wide. */
+export const BARN: V3 = [-15, 0, 26]
+export const MAIN_AT = { gate: mainAt(GATEHOUSE[0]), triage: mainAt(TRIAGE_HOUSE[0]), refine: mainAt(REFINE_HOUSE[0]), hall: mainAt(0), exit: mainAt(EXIT_GATE[0]), market: mainAt(MARKET[0]) }
 
 // ---- people --------------------------------------------------------------------------------------------
 
-/** The person at the exit (6.3), and the carts of work that queue up in front of them on the road. */
-export const REVIEWER: V3 = [9.4, 0, 6.8]
+/** The person at the exit (6.3), outside the merge gate, and the carts of work that queue up inside it on the road. */
+export const REVIEWER: V3 = [26.5, 0, 7.8]
 export const PILE: V3[] = [
-  [8.4, 0.04, 5.6],
-  [7.8, 0.04, 5.6],
-  [7.2, 0.04, 5.6],
-  [8.1, 0.04, 6.35],
-  [7.5, 0.04, 6.35],
-  [6.6, 0.04, 5.6],
-  [6.9, 0.04, 6.35],
-  [6.0, 0.04, 5.6],
+  [21.6, 0.04, 5.6],
+  [19.4, 0.04, 5.6],
+  [17.2, 0.04, 5.6],
+  [20.5, 0.04, 7.3],
+  [18.3, 0.04, 7.3],
+  [15.0, 0.04, 5.6],
+  [16.1, 0.04, 7.3],
+  [12.8, 0.04, 5.6],
 ]
 /** The three of the team (7.2), by the hamlet of the products. */
 export const TEAM: V3[] = [
-  [13.6, 0, -2.9],
-  [14.6, 0, -2.3],
-  [15.6, 0, -2.9],
+  [29.5, 0, -30],
+  [31.0, 0, -28],
+  [32.5, 0, -30.5],
 ]
-/** More than ten products: cottages in a hamlet outside the second ring, north east. */
+/** More than ten products: cottages in a hamlet north east, between the third and the fourth wall. */
 export const APPS: V3[] = Array.from({ length: 11 }, (_, i) => {
   const row = Math.floor(i / 4)
   const col = i % 4
-  return [12.0 + col * 1.7 + (row % 2) * 0.85, 0, -4.2 - row * 2.3] as const
+  return [33.0 + col * 2.3 + (row % 2) * 1.15, 0, -27 - row * 2.5] as const
 })
-/** The developer with the copy of the hall (9.5), south of the road. */
-export const DEV_POS: V3 = [-2.5, 0, 8.0]
+/** The developer with the copy of the hall (9.5), south of the road inside the second wall. */
+export const DEV_POS: V3 = [-3.0, 0, 15.0]
 /** The elder who looks at what needs a human (12.4), by the stacks. */
-export const HEALTH_PERSON: V3 = [3.8, 0, 8.6]
+export const HEALTH_PERSON: V3 = [-21.5, 0, 29.5]
+
+// ---- the districts: where each pillar's sign stands --------------------------------------------------------
+
+/** One spot per pillar, at the entrance of its district: Agent Harness, Agentic Workflows, Foundations, Project Health. Part 4 draws an empty slot on each. */
+export const SIGN_SPOTS: V3[] = [
+  [-1.2, 0, 6.9],
+  [-19.5, 0, 9.0],
+  [-22, 0, -17],
+  [-16, 0, 21],
+]
 
 // ---- the paths of the story --------------------------------------------------------------------------
 
@@ -182,105 +245,102 @@ export const HEALTH_PERSON: V3 = [3.8, 0, 8.6]
 export const DOOR_BIG: V3 = [HALL_DOOR[0] * HALL_BIG, HALL_DOOR[1] * HALL_BIG, HALL_DOOR[2] * HALL_BIG]
 /** Where a cart leaves the hall: on the platform, at the door, at the hall's first size. */
 export const DOOR_GROUND: V3 = [HALL_DOOR[0] * HALL_BIG, PLATFORM_TOP * HALL_BIG, HALL_DOOR[2] * HALL_BIG]
-/** Three runs of the same prompt: three paths of different shapes and lengths from the door to the pile (6.1). */
+/** Three runs of the same prompt: three paths of different shapes and lengths from the door, out of the east arch, to the pile (6.1). */
 export const RUN_PATHS: V3[][] = [
-  [DOOR_GROUND, [1.5, 0.06, 3.2], [3.6, 0.06, 4.6], [6.0, 0.06, 5.4], PILE[0]!],
-  [DOOR_GROUND, [-1.6, 0.06, 3.4], [0.6, 0.06, 5.0], [3.2, 0.06, 7.0], [6.4, 0.06, 6.4], PILE[1]!],
-  [DOOR_GROUND, [2.4, 0.06, 2.2], [4.9, 0.06, 3.3], [6.9, 0.06, 4.5], PILE[2]!],
+  [DOOR_GROUND, [2.2, 0.06, 3.6], [5.0, 0.06, 5.2], [7.0, 0.06, 5.9], [12.0, 0.06, 5.0], PILE[0]!],
+  [DOOR_GROUND, [-1.4, 0.06, 3.6], [1.0, 0.06, 5.4], [4.4, 0.06, 6.6], [7.2, 0.06, 6.0], [13.0, 0.06, 7.2], PILE[1]!],
+  [DOOR_GROUND, [2.8, 0.06, 2.4], [5.6, 0.06, 3.8], [7.4, 0.06, 5.4], [11.0, 0.06, 4.6], PILE[2]!],
 ]
 /** Every repo improvises: three runs from the hall, three different paths (9.1). */
 export const IMPROVISE_PATHS: V3[][] = [
-  [DOOR_GROUND, [-2.2, 0.06, 3.6], [-4.6, 0.06, 4.6], [-6.9, 0.06, 6.2]],
-  [DOOR_GROUND, [1.8, 0.06, 3.0], [3.2, 0.06, 5.4], [1.4, 0.06, 7.8]],
-  [DOOR_GROUND, [2.6, 0.06, 2.4], [5.6, 0.06, 1.6], [7.6, 0.06, -1.0]],
+  [DOOR_GROUND, [-2.4, 0.06, 3.8], [-5.2, 0.06, 5.2], [-7.4, 0.06, 6.2], [-10.5, 0.06, 7.0]],
+  [DOOR_GROUND, [-1.6, 0.06, 3.4], [-2.8, 0.06, 5.4], [-4.4, 0.06, 6.8]],
+  [DOOR_GROUND, [2.6, 0.06, 2.4], [5.4, 0.06, 1.4], [7.2, 0.06, -1.2]],
 ]
-/** "Solve this issue": a cloud of possible paths (9.3). */
+/** "Solve this issue": a cloud of possible paths inside the first wall (9.3). */
 export const CLOUD_PATHS: V3[][] = [
-  [DOOR_GROUND, [1.4, 0.06, 3.4], [3.8, 0.06, 4.2], [6.2, 0.06, 3.6]],
-  [DOOR_GROUND, [-1.2, 0.06, 3.6], [-0.4, 0.06, 5.6], [1.8, 0.06, 7.2]],
-  [DOOR_GROUND, [0.8, 0.06, 3.8], [1.2, 0.06, 6.0], [3.6, 0.06, 7.8]],
-  [DOOR_GROUND, [-2.4, 0.06, 3.2], [-4.2, 0.06, 5.4], [-4.6, 0.06, 7.6]],
-  [DOOR_GROUND, [2.2, 0.06, 2.6], [5.0, 0.06, 2.2], [7.2, 0.06, 4.4]],
+  [DOOR_GROUND, [1.4, 0.06, 3.4], [3.8, 0.06, 4.4], [6.0, 0.06, 3.6]],
+  [DOOR_GROUND, [-1.2, 0.06, 3.6], [-0.4, 0.06, 5.4], [1.6, 0.06, 7.0]],
+  [DOOR_GROUND, [0.8, 0.06, 3.8], [1.4, 0.06, 5.6], [3.4, 0.06, 6.8]],
+  [DOOR_GROUND, [-2.4, 0.06, 3.2], [-3.8, 0.06, 5.0], [-4.4, 0.06, 6.4]],
+  [DOOR_GROUND, [2.2, 0.06, 2.6], [4.8, 0.06, 2.2], [6.6, 0.06, 3.8]],
 ]
-/** Unsafe commands fly at the parapet from here and bounce off (9.4). */
+/** Unsafe commands fly at the curtain wall from outside the first wall and bounce off (9.4). */
 export const COMMANDS_FROM: V3[] = [
-  [7.2, 1.3, 6.4],
-  [8.6, 0.9, 3.4],
-  [6.0, 1.7, 8.6],
+  [7.6, 1.3, 6.8],
+  [9.2, 0.9, 3.4],
+  [6.4, 1.7, 9.0],
 ]
 
-/** 10.4 before the router: belts everywhere, each with a station that woke on every cart. */
+/** 10.4 before the router: belts everywhere across the town, each with a station that woke on every cart. */
 export const SPAGHETTI: V3[][] = [
-  [[-17, 0, -5], [-8.6, 0, -1.2], [-0.5, 0, 9.0]],
-  [[-14, 0, 9], [-5.9, 0, -2.4], [7.5, 0, -9.5]],
-  [[-17, 0, 3], [2.2, 0, -10.2], [16, 0, -12]],
+  [[-34, 0, -12], [-18.5, 0, -3.5], [-9.5, 0, 11], [-2, 0, 19]],
+  [[-24, 0, 22], [-13.5, 0, -1.0], [15, 0, -19]],
+  [[-36, 0, -3], [-18, 0, -9.5], [-8, 0, -10.5], [0, 0, -9], [14, 0, -15], [30, 0, -18]],
 ]
 export const SPAGHETTI_STATIONS: V3[] = [
-  [-8.6, 0, -1.2],
-  [-5.9, 0, -2.4],
-  [2.2, 0, -10.2],
+  [-18.5, 0, -3.5],
+  [-13.5, 0, -1.0],
+  [14, 0, -15],
 ]
 
-/** The audit's report goes into the gatehouse as a new cart (12.6): from the watchtower, around the west. */
-export const AUDIT_LOOP: V3[] = [TOWER, [-1.0, 0, -8.7], [-6.5, 0, -7.5], [-10.5, 0, -3.0], [-11.5, 0, 2.0], [GATEHOUSE[0], 0, GATEHOUSE[2] - 1.3]]
+/** The audit's report goes into the gatehouse as a new cart (12.6): from the watchtower, around the west, outside the first wall. */
+export const AUDIT_LOOP: V3[] = [TOWER, [-8, 0, -11], [-14, 0, -11], [-19, 0, -6], [-22, 0, -1], [GATEHOUSE[0], 0, GATEHOUSE[2] - 1.5]]
 
 /** After release, the issue goes on to production: east, out of the outer gate. */
-export const PRODUCTION: V3 = [26, 0.14, MAIN_Z]
+export const PRODUCTION: V3 = [75, 0.14, MAIN_Z]
 
-// ---- part 4: the levels, and part 11: the phases and the verbs -------------------------------------
+// ---- part 11: the phases, the guardrails and the verbs ----------------------------------------------
 
-/** Five ring walls round the land, level 1 the smallest, far apart. Part 4 pulls the camera back to show them all. */
-export const LEVEL_RADII = [5.5, 9.5, 13.5, 17.5, 21]
-/** The four empty slots on the level 5 ring, on its west arc, where the frame has room for their names. */
-export const SLOT_ANGLES = [deg(125), deg(140), deg(155), deg(170)]
-/** The three phases: the plans of the three walls. Their labels sit at the front of each circle, one below the other. */
+/** The three phases are the three inner walls. Their names sit on the ground just inside each, one below the other. */
 export const PHASE_LABEL_DIR: V3 = [0, 0, 1]
-export const PHASE_LABEL_R = [5.6, 10.0, 14.6]
-/** Verbs (11.5): what a worker may do, as small moons; what it may not, as hollow slots. */
+export const PHASE_LABEL_R = [RINGS[0]! - 2, RINGS[1]! - 2, RINGS[2]! - 2]
+/** Verbs (11.5): what a worker may do, as seals; what it may not, as hollow slots. By the hall, the merge gate and triage. */
 export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [
-  { id: 'pr', at: [2.6, 3.0, 2.9], hollow: false },
-  { id: 'merge-no', at: [2.6, 2.15, 2.9], hollow: true },
-  { id: 'main-no', at: [2.6, 1.3, 2.9], hollow: true },
-  { id: 'merge', at: [EXIT_GATE[0], 3.1, EXIT_GATE[2] + 0.4], hollow: false },
-  { id: 'issue', at: [TRIAGE_HOUSE[0] + 1.6, 1.75, TRIAGE_HOUSE[2] + 0.4], hollow: false },
-  { id: 'code-no', at: [TRIAGE_HOUSE[0] + 1.6, 0.8, TRIAGE_HOUSE[2] + 0.4], hollow: true },
+  { id: 'pr', at: [2.6, 9.0, 2.9], hollow: false },
+  { id: 'merge-no', at: [2.6, 5.5, 2.9], hollow: true },
+  { id: 'main-no', at: [2.6, 2.0, 2.9], hollow: true },
+  { id: 'merge', at: [EXIT_GATE[0], 4.5, EXIT_GATE[2] + 0.4], hollow: false },
+  { id: 'issue', at: [TRIAGE_HOUSE[0] + 1.6, 6.0, TRIAGE_HOUSE[2] + 0.4], hollow: false },
+  { id: 'code-no', at: [TRIAGE_HOUSE[0] + 1.6, 2.5, TRIAGE_HOUSE[2] + 0.4], hollow: true },
 ]
-/** Where the five guardrail names sit: on wall segments the camera sees (ring index, angle). */
+/** Where the five guardrail names sit: one on each wall, on a stretch the camera sees (ring index, angle). */
 export const GUARDRAIL_SPOTS: Array<{ ring: number; angle: number }> = [
   { ring: 0, angle: deg(100) },
-  { ring: 0, angle: deg(55) },
   { ring: 1, angle: deg(70) },
-  { ring: 1, angle: deg(112) },
-  { ring: 2, angle: deg(88) },
+  { ring: 2, angle: deg(110) },
+  { ring: 3, angle: deg(80) },
+  { ring: 4, angle: deg(100) },
 ]
-/** 11.6: a shortcut from the first phase straight to the last, in two halves that break apart. */
+/** 11.6: a shortcut from the first wall straight out past the third, in two halves that break apart. */
 export const SHORTCUT: V3[] = [
-  [-3.6, 0.05, -4.2],
-  [-9.2, 0.05, -8.4],
-  [-14.6, 0.05, -12.4],
+  [3.0, 0.05, -5.2],
+  [10.0, 0.05, -17.3],
+  [17.5, 0.05, -30.3],
 ]
 
 // ---- part 11: tidy and messy ---------------------------------------------------------------------------
 
-export const TIDY_POS: V3 = [-16, 0, -5]
-export const MESSY_POS: V3 = [-12, 0, -9]
+/** Two houses north west, between the second and the third wall, wide apart on screen. */
+export const TIDY_POS: V3 = [-30, 0, -12]
+export const MESSY_POS: V3 = [-14, 0, -30]
 
 // ---- part 12: the measures -------------------------------------------------------------------------------
 
 /**
- * Measures stack up on both sides of the road, like the stores of a game:
- * four south of it, then two more north of it by the barn, with the two that
- * are not collected beside them.
+ * Measures stack up in front of the barn, like the stores of a game: four in
+ * a front row, then two more in a back row by the barn, with the two that are
+ * not collected beside them.
  */
 export const METRIC_BASES: V3[] = [
-  [6.4, 0, 7.3],
-  [7.7, 0, 7.3],
-  [9.0, 0, 7.3],
-  [10.3, 0, 7.3],
-  [6.3, 0, 1.6],
-  [7.6, 0, 1.6],
-  [8.9, 0, 1.6],
-  [10.2, 0, 1.6],
+  [-17.4, 0, 33.0],
+  [-16.0, 0, 33.0],
+  [-14.6, 0, 33.0],
+  [-13.2, 0, 33.0],
+  [-17.5, 0, 27.6],
+  [-16.1, 0, 27.6],
+  [-14.7, 0, 27.6],
+  [-13.3, 0, 27.6],
 ]
 /** Coins in each collected measure, and in each ghost stack of a measure that is not collected. */
 export const METRIC_COINS = [9, 6, 7, 11, 5, 7]
@@ -297,9 +357,9 @@ export const TOKENS_LEFT = 3
 const GAP_RATIO = 0.93
 const gaps = Array.from({ length: 9 }, (_, i) => Math.pow(GAP_RATIO, i))
 const gapSum = gaps.reduce((a, b) => a + b, 0)
-/** X of each of the ten milestones on the road into the town: each closer to the last. */
-export const MILESTONE_X: number[] = [-44]
-for (const g of gaps) MILESTONE_X.push(MILESTONE_X[MILESTONE_X.length - 1]! + (g / gapSum) * 22.5)
+/** X of each of the ten milestones on the road into the town: each closer to the last, the "?" just before the outer gate. */
+export const MILESTONE_X: number[] = [-102]
+for (const g of gaps) MILESTONE_X.push(MILESTONE_X[MILESTONE_X.length - 1]! + (g / gapSum) * 30)
 /** The milestones stand on the north side of the road, so their names sit above it. */
 export const MILESTONE_Z = MAIN_Z - 1.15
 export const MILESTONES: V3[] = MILESTONE_X.map((x) => [x, 0, MILESTONE_Z] as const)
@@ -308,8 +368,8 @@ export const TIMELINE_SPLIT = 5
 
 // ---- the land --------------------------------------------------------------------------------------------
 
-/** Size of the land plane. */
-export const LAND_SIZE = 130
+/** Size of the land plane: it reaches past every edge of the frame. */
+export const LAND_SIZE = 260
 
 /** Deterministic 2D value noise, -1..1. */
 function noise2(x: number, z: number): number {
@@ -333,12 +393,13 @@ const smooth = (t: number) => {
   return x * x * (3 - 2 * x)
 }
 
-/** How far a point is outside the flat land: the town, the road into it, the hamlets. Negative inside. */
+/** How far a point is outside the flat land: the town out to its fifth wall, and the road into it. Negative inside. */
 function outsideFlat(x: number, z: number): number {
-  const town = Math.hypot(x, z) - (RINGS[2]! + 2.5)
-  const road = Math.max(Math.abs(x + 31) - 18, Math.abs(z - MAIN_Z) - 3.5)
-  const west = Math.hypot(x + 14, z + 7) - 6
-  return Math.min(town, road, west)
+  const town = Math.hypot(x, z) - (RINGS[4]! + 3)
+  const roadMid = (TIMELINE_ROAD[0]![0] + TIMELINE_ROAD[1]![0]) / 2
+  const roadHalf = (TIMELINE_ROAD[1]![0] - TIMELINE_ROAD[0]![0]) / 2
+  const road = Math.max(Math.abs(x - roadMid) - roadHalf - 2, Math.abs(z - MAIN_Z) - 4.5)
+  return Math.min(town, road)
 }
 
 /** Height of the land at a point: flat in the town and along the road, gentle hills beyond. */
@@ -348,7 +409,7 @@ export function landHeight(x: number, z: number): number {
   return mask * (0.8 + n * 1.3)
 }
 
-/** Fields: farm plots around the town, each a few tiles inside a fence. */
+/** Fields: farm plots in the outer bands of the town, each a few tiles inside a fence. */
 export const FIELD_TILE = { w: 1.9, d: 1.3 }
 const GAP = 0.15
 export interface Farm {
@@ -373,7 +434,18 @@ function farm(cx: number, cz: number, cols: number, rows: number): Farm {
   ]
   return { tiles, fence, bales }
 }
-export const FARMS: Farm[] = [farm(-15.5, 0.2, 2, 3), farm(-11, 9.6, 3, 2), farm(1.5, 9.8, 3, 2), farm(15.5, 1.0, 2, 3), farm(9.2, -2.4, 2, 2), farm(-6.5, -13.4, 3, 2)]
+/** Five farms between the third and the fourth wall, four between the fourth and the fifth. */
+export const FARMS: Farm[] = [
+  farm(-40, 22, 3, 2),
+  farm(10, 46, 3, 2),
+  farm(44, 20, 2, 3),
+  farm(-20, -42, 3, 2),
+  farm(14, -45, 2, 3),
+  farm(-55, 25, 3, 2),
+  farm(30, 52, 3, 2),
+  farm(55, -25, 2, 3),
+  farm(-25, -55, 3, 2),
+]
 export const FIELDS: V3[] = FARMS.flatMap((f) => f.tiles)
 export const BALES: V3[] = FARMS.flatMap((f) => f.bales)
 
@@ -385,35 +457,34 @@ export const BALES: V3[] = FARMS.flatMap((f) => f.bales)
 const rect = (p: V3, hw: number, hd: number, lean = 0.4): [number, number, number, number] => [p[0] + lean, p[2] + lean, hw, hd]
 const KEEP_CLEAR: Array<[number, number, number, number]> = [
   [0.4, 0.4, 6.4, 5.4], // the hall and its loop
-  [-2, MAIN_Z, 48, 1.8], // the roads, into the town and through it
-  rect(GATEHOUSE, 1.8, 3.4, 0.3),
-  rect(EXIT_GATE, 1.8, 3.4, 0.3),
-  rect(OUTER_W, 1.8, 3.4, 0.3),
-  rect(OUTER_E, 1.8, 3.4, 0.3),
-  rect(ARCH_W, 1.2, 2.6, 0.2),
-  rect(ARCH_E, 1.2, 2.6, 0.2),
+  [(TIMELINE_ROAD[0]![0] + MAIN[1]![0]) / 2, MAIN_Z, (MAIN[1]![0] - TIMELINE_ROAD[0]![0]) / 2 + 2, 2.4], // the roads, into the town and through it
+  [PRODUCTION[0] + 2, MAIN_Z, 4, 2.4], // the road on to production
+  ...[GATEHOUSE, EXIT_GATE, OUTER_W, OUTER_E].map((g) => rect(g, 2.4, 5.0, 0.3)),
+  ...[ARCH_W, ARCH_E, ARCH_3W, ARCH_3E, ARCH_4W, ARCH_4E, POSTERN_N, POSTERN_NE].map((g) => rect(g, 2.0, 4.0, 0.2)),
   rect(TRIAGE_HOUSE, 2.0, 1.8),
   rect(REFINE_HOUSE, 1.8, 1.7),
   rect(REQUESTER, 1.2, 1.2),
   rect(MARKET, 2.0, 1.6, 0.5),
   rect(BOOTH, 1.5, 1.4, 0.3),
-  rect(TOWER, 1.8, 1.8, 0.5),
-  rect(STATION, 2.2, 2.0, 0.5),
+  rect(TOWER, 2.4, 2.4, 0.5),
+  rect(STATION, 2.4, 2.2, 0.5),
   rect(WELL, 1.2, 1.2, 0.3),
   rect(SCRIPTORIUM, 1.8, 1.6),
   rect(FORGE, 2.0, 1.8),
   ...KILNS.map((k) => rect(k, 1.2, 1.2, 0.3)),
   rect(BARN, 2.0, 1.8, 0.5),
-  [8.4, 4.4, 3.2, 3.8], // the stacks of measures
+  [-15.0, 30.5, 3.4, 4.2], // the stacks of measures
   rect(REVIEWER, 1.4, 1.4, 0.3),
-  rect(DEV_POS, 1.2, 1.2, 0.3),
+  rect(DEV_POS, 1.6, 1.4, 0.3),
   rect(HEALTH_PERSON, 1.2, 1.2, 0.3),
-  [14.6, -6.0, 3.4, 4.2], // the hamlet and the team
+  [37.5, -29.6, 6.0, 4.4], // the hamlet
+  ...TEAM.map((p) => rect(p, 1.0, 1.0, 0.3)),
   rect(TIDY_POS, 2.6, 2.4),
   rect(MESSY_POS, 2.6, 2.4),
-  [3.4, LINE_Z, 3.8, 1.4], // the line of steps
+  [5.4, LINE_Z, 7.4, 1.6], // the line of steps
   ...SPAGHETTI_STATIONS.map((p) => rect(p, 1.3, 1.2, 0.3)),
-  ...MILESTONES.map((p) => rect(p, 0.9, 1.0, 0.2)),
+  ...SIGN_SPOTS.map((p) => rect(p, 1.8, 1.8, 0.3)),
+  ...MILESTONES.map((p) => rect(p, 1.4, 1.6, 0.2)),
   ...FARMS.map((f) => {
     const [ax, , az] = f.fence[0]!
     const [cx, , cz] = f.fence[2]!
@@ -423,7 +494,7 @@ const KEEP_CLEAR: Array<[number, number, number, number]> = [
 const clear = (x: number, z: number) => {
   if (KEEP_CLEAR.some(([cx, cz, hw, hd]) => Math.abs(x - cx) <= hw && Math.abs(z - cz) <= hd)) return false
   const r = Math.hypot(x, z)
-  return RINGS.every((ring) => Math.abs(r - ring) > 1.3)
+  return RINGS.every((ring) => Math.abs(r - ring) > 1.9)
 }
 
 function seeded(seed: number): () => number {
@@ -464,26 +535,33 @@ function grove(cx: number, cz: number, count: number, radius: number, seed: numb
   return out
 }
 
-/** The woods: groves around the town and along the road, and lone trees between. Round trees and pines. */
+/** The woods: groves in the hills beyond the fifth wall and in the empty bands, and lone trees between. Round trees and pines. */
 const GROVES = [
-  ...grove(-22, -14, 30, 6, 101),
-  ...grove(-27, 0, 22, 5, 103),
-  ...grove(-20, 14, 24, 5, 105),
-  ...grove(-8, -20, 28, 6, 107),
-  ...grove(8, -22, 30, 6, 109),
-  ...grove(22, -14, 26, 5.5, 111),
-  ...grove(26, 4, 22, 5, 113),
-  ...grove(18, 16, 22, 5, 115),
-  ...grove(3, 21, 20, 5, 117),
-  ...grove(-36, -3, 26, 6, 119),
-  ...grove(-30, 12, 24, 6, 121),
-  ...grove(-44, 10, 20, 5, 123),
-  ...grove(-46, -2, 18, 5, 125),
+  ...grove(-85, -30, 30, 7, 101),
+  ...grove(-70, -65, 26, 6, 103),
+  ...grove(-30, -85, 30, 7, 105),
+  ...grove(20, -88, 26, 6, 107),
+  ...grove(65, -65, 28, 6, 109),
+  ...grove(88, -25, 24, 6, 111),
+  ...grove(90, 25, 26, 6, 113),
+  ...grove(70, 60, 28, 6, 115),
+  ...grove(30, 85, 26, 6, 117),
+  ...grove(-25, 88, 28, 7, 119),
+  ...grove(-65, 60, 26, 6, 121),
+  ...grove(-88, 30, 24, 6, 123),
+  ...grove(-100, -15, 20, 5, 125),
+  ...grove(-45, -45, 20, 6, 131),
+  ...grove(45, 45, 20, 6, 133),
+  ...grove(-50, 40, 18, 5, 135),
+  ...grove(46, -42, 18, 5, 137),
+  ...grove(-5, -46, 16, 5, 139),
+  ...grove(-42, -12, 14, 5, 141),
+  ...grove(40, 30, 14, 5, 143),
 ]
-const LONE = [...plant(40, 7, 5.5, 20), ...plant(70, 13, 20, 40)]
+const LONE = [...plant(90, 7, 10, 68), ...plant(110, 13, 73, 96)]
 const ALL_TREES = [...LONE, ...GROVES]
 export const ROUND_TREES: V3[] = ALL_TREES.filter((_, i) => i % 5 !== 2 && i % 5 !== 4)
 export const PINE_TREES: V3[] = ALL_TREES.filter((_, i) => i % 5 === 2 || i % 5 === 4)
-export const BUSHES: V3[] = [...plant(50, 29, 4.5, 30), ...grove(-30, 6, 12, 8, 127)]
-export const ROCKS: V3[] = plant(18, 31, 8, 34)
-export const FLOWERS: V3[] = [...plant(110, 37, 3.5, 20), ...grove(-30, 5.6, 40, 9, 129)]
+export const BUSHES: V3[] = [...plant(70, 29, 6, 70), ...grove(-85, 28, 10, 7, 127)]
+export const ROCKS: V3[] = plant(28, 31, 12, 90)
+export const FLOWERS: V3[] = [...plant(170, 37, 5, 66), ...grove(-60, 40, 40, 9, 129)]

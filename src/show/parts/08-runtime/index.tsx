@@ -19,10 +19,9 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence } from '@/world/camera/shot'
 import { SHELL } from '../../actors'
 import { KILNS } from '../../layout'
-import { townShot } from '../../shots'
+import { MAP_SHOT } from '../../shots'
 import { SHELL_ANGLES, shellOffset, shellSide } from '../05-actions-to-agents'
 
 export const grid = beatStops([9, 5, 6])
@@ -32,13 +31,9 @@ export const B = { light: 0, threat: 4, opencode: 9, forge: 14 }
 /** When each piece of the shell lights up in 8.1. */
 export const pulseAt = (i: number) => 1.5 + i * 0.55
 
-const SHELL_SHOT = townShot([-1.8, 0.6, -0.2])
-const OPENCODE_SHOT = townShot([-0.8, 1.2, -0.4])
-const FORGE_SHOT = townShot([-1.5, 0.3, -6.5])
-
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
-const vendorLabel = new Vector3(8.5, 0.75, -4.05)
+const vendorLabel = new Vector3(15.6, 0.75, -7.5)
 const modelsLabel = new Vector3(KILNS[1]![0], 1.35, KILNS[1]![2])
 
 function Dom() {
@@ -80,16 +75,7 @@ const stack = defineScene({
   title: 'One runtime and one gateway',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: b(4), shot: SHELL_SHOT },
-        { from: b(B.opencode), to: b(B.opencode + 3), shot: OPENCODE_SHOT },
-        { from: b(B.forge), to: b(B.forge + 3), shot: FORGE_SHOT },
-      ],
-      local,
-    ),
+  camera: () => MAP_SHOT,
 })
 
 export const runtime = defineChapter({ id: '08-runtime', title: 'Our runtime', scenes: [stack] })

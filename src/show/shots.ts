@@ -1,11 +1,11 @@
 /**
- * The camera of the talk: the view of a strategy game. One angle and one zoom
- * for the whole map: it looks from the south east, along the diagonal of the
- * land, from far away with a narrow field of view, so buildings show two faces
- * and the picture is almost orthographic. It never turns and never zooms:
- * every shot is a pan across the land, like scrolling the map. Two
- * exceptions pull back: the map of the maturity levels (part 4) and the
- * closing, which shows the whole town.
+ * The camera of the talk: the view of a strategy game, and one frame for the
+ * whole show. It looks from the south east, along the diagonal of the land,
+ * from far away with a narrow field of view, so buildings show two faces and
+ * the picture is almost orthographic. It never turns, never zooms and never
+ * pans: the whole town, out to its fifth wall, is in the frame from the cover
+ * to the closing, and the map, the signs, the pennants and the names tell the
+ * story.
  */
 import type { CameraShot, Vec3 } from '@/world/camera/shot'
 
@@ -13,12 +13,12 @@ import type { CameraShot, Vec3 } from '@/world/camera/shot'
 const AZIMUTH = Math.PI / 4
 /** Above the ground: about 33 degrees, like the games. */
 const ELEVATION = 0.58
-/** The one zoom of the map. The frame is about 35 units wide at the target. */
-export const TOWN_DISTANCE = 64
+/** The one zoom: far enough for the fifth wall (layout.ts) with a margin all round. The frame is about 185 units wide at the target. */
+export const TOWN_DISTANCE = 330
 export const TOWN_FOV = 18
 const DIR: Vec3 = [Math.sin(AZIMUTH) * Math.cos(ELEVATION), Math.sin(ELEVATION), Math.cos(AZIMUTH) * Math.cos(ELEVATION)]
 
-/** A pan of the map to `target`. The distance and the field of view are the same for every shot, so the camera only slides. */
+/** A shot of the map at `target`, at the one distance and field of view. */
 export function townShot(target: Vec3, distance = TOWN_DISTANCE, fov = TOWN_FOV): CameraShot {
   return {
     position: [target[0] + DIR[0] * distance, target[1] + DIR[1] * distance, target[2] + DIR[2] * distance],
@@ -26,3 +26,11 @@ export function townShot(target: Vec3, distance = TOWN_DISTANCE, fov = TOWN_FOV)
     fov,
   }
 }
+
+/**
+ * The one frame of the talk. The target sits a little south east of the hall:
+ * the near side of the land is closer to the camera and looks bigger, so this
+ * keeps the fifth wall off the bottom edge and the rings in the middle of the
+ * screen.
+ */
+export const MAP_SHOT = townShot([12, 0, 12])

@@ -27,10 +27,9 @@ import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
 import { getActorObject } from '@/world/actors'
-import { shotSequence } from '@/world/camera/shot'
 import { EVENTS, SHELL, STEPS } from '../../actors'
 import { LINE_X, LINE_Y, LINE_Z, type V3 } from '../../layout'
-import { townShot } from '../../shots'
+import { MAP_SHOT } from '../../shots'
 
 export const grid = beatStops([10, 5, 5, 5, 6, 4, 6, 3])
 const { b } = grid
@@ -40,9 +39,9 @@ export const B = { ga: 0, events: 4, unfold: 10, core: 15, md: 20, compile: 25, 
 /** When each piece of the shell leaves the scriptorium in 5.5 (it lands one beat later). */
 export const snapAt = (i: number) => B.compile + 2.2 + i * 0.45
 
-/** Where the scroll waits outside the hall (5.4), the crate comes out of the scriptorium (5.5), and the crate docks (5.7, in the hall's local units, scaled by the parts). */
-export const MD_OUT: V3 = [-3.8, 0.4, 2.6]
-export const LOCK_POS: V3 = [-6.4, 0, -2.9]
+/** Where the scroll waits outside the hall (5.4), inside the first wall, and where the crate comes out of the scriptorium (5.5). */
+export const MD_OUT: V3 = [-5.9, 0.4, 2.2]
+export const LOCK_POS: V3 = [-10.5, 0, -4.2]
 /** The palisade of stakes around the crate: six from the compiler, then "our changes", by their angle on the ring (radians, +z toward the camera). */
 export const SHELL_RING = 0.85
 const deg = (d: number) => (d * Math.PI) / 180
@@ -54,13 +53,6 @@ export function shellSide(a: number): string | undefined {
 }
 /** Where a stake's name sits: beside the stake, a little out from the ring, at the band's height. */
 export const shellOffset = (a: number): readonly [number, number, number] => [Math.cos(a) * 0.3, 0.36, Math.sin(a) * 0.3]
-
-const GA_SHOT = townShot([4.8, 0.6, -5.6])
-const LINE_SHOT = townShot([2.4, 0.4, -5.4])
-const AGENT_SHOT = townShot([0.6, 0.5, -1.6])
-const FILE_SHOT = townShot([-3.5, 0.4, 0.0])
-const COMPILE_SHOT = townShot([-5.5, 0.4, -2.0])
-const WIDE_SHOT = townShot([-1.5, 0.3, -1.0])
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
@@ -153,19 +145,7 @@ const actions = defineScene({
   title: 'From one mill to three clusters',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: b(4), shot: GA_SHOT },
-        { from: b(B.unfold), to: b(B.unfold + 3), shot: LINE_SHOT },
-        { from: b(B.core), to: b(B.core + 3), shot: AGENT_SHOT },
-        { from: b(B.md), to: b(B.md + 3), shot: FILE_SHOT },
-        { from: b(B.compile), to: b(B.compile + 3), shot: COMPILE_SHOT },
-        { from: b(B.clusters), to: b(B.clusters + 3.5), shot: WIDE_SHOT },
-      ],
-      local,
-    ),
+  camera: () => MAP_SHOT,
 })
 
 export const actionsToAgents = defineChapter({ id: '05-actions-to-agents', title: 'From GitHub Actions to Agentic Workflows', scenes: [actions] })

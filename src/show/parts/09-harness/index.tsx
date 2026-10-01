@@ -27,12 +27,11 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
 import { HALL_SCALE } from '../../hall'
 import { DEV_POS } from '../../layout'
-import { townShot } from '../../shots'
+import { MAP_SHOT } from '../../shots'
 
 export const grid = beatStops([4, 4, 5, 6, 5, 6, 5, 6])
 const { b } = grid
@@ -58,15 +57,6 @@ mapCues.role('station', pulseCue(B.name + 2.5, B.improvise))
 mapCues.appear('harness', cue(B.frame + 2.25, B.frame + 3))
 mapCues.role('harness', pulseCue(B.frame + 2.5, B.cloud))
 mapCues.focus(['hall', 'opencode', 'harness'], pulseCue(B.improvise, B.laptop + 0.5))
-
-/** Out in the woods, so the map of the talk has the frame to itself. */
-const SKY = townShot([-10, 0, -19])
-/** The town, as a map. */
-const MAP_WHOLE = townShot([0, 0.3, 1.5])
-/** Close on the hall: the parapet, the paths of the runs. */
-const CENTER = townShot([1.4, 0.5, 1.0])
-/** The developer with the copy, on the road south of the hall. */
-const LAPTOP = townShot([-1.5, 0.3, 5.5])
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
@@ -126,17 +116,7 @@ const harness = defineScene({
   title: 'The four slots, then the Harness',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: b(3.5), shot: SKY },
-        { from: b(B.name), to: b(B.name + 3), shot: MAP_WHOLE },
-        { from: b(B.improvise), to: b(B.improvise + 2.5), shot: CENTER },
-        { from: b(B.laptop), to: b(B.laptop + 2.5), shot: LAPTOP },
-      ],
-      local,
-    ),
+  camera: () => MAP_SHOT,
 })
 
 export const harnessChapter = defineChapter({ id: '09-harness', title: 'Pillar 1: Agent Harness', scenes: [harness] })

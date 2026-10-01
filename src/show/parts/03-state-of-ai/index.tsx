@@ -7,9 +7,9 @@
  * The last one is an empty dashed slot where the road reaches the town: "?".
  *
  * One stop, like a transition (14.5 beats): the blue cart goes into the hall,
- * the camera pans west to the road, the title burns in, and the road lays
- * itself milestone by milestone, Models to the "?". Only the "?" keeps its
- * line; the names stay on the road.
+ * the title burns in, and the road lays itself from the west edge of the
+ * frame milestone by milestone, Models to the "?" at the outer gate. Only the
+ * "?" keeps its line; the names stay on the road.
  */
 import { range } from '@/animation/progress'
 import { beatStops } from '@/animation/beat'
@@ -18,9 +18,8 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence } from '@/world/camera/shot'
-import { townShot } from '../../shots'
-import { MILESTONE_X, MILESTONE_Z } from '../../layout'
+import { MAP_SHOT } from '../../shots'
+import { MILESTONE_X } from '../../layout'
 import { TIMELINE_IDS } from '../../actors'
 
 /** Beats: the intro, then ten milestones one a beat, then the line of the "?". */
@@ -31,9 +30,6 @@ const { b } = grid
 export const stepBeat = (k: number) => 3.5 + k
 /** Only the "?" keeps its line. */
 const LINE_AT = new Set([9])
-
-/** The road, with all ten milestones in the frame. */
-const ROAD = townShot([(MILESTONE_X[0]! + MILESTONE_X[9]!) / 2 + 0.4, 0.6, MILESTONE_Z + 1.4])
 
 /** Names above the signposts, or on the grass before them, in turns, so neighbours never touch. */
 const LABEL_OFFSETS: Array<readonly [number, number, number]> = MILESTONE_X.map((_, i) => (i === 9 ? ([0, 0, 0] as const) : i % 2 ? ([0, 0.1, 2.1] as const) : ([0, 1.9, 0] as const)))
@@ -91,7 +87,7 @@ const timeline = defineScene({
   title: 'The road into the town, in one move',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) => shotSequence(from, [{ from: b(0.5), to: b(4), shot: ROAD }], local),
+  camera: () => MAP_SHOT,
 })
 
 export const stateOfAi = defineChapter({ id: '03-state-of-ai', title: 'The state of AI', scenes: [timeline] })

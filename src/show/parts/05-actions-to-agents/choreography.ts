@@ -157,14 +157,14 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
     arcPoint(door, out, 1.4, leave, center)
     // To the scriptorium's door.
     const toHouse = easeInOut(win(beat, B.compile + 0.25, B.compile + 1.4))
-    if (toHouse > 0) arcPoint(out, scriptDoor, 1.2, toHouse, center)
+    if (toHouse > 0) arcPoint(out, scriptDoor, 4.0, toHouse, center)
     md.object.position.copy(center)
     md.object.rotation.y = -0.6 * leave
     // The crate comes out in front of the scriptorium, then docks on the hall's platform.
     const comeOut = easeOut(win(beat, B.compile + 1.5, B.compile + 2.5))
     crateCenter.lerpVectors(scriptDoor, lockPos, comeOut)
     const docking = easeInOut(win(beat, B.clusters + 0.5, B.clusters + 3))
-    if (docking > 0) arcPoint(lockPos, dock, 1.6, docking, crateCenter)
+    if (docking > 0) arcPoint(lockPos, dock, 4.0, docking, crateCenter)
     lock.object.position.copy(crateCenter)
     shell.forEach((s, i) => {
       const at = SHELL[i] === 'ours' ? B.ours + 0.5 : snapAt(i)
@@ -179,12 +179,12 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
     })
   })
 
-  // ---- 5.7: the triage house, and the first of the hall's folk moves out to it ----------------
+  // ---- 5.7: the triage house, and the first of the hall's folk walks out of the west arch to it ----
   const triage = el('triage')
   const triIn = span(B.clusters + 2, B.clusters + 3)
   inkIn(tl, triage, triIn.start, triIn.duration)
   const walk = span(B.clusters + 0.5, B.clusters + 2.75)
-  walkPath(tl, cast, FOLK.triage, walk.start, walk.duration, [homeAt(FOLK.triage, HALL_SCALE.start), [-2.7, 0, 3.3], [-6.0, 0, 4.6], [-7.3, 0, 4.5]])
+  walkPath(tl, cast, FOLK.triage, walk.start, walk.duration, [homeAt(FOLK.triage, HALL_SCALE.start), [-2.8, 0, 3.4], [-5.6, 0, 5.6], [-7.6, 0, 6.6], [-15.6, 0, 5.4], [-16.6, 0, 4.7]])
   const smaller = span(B.clusters + 2, B.clusters + 3)
   hallStep(tl, cast, smaller.start, smaller.duration, HALL_SCALE.start, HALL_SCALE.triage, homeAfter(FOLK.triage))
 })

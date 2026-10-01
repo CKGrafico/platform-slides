@@ -8,8 +8,7 @@
  * The boil speeds up: tension.
  *
  * Stops, on the beat grid:
- *   1. (10) the title; the camera goes to the road east of the hall;
- *      6.1 the same prompt, three different runs.
+ *   1. (10) the title; 6.1 the same prompt, three different runs.
  *   2. (6) 6.2 simple work, and the tokens it costs.
  *   3. (7) 6.3 a human in the loop; the work piles up.
  */
@@ -21,18 +20,14 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence } from '@/world/camera/shot'
 import { TASKS } from '../../actors'
 import { stackPoint } from '../../coins'
 import { COINS, TOKEN_COINS } from '../../layout'
-import { townShot } from '../../shots'
+import { MAP_SHOT } from '../../shots'
 
 export const grid = beatStops([10, 6, 7])
 const { b } = grid
 export const B = { title: 0, runs: 4, cost: 10, human: 16 }
-
-/** The hall on the left, the road and the exit on the right. */
-const P6_SHOT = townShot([5.5, 0.3, 4.8])
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
@@ -73,7 +68,7 @@ const problems = defineScene({
   title: 'Not deterministic, costly, and waiting for a person',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) => shotSequence(from, [{ from: 0, to: b(4), shot: P6_SHOT }], local),
+  camera: () => MAP_SHOT,
 })
 
 export const problemsChapter = defineChapter({ id: '06-problems', title: 'The problems', scenes: [problems] })

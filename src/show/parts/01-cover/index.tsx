@@ -13,10 +13,7 @@ import { beatStops } from '@/animation/beat'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import { T } from '@/i18n'
-import { townShot } from '../../shots'
-
-/** The hall sits in the right third of the frame, so the text has the left side. */
-const COVER_SHOT = townShot([-2.6, 0.6, 2.6])
+import { MAP_SHOT } from '../../shots'
 
 export const coverGrid = beatStops([4])
 const { b } = coverGrid
@@ -66,7 +63,7 @@ const title = defineScene({
   parts: { dom: Dom },
   // The name burns out slowly while part 3 starts.
   outro: 1,
-  camera: () => COVER_SHOT,
+  camera: () => MAP_SHOT,
 })
 
 export const cover = defineChapter({ id: '01-cover', title: 'Cover and about me', scenes: [title] })

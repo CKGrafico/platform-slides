@@ -68,7 +68,7 @@ export const issueToProductionMoves = defineChoreography('13-issue-to-production
   flash(el('refine').body.material.color, town.wallWarm, 2, 2.0)
   flash(el('requester').body.material.color, palette.surface, 3, 1.5)
   flash(el('hall').body.material.color, town.wall, 4, 1.8)
-  for (const id of ['arch.e', 'ring.0.0', 'ring.0.7']) flash(el(id).body.material.color, town.stone, 5, 1.2)
+  for (const id of ['arch.e', 'ring.0.3', 'ring.0.4']) flash(el(id).body.material.color, town.stone, 5, 1.2)
   flash(el('exit').body.material.color, town.stone, 6, 1.4)
   // Project Health counts it: one more coin drops onto the deployments stack.
   const coin = el('metric.new')

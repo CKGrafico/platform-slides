@@ -66,7 +66,8 @@ export function World({
         // Development only: keep the frame, so screenshots and captures are reliable.
         preserveDrawingBuffer: import.meta.env.DEV,
       }}
-      camera={{ fov: 45, near: 0.1, far: 200, position: [0, 0, 8] }}
+      // The near and far planes fit a map seen from far away (show/shots.ts): nothing stands closer than the land's near corner, and the far corner of the land must be inside.
+      camera={{ fov: 45, near: 10, far: 900, position: [0, 0, 8] }}
       onCreated={({ gl }) => {
         debugBus.rendererCreations += 1
         const canvas = gl.domElement

@@ -7,17 +7,17 @@
  * the mill's road join the loop; most coins go.
  *
  * pipeline: belts everywhere with stations that wake on every cart; then one
- * main belt with a gatehouse, laid with its road, and one of the hall's folk
+ * belt on the main road, through the gatehouse, and one of the hall's folk
  * walks out to keep it; the workshops along it, with another who moves out to
- * refine; the exit gate, the market and the booth, and the person at the exit
- * goes; the fields; the watchtower, and the repair crew leaves the hall for
- * the loop.
+ * refine; the merge gate, the market and the booth, and the person at the
+ * exit goes; the fields; the watchtower, and the repair crew leaves the hall
+ * for the loop.
  */
 import { Color, Vector3, type Group, type MeshToonMaterial } from 'three'
 import { artOf, swarmOf } from '@/art/elements'
 import { polyline, town } from '@/art/town'
 import { sketchOf } from '@/art/lines'
-import { drive, fade, inkIn, inkOut, shown } from '@/art/motion'
+import { drive, fade, inkIn, inkOut } from '@/art/motion'
 import { arcPoint, easeInOut } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { faceAlong, faceOnPath, yawAlong, yawOnPath, type PathAt } from '@/art/town-units'
@@ -184,7 +184,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     [QB.lanes, QB.lanes + 1.5, MAIN_AT.hall + 0.05],
     [QB.gate, QB.gate + 1.5, 1],
   ]
-  /** How much of the main belt is drawn at a beat. */
+  /** How far along the main road the belt of carts reaches at a beat. */
   const revealed = (beat: number) => {
     let r = 0
     let from = 0
@@ -195,14 +195,6 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     }
     return r
   }
-  // The road is laid as the belt is drawn: it grows from its west end.
-  const roadMain = el('road.main')
-  const belt = q(QB.router + 0.5, QB.router + 0.5)
-  shown(tl, roadMain, belt.start)
-  drive(tl, belt.start, t.at(PIPE, 1) - belt.start, (u) => {
-    const beat = QB.router + 0.5 + u * (pipeGrid.totalBeats - QB.router - 0.5)
-    roadMain.object.scale.x = Math.max(0.001, revealed(beat))
-  })
   const booth = v3(BOOTH)
   const carts = q(0, pipeGrid.totalBeats)
   drive(tl, carts.start, carts.duration, (u) => {
@@ -244,12 +236,9 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     flow.commit()
   })
 
-  // ---- 10.4 after: one gatehouse, and one of the hall's folk walks out to keep it ---------------
-  const gatehouse = el('gatehouse')
-  const gateIn = q(QB.router + 1, QB.router + 1.75)
-  inkIn(tl, gatehouse, gateIn.start, gateIn.duration)
+  // ---- 10.4 after: one gatehouse, and one of the hall's folk walks out of the west arch to keep it ----
   const routerWalk = q(QB.router + 0.25, QB.router + 4.25)
-  walkPath(tl, cast, FOLK.router, routerWalk.start, routerWalk.duration, [homeAt(FOLK.router, HALL_SCALE.tasks[3]), [2.6, 0, 3.4], [2.6, 0, 6.9], [-9.8, 0, 6.9]])
+  walkPath(tl, cast, FOLK.router, routerWalk.start, routerWalk.duration, [homeAt(FOLK.router, HALL_SCALE.tasks[3]), [-2.8, 0, 3.4], [-5.6, 0, 5.6], [-7.6, 0, 6.6], [-21.0, 0, 7.4]])
   const routerStep = q(QB.router + 1.75, QB.router + 2.75)
   hallStep(tl, cast, routerStep.start, routerStep.duration, HALL_SCALE.tasks[3], HALL_SCALE.router, homeAfter(FOLK.router))
 
@@ -259,14 +248,14 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     inkIn(tl, el(id), a.start, a.duration)
   }
   const refineWalk = q(QB.lanes + 0.25, QB.lanes + 2.25)
-  walkPath(tl, cast, FOLK.refine, refineWalk.start, refineWalk.duration, [homeAt(FOLK.refine, HALL_SCALE.router), [-0.5, 0, 3.6], [-5.0, 0, 4.5]])
+  walkPath(tl, cast, FOLK.refine, refineWalk.start, refineWalk.duration, [homeAt(FOLK.refine, HALL_SCALE.router), [-1.0, 0, 3.8], [-5.4, 0, 5.4], [-7.6, 0, 6.4], [-11.0, 0, 5.4], [-11.6, 0, 4.7]])
   const refineStep = q(QB.lanes + 1.75, QB.lanes + 2.75)
   hallStep(tl, cast, refineStep.start, refineStep.duration, HALL_SCALE.router, HALL_SCALE.refine, homeAfter(FOLK.refine))
 
-  // ---- 10.6: the exit gate, the market, the booth; the person at the exit goes ----------------
+  // ---- 10.6: the merge gate, the market, the booth; the person at the exit goes ----------------
   const reviewerOut = q(QB.gate + 0.25, QB.gate + 0.85)
   inkOut(tl, el('reviewer'), reviewerOut.start, reviewerOut.duration)
-  for (const [id, from, to] of [['exit', 0.75, 1.5], ['market', 1.75, 2.5], ['booth', 2.25, 3]] as const) {
+  for (const [id, from, to] of [['market', 1.75, 2.5], ['booth', 2.25, 3]] as const) {
     const a = q(QB.gate + from, QB.gate + to)
     inkIn(tl, el(id), a.start, a.duration)
   }

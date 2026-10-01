@@ -87,10 +87,10 @@ export const runtimeMoves = defineChoreography('08-runtime', (tl, cast, t) => {
     const l = span(B.forge + 2.5 + k * 0.3, B.forge + 3.2 + k * 0.3)
     tl.to(line.reveal, { value: 1, duration: l.duration, ease: 'power2.out' }, l.start)
   })
-  // Two smiths walk out of the hall, round the west of the platform, to the forge; the hall steps down.
+  // Two smiths walk out of the hall, round the west of the platform and out of the north postern, to the forge; the hall steps down.
   const walks = [
-    [homeAt(FOLK.smiths[0], HALL_SCALE.triage), [-3.4, 0, 3.1], [-3.6, 0, -3.4], [-3.3, 0, -6.9]],
-    [homeAt(FOLK.smiths[1], HALL_SCALE.triage), [-1.2, 0, 3.0], [-3.5, 0, 3.3], [-3.8, 0, -3.7], [-1.7, 0, -6.9]],
+    [homeAt(FOLK.smiths[0], HALL_SCALE.triage), [-3.4, 0, 3.1], [-5.8, 0, 0.4], [-4.2, 0, -5.8], [-0.6, 0, -8.6], [-1.6, 0, -14.6]],
+    [homeAt(FOLK.smiths[1], HALL_SCALE.triage), [-1.2, 0, 3.0], [-3.5, 0, 3.3], [-5.9, 0, -1.2], [-3.6, 0, -6.4], [0.4, 0, -8.8], [-0.6, 0, -14.4]],
   ] as const
   walks.forEach((points, i) => {
     const walk = span(B.forge + 0.5 + i * 0.3, B.forge + 2.75 + i * 0.3)

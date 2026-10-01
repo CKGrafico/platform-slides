@@ -19,7 +19,12 @@ import { FOLK, FOLK_HOME, homePoint } from './hall'
 import { routePoint } from './route'
 import {
   APPS,
+  ARCH_3E,
+  ARCH_3W,
+  ARCH_4E,
+  ARCH_4W,
   ARCH_E,
+  ARCH_SCALE,
   ARCH_W,
   AUDIT_LOOP,
   BALES,
@@ -34,6 +39,7 @@ import {
   FIELDS,
   FLOWERS,
   FORGE,
+  GATE_SCALE,
   GATEHOUSE,
   GHOST_COINS,
   HALL,
@@ -42,7 +48,6 @@ import {
   KILNS,
   LAND_SIZE,
   landHeight,
-  LEVEL_RADII,
   LINE_BENT,
   LINE_FROM,
   LINE_TO,
@@ -55,17 +60,19 @@ import {
   METRIC_BASES,
   METRIC_COIN_SCALE,
   METRIC_COINS,
+  MILESTONE_SCALE,
   MILESTONES,
   OUTER_E,
   OUTER_W,
   PILE,
   PINE_TREES,
+  POSTERN_N,
+  POSTERN_NE,
   REFINE_HOUSE,
   REQUESTER,
   REVIEWER,
   RING_ARCS,
-  RING_CROSSINGS,
-  RING_TOWERS,
+  RING_OPENINGS,
   RINGS,
   ROCKS,
   ROUND_TREES,
@@ -83,6 +90,7 @@ import {
   TOKEN_COINS,
   TOWER,
   TOWER_ANGLE,
+  TOWER_SCALE,
   TRIAGE_HOUSE,
   TURRET_TOP,
   VENDOR,
@@ -126,7 +134,7 @@ const sway = (seed: number) => (o: Object3D, time: number) => {
 const land = defineActor({
   id: 'plot',
   create: () => {
-    const el = createLand({ size: LAND_SIZE, height: landHeight, segments: 130 })
+    const el = createLand({ size: LAND_SIZE, height: landHeight, segments: 260 })
     el.object.position.set(0, -0.02, 0)
     return el.object
   },
@@ -276,6 +284,7 @@ const milestones = MILESTONES.slice(0, 9).map((p, i) =>
     create: () => {
       const el = createMilestone({ stone: i >= TIMELINE_SPLIT, pennant: [palette.peach, palette.lilac, palette.sage, palette.butter][i % 4] })
       at(el.object, p)
+      el.object.scale.setScalar(MILESTONE_SCALE)
       return el.object
     },
   }),
@@ -302,44 +311,87 @@ const walkers = WALKER_OFFSETS.map((off, i) =>
 const tlSlot = defineActor({
   id: 'tl.slot',
   create: () => {
-    const s = createSlot({ radius: 0.55, width: 3 })
+    const s = createSlot({ radius: 1.2, width: 3 })
     s.reveal.value = 0
     const p = MILESTONES[9]!
-    s.object.position.set(p[0], 1.0, p[2])
+    s.object.position.set(p[0], 1.5, p[2])
     // Turned to face the camera.
     s.object.rotation.y = Math.PI / 4
     return s.object
   },
 })
 
-// ---- part 4: the levels ---------------------------------------------------------------------------
+// ---- part 4: the levels: the five walls, and the four slots of the map ------------------------------
 
 /**
- * The levels: five ring walls of the town's stone round the land, with towers,
- * open where the road crosses them, each in arcs so it rises round the hall.
+ * The walls: five rings, the maturity levels, each in eight arcs so it rises
+ * round the town, with a tower every 45 degrees except by a gate, and open
+ * where a gate stands. They rise in part 4 and stay.
  */
-export const LEVEL_ARCS = 8
-const LEVEL_TOWER_ANGLES = [-150, -90, -30, 30, 90, 150].map((d) => (d * Math.PI) / 180)
-const levelRings = LEVEL_RADII.flatMap((radius, i) => {
-  const gaps: Gap[] = []
-  if (radius > MAIN_Z + 0.8) {
-    const cross = Math.sqrt(radius * radius - MAIN_Z * MAIN_Z)
-    const half = 1.6 / radius
-    gaps.push([Math.atan2(MAIN_Z, cross) - half, Math.atan2(MAIN_Z, cross) + half], [Math.atan2(MAIN_Z, -cross) - half, Math.atan2(MAIN_Z, -cross) + half])
-  }
-  const inGap = (a: number) => gaps.some(([g0, g1]) => a >= g0 - 0.2 && a <= g1 + 0.2)
-  return Array.from({ length: LEVEL_ARCS }, (_, k) => {
-    const from = -Math.PI + (k * 2 * Math.PI) / LEVEL_ARCS
-    const to = from + (2 * Math.PI) / LEVEL_ARCS
-    const towers = LEVEL_TOWER_ANGLES.filter((a) => a >= from && a < to && !inGap(a))
-    return defineActor({ id: `level.${i + 1}.${k}`, create: () => createWallArc({ radius, from, to, towers, gaps }).object })
+const RING_TOWER_ANGLES = Array.from({ length: 8 }, (_, i) => ((-157.5 + i * 45) * Math.PI) / 180)
+const angleBetween = (a: number, b: number) => Math.abs(Math.atan2(Math.sin(a - b), Math.cos(a - b)))
+const ringWalls = RINGS.flatMap((radius, r) => {
+  const openings = RING_OPENINGS[r]!.map(({ at: p, half }) => ({ angle: Math.atan2(p[2], p[0]), half: half / radius }))
+  const gaps: Gap[] = openings.map(({ angle, half }) => [angle - half, angle + half])
+  // No tower within a few units of a gate, nor of the watchtower built into the first wall.
+  const clearOf = (a: number) => openings.every((o) => angleBetween(a, o.angle) * radius > 4.5) && (r > 0 || angleBetween(a, TOWER_ANGLE) * radius > 4.5)
+  return Array.from({ length: RING_ARCS }, (_, k) => {
+    const from = -Math.PI + (k * 2 * Math.PI) / RING_ARCS
+    const to = from + (2 * Math.PI) / RING_ARCS
+    const towers = RING_TOWER_ANGLES.filter((a) => a >= from && a < to && clearOf(a))
+    return defineActor({ id: `ring.${r}.${k}`, create: () => createWallArc({ radius, from, to, towers, gaps }).object })
   })
 })
+/** An arch in a wall: the small gate of an inner ring over a road along X, turned when the road runs along Z. */
+const archAt = (id: string, p: V3, turn = 0) =>
+  defineActor({
+    id,
+    create: () => {
+      const el = createArch()
+      at(el.object, p)
+      el.object.scale.setScalar(ARCH_SCALE)
+      el.object.rotation.y = turn
+      return el.object
+    },
+  })
+/** A gate with two towers in a wall, over the road. */
+const gateAt = (id: string, p: V3, flag: string, roofColor: string = town.tileDark) =>
+  defineActor({
+    id,
+    create: () => {
+      const el = createGate({ roofColor, flag })
+      at(el.object, p)
+      el.object.scale.setScalar(GATE_SCALE)
+      return el.object
+    },
+  })
+const archW = archAt('arch.w', ARCH_W)
+const archE = archAt('arch.e', ARCH_E)
+const archN = archAt('arch.n', POSTERN_N, Math.PI / 2)
+const archNE = archAt('arch.ne', POSTERN_NE)
+const arch3W = archAt('arch.3.w', ARCH_3W)
+const arch3E = archAt('arch.3.e', ARCH_3E)
+const arch4W = archAt('arch.4.w', ARCH_4W)
+const arch4E = archAt('arch.4.e', ARCH_4E)
+/** The gatehouse of the router and the merge gate, on the second wall; the gate towers of the outer wall. */
+const gatehouse = gateAt('gatehouse', GATEHOUSE, palette.sage)
+const exitGate = gateAt('exit', EXIT_GATE, palette.peach, town.tile)
+const outerW = gateAt('outer.w', OUTER_W, palette.butter)
+const outerE = gateAt('outer.e', OUTER_E, palette.butter)
+/** The gates of each wall (ring index), so part 4 raises them with their ring. */
+export const RING_GATES: string[][] = [
+  ['arch.w', 'arch.e', 'arch.n', 'arch.ne'],
+  ['gatehouse', 'exit'],
+  ['arch.3.w', 'arch.3.e'],
+  ['arch.4.w', 'arch.4.e'],
+  ['outer.w', 'outer.e'],
+]
+/** The four empty slots of the map of the talk: dashed circles on the ground where each district's sign will stand. */
 const levelSlots = [1, 2, 3, 4].map((n) =>
   defineActor({
     id: `level.slot.${n}`,
     create: () => {
-      const s = createSlot({ radius: 0.5, width: 3 })
+      const s = createSlot({ radius: 1.3, width: 3 })
       s.reveal.value = 0
       s.object.rotation.x = -Math.PI / 2
       return s.object
@@ -510,7 +562,7 @@ const direct = [0, 1].map((half) =>
 const FORGE_DOOR: V3 = [FORGE[0], 0.08, FORGE[2] + 1.0]
 const toForge = defineActor({
   id: 'p8.forge',
-  create: () => createTrail(through([[-0.9, 0.08, -2.9], [-1.6, 0.08, -5.0], FORGE_DOOR]), { segments: 40, reveal: 0 }).object,
+  create: () => createTrail(through([[-0.6, 0.08, -3.2], [0, 0.08, -8.8], [-1.4, 0.08, -13.5], FORGE_DOOR]), { segments: 60, reveal: 0 }).object,
 })
 const forgeLines = KILNS.map((p, i) =>
   defineActor({
@@ -580,22 +632,6 @@ const spaghettiStations = SPAGHETTI_STATIONS.map((p, i) =>
     },
   }),
 )
-const gatehouse = defineActor({
-  id: 'gatehouse',
-  create: () => {
-    const el = createGate({ flag: palette.sage })
-    at(el.object, GATEHOUSE)
-    return el.object
-  },
-})
-const exitGate = defineActor({
-  id: 'exit',
-  create: () => {
-    const el = createGate({ roofColor: town.tile, flag: palette.peach })
-    at(el.object, EXIT_GATE)
-    return el.object
-  },
-})
 const refine = defineActor({
   id: 'refine',
   create: () => {
@@ -621,12 +657,14 @@ const booth = defineActor({
     return el.object
   },
 })
+/** The watchtower, built into the first wall, its door toward the hall. */
 const tower = defineActor({
   id: 'tower',
   create: () => {
     const el = createTower()
     at(el.object, TOWER)
-    el.object.rotation.y = -TOWER_ANGLE
+    el.object.scale.setScalar(TOWER_SCALE)
+    el.object.rotation.y = Math.atan2(-Math.cos(TOWER_ANGLE), -Math.sin(TOWER_ANGLE))
     return el.object
   },
 })
@@ -707,63 +745,12 @@ const messyPaths = [0, 1, 2].map((k) =>
   }),
 )
 const smallWork = defineActor({ id: 'p11.work', create: () => createCartSwarm(10, 'sack', palette.lilac).object })
-/** Each ring wall leaves the road through, and the first leaves room for the watchtower. */
-const gapAt = (angle: number, half: number): Gap => [angle - half, angle + half]
-const ringGaps = (r: number): Gap[] => {
-  const cross = RING_CROSSINGS[r]!
-  const gateHalf = [0.36, 0.27, 0.18][r]!
-  const gaps: Gap[] = [gapAt(Math.atan2(MAIN_Z, cross), gateHalf), gapAt(Math.atan2(MAIN_Z, -cross), gateHalf)]
-  if (r === 0) gaps.push(gapAt(TOWER_ANGLE, 0.14))
-  return gaps
-}
 const grid = defineActor({
   id: 'grid',
   create: () => {
     const g = createGrid({ radius: RINGS[2]! - 1, step: 1.6, opacity: 0 })
     g.object.position.set(0, 0.03, 0)
     return g.object
-  },
-})
-/** The walls: three rings, each in eight arcs, with their towers, open where a gate or the watchtower stands. */
-const ringWalls = RINGS.flatMap((radius, r) => {
-  const gaps = ringGaps(r)
-  return Array.from({ length: RING_ARCS }, (_, k) => {
-    const from = -Math.PI + (k * 2 * Math.PI) / RING_ARCS
-    const to = from + (2 * Math.PI) / RING_ARCS
-    const towers = RING_TOWERS[r]!.filter((a) => a >= from && a < to)
-    return defineActor({ id: `ring.${r}.${k}`, create: () => createWallArc({ radius, from, to, towers, gaps }).object })
-  })
-})
-const archW = defineActor({
-  id: 'arch.w',
-  create: () => {
-    const el = createArch()
-    at(el.object, ARCH_W)
-    return el.object
-  },
-})
-const archE = defineActor({
-  id: 'arch.e',
-  create: () => {
-    const el = createArch()
-    at(el.object, ARCH_E)
-    return el.object
-  },
-})
-const outerW = defineActor({
-  id: 'outer.w',
-  create: () => {
-    const el = createGate({ roofColor: town.tileDark, flag: palette.butter })
-    at(el.object, OUTER_W)
-    return el.object
-  },
-})
-const outerE = defineActor({
-  id: 'outer.e',
-  create: () => {
-    const el = createGate({ roofColor: town.tileDark, flag: palette.butter })
-    at(el.object, OUTER_E)
-    return el.object
   },
 })
 const verbs = VERBS.map((v) =>
@@ -879,7 +866,19 @@ export const actors: ActorDef[] = [
   ...milestones,
   ...walkers,
   tlSlot,
-  ...levelRings,
+  ...ringWalls,
+  archW,
+  archE,
+  archN,
+  archNE,
+  arch3W,
+  arch3E,
+  arch4W,
+  arch4E,
+  gatehouse,
+  exitGate,
+  outerW,
+  outerE,
   ...levelSlots,
   mill,
   blades,
@@ -913,8 +912,6 @@ export const actors: ActorDef[] = [
   devHarness,
   ...spaghetti,
   ...spaghettiStations,
-  gatehouse,
-  exitGate,
   refine,
   market,
   booth,
@@ -930,11 +927,6 @@ export const actors: ActorDef[] = [
   ...messyPaths,
   smallWork,
   grid,
-  ...ringWalls,
-  archW,
-  archE,
-  outerW,
-  outerE,
   ...verbs,
   ...shortcut,
   barn,

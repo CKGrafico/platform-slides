@@ -1,13 +1,15 @@
 /**
- * Part 11 moves. Two houses out west where work arrives faster and faster;
- * the phases on the ground; the grid of the land; the three ring walls that
- * rise around the town; the verbs; and a shortcut that breaks.
+ * Part 11 moves. Two houses north west where work arrives faster and faster;
+ * the three inner walls lit in turn as the phases; the grid of the land; every
+ * wall lit in turn as the guardrails; the verbs; and a shortcut that breaks.
  */
-import { Vector3, type Group } from 'three'
+import { Vector3, type Group, type MeshToonMaterial } from 'three'
 import { artOf, swarmOf } from '@/art/elements'
 import { segmentsOf, sketchOf } from '@/art/lines'
-import { drive, fade, inkIn, inkOut } from '@/art/motion'
+import { drive, fade, inkIn, inkOut, tint } from '@/art/motion'
 import { easeInOut } from '@/art/orbits'
+import { palette } from '@/art/palette'
+import { town } from '@/art/town'
 import { yawOnPath } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
 import { RING_ARCS, RINGS, VERBS } from '../../layout'
@@ -62,34 +64,26 @@ export const foundationsMoves = defineChoreography('11-foundations', (tl, cast, 
     work.commit()
   })
 
-  // ---- 11.2: three phase circles on the ground: the plans of the walls -------------------------
-  // The plans of the walls: each ring rises low round the town, arc by arc. 11.4 raises them whole.
-  RINGS.forEach((_, r) => {
+  /** A wall glows for a moment, arc by arc, as it is named: its stone goes sage and back. */
+  const glow = (r: number, from: number, to: number) => {
     for (let k = 0; k < RING_ARCS; k++) {
-      const w = el(`ring.${r}.${k}`)
-      const plan = span(B.phases + 0.75 + r * 0.6 + k * 0.1, B.phases + 1.5 + r * 0.6 + k * 0.1)
-      inkIn(tl, w, plan.start, plan.duration)
-      tl.fromTo(w.object.scale, { y: 0.001 }, { y: 0.22, duration: plan.duration, ease: 'power3.out', immediateRender: false }, plan.start)
+      const w = artOf<MeshToonMaterial>(cast.get(`ring.${r}.${k}`))
+      const on = span(from + k * 0.04, to + k * 0.04)
+      tint(tl, w.body.material.color, palette.sage, on.start, on.duration)
+      tint(tl, w.body.material.color, town.stone, on.start + on.duration + 0.4, on.duration * 1.6)
     }
-  })
+  }
+
+  // ---- 11.2: the three phases: the three inner walls, each lit in turn as it is named -----------
+  for (let r = 0; r < 3; r++) glow(r, B.phases + 1.4 + r * 0.6, B.phases + 1.9 + r * 0.6)
 
   // ---- 11.3: the grid of the land ------------------------------------------------------------------
   const gridLines = segmentsOf(cast.get<Group>('grid'))
   const gridIn = span(B.disc + 0.5, B.disc + 2)
   fade(tl, gridLines.material, 0.22, gridIn.start, gridIn.duration)
 
-  // ---- 11.4: the walls rise to their full height around the town, ring by ring, arc by arc --------------
-  RINGS.forEach((_, r) => {
-    for (let k = 0; k < RING_ARCS; k++) {
-      const w = el(`ring.${r}.${k}`)
-      const rise = span(B.walls + 0.4 + r * 1.2 + k * 0.12, B.walls + 1.4 + r * 1.2 + k * 0.12)
-      tl.to(w.object.scale, { y: 1, duration: rise.duration, ease: 'power3.out' }, rise.start)
-    }
-  })
-  for (const [id, r] of [['arch.w', 0], ['arch.e', 0], ['outer.w', 2], ['outer.e', 2]] as const) {
-    const rise = span(B.walls + 0.6 + r * 1.2, B.walls + 1.6 + r * 1.2)
-    inkIn(tl, el(id), rise.start, rise.duration)
-  }
+  // ---- 11.4: hard guardrails: every wall lights up in turn, out to the fifth ---------------------------
+  RINGS.forEach((_, r) => glow(r, B.walls + 0.4 + r * 0.7, B.walls + 1.0 + r * 0.7))
 
   // ---- 11.5: verbs, not trust ----------------------------------------------------------------------
   VERBS.forEach((v, i) => {

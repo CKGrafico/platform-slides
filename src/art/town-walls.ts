@@ -1,12 +1,12 @@
 /**
  * The walls of the town: rings of stone around the hall, like the concentric
  * walls of a fortified city. Each ring is built as arcs, so a wall can rise
- * around the town piece by piece. An arc has merlons along its top, towers
- * with hoardings and tiled roofs where the layout asks, and gaps where a gate
- * or a tower of its own stands. An arch is the small gate of an inner ring
- * over a road.
+ * around the town piece by piece. An arc is one revolved band of stone with
+ * merlons along its top, towers with hoardings and tiled roofs where the
+ * layout asks, and gaps where a gate stands. An arch is the small gate of an
+ * inner ring over a road.
  */
-import type { BufferGeometry } from 'three'
+import { LatheGeometry, Vector2, type BufferGeometry } from 'three'
 import { addDoor, boxAt, building, hipRoofGeometry, merge, Parts, stoneTexture, town } from './town'
 
 /** A range of angles (radians) the wall leaves open. */
@@ -24,33 +24,55 @@ export interface WallArcOptions {
   merlonEvery?: number
   /** Angles where a tower stands on the wall. */
   towers?: number[]
-  /** Angles the wall leaves open: gates, and towers that are elements of their own. */
+  /** Angles the wall leaves open: a gate stands in each. */
   gaps?: Gap[]
 }
 
-const inGap = (a: number, gaps: Gap[]) => gaps.some(([g0, g1]) => a >= g0 && a <= g1)
+/** The stretches of an arc that are not gaps, in order: the band is revolved over each one, so a gap is open from the ground up. */
+function stretches(from: number, to: number, gaps: Gap[]): Gap[] {
+  const out: Gap[] = []
+  let a = from
+  for (const [g0, g1] of [...gaps].sort((p, q) => p[0] - q[0])) {
+    if (g1 <= a || g0 >= to) continue
+    if (g0 > a) out.push([a, g0])
+    a = Math.max(a, g1)
+  }
+  if (a < to) out.push([a, to])
+  return out
+}
 
-/** A ring wall between two angles: blocks of stone with merlons, and towers. Its center is the origin. */
+/** A band of wall between two angles, revolved round the origin: the two faces and the top, reaching 0.4 below the ground for a slope. */
+function bandGeometry(radius: number, thickness: number, height: number, from: number, to: number): BufferGeometry {
+  const ri = radius - thickness / 2
+  const ro = radius + thickness / 2
+  const profile = [new Vector2(ri, -0.4), new Vector2(ro, -0.4), new Vector2(ro, height), new Vector2(ri, height), new Vector2(ri, -0.4)]
+  const segments = Math.max(2, Math.ceil(((to - from) * radius) / 0.5))
+  // The lathe measures its angle from +Z toward +X; the layout measures from +X toward +Z.
+  const lathe = new LatheGeometry(profile, segments, Math.PI / 2 - to, to - from)
+  // Flat faces, like the boxes of the kit, so the toon bands read.
+  const flat = lathe.toNonIndexed()
+  lathe.dispose()
+  flat.computeVertexNormals()
+  return flat
+}
+
+/**
+ * A ring wall between two angles: one band of stone with merlons along its
+ * outer edge, closed at its ends, and square towers with hoardings and tiled
+ * roofs where the layout asks. Its center is the origin.
+ */
 export function createWallArc(options: WallArcOptions) {
-  const { radius, from, to, height = 1.05, thickness = 0.5, merlon = 0.2, merlonEvery = 0.6, towers = [], gaps = [] } = options
+  const { radius, from, to, height = 2.2, thickness = 1.2, merlon = 0.36, merlonEvery = 1.0, towers = [], gaps = [] } = options
   const stone: BufferGeometry[] = []
   const p = new Parts()
-  const length = (to - from) * radius
-  const blocks = Math.max(1, Math.round(length / 1.2))
-  const step = (to - from) / blocks
-  const chord = radius * step
-  for (let i = 0; i < blocks; i++) {
-    const a = from + (i + 0.5) * step
-    if (inGap(a, gaps)) continue
-    const x = Math.cos(a) * radius
-    const z = Math.sin(a) * radius
-    // A block along the tangent: turned so its length follows the ring.
-    stone.push(boxAt(chord + 0.06, height, thickness, x, height / 2, z, { y: -a }))
+  for (const [s0, s1] of stretches(from, to, gaps)) {
+    stone.push(bandGeometry(radius, thickness, height, s0, s1))
+    // The ends of the band, so a gap or an arc's end shows stone, not the hollow.
+    for (const a of [s0, s1]) stone.push(boxAt(thickness, height + 0.4, 0.12, Math.cos(a) * radius, height / 2 - 0.2, Math.sin(a) * radius, { y: -a }))
     // Merlons along the outer edge.
-    const merlons = Math.max(2, Math.round(chord / merlonEvery))
+    const merlons = Math.max(1, Math.round(((s1 - s0) * radius) / merlonEvery))
     for (let k = 0; k < merlons; k++) {
-      const t = (k + 0.5) / merlons - 0.5
-      const am = a + t * step
+      const am = s0 + ((k + 0.5) / merlons) * (s1 - s0)
       const r = radius + thickness / 2 - merlon / 2 - 0.02
       stone.push(boxAt(merlon, merlon, merlon, Math.cos(am) * r, height + merlon / 2, Math.sin(am) * r, { y: -am }))
     }
@@ -58,11 +80,11 @@ export function createWallArc(options: WallArcOptions) {
   for (const a of towers) {
     const x = Math.cos(a) * radius
     const z = Math.sin(a) * radius
-    const tw = thickness + 0.5
-    const th = height + 0.85
-    stone.push(boxAt(tw, th, tw, x, th / 2, z, { y: -a }))
-    p.timber.push(boxAt(tw + 0.24, 0.16, tw + 0.24, x, th - 0.1, z, { y: -a }))
-    const roof = hipRoofGeometry(tw + 0.36, tw + 0.36, 0.5, 0)
+    const tw = thickness + 0.8
+    const th = height + 1.3
+    stone.push(boxAt(tw, th + 0.4, tw, x, th / 2 - 0.2, z, { y: -a }))
+    p.timber.push(boxAt(tw + 0.3, 0.22, tw + 0.3, x, th - 0.11, z, { y: -a }))
+    const roof = hipRoofGeometry(tw + 0.5, tw + 0.5, 0.7, 0)
     roof.rotateY(-a)
     roof.translate(x, th, z)
     p.tiles.push(roof)

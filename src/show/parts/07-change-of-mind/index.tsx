@@ -21,18 +21,13 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import { T, type MessageKey } from '@/i18n'
-import { shotSequence } from '@/world/camera/shot'
 import { APPS, TEAM } from '../../layout'
-import { townShot } from '../../shots'
+import { MAP_SHOT } from '../../shots'
 
 export const grid = beatStops([4, 5, 6, 12])
 const { b } = grid
 export const B = { title: 0, question: 4, team: 9, words: 15 }
 export const wordBeat = (i: number) => B.words + 3 * i
-
-const QUESTION_SHOT = townShot([2.0, 0.3, 3.0])
-const TEAM_SHOT = townShot([13.8, 0.3, -5.6])
-const SYSTEM_SHOT = townShot([0.5, 0.3, 2.5])
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
@@ -79,16 +74,7 @@ const change = defineScene({
   title: 'The question changes; the goal in four words',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: b(4), shot: QUESTION_SHOT },
-        { from: b(B.team), to: b(B.team + 3), shot: TEAM_SHOT },
-        { from: b(B.words), to: b(B.words + 3), shot: SYSTEM_SHOT },
-      ],
-      local,
-    ),
+  camera: () => MAP_SHOT,
 })
 
 export const changeOfMind = defineChapter({ id: '07-change-of-mind', title: 'The change of mind', scenes: [change] })

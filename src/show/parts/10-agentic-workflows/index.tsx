@@ -25,10 +25,9 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
-import { townShot } from '../../shots'
+import { MAP_SHOT } from '../../shots'
 import { TASKS } from '../../actors'
 
 // ---- pull-out ------------------------------------------------------------------------------
@@ -39,10 +38,6 @@ export const PB = { title: 0, pop: 4, distance: 14, back: 20, resort: 26 }
 
 const PULL = '10-agentic-workflows/pull-out'
 hudCues.fill(1, { key: PULL, from: b(1.5), to: b(3) })
-
-/** The hall in the middle of the frame while the tasks leave it; then a step toward the mill, when its steps come back. */
-const HALL_SHOT = townShot([0.4, 0.8, 0.4])
-const MILL_SHOT = townShot([2.4, 0.7, -2.0])
 
 const pullKey = (from: number, to: number) => ({ key: PULL, from: b(from), to: b(to) })
 const pullPulse = (from: number, to: number) => ({ rise: pullKey(from, from + 0.75), fall: pullKey(to, to + 0.75) })
@@ -87,15 +82,7 @@ const pullOut = defineScene({
   title: 'Pieces leave the hall, and land on the belt',
   stops: grid.stops,
   parts: { dom: PullOut },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: b(2.5), shot: HALL_SHOT },
-        { from: b(PB.back), to: b(PB.back + 2.5), shot: MILL_SHOT },
-      ],
-      local,
-    ),
+  camera: () => MAP_SHOT,
 })
 
 // ---- pipeline ------------------------------------------------------------------------------
@@ -105,13 +92,6 @@ const pb = pipeGrid.b
 export const QB = { before: 0, router: 5, lanes: 11, gate: 17, side: 22 }
 
 const PIPE = '10-agentic-workflows/pipeline'
-
-/** Pans across the map, at the one zoom: the whole town, the gatehouse, the row of workshops, the exit, the east side. */
-const WHOLE = townShot([0, 0, 2])
-const ENTRANCE = townShot([-8.5, 0, 4.6])
-const LANES_SHOT = townShot([-4.5, 0, 3.6])
-const EXIT = townShot([9.5, 0, 4.8])
-const SIDE = townShot([2.0, 0, -3.8])
 
 const pipeKey = (from: number, to: number) => ({ key: PIPE, from: pb(from), to: pb(to) })
 const pipePulse = (from: number, to: number) => ({ rise: pipeKey(from, from + 0.75), fall: pipeKey(to, to + 0.75) })
@@ -159,18 +139,7 @@ const pipeline = defineScene({
   title: 'One gatehouse, the workshops, the exit gate',
   stops: pipeGrid.stops,
   parts: { dom: Pipeline },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: pb(3), shot: WHOLE },
-        { from: pb(QB.router), to: pb(QB.router + 3), shot: ENTRANCE },
-        { from: pb(QB.lanes), to: pb(QB.lanes + 3), shot: LANES_SHOT },
-        { from: pb(QB.gate), to: pb(QB.gate + 3), shot: EXIT },
-        { from: pb(QB.side), to: pb(QB.side + 3.5), shot: SIDE },
-      ],
-      local,
-    ),
+  camera: () => MAP_SHOT,
 })
 
 export const agenticWorkflows = defineChapter({ id: '10-agentic-workflows', title: 'Pillar 2: Agentic Workflows', scenes: [pullOut, pipeline] })

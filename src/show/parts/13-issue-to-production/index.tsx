@@ -13,17 +13,15 @@
  * steps in pairs (8 beats each: 1 and 2, 3 and 4, 5 and 6), then step 7 (4).
  * Each pair has one caption, so no text passes in the middle of a click.
  */
-import { range } from '@/animation/progress'
 import { beatStops } from '@/animation/beat'
 import { burnWindow } from '@/art/Burn'
 import { BurnCaption, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence, type CameraShot } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
-import { townShot } from '../../shots'
+import { MAP_SHOT } from '../../shots'
 
 export const grid = beatStops([4, 8, 8, 8, 4])
 const { b } = grid
@@ -39,18 +37,6 @@ pulse(2, 5) // CI and the guardrails: Foundations
 pulse(1, 6) // the merge gate: Agentic Workflows
 pulse(3, 7) // production, counted: Project Health
 
-/** The road west of the town, with the cart far on the left. */
-const WIDE = townShot([-14, 0.3, 4.5])
-/** One pan per step: the gatehouse, the workshops, the requester, the hall, the walls, the gate, production. */
-const SHOTS: CameraShot[] = [
-  townShot([-9.5, 0.3, 4.6]),
-  townShot([-6.5, 0.3, 4.0]),
-  townShot([-5.0, 0.3, 5.5]),
-  townShot([0.4, 0.6, 1.5]),
-  townShot([4.5, 0.3, 4.5]),
-  townShot([10.0, 0.3, 4.8]),
-  townShot([16.5, 0.3, 4.8]),
-]
 /** Who is the subject of each step. */
 const FOCUS: string[][] = [['gatehouse'], ['triage', 'refine'], ['requester'], ['hall', 'harness', 'opencode'], ['walls'], ['exit'], ['market', 'health']]
 FOCUS.forEach((ids, i) => {
@@ -100,15 +86,7 @@ const journey = defineScene({
   title: 'One real issue, from request to production',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: b(3.5), shot: WIDE },
-        ...SHOTS.map((shot, i) => ({ from: b(stepBeat(i + 1)), to: b(stepBeat(i + 1) + 3), shot })),
-      ],
-      range(local, 0, 1),
-    ),
+  camera: () => MAP_SHOT,
 })
 
 export const issueToProduction = defineChapter({ id: '13-issue-to-production', title: 'From issue to production', scenes: [journey] })

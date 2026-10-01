@@ -23,11 +23,10 @@ import { BurnCaption, Card, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import { T, type MessageKey } from '@/i18n'
-import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
 import { HEALTH_PERSON, METRIC_BASES, METRIC_COINS, OUTER_E } from '../../layout'
-import { townShot } from '../../shots'
+import { MAP_SHOT } from '../../shots'
 
 export const grid = beatStops([9, 6, 6, 5, 7, 6])
 const { b } = grid
@@ -35,15 +34,8 @@ export const B = { title: 0, claim: 4, measure: 9, honest: 15, human: 21, number
 
 const KEY = '12-project-health/health'
 hudCues.fill(3, { key: KEY, from: b(1.5), to: b(3) })
-// The numbers of 12.5 need the whole frame: the map steps out and comes back for the loop.
+// The numbers of 12.5 need the whole frame: the map of the talk steps out and comes back for the loop.
 hudCues.hide({ rise: { key: KEY, from: b(B.numbers), to: b(B.numbers + 1) }, fall: { key: KEY, from: b(B.loop + 0.75), to: b(B.loop + 1.75) } })
-
-/** The town; the road out to production; the stacks by the barn; the elder; a quiet corner for the numbers; the town again. */
-const WHOLE = townShot([0, 0.3, 1.5])
-const ESCAPE = townShot([12, 0.3, 4.5])
-const STACKS = townShot([8.0, 0.3, 4.4])
-const PERSON = townShot([4.5, 0.3, 7.5])
-const QUIET = townShot([-14, 0, -20])
 
 const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
 const mapPulse = (from: number, to: number) => ({ rise: mapKey(from, from + 0.75), fall: mapKey(to, to + 0.75) })
@@ -56,7 +48,7 @@ mapCues.focus(['tower', 'gatehouse', 'health'], mapPulse(B.loop, B.loop + 5))
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
-const question = new Vector3(OUTER_E[0] - 2.0, 2.4, OUTER_E[2])
+const question = new Vector3(OUTER_E[0] - 3.0, 4.0, OUTER_E[2])
 /** Names of the front row on the ground before the stacks, at three depths; names of the back row above, at three heights. */
 const FRONT_DEPTH = [0.7, 1.9, 3.1, 0.7]
 const BACK_HEIGHT = [2.0, 3.6, 2.0, 3.6]
@@ -169,19 +161,7 @@ const health = defineScene({
   title: 'What we measure, and what we refuse to fake',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: b(3.5), shot: WHOLE },
-        { from: b(B.claim), to: b(B.claim + 3), shot: ESCAPE },
-        { from: b(B.measure), to: b(B.measure + 3), shot: STACKS },
-        { from: b(B.human), to: b(B.human + 3), shot: PERSON },
-        { from: b(B.numbers), to: b(B.numbers + 3), shot: QUIET },
-        { from: b(B.loop), to: b(B.loop + 3.5), shot: WHOLE },
-      ],
-      local,
-    ),
+  camera: () => MAP_SHOT,
 })
 
 export const projectHealth = defineChapter({ id: '12-project-health', title: 'Pillar 4: Project Health', scenes: [health] })

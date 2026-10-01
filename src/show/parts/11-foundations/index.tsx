@@ -1,12 +1,12 @@
 /**
  * Part 11: Pillar 3, Foundations (script 11.1 to 11.6).
  *
- * Out west: a tidy house and a messy one; work arrives faster at both, and
- * only the messy one loses its paths. Back at the town: three circles on the
- * ground (the phases, the plans of the walls), then the grid of the land,
- * then three ring walls rise around the town with their towers and gates,
- * the workers show their verbs, and a shortcut from the first ring straight
- * out of the last breaks apart.
+ * North west: a tidy house and a messy one; work arrives faster at both, and
+ * only the messy one loses its paths. Back at the town: the three inner walls
+ * are the three phases, named one by one, then the grid of the land, then
+ * every wall lights up in turn with the name of a guardrail on it, the
+ * workers show their verbs, and a shortcut from the first wall straight out
+ * past the third breaks apart.
  *
  * Stops, on the beat grid:
  *   1. (10) the title; slot 3; AI amplifies what you already have.  11.1
@@ -24,11 +24,10 @@ import { BurnCaption, Label, PartTitle } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
-import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
-import { GUARDRAIL_SPOTS, MESSY_POS, PHASE_LABEL_DIR, PHASE_LABEL_R, RINGS, SHORTCUT, TIDY_POS, VERBS } from '../../layout'
-import { townShot } from '../../shots'
+import { GUARDRAIL_SPOTS, MESSY_POS, PHASE_LABEL_DIR, PHASE_LABEL_R, RING_HEIGHT, RINGS, SHORTCUT, TIDY_POS, VERBS } from '../../layout'
+import { MAP_SHOT } from '../../shots'
 
 export const grid = beatStops([10, 6, 5, 6, 5, 5])
 const { b } = grid
@@ -36,14 +35,6 @@ export const B = { title: 0, amplify: 4, phases: 10, disc: 16, walls: 21, verbs:
 
 const KEY = '11-foundations/foundations'
 hudCues.fill(2, { key: KEY, from: b(1.5), to: b(3) })
-
-/** The town; then out west for the two houses; the ground south of the hall; the walls; the verbs; the shortcut north west. */
-const WHOLE = townShot([0, 0.3, 1.5])
-const WEST = townShot([-14, 0.3, -7])
-const GROUND = townShot([-1, 0, 8.5])
-const WALLS = townShot([-1, 0, 9.5])
-const VERBS_SHOT = townShot([1.2, 0.5, 4.0])
-const SKIP = townShot([-8, 0, -7])
 
 const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
 const mapPulse = (from: number, to: number) => ({ rise: mapKey(from, from + 0.75), fall: mapKey(to, to + 0.75) })
@@ -59,8 +50,8 @@ const tidyLabel = new Vector3(TIDY_POS[0], 0, TIDY_POS[2] + 2.7)
 const messyLabel = new Vector3(MESSY_POS[0], 0, MESSY_POS[2] + 2.5)
 /** Phase labels on the ground, on one ray from the hall toward the camera's left. */
 const phasePoints = PHASE_LABEL_R.map((r) => new Vector3(PHASE_LABEL_DIR[0] * r, 0.1, PHASE_LABEL_DIR[2] * r))
-/** Guardrail names on wall segments the camera sees. */
-const wallPoints = GUARDRAIL_SPOTS.map(({ ring, angle }) => new Vector3(Math.cos(angle) * RINGS[ring]!, 1.7, Math.sin(angle) * RINGS[ring]!))
+/** Guardrail names on the walls, one on each, on a stretch the camera sees. */
+const wallPoints = GUARDRAIL_SPOTS.map(({ ring, angle }) => new Vector3(Math.cos(angle) * RINGS[ring]!, RING_HEIGHT + 0.6, Math.sin(angle) * RINGS[ring]!))
 const shortcutLabel = new Vector3(SHORTCUT[1]![0] + 0.7, 0.35, SHORTCUT[1]![2] + 0.3)
 const VERB_TEXT: Record<string, MessageKey> = {
   pr: 'p11.verb.pr',
@@ -120,19 +111,7 @@ const foundationsScene = defineScene({
   title: 'The method, the ground, the walls, the verbs',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: b(3.5), shot: WHOLE },
-        { from: b(B.amplify), to: b(B.amplify + 3), shot: WEST },
-        { from: b(B.phases), to: b(B.phases + 3.5), shot: GROUND },
-        { from: b(B.walls), to: b(B.walls + 3), shot: WALLS },
-        { from: b(B.verbs), to: b(B.verbs + 3), shot: VERBS_SHOT },
-        { from: b(B.skip), to: b(B.skip + 3), shot: SKIP },
-      ],
-      local,
-    ),
+  camera: () => MAP_SHOT,
 })
 
 export const foundations = defineChapter({ id: '11-foundations', title: 'Pillar 3: Foundations', scenes: [foundationsScene] })

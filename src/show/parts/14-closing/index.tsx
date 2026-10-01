@@ -1,12 +1,12 @@
 /**
  * Part 14: closing (script 14.1).
  *
- * The camera pulls back over the whole town inside its three walls; the hall
- * is small at the center. Then three returns: the four slots of level 5, now
- * full; the road of milestones with its "?"; the title. Then the last line.
+ * The whole town inside its five walls, the hall small at the center. Then
+ * three returns: the four slots of level 5, now full; the road of milestones
+ * with its "?"; the title. Then the last line.
  *
  * Stops, on the beat grid:
- *   1. (11) pull back over the whole town; the four slots, full.
+ *   1. (11) the town runs on; the four slots, full.
  *   2. (5) the road of milestones, with its "?".
  *   3. (5) the title.
  *   4. (6) the last line.
@@ -18,12 +18,10 @@ import { BurnCaption, Label } from '@/art/Caption'
 import { defineChapter, defineScene } from '@/engine/define'
 import { Stage } from '@/engine/Stage'
 import { T, type MessageKey } from '@/i18n'
-import { shotSequence } from '@/world/camera/shot'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
 import { TIMELINE_IDS } from '../../actors'
-import { MILESTONE_X, MILESTONE_Z } from '../../layout'
-import { townShot } from '../../shots'
+import { MAP_SHOT } from '../../shots'
 
 export const grid = beatStops([11, 5, 5, 6])
 const { b } = grid
@@ -31,12 +29,8 @@ export const B = { back: 0, slots: 6, timeline: 11, title: 16, last: 21 }
 
 const KEY = '14-closing/closing'
 hudCues.center({ rise: { key: KEY, from: b(B.slots + 0.5), to: b(B.slots + 2.5) }, fall: { key: KEY, from: b(B.timeline), to: b(B.timeline + 2) } })
-// The names of the map leave with it, when the camera pulls back.
+// The names of the map leave when the map of the talk comes to the middle.
 mapCues.hide({ key: KEY, from: b(B.slots), to: b(B.slots + 1.5) })
-
-/** The one pull back of the talk: the whole town inside its walls. Then the road of milestones, at the same height. */
-const FAR = townShot([0, 0, 1], 130)
-const ROAD = townShot([(MILESTONE_X[0]! + MILESTONE_X[9]!) / 2 + 4, 0.6, MILESTONE_Z - 0.5], 72)
 
 const NAME_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.name` as MessageKey)
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
@@ -80,15 +74,7 @@ const closingScene = defineScene({
   title: 'Back to the start',
   stops: grid.stops,
   parts: { dom: Dom },
-  camera: (local, from) =>
-    shotSequence(
-      from,
-      [
-        { from: 0, to: b(5), shot: FAR },
-        { from: b(B.timeline), to: b(B.timeline + 3.5), shot: ROAD },
-      ],
-      local,
-    ),
+  camera: () => MAP_SHOT,
 })
 
 export const closing = defineChapter({ id: '14-closing', title: 'Closing', scenes: [closingScene] })
