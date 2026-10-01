@@ -57,8 +57,8 @@ const nameRow = (i: number) => new Vector3(NAME_X, 2 + 5 * i, NAME_Z)
 const metricLabels = METRIC_COINS.map((_, i) => nameRow(i))
 const hollowLabels = [0, 1].map((k) => nameRow(6 + k))
 const notCollected = nameRow(8)
-/** The small board of what needs a human: out to the south west of the elder, over the fields, where no name stands. */
-const panelPoint = new Vector3(HEALTH_PERSON[0] - 12, 0, HEALTH_PERSON[2] + 16)
+/** The small board of what needs a human: out to the south west of the elder, over the fields, clear of every name. */
+const panelPoint = new Vector3(HEALTH_PERSON[0] - 20.5, 0, HEALTH_PERSON[2] + 18.5)
 /** What needs a human, per app: a few pastel dots each. */
 const WAITING = [2, 1, 3]
 const DOTS = ['var(--c-peach)', 'var(--c-lilac)', 'var(--c-butter)']
