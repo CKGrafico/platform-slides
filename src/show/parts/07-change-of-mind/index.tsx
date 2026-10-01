@@ -31,8 +31,9 @@ export const wordBeat = (i: number) => B.words + 3 * i
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
-const teamLabel = new Vector3(TEAM[1]![0], 0, TEAM[1]![2] + 1.2)
-const appsLabel = new Vector3(APPS[9]![0] + 0.5, 1.5, APPS[9]![2] - 0.9)
+/** The team's name on the ground before them; the hamlet's name in the air over its far row, a label's height higher on screen. */
+const teamLabel = new Vector3(TEAM[1]![0] - 1, 0, TEAM[1]![2] + 4)
+const appsLabel = new Vector3(APPS[9]![0] + 1.5, 6.0, APPS[9]![2] - 1)
 
 function Dom() {
   return (

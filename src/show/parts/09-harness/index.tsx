@@ -62,12 +62,13 @@ const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => 
 
 /** The ten things the Harness holds, as tags beside the hall. */
 const TAGS = ['rules', 'conventions', 'architecture', 'skills', 'notskills', 'commands', 'team', 'tests', 'pr', 'deploy'] as const
-/** Two columns beside the parapet, like the sheet of rules it carries: five on each side. */
-const tagPoints = TAGS.map((_, i) => new Vector3(i < 5 ? -6.4 : 5.0, 3.4 - (i % 5) * 0.72, 1.0))
+/** Two columns in the air, west and east of the hall, like the sheet of rules it carries: five on each side, a label's height apart. */
+const tagPoints = TAGS.map((_, i) => new Vector3(i < 5 ? -34 : 34, 22 - (i % 5) * 5.2, i < 5 ? 4 : -4))
 
-const cloudLabel = new Vector3(3.6, 0.2, 6.2)
-const laptopLabel = new Vector3(DEV_POS[0] + 0.6, 0, DEV_POS[2] + 0.95)
-const cloudName = new Vector3(2.3 * HALL_SCALE.forge + 0.3, 1.7, 0.5)
+/** "Solve this issue" south west of the hall, clear of its name; the laptop's name reads leftward from the developer; the cloud's name high west of the parapet. */
+const cloudLabel = new Vector3(-4.0, 0.6, 8.0)
+const laptopLabel = new Vector3(DEV_POS[0] - 1, 0, DEV_POS[2] + 1.5)
+const cloudName = new Vector3(-1.5 * HALL_SCALE.forge - 1.8, 6.5, 0.5)
 
 function Dom() {
   return (
@@ -93,20 +94,20 @@ function Dom() {
           level={win(B.frame + 2 + i * 0.2, B.frame + 2.5 + i * 0.2, B.cloud, B.cloud + 1)}
         />
       ))}
-      <Label k="p09.solveShort" target={() => cloudLabel} width={32} level={win(B.cloud + 1.5, B.cloud + 2.25, B.clean, B.clean + 0.75)} />
+      <Label k="p09.solveShort" target={() => cloudLabel} width={32} className="label-right" level={win(B.cloud + 1.5, B.cloud + 2.25, B.clean, B.clean + 0.75)} />
       {[0, 1, 2].map((i) => (
         <Label
           key={i}
           k={`p09.cmd.${i + 1}` as MessageKey}
           target={`cmd.${i}`}
-          offset={[0.2, 0.28, 0]}
+          offset={[0.4, 0.6, 0]}
           width={24}
           className="label-left"
           level={win(B.commands + 0.6 + i * 0.5, B.commands + 0.85 + i * 0.5, B.commands + 1.25 + i * 0.5, B.commands + 1.5 + i * 0.5)}
         />
       ))}
-      <Label k="p09.laptopName" target={() => laptopLabel} width={20} mono={false} className="p05-name" level={win(B.laptop + 2, B.laptop + 2.75)} />
-      <Label k="p09.cloudName" target={() => cloudName} width={20} mono={false} className="p05-name label-left" level={win(B.laptop + 2.25, B.laptop + 3)} />
+      <Label k="p09.laptopName" target={() => laptopLabel} width={20} mono={false} className="p05-name label-right" level={win(B.laptop + 2, B.laptop + 2.75)} />
+      <Label k="p09.cloudName" target={() => cloudName} width={20} mono={false} className="p05-name label-right" level={win(B.laptop + 2.25, B.laptop + 3)} />
     </div>
   )
 }

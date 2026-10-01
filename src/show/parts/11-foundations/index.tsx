@@ -26,7 +26,7 @@ import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
 import { hudCues } from '../../hud/cues'
 import { mapCues } from '../../map/cues'
-import { GUARDRAIL_SPOTS, MESSY_POS, PHASE_LABEL_DIR, PHASE_LABEL_R, RING_HEIGHT, RINGS, SHORTCUT, TIDY_POS, VERBS } from '../../layout'
+import { GUARDRAIL_SPOTS, MESSY_POS, PHASE_LABELS, RINGS, SHORTCUT, TIDY_POS, VERBS } from '../../layout'
 import { MAP_SHOT } from '../../shots'
 
 export const grid = beatStops([10, 6, 5, 6, 5, 5])
@@ -46,13 +46,14 @@ mapCues.focus(['hall', 'exit', 'triage'], mapPulse(B.verbs, B.skip))
 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
-const tidyLabel = new Vector3(TIDY_POS[0], 0, TIDY_POS[2] + 2.7)
-const messyLabel = new Vector3(MESSY_POS[0], 0, MESSY_POS[2] + 2.5)
-/** Phase labels on the ground, on one ray from the hall toward the camera's left. */
-const phasePoints = PHASE_LABEL_R.map((r) => new Vector3(PHASE_LABEL_DIR[0] * r, 0.1, PHASE_LABEL_DIR[2] * r))
-/** Guardrail names on the walls, one on each, on a stretch the camera sees. */
-const wallPoints = GUARDRAIL_SPOTS.map(({ ring, angle }) => new Vector3(Math.cos(angle) * RINGS[ring]!, RING_HEIGHT + 0.6, Math.sin(angle) * RINGS[ring]!))
-const shortcutLabel = new Vector3(SHORTCUT[1]![0] + 0.7, 0.35, SHORTCUT[1]![2] + 0.3)
+/** The two houses' names over their roofs. */
+const tidyLabel = new Vector3(TIDY_POS[0], 10.0, TIDY_POS[2])
+const messyLabel = new Vector3(MESSY_POS[0], 10.0, MESSY_POS[2])
+/** Phase labels on the ground inside each of the three inner walls, reading leftward. */
+const phasePoints = PHASE_LABELS.map((p) => new Vector3(p[0], p[1], p[2]))
+/** Guardrail names on the walls, one on each, on a stretch with room on screen. */
+const wallPoints = GUARDRAIL_SPOTS.map(({ ring, angle, height }) => new Vector3(Math.cos(angle) * RINGS[ring]!, height, Math.sin(angle) * RINGS[ring]!))
+const shortcutLabel = new Vector3(SHORTCUT[2]![0] + 1.0, 0.5, SHORTCUT[2]![2] + 0.3)
 const VERB_TEXT: Record<string, MessageKey> = {
   pr: 'p11.verb.pr',
   'merge-no': 'p11.verb.merge',
@@ -83,21 +84,21 @@ function Dom() {
           target={() => p}
           width={48}
           mono={false}
-          className="phase-label"
+          className="phase-label label-right"
           level={win(B.phases + 1.6 + i * 0.6, B.phases + 2.35 + i * 0.6, B.disc, B.disc + 1)}
         />
       ))}
       {wallPoints.map((p, i) => (
-        <Label key={i} k={`p11.wall.${i + 1}` as MessageKey} target={() => p} width={24} level={win(B.walls + 1.5 + i * 0.3, B.walls + 2.1 + i * 0.3, B.verbs, B.verbs + 1)} />
+        <Label key={i} k={`p11.wall.${i + 1}` as MessageKey} target={() => p} width={24} className={GUARDRAIL_SPOTS[i]!.end ? 'label-right' : undefined} level={win(B.walls + 1.5 + i * 0.3, B.walls + 2.1 + i * 0.3, B.verbs, B.verbs + 1)} />
       ))}
       {VERBS.map((v, i) => (
         <Label
           key={v.id}
           k={VERB_TEXT[v.id]!}
           target={`verb.${v.id}`}
-          offset={[0.22, 0, 0]}
+          offset={[v.side === 'right' ? 0.5 : -0.5, 0, 0]}
           width={18}
-          className={v.hollow ? 'verb-no label-left' : 'label-left'}
+          className={`${v.hollow ? 'verb-no ' : ''}${v.side === 'right' ? 'label-left' : 'label-right'}`}
           level={win(B.verbs + 0.75 + i * 0.25, B.verbs + 1.25 + i * 0.25, B.skip, B.skip + 1)}
         />
       ))}

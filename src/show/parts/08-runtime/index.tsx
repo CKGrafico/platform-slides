@@ -34,7 +34,7 @@ export const pulseAt = (i: number) => 1.5 + i * 0.55
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
 const vendorLabel = new Vector3(15.6, 0.75, -7.5)
-const modelsLabel = new Vector3(KILNS[1]![0], 1.35, KILNS[1]![2])
+const modelsLabel = new Vector3(KILNS[1]![0], 5.0, KILNS[1]![2])
 
 function Dom() {
   return (
@@ -45,7 +45,7 @@ function Dom() {
         <BurnCaption k="p08.opencode" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={102} level={burnWindow(b(B.opencode + 2), b(B.opencode + 3), b(B.forge), b(B.forge + 0.6))} />
         <BurnCaption k="p08.forge" corner="bottom-left" width={80} height={12} className="art-caption--lead" seed={103} source="p08.forge.source" level={burnWindow(b(B.forge + 3), b(B.forge + 4))} />
       </Stage>
-      <Label k="p08.lock" target="lock" offset={[0, 1.15, 0]} width={24} level={win(pulseAt(5) + 1.1, pulseAt(5) + 1.6, B.opencode, B.opencode + 1)} />
+      <Label k="p08.lock" target="lock" offset={[0, 4.5, 0]} width={24} level={win(pulseAt(5) + 1.1, pulseAt(5) + 1.6, B.opencode, B.opencode + 1)} />
       {SHELL.map((name, i) => {
         if (name === 'ours' || name === 'threat') return null
         const a = SHELL_ANGLES[i]!
@@ -61,10 +61,10 @@ function Dom() {
           />
         )
       })}
-      <Label k="p08.threat" target="shell.threat" offset={[0.3, 0.3, 0]} width={24} className="label-left" level={win(B.threat + 0.5, B.threat + 1.25, B.threat + 3, B.threat + 4)} />
-      <Label k="p08.opencodeName" target="banner" offset={[0.55, 1.6, 0]} width={16} mono={false} className="p05-name label-left" level={win(B.opencode + 1.5, B.opencode + 2.25)} />
+      <Label k="p08.threat" target="shell.threat" offset={[0.6, 0.6, 0]} width={24} className="label-left" level={win(B.threat + 0.5, B.threat + 1.25, B.threat + 3, B.threat + 4)} />
+      <Label k="p08.opencodeName" target="banner" offset={[-0.5, 1.6, 0]} width={16} mono={false} className="p05-name label-right" level={win(B.opencode + 1.5, B.opencode + 2.25)} />
       <Label k="p08.vendor" target={() => vendorLabel} width={16} level={win(B.forge + 0.25, B.forge + 0.75, B.forge + 1.5, B.forge + 2.25)} />
-      <Label k="p08.forgeName" target="forge" offset={[1.3, 0.9, 0]} width={12} mono={false} className="p05-name label-left" level={win(B.forge + 1.25, B.forge + 2)} />
+      <Label k="p08.forgeName" target="forge" offset={[1.3, 1.5, 0]} width={12} mono={false} className="p05-name label-left" level={win(B.forge + 1.25, B.forge + 2)} />
       <Label k="p08.models" target={() => modelsLabel} width={16} level={win(B.forge + 2.75, B.forge + 3.5)} />
     </div>
   )

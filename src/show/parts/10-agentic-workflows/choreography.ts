@@ -281,32 +281,44 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     inkIn(tl, el(`fence.${i}`), a.start, a.duration)
   })
 
-  // ---- 10.6: the watchtower; the repair crew leaves the hall and walks the loop -----------------
+  // ---- 10.6: the watchtower; the repair crew leaves the hall, walks a turn of the loop, and goes out to stand by the mill's road ----
   const towerIn = q(QB.side + 0.5, QB.side + 1.25)
   inkIn(tl, el('tower'), towerIn.start, towerIn.duration)
   const repair = el('repair')
-  const repairPath = polyline([homeAt(FOLK.tower, HALL_SCALE.refine), [3.4, 0, 1.2], [4.95, 0, -2.85]])
+  const RIDE = { from: QB.side + 1.5, to: QB.side + 3.2, length: 0.3 }
+  const repairOut = polyline([homeAt(FOLK.tower, HALL_SCALE.refine), [3.4, 0, 1.2], [4.95, 0, -2.85]])
+  loopAt(0.5 + RIDE.length, tmp)
+  const repairAway = polyline([[tmp.x + 0.55, 0, tmp.z + 0.55], [5.6, 0, 1.0], [5.9, 0, -4.5], [6.4, 0, -6.8], [9.5, 0, -6.2], [11.0, 0, -4.5]])
+  const step = (path: (u: number, out: Vector3) => Vector3, w: number) => {
+    path(w, tmp)
+    path(Math.min(1, w + 0.01), tmp2)
+    repair.object.position.copy(tmp)
+    const dx = tmp2.x - tmp.x
+    const dz = tmp2.z - tmp.z
+    if (dx * dx + dz * dz > 1e-8) repair.object.rotation.y = Math.atan2(dx, dz)
+  }
   const walk = q(QB.side + 0.5, pipeGrid.totalBeats)
   drive(tl, walk.start, walk.duration, (u) => {
     const beat = QB.side + 0.5 + u * (pipeGrid.totalBeats - QB.side - 0.5)
-    if (beat < QB.side + 1.5) {
+    if (beat < RIDE.from) {
       // Off the platform, east, to the corner of the loop.
-      const w = easeInOut(win(beat, QB.side + 0.5, QB.side + 1.5))
-      repairPath(w, tmp)
-      repairPath(Math.min(1, w + 0.01), tmp2)
-      repair.object.position.copy(tmp)
-      const dx = tmp2.x - tmp.x
-      const dz = tmp2.z - tmp.z
-      if (dx * dx + dz * dz > 1e-8) repair.object.rotation.y = Math.atan2(dx, dz)
+      step(repairOut, easeInOut(win(beat, QB.side + 0.5, RIDE.from)))
       return
     }
-    const p = frac(0.5 + ((beat - (QB.side + 1.5)) / (pipeGrid.totalBeats - QB.side - 1.5)) * 0.35)
-    loopAt(p, tmp)
-    loopAt(p + 0.01, tmp2)
-    tmp.x += 0.55
-    tmp.z += 0.55
-    repair.object.position.copy(tmp)
-    repair.object.rotation.y = Math.atan2(tmp2.x - tmp.x + 0.55, tmp2.z - tmp.z + 0.55)
+    if (beat < RIDE.to) {
+      // A turn of the loop, beside the carts.
+      const p = 0.5 + win(beat, RIDE.from, RIDE.to) * RIDE.length
+      loopAt(p, tmp)
+      loopAt(p + 0.01, tmp2)
+      tmp.x += 0.55
+      tmp.z += 0.55
+      repair.object.position.copy(tmp)
+      repair.object.rotation.y = Math.atan2(tmp2.x - tmp.x + 0.55, tmp2.z - tmp.z + 0.55)
+      return
+    }
+    // Out of the north east postern, to stand by the mill's road: housekeeping lives with the automation.
+    step(repairAway, easeInOut(win(beat, RIDE.to, pipeGrid.totalBeats)))
+    if (beat >= pipeGrid.totalBeats) repair.object.rotation.y = 0.8
   })
   const towerStep = q(QB.side + 1.25, QB.side + 2.25)
   hallStep(tl, cast, towerStep.start, towerStep.duration, HALL_SCALE.refine, HALL_SCALE.tower, homeAfter(FOLK.tower))

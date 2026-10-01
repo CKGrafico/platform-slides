@@ -32,11 +32,11 @@ export const B = { title: 0, runs: 4, cost: 10, human: 16 }
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
 // Above the full stack of coins.
-const tokenTop = stackPoint(COINS, TOKEN_COINS - 1).add(new Vector3(0, 0.42, 0))
+const tokenTop = stackPoint(COINS, TOKEN_COINS - 1).add(new Vector3(0, 1.6, 0))
 const aboveTokens = () => tokenTop
 
 /** What the agent does with its reasoning in 6.2: one name at a time, above its task. */
-const TASK_OFFSET = [0, 0.66, 0] as const
+const TASK_OFFSET = [0, 1.6, 0] as const
 
 function Dom() {
   return (
@@ -58,7 +58,7 @@ function Dom() {
         />
       ))}
       <Label k="p06.tokens" target={aboveTokens} width={14} mono={false} className="p05-name" level={win(B.cost + 3.3, B.cost + 3.8)} />
-      <Label k="p06.person" target="reviewer" offset={[0, 1.55, 0]} width={32} mono={false} className="p05-name" level={win(B.human + 1, B.human + 1.75)} />
+      <Label k="p06.person" target="reviewer" offset={[0, 3.0, 0]} width={32} mono={false} className="p05-name" level={win(B.human + 1, B.human + 1.75)} />
     </div>
   )
 }

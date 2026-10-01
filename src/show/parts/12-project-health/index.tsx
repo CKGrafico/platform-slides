@@ -49,13 +49,13 @@ mapCues.focus(['tower', 'gatehouse', 'health'], mapPulse(B.loop, B.loop + 5))
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
 const question = new Vector3(OUTER_E[0] - 3.0, 4.0, OUTER_E[2])
-/** Names of the front row on the ground before the stacks, at three depths; names of the back row above, at three heights. */
-const FRONT_DEPTH = [0.7, 1.9, 3.1, 0.7]
-const BACK_HEIGHT = [2.0, 3.6, 2.0, 3.6]
-const metricLabels = METRIC_COINS.map((_, i) => (i < 4 ? new Vector3(METRIC_BASES[i]![0], 0.05, METRIC_BASES[i]![2] + FRONT_DEPTH[i]!) : new Vector3(METRIC_BASES[i]![0], BACK_HEIGHT[i - 4]!, METRIC_BASES[i]![2])))
-const hollowLabels = [0, 1].map((k) => new Vector3(METRIC_BASES[6 + k]![0], BACK_HEIGHT[2 + k]!, METRIC_BASES[6 + k]![2]))
-// "Not collected" above the two ghost stacks' names.
-const notCollected = new Vector3((METRIC_BASES[6]![0] + METRIC_BASES[7]![0]) / 2, 5.2, METRIC_BASES[7]![2])
+/** The names of the measures in one column west of the stacks, reading leftward, a label's height apart: the collected ones, then the two that are not, with "not collected" over them. */
+const NAME_X = METRIC_BASES[0]![0] - 1.4
+const NAME_Z = (METRIC_BASES[0]![2] + METRIC_BASES[4]![2]) / 2
+const nameRow = (i: number) => new Vector3(NAME_X, 2 + 5 * i, NAME_Z)
+const metricLabels = METRIC_COINS.map((_, i) => nameRow(i))
+const hollowLabels = [0, 1].map((k) => nameRow(6 + k))
+const notCollected = nameRow(8)
 const panelPoint = new Vector3(HEALTH_PERSON[0] + 0.6, 1.3, HEALTH_PERSON[2])
 /** What needs a human, per app: a few pastel dots each. */
 const WAITING = [2, 1, 3]
@@ -131,12 +131,12 @@ function Dom() {
       </Stage>
       <Label k="p12.question" target={() => question} width={8} mono={false} className="tl-question" level={win(B.claim + 2, B.claim + 2.75, B.measure, B.measure + 1)} />
       {metricLabels.map((p, i) => (
-        <Label key={i} k={`p12.metric.${i + 1}` as MessageKey} target={() => p} width={18} level={win(B.measure + 1 + i * 0.3, B.measure + 1.6 + i * 0.3, B.human, B.human + 1)} />
+        <Label key={i} k={`p12.metric.${i + 1}` as MessageKey} target={() => p} width={18} className="label-right" level={win(B.measure + 1 + i * 0.3, B.measure + 1.6 + i * 0.3, B.human, B.human + 1)} />
       ))}
       {hollowLabels.map((p, i) => (
-        <Label key={i} k={`p12.hollow.${i + 1}` as MessageKey} target={() => p} width={24} className="verb-no" level={win(B.honest + 1 + i * 0.4, B.honest + 1.6 + i * 0.4, B.human, B.human + 1)} />
+        <Label key={i} k={`p12.hollow.${i + 1}` as MessageKey} target={() => p} width={24} className="verb-no label-right" level={win(B.honest + 1 + i * 0.4, B.honest + 1.6 + i * 0.4, B.human, B.human + 1)} />
       ))}
-      <Label k="p12.notCollected" target={() => notCollected} width={20} level={win(B.honest + 1.75, B.honest + 2.25, B.human, B.human + 0.5)} />
+      <Label k="p12.notCollected" target={() => notCollected} width={20} className="label-right" level={win(B.honest + 1.75, B.honest + 2.25, B.human, B.human + 0.5)} />
       <Card fit="p12.panel" target={() => panelPoint} width={25} height={14.5} className="health-card" level={win(B.human + 1, B.human + 1.75, B.numbers, B.numbers + 1)}>
         <p className="health-card-title">
           <T k="p12.panel" />

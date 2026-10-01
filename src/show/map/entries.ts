@@ -9,8 +9,7 @@
 import { Vector3 } from 'three'
 import type { AnchorTarget } from '@/art/anchor'
 import type { MessageKey } from '@/i18n'
-import { HALL_SCALE } from '../hall'
-import { COINS, KILNS, LOOP, RINGS } from '../layout'
+import { COINS, KILNS, RINGS, SIGN_SPOTS, STATION } from '../layout'
 
 export type Side = 'above' | 'below' | 'left' | 'right'
 
@@ -32,34 +31,39 @@ const point = (x: number, y: number, z: number) => {
 }
 const onRing = (ring: number, angle: number, y: number) => point(Math.cos(angle) * RINGS[ring]!, y, Math.sin(angle) * RINGS[ring]!)
 
+/**
+ * The names stand round the hall on the sides with room, at the far camera
+ * (shots.ts): on screen the hall is small and its names are not, so each
+ * takes its own side and its own height.
+ */
 export const MAP_ENTRIES: MapEntry[] = [
   // The hall and what it keeps.
-  // A nameplate under the loop, so the name never reaches the map of the talk in the corner.
-  { id: 'hall', target: 'hall', offset: [0, -0.05, 4.6], name: 'town.hall', role: 'town.hall.role', side: 'below' },
-  { id: 'opencode', target: 'banner', offset: [0.45, 1.1, 0], name: 'map.opencode', role: 'map.opencode.role', side: 'right' },
-  { id: 'harness', target: point(1.9 * HALL_SCALE.forge, 0.3, 2.0 * HALL_SCALE.forge + 0.35), name: 'map.harness', role: 'map.harness.role', side: 'below' },
-  { id: 'coins', target: point(COINS[0] + 0.45, COINS[1] + 0.7, COINS[2]), name: 'town.coins', role: 'town.coins.role', side: 'right' },
-  { id: 'lane.automation', target: point(1.7, 0, LOOP[1]![2] - 0.45), name: 'map.lane.automation', side: 'above', lane: true },
+  { id: 'hall', target: 'hall', offset: [1.1, 0, 4.7], name: 'town.hall', role: 'town.hall.role', side: 'below' },
+  { id: 'opencode', target: 'banner', offset: [0.9, 5.5, 0], name: 'map.opencode', role: 'map.opencode.role', side: 'right' },
+  // The Harness takes the name of its district's sign, south east of the hall.
+  { id: 'harness', target: point(SIGN_SPOTS[0]![0] + 1.3, 0, SIGN_SPOTS[0]![2] + 3.5), name: 'map.harness', role: 'map.harness.role', side: 'below' },
+  { id: 'coins', target: point(COINS[0] + 2.4, 0, COINS[2] + 1.2), name: 'town.coins', role: 'town.coins.role', side: 'right' },
+  { id: 'lane.automation', target: point(4.8, 3.4, -3.4), name: 'map.lane.automation', side: 'right', lane: true },
 
   // The runtime.
-  { id: 'forge', target: 'forge', offset: [0, 2.2, 0], name: 'map.forge', role: 'map.forge.role', side: 'above' },
-  { id: 'models', target: point(KILNS[2]![0] + 1.2, 0.9, KILNS[2]![2] + 0.2), name: 'map.models', role: 'map.models.role', side: 'right' },
+  { id: 'forge', target: 'forge', offset: [1.5, 6.5, 0], name: 'map.forge', role: 'map.forge.role', side: 'above' },
+  { id: 'models', target: point(KILNS[2]![0] + 2.0, 3.0, KILNS[2]![2] + 0.2), name: 'map.models', role: 'map.models.role', side: 'right' },
 
   // The automation.
-  { id: 'station', target: 'station', offset: [0, 2.7, 0], name: 'map.ga', role: 'map.ga.role', side: 'above' },
-  { id: 'gatehouse', target: 'gatehouse', offset: [0, 3.3, 0], name: 'map.router', role: 'map.router.role', side: 'above' },
-  { id: 'exit', target: 'exit', offset: [0, 3.3, 0], name: 'map.gate', role: 'map.gate.role', side: 'above' },
-  { id: 'market', target: 'market', offset: [0, 1.4, 0], name: 'map.release', role: 'map.release.role', side: 'above' },
+  { id: 'station', target: point(STATION[0] + 4.3, 0, STATION[2] + 12.3), name: 'map.ga', role: 'map.ga.role', side: 'right' },
+  { id: 'gatehouse', target: 'gatehouse', offset: [0, 9.0, 0], name: 'map.router', role: 'map.router.role', side: 'above' },
+  { id: 'exit', target: 'exit', offset: [0, -0.2, 3.5], name: 'map.gate', role: 'map.gate.role', side: 'below' },
+  { id: 'market', target: 'market', offset: [5.5, 1.6, 0], name: 'map.release', role: 'map.release.role', side: 'above' },
 
   // The agents and the people.
-  { id: 'triage', target: 'triage', offset: [0, 2.1, 0], name: 'map.triage', role: 'map.triage.role', side: 'above' },
-  { id: 'refine', target: 'refine', offset: [0, 1.75, 0], name: 'map.refine', role: 'map.refine.role', side: 'above' },
-  { id: 'requester', target: 'requester', offset: [0, -0.15, 0.6], name: 'map.requester', role: 'map.requester.role', side: 'below' },
-  { id: 'booth', target: 'booth', offset: [0, -0.1, 1.0], name: 'town.booth', role: 'town.booth.role', side: 'below' },
+  { id: 'triage', target: 'triage', offset: [0, 6.5, 0], name: 'map.triage', role: 'map.triage.role', side: 'above' },
+  { id: 'refine', target: 'refine', offset: [0, 1.4, 0], name: 'map.refine', role: 'map.refine.role', side: 'above' },
+  { id: 'requester', target: 'requester', offset: [-2.5, 0.2, 0], name: 'map.requester', role: 'map.requester.role', side: 'left' },
+  { id: 'booth', target: 'booth', offset: [0, -0.1, 5.0], name: 'town.booth', role: 'town.booth.role', side: 'below' },
 
   // Production and measure.
-  { id: 'walls', target: onRing(1, Math.PI / 2, 1.5), name: 'map.walls', role: 'map.walls.role', side: 'above' },
-  { id: 'tower', target: 'tower', offset: [0, 3.4, 0], name: 'map.audit', role: 'map.audit.role', side: 'above' },
-  { id: 'repair', target: 'repair', offset: [0, 1.4, 0], name: 'map.housekeeping', role: 'map.housekeeping.role', side: 'above' },
-  { id: 'health', target: 'elder', offset: [-0.55, 1.4, 0], name: 'map.health', role: 'map.health.role', side: 'left' },
+  { id: 'walls', target: onRing(2, Math.PI / 3, 3.0), name: 'map.walls', role: 'map.walls.role', side: 'above' },
+  { id: 'tower', target: 'tower', offset: [0.3, 9.0, 0], name: 'map.audit', role: 'map.audit.role', side: 'above' },
+  { id: 'repair', target: 'repair', offset: [0.8, 0.4, 0], name: 'map.housekeeping', role: 'map.housekeeping.role', side: 'right' },
+  { id: 'health', target: 'elder', offset: [-0.7, 1.6, 0], name: 'map.health', role: 'map.health.role', side: 'left' },
 ]

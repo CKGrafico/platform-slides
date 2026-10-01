@@ -45,8 +45,10 @@ const levelPoints = RINGS.map((r) => new Vector3(Math.cos(LEVEL_LABEL_ANGLE) * (
 const levelTargets = levelPoints.map((p) => () => p)
 /** The four slots: the ground where each district's sign will stand. */
 export const slotPoints = SIGN_SPOTS.map((p) => new Vector3(p[0], 0.08, p[2]))
-const slotLabelTargets = slotPoints.map((p) => {
-  const v = p.clone().add(new Vector3(2.0, 0.3, 0))
+/** Each slot's name beside it, on the side with room: the two west slots read leftward. */
+const SLOT_SIDE = ['label-left', 'label-right', 'label-left', 'label-right'] as const
+const slotLabelTargets = slotPoints.map((p, n) => {
+  const v = p.clone().add(new Vector3(SLOT_SIDE[n] === 'label-left' ? 2.5 : -2.5, n === 3 ? 1.5 : 0.3, 0))
   return () => v
 })
 
@@ -96,7 +98,7 @@ function Dom() {
         <Label key={i} k={`p04.level.${i + 1}.name` as MessageKey} target={target} width={40} mono={false} level={levelLabel(i)} className="level-label" />
       ))}
       {slotLabelTargets.map((target, n) => (
-        <Label key={n} k={`p04.slot.${n + 1}` as MessageKey} target={target} width={40} mono={false} level={slotLabel(n)} className="slot-label label-left" />
+        <Label key={n} k={`p04.slot.${n + 1}` as MessageKey} target={target} width={40} mono={false} level={slotLabel(n)} className={`slot-label ${SLOT_SIDE[n]}`} />
       ))}
     </div>
   )

@@ -7,7 +7,7 @@
  *
  * Stops, on the beat grid:
  *   1. (11) the town runs on; the four slots, full.
- *   2. (5) the road of milestones, with its "?".
+ *   2. (5) the road of milestones, its names one after the other, with its "?".
  *   3. (5) the title.
  *   4. (6) the last line.
  */
@@ -34,6 +34,9 @@ mapCues.hide({ key: KEY, from: b(B.slots), to: b(B.slots + 1.5) })
 
 const NAME_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.name` as MessageKey)
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
+/** The milestone names come back one after the other, each leaving as the next comes; the "?" stays until the title. */
+const nameAt = (k: number) => B.timeline + 1.2 + k * 0.35
+const nameLevel = (k: number) => (k === 9 ? win(nameAt(9), nameAt(9) + 0.4, B.title, B.title + 0.75) : win(nameAt(k), nameAt(k) + 0.3, nameAt(k + 1) + 0.05, nameAt(k + 1) + 0.3))
 
 function Dom() {
   return (
@@ -58,10 +61,10 @@ function Dom() {
           key={id}
           k={NAME_KEYS[k]!}
           target={id}
-          offset={k === 9 ? [0, 0, 0] : [0, k % 2 ? 4.4 : 1.9, 0]}
+          offset={k === 9 ? [0, 0, 0] : [0, 3.4, 0]}
           width={k === 9 ? 6 : 26}
           mono={false}
-          level={win(B.timeline + 1.5 + k * 0.15, B.timeline + 2.25 + k * 0.15, B.title, B.title + 0.75)}
+          level={nameLevel(k)}
           className={k === 9 ? 'tl-question' : 'tl-label'}
         />
       ))}

@@ -51,7 +51,8 @@ mapCues.focus(['coins', 'hall'], pullPulse(PB.resort, PB.resort + 4.5))
 
 const from = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, a, bb), 1 - range(local, c, d))
 
-const TASK_OFFSET = [0, 0.62, 0] as const
+/** The four names on the loop, a step higher each and reading leftward, so they stack west of the hall's names. */
+const taskOffset = (i: number) => [-1, 8.5 + 6.5 * i, 0] as const
 
 function PullOut() {
   return (
@@ -68,8 +69,9 @@ function PullOut() {
           key={name}
           k={`p10.task.${name}` as MessageKey}
           target={`task.${name}`}
-          offset={TASK_OFFSET}
+          offset={taskOffset(i)}
           width={12}
+          className="label-right"
           level={from(b(PB.pop + 2.5 + i * 2), b(PB.pop + 3 + i * 2), b(PB.back), b(PB.back + 1))}
         />
       ))}

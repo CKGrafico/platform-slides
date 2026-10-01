@@ -8,8 +8,9 @@
  *
  * One stop, like a transition (14.5 beats): the blue cart goes into the hall,
  * the title burns in, and the road lays itself from the west edge of the
- * frame milestone by milestone, Models to the "?" at the outer gate. Only the
- * "?" keeps its line; the names stay on the road.
+ * frame milestone by milestone, Models to the "?" at the outer gate. At this
+ * distance the road has room for one name at a time: each name leaves when
+ * the next milestone comes. Only the "?" keeps its line and its name.
  */
 import { range } from '@/animation/progress'
 import { beatStops } from '@/animation/beat'
@@ -31,16 +32,17 @@ export const stepBeat = (k: number) => 3.5 + k
 /** Only the "?" keeps its line. */
 const LINE_AT = new Set([9])
 
-/** Names above the signposts, or on the grass before them, in turns, so neighbours never touch. */
-const LABEL_OFFSETS: Array<readonly [number, number, number]> = MILESTONE_X.map((_, i) => (i === 9 ? ([0, 0, 0] as const) : i % 2 ? ([0, 0.1, 2.1] as const) : ([0, 1.9, 0] as const)))
+/** Names above the signposts; the "?" stands on its own. */
+const LABEL_OFFSETS: Array<readonly [number, number, number]> = MILESTONE_X.map((_, i) => (i === 9 ? ([0, 0, 0] as const) : ([0, 3.4, 0] as const)))
 
 const NAME_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.name` as MessageKey)
 const LINE_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.line` as MessageKey)
 
-/** Label level: in with its milestone. */
+/** Label level: in with its milestone, out when the next one comes. The "?" stays. */
 function labelLevel(k: number) {
   const a = b(stepBeat(k) + 1)
-  return (local: number) => range(local, a, a + b(0.75))
+  const c = b(stepBeat(k + 1) + 1)
+  return (local: number) => (k === 9 ? range(local, a, a + b(0.75)) : Math.min(range(local, a, a + b(0.5)), 1 - range(local, c, c + b(0.4))))
 }
 
 function Dom() {

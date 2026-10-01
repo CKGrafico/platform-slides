@@ -224,8 +224,8 @@ export const APPS: V3[] = Array.from({ length: 11 }, (_, i) => {
   const col = i % 4
   return [33.0 + col * 2.3 + (row % 2) * 1.15, 0, -27 - row * 2.5] as const
 })
-/** The developer with the copy of the hall (9.5), south of the road inside the second wall. */
-export const DEV_POS: V3 = [-3.0, 0, 15.0]
+/** The developer with the copy of the hall (9.5), south of the road inside the second wall, clear of the hall's names on screen. */
+export const DEV_POS: V3 = [-6.0, 0, 19.0]
 /** The elder who looks at what needs a human (12.4), by the stacks. */
 export const HEALTH_PERSON: V3 = [-21.5, 0, 29.5]
 
@@ -233,7 +233,7 @@ export const HEALTH_PERSON: V3 = [-21.5, 0, 29.5]
 
 /** One spot per pillar, at the entrance of its district: Agent Harness, Agentic Workflows, Foundations, Project Health. Part 4 draws an empty slot on each. */
 export const SIGN_SPOTS: V3[] = [
-  [-1.2, 0, 6.9],
+  [3.0, 0, 6.5],
   [-19.5, 0, 9.0],
   [-22, 0, -17],
   [-16, 0, 21],
@@ -292,25 +292,28 @@ export const PRODUCTION: V3 = [75, 0.14, MAIN_Z]
 
 // ---- part 11: the phases, the guardrails and the verbs ----------------------------------------------
 
-/** The three phases are the three inner walls. Their names sit on the ground just inside each, one below the other. */
-export const PHASE_LABEL_DIR: V3 = [0, 0, 1]
-export const PHASE_LABEL_R = [RINGS[0]! - 2, RINGS[1]! - 2, RINGS[2]! - 2]
-/** Verbs (11.5): what a worker may do, as seals; what it may not, as hollow slots. By the hall, the merge gate and triage. */
-export const VERBS: Array<{ id: string; at: V3; hollow: boolean }> = [
-  { id: 'pr', at: [2.6, 9.0, 2.9], hollow: false },
-  { id: 'merge-no', at: [2.6, 5.5, 2.9], hollow: true },
-  { id: 'main-no', at: [2.6, 2.0, 2.9], hollow: true },
-  { id: 'merge', at: [EXIT_GATE[0], 4.5, EXIT_GATE[2] + 0.4], hollow: false },
-  { id: 'issue', at: [TRIAGE_HOUSE[0] + 1.6, 6.0, TRIAGE_HOUSE[2] + 0.4], hollow: false },
-  { id: 'code-no', at: [TRIAGE_HOUSE[0] + 1.6, 2.5, TRIAGE_HOUSE[2] + 0.4], hollow: true },
+/** The three phases are the three inner walls. Their names sit on the ground just inside each, south west of the hall, reading leftward, each a row lower on screen. */
+export const PHASE_LABELS: V3[] = [
+  [-6.5, 0.1, 7.0],
+  [-8.0, 0.1, 20.5],
+  [-12.0, 0.1, 37.0],
 ]
-/** Where the five guardrail names sit: one on each wall, on a stretch the camera sees (ring index, angle). */
-export const GUARDRAIL_SPOTS: Array<{ ring: number; angle: number }> = [
-  { ring: 0, angle: deg(100) },
-  { ring: 1, angle: deg(70) },
-  { ring: 2, angle: deg(110) },
-  { ring: 3, angle: deg(80) },
-  { ring: 4, angle: deg(100) },
+/** Verbs (11.5): what a worker may do, as seals; what it may not, as hollow slots. High over the hall, by the merge gate, and west of triage. */
+export const VERBS: Array<{ id: string; at: V3; hollow: boolean; side: 'left' | 'right' }> = [
+  { id: 'pr', at: [2.6, 42.0, 2.9], hollow: false, side: 'right' },
+  { id: 'merge-no', at: [2.6, 36.0, 2.9], hollow: true, side: 'right' },
+  { id: 'main-no', at: [2.6, 30.0, 2.9], hollow: true, side: 'right' },
+  { id: 'merge', at: [EXIT_GATE[0], 1.0, EXIT_GATE[2] + 0.4], hollow: false, side: 'right' },
+  { id: 'issue', at: [TRIAGE_HOUSE[0] - 1.6, 5.8, TRIAGE_HOUSE[2] + 0.4], hollow: false, side: 'left' },
+  { id: 'code-no', at: [TRIAGE_HOUSE[0] - 1.6, 1.5, TRIAGE_HOUSE[2] + 0.4], hollow: true, side: 'left' },
+]
+/** Where the five guardrail names sit: one on each wall, on a stretch with room on screen (ring index, angle, height over the wall's foot, and whether the name ends at the spot). */
+export const GUARDRAIL_SPOTS: Array<{ ring: number; angle: number; height: number; end: boolean }> = [
+  { ring: 0, angle: deg(105), height: 2.2, end: true },
+  { ring: 1, angle: deg(155), height: 3.2, end: true },
+  { ring: 2, angle: deg(112), height: 1.5, end: true },
+  { ring: 3, angle: deg(80), height: 2.8, end: false },
+  { ring: 4, angle: deg(100), height: 2.8, end: false },
 ]
 /** 11.6: a shortcut from the first wall straight out past the third, in two halves that break apart. */
 export const SHORTCUT: V3[] = [

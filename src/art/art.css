@@ -629,11 +629,11 @@ body,
 .map-label--left { transform: translate(-100%, -50%); align-items: flex-end; text-align: right; }
 .map-label--right { transform: translate(0, -50%); align-items: flex-start; text-align: left; }
 
-/* The name: the display face, outlined like every label, a little smaller. */
+/* The name: the display face, outlined like every label, smaller: a name on a map seen from far away. */
 .map-name {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: calc(var(--su) * 2.5);
+  font-size: calc(var(--su) * 2.1);
   line-height: 1.2;
   color: var(--c-surface);
   -webkit-text-stroke: 0.2em var(--c-outline);

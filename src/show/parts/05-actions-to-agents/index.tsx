@@ -69,7 +69,7 @@ function above(id: string, dy: number, dz = 0) {
   }
 }
 
-const lineMid = new Vector3((LINE_X[0]! + LINE_X[5]!) / 2, LINE_Y - 0.1, LINE_Z + 1.0)
+const lineMid = new Vector3((LINE_X[0]! + LINE_X[5]!) / 2, LINE_Y + 4.0, LINE_Z + 1.0)
 
 function Dom() {
   return (
@@ -86,13 +86,13 @@ function Dom() {
         <BurnCaption k="p05.story" corner="bottom-left" width={80} height={9} className="art-caption--lead" seed={68} level={burnWindow(b(B.story + 0.75), b(B.story + 2))} />
       </Stage>
 
-      <Label k="p05.ga" target="station" offset={[-1.4, 2.5, 0]} width={26} mono={false} className="p05-name label-right" level={win(B.ga + 2.5, B.ga + 3.25, B.unfold, B.unfold + 1)} />
+      <Label k="p05.ga" target="station" offset={[-1.6, 4.5, 0]} width={26} mono={false} className="p05-name label-right" level={win(B.ga + 2.5, B.ga + 3.25, B.unfold, B.unfold + 1)} />
       {EVENTS.map((name, i) => (
         <Label
           key={name}
           k={`p05.evt.${name}` as MessageKey}
           target={`evt.${name}`}
-          offset={[0.4, 0.12, 0]}
+          offset={[0.8, 0.3, 0]}
           width={18}
           level={win(B.events + 0.6 + i * 0.8, B.events + 1 + i * 0.8, B.events + 1.9 + i * 0.8, B.events + 2.2 + i * 0.8)}
           className="label-left"
@@ -103,17 +103,17 @@ function Dom() {
           key={name}
           k={`p05.step.${name}` as MessageKey}
           target={`step.${name}`}
-          offset={[0, 0.6, 0]}
+          offset={[0, 1.4, 0]}
           width={20}
           level={win(B.unfold + 0.9 + i * 0.6, B.unfold + 1.1 + i * 0.6, B.unfold + 1.3 + i * 0.6, B.unfold + 1.5 + i * 0.6)}
         />
       ))}
-      <Label k="p05.agentic" target="hall" offset={[0.4, 4.6, -0.6]} width={26} mono={false} className="p05-name" level={win(B.core + 2, B.core + 3, B.md, B.md + 0.6)} />
-      <Label k="p05.md" target={above('md', 0.85)} width={18} level={win(B.md + 1, B.md + 1.75, B.compile + 1.6, B.compile + 1.9)} />
-      <Label k="p05.front" target={above('md', 1.5)} width={30} level={win(B.md + 2.5, B.md + 3.25, B.compile, B.compile + 0.5)} />
-      <Label k="p05.body" target={above('md', -0.5, 0.7)} width={30} level={win(B.md + 3, B.md + 3.75, B.compile, B.compile + 0.5)} />
-      <Label k="p05.compilerName" target="scriptorium" offset={[0, 1.95, 0]} width={16} level={win(B.compile + 0.75, B.compile + 1.5, B.clusters, B.clusters + 1)} />
-      <Label k="p05.lock" target={above('lock', 1.15)} width={24} level={win(B.compile + 5.5, B.compile + 5.9, B.clusters, B.clusters + 1)} />
+      <Label k="p05.agentic" target="hall" offset={[0.4, 7.0, -0.6]} width={26} mono={false} className="p05-name" level={win(B.core + 2, B.core + 3, B.md, B.md + 0.6)} />
+      <Label k="p05.md" target={above('md', 0.5)} width={18} level={win(B.md + 1, B.md + 1.75, B.compile + 1.6, B.compile + 1.9)} />
+      <Label k="p05.front" target={above('md', 5.5)} width={30} level={win(B.md + 2.5, B.md + 3.25, B.compile, B.compile + 0.5)} />
+      <Label k="p05.body" target={above('md', -4.5, 0.7)} width={30} level={win(B.md + 3, B.md + 3.75, B.compile, B.compile + 0.5)} />
+      <Label k="p05.compilerName" target="scriptorium" offset={[0, 8.0, 0]} width={16} level={win(B.compile + 0.75, B.compile + 1.5, B.clusters, B.clusters + 1)} />
+      <Label k="p05.lock" target={above('lock', 4.5)} width={24} level={win(B.compile + 5.5, B.compile + 5.9, B.clusters, B.clusters + 1)} />
       {SHELL.map((name, i) => {
         const a = SHELL_ANGLES[i]!
         // One name at a time, a flash as each stake lands; "our changes" stays until the clusters.
@@ -134,8 +134,8 @@ function Dom() {
         )
       })}
       <Label k="p05.cicd" target={() => lineMid} width={18} mono={false} className="p05-name" level={win(B.clusters + 2.5, B.clusters + 3.5)} />
-      <Label k="p05.impl" target="hall" offset={[0, 0.2, 3.3]} width={26} mono={false} className="p05-name" level={win(B.clusters + 2.75, B.clusters + 3.75)} />
-      <Label k="p05.triage" target="triage" offset={[0, 2.3, 0]} width={18} mono={false} className="p05-name" level={win(B.clusters + 3, B.clusters + 4)} />
+      <Label k="p05.impl" target="hall" offset={[0, 0.2, 6.5]} width={26} mono={false} className="p05-name" level={win(B.clusters + 2.75, B.clusters + 3.75)} />
+      <Label k="p05.triage" target="triage" offset={[0, 4.5, 0]} width={18} mono={false} className="p05-name" level={win(B.clusters + 3, B.clusters + 4)} />
     </div>
   )
 }
