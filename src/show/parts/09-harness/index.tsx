@@ -103,7 +103,7 @@ function Dom() {
           offset={[0.4, 0.6, 0]}
           width={24}
           className="label-left"
-          level={win(B.commands + 0.6 + i * 0.5, B.commands + 0.85 + i * 0.5, B.commands + 1.25 + i * 0.5, B.commands + 1.5 + i * 0.5)}
+          level={win(B.commands + 0.6 + i * 0.5, B.commands + 0.8 + i * 0.5, B.commands + 0.95 + i * 0.5, B.commands + 1.08 + i * 0.5)}
         />
       ))}
       <Label k="p09.laptopName" target={() => laptopLabel} width={20} mono={false} className="p05-name label-right" level={win(B.laptop + 2, B.laptop + 2.75)} />

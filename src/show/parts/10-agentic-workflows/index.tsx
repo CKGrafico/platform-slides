@@ -118,8 +118,9 @@ mapCues.role('booth', pipePulse(QB.gate + 2.75, QB.side))
 mapCues.focus(['exit', 'market', 'booth'], pipePulse(QB.gate, QB.side))
 mapCues.appear('tower', pipeKey(QB.side + 0.75, QB.side + 1.5))
 mapCues.role('tower', pipePulse(QB.side + 1, QB.side + 4.5))
-mapCues.appear('repair', pipeKey(QB.side + 1.25, QB.side + 2))
-mapCues.role('repair', pipePulse(QB.side + 1.5, QB.side + 4.5))
+// The crew's name comes once it stands by the mill's road, at the end of its walk.
+mapCues.appear('repair', pipeKey(QB.side + 4.0, QB.side + 4.5))
+mapCues.role('repair', { rise: pipeKey(QB.side + 4.1, QB.side + 4.5), fall: pipeKey(QB.side + 4.6, QB.side + 5.0) })
 mapCues.focus(['tower', 'repair'], pipePulse(QB.side, QB.side + 4.5))
 
 function Pipeline() {

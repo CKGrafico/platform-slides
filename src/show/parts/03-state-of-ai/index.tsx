@@ -38,11 +38,11 @@ const LABEL_OFFSETS: Array<readonly [number, number, number]> = MILESTONE_X.map(
 const NAME_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.name` as MessageKey)
 const LINE_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.line` as MessageKey)
 
-/** Label level: in with its milestone, out when the next one comes. The "?" stays. */
+/** Label level: in with its milestone, gone just before the next one's name comes. The "?" stays. */
 function labelLevel(k: number) {
   const a = b(stepBeat(k) + 1)
-  const c = b(stepBeat(k + 1) + 1)
-  return (local: number) => (k === 9 ? range(local, a, a + b(0.75)) : Math.min(range(local, a, a + b(0.5)), 1 - range(local, c, c + b(0.4))))
+  const c = b(stepBeat(k + 1) + 0.5)
+  return (local: number) => (k === 9 ? range(local, a, a + b(0.75)) : Math.min(range(local, a, a + b(0.4)), 1 - range(local, c, c + b(0.4))))
 }
 
 function Dom() {

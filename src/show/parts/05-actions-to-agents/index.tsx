@@ -94,7 +94,7 @@ function Dom() {
           target={`evt.${name}`}
           offset={[0.8, 0.3, 0]}
           width={18}
-          level={win(B.events + 0.6 + i * 0.8, B.events + 1 + i * 0.8, B.events + 1.9 + i * 0.8, B.events + 2.2 + i * 0.8)}
+          level={win(B.events + 0.6 + i * 0.8, B.events + 0.9 + i * 0.8, B.events + 1.15 + i * 0.8, B.events + 1.35 + i * 0.8)}
           className="label-left"
         />
       ))}

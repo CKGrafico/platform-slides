@@ -38,10 +38,10 @@ const onRing = (ring: number, angle: number, y: number) => point(Math.cos(angle)
  */
 export const MAP_ENTRIES: MapEntry[] = [
   // The hall and what it keeps.
-  { id: 'hall', target: 'hall', offset: [1.1, 0, 4.7], name: 'town.hall', role: 'town.hall.role', side: 'below' },
+  { id: 'hall', target: 'hall', offset: [-1.4, 0, 2.4], name: 'town.hall', role: 'town.hall.role', side: 'below' },
   { id: 'opencode', target: 'banner', offset: [0.9, 5.5, 0], name: 'map.opencode', role: 'map.opencode.role', side: 'right' },
   // The Harness takes the name of its district's sign, south east of the hall.
-  { id: 'harness', target: point(SIGN_SPOTS[0]![0] + 1.3, 0, SIGN_SPOTS[0]![2] + 3.5), name: 'map.harness', role: 'map.harness.role', side: 'below' },
+  { id: 'harness', target: point(SIGN_SPOTS[0]![0] + 3.2, 0, SIGN_SPOTS[0]![2] + 5.4), name: 'map.harness', role: 'map.harness.role', side: 'below' },
   { id: 'coins', target: point(COINS[0] + 2.4, 0, COINS[2] + 1.2), name: 'town.coins', role: 'town.coins.role', side: 'right' },
   { id: 'lane.automation', target: point(4.8, 3.4, -3.4), name: 'map.lane.automation', side: 'right', lane: true },
 
@@ -50,16 +50,16 @@ export const MAP_ENTRIES: MapEntry[] = [
   { id: 'models', target: point(KILNS[2]![0] + 2.0, 3.0, KILNS[2]![2] + 0.2), name: 'map.models', role: 'map.models.role', side: 'right' },
 
   // The automation.
-  { id: 'station', target: point(STATION[0] + 4.3, 0, STATION[2] + 12.3), name: 'map.ga', role: 'map.ga.role', side: 'right' },
+  { id: 'station', target: point(STATION[0] + 4.3, 0, STATION[2] + 14.5), name: 'map.ga', role: 'map.ga.role', side: 'right' },
   { id: 'gatehouse', target: 'gatehouse', offset: [0, 9.0, 0], name: 'map.router', role: 'map.router.role', side: 'above' },
-  { id: 'exit', target: 'exit', offset: [0, -0.2, 3.5], name: 'map.gate', role: 'map.gate.role', side: 'below' },
+  { id: 'exit', target: 'exit', offset: [1.2, -0.2, 5.5], name: 'map.gate', role: 'map.gate.role', side: 'below' },
   { id: 'market', target: 'market', offset: [5.5, 1.6, 0], name: 'map.release', role: 'map.release.role', side: 'above' },
 
   // The agents and the people.
   { id: 'triage', target: 'triage', offset: [0, 6.5, 0], name: 'map.triage', role: 'map.triage.role', side: 'above' },
   { id: 'refine', target: 'refine', offset: [0, 1.4, 0], name: 'map.refine', role: 'map.refine.role', side: 'above' },
   { id: 'requester', target: 'requester', offset: [-2.5, 0.2, 0], name: 'map.requester', role: 'map.requester.role', side: 'left' },
-  { id: 'booth', target: 'booth', offset: [0, -0.1, 5.0], name: 'town.booth', role: 'town.booth.role', side: 'below' },
+  { id: 'booth', target: 'booth', offset: [0, -0.1, 8.5], name: 'town.booth', role: 'town.booth.role', side: 'below' },
 
   // Production and measure.
   { id: 'walls', target: onRing(2, Math.PI / 3, 3.0), name: 'map.walls', role: 'map.walls.role', side: 'above' },

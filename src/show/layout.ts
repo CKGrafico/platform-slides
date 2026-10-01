@@ -265,11 +265,11 @@ export const CLOUD_PATHS: V3[][] = [
   [DOOR_GROUND, [-2.4, 0.06, 3.2], [-3.8, 0.06, 5.0], [-4.4, 0.06, 6.4]],
   [DOOR_GROUND, [2.2, 0.06, 2.6], [4.8, 0.06, 2.2], [6.6, 0.06, 3.8]],
 ]
-/** Unsafe commands fly at the curtain wall from outside the first wall and bounce off (9.4). */
+/** Unsafe commands fly at the curtain wall from the east, inside the first wall, and bounce off (9.4). */
 export const COMMANDS_FROM: V3[] = [
-  [7.6, 1.3, 6.8],
-  [9.2, 0.9, 3.4],
-  [6.4, 1.7, 9.0],
+  [9.4, 1.3, 1.0],
+  [10.2, 0.9, -0.6],
+  [8.6, 1.7, 2.4],
 ]
 
 /** 10.4 before the router: belts everywhere across the town, each with a station that woke on every cart. */
@@ -303,7 +303,7 @@ export const VERBS: Array<{ id: string; at: V3; hollow: boolean; side: 'left' | 
   { id: 'pr', at: [2.6, 42.0, 2.9], hollow: false, side: 'right' },
   { id: 'merge-no', at: [2.6, 36.0, 2.9], hollow: true, side: 'right' },
   { id: 'main-no', at: [2.6, 30.0, 2.9], hollow: true, side: 'right' },
-  { id: 'merge', at: [EXIT_GATE[0], 1.0, EXIT_GATE[2] + 0.4], hollow: false, side: 'right' },
+  { id: 'merge', at: [EXIT_GATE[0], 0.2, EXIT_GATE[2] + 0.4], hollow: false, side: 'right' },
   { id: 'issue', at: [TRIAGE_HOUSE[0] - 1.6, 5.8, TRIAGE_HOUSE[2] + 0.4], hollow: false, side: 'left' },
   { id: 'code-no', at: [TRIAGE_HOUSE[0] - 1.6, 1.5, TRIAGE_HOUSE[2] + 0.4], hollow: true, side: 'left' },
 ]

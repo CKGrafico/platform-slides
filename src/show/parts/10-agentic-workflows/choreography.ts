@@ -285,7 +285,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   const towerIn = q(QB.side + 0.5, QB.side + 1.25)
   inkIn(tl, el('tower'), towerIn.start, towerIn.duration)
   const repair = el('repair')
-  const RIDE = { from: QB.side + 1.5, to: QB.side + 3.2, length: 0.3 }
+  const RIDE = { from: QB.side + 1.3, to: QB.side + 2.6, length: 0.3 }
   const repairOut = polyline([homeAt(FOLK.tower, HALL_SCALE.refine), [3.4, 0, 1.2], [4.95, 0, -2.85]])
   loopAt(0.5 + RIDE.length, tmp)
   const repairAway = polyline([[tmp.x + 0.55, 0, tmp.z + 0.55], [5.6, 0, 1.0], [5.9, 0, -4.5], [6.4, 0, -6.8], [9.5, 0, -6.2], [11.0, 0, -4.5]])
@@ -317,8 +317,8 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       return
     }
     // Out of the north east postern, to stand by the mill's road: housekeeping lives with the automation.
-    step(repairAway, easeInOut(win(beat, RIDE.to, pipeGrid.totalBeats)))
-    if (beat >= pipeGrid.totalBeats) repair.object.rotation.y = 0.8
+    step(repairAway, easeInOut(win(beat, RIDE.to, QB.side + 4.0)))
+    if (beat >= QB.side + 4.0) repair.object.rotation.y = 0.8
   })
   const towerStep = q(QB.side + 1.25, QB.side + 2.25)
   hallStep(tl, cast, towerStep.start, towerStep.duration, HALL_SCALE.refine, HALL_SCALE.tower, homeAfter(FOLK.tower))

@@ -36,7 +36,7 @@ const NAME_KEYS = Array.from({ length: 10 }, (_, k) => `p03.step.${k + 1}.name` 
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 /** The milestone names come back one after the other, each leaving as the next comes; the "?" stays until the title. */
 const nameAt = (k: number) => B.timeline + 1.2 + k * 0.35
-const nameLevel = (k: number) => (k === 9 ? win(nameAt(9), nameAt(9) + 0.4, B.title, B.title + 0.75) : win(nameAt(k), nameAt(k) + 0.3, nameAt(k + 1) + 0.05, nameAt(k + 1) + 0.3))
+const nameLevel = (k: number) => (k === 9 ? win(nameAt(9), nameAt(9) + 0.4, B.title, B.title + 0.75) : win(nameAt(k), nameAt(k) + 0.15, nameAt(k) + 0.2, nameAt(k) + 0.33))
 
 function Dom() {
   return (

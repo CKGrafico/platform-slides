@@ -41,8 +41,9 @@ const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(t
 const mapPulse = (from: number, to: number) => ({ rise: mapKey(from, from + 0.75), fall: mapKey(to, to + 0.75) })
 mapCues.focus(['market', 'exit'], mapPulse(B.claim, B.measure))
 mapCues.focus([], mapPulse(B.measure, B.human))
-mapCues.appear('health', mapKey(B.human + 1, B.human + 1.75))
-mapCues.role('health', mapPulse(B.human + 1.25, B.numbers))
+// The elder's name comes once they stand by the stacks, at the end of their walk.
+mapCues.appear('health', mapKey(B.human + 1.9, B.human + 2.5))
+mapCues.role('health', mapPulse(B.human + 2.1, B.numbers))
 mapCues.focus(['health'], mapPulse(B.human, B.numbers))
 mapCues.focus(['tower', 'gatehouse', 'health'], mapPulse(B.loop, B.loop + 5))
 

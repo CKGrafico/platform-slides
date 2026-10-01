@@ -27,11 +27,11 @@ const cmdAt = (i: number) => B.commands + 0.25 + i * 0.5
 
 /** The hall's size in this part: after the smiths moved out. */
 const S = HALL_SCALE.forge
-/** Where the stones hit the parapet: its south east corner. */
+/** Where the stones hit the parapet: its east face. */
 const IMPACTS: Array<readonly [number, number, number]> = [
-  [2.4, 0.5, 2.0 * S + 0.1],
-  [2.3 * S + 0.1, 0.5, 1.5],
-  [1.5, 0.5, 2.0 * S + 0.1],
+  [2.3 * S + 0.1, 0.5, 0.6],
+  [2.3 * S + 0.1, 0.5, -0.8],
+  [2.3 * S + 0.1, 0.5, 1.4],
 ]
 /** The copy of the hall stands here, at this size (actors.ts). */
 const DEV_COPY = new Vector3(DEV_POS[0] + 0.75, 0, DEV_POS[2] - 0.15)
@@ -122,7 +122,7 @@ export const harnessMoves = defineChoreography('09-harness', (tl, cast, t) => {
   })
   const from = COMMANDS_FROM.map(v3)
   const impact = IMPACTS.map(v3)
-  const away = from.map((p, i) => p.clone().add(new Vector3(1.2, i === 1 ? 1.6 : 1.0, 1.2)))
+  const away = from.map((p, i) => p.clone().add(new Vector3(1.4, i === 1 ? 1.6 : 1.0, 0.4)))
   const cmdWin = span(B.commands, B.laptop)
   drive(tl, cmdWin.start, cmdWin.duration, (u) => {
     const beat = B.commands + u * (B.laptop - B.commands)
