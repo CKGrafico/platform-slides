@@ -31,6 +31,7 @@ import {
   BARN,
   BOOTH,
   BUSHES,
+  CART_SCALE,
   CLOUD_PATHS,
   COMMANDS_FROM,
   DEV_POS,
@@ -64,8 +65,10 @@ import {
   MILESTONES,
   OUTER_E,
   OUTER_W,
+  PERSON_SCALE,
   PILE,
   PINE_TREES,
+  PROP_SCALE,
   POSTERN_N,
   POSTERN_NE,
   REFINE_HOUSE,
@@ -113,6 +116,11 @@ export const SHELL = ['permissions', 'firewall', 'outputs', 'threat', 'telemetry
 export const TIMELINE_IDS = MILESTONES.map((_, i) => (i < 9 ? `tl.step.${i}` : 'tl.slot'))
 
 const at = (o: Object3D, p: V3) => o.position.set(p[0], p[1], p[2])
+/** A cart or a prop at the size the far camera needs. */
+const sized = (el: { object: Object3D }, scale: number) => {
+  el.object.scale.setScalar(scale)
+  return el.object
+}
 
 /**
  * The size of the blue cart's round on the cover: the dirt track around the
@@ -230,7 +238,7 @@ const issue = defineActor({
   create: () => {
     const el = createCart({ load: 'tarp', color: palette.accent })
     el.object.position.set(0, 0.03, 0)
-    el.object.scale.setScalar(1.2)
+    el.object.scale.setScalar(1.2 * CART_SCALE)
     return el.object
   },
   ambient: (o, time) => {
@@ -261,7 +269,7 @@ const folk = FOLK_HOME.filter((f) => f.id in FOLK_HATS).map((f, i) =>
   defineActor({
     id: f.id,
     create: () => {
-      const el = createVillager({ hat: FOLK_HATS[f.id] })
+      const el = createVillager({ hat: FOLK_HATS[f.id], size: PERSON_SCALE })
       homePoint(f.spot, HALL_BIG, el.object.position)
       el.object.rotation.y = 0.5
       return el.object
@@ -302,7 +310,7 @@ const walkers = WALKER_OFFSETS.map((off, i) =>
   defineActor({
     id: `walker.${i}`,
     create: () => {
-      const el = createVillager({ hat: WALKER_HATS[i], size: 0.95 })
+      const el = createVillager({ hat: WALKER_HATS[i], size: 0.95 * PERSON_SCALE })
       el.object.position.set(TIMELINE_ROAD[0]![0] + off[0], 0.05, MAIN_Z + off[2])
       el.object.rotation.y = Math.PI / 2
       return el.object
@@ -441,10 +449,10 @@ const blades = defineActor({
   },
 })
 /** The events: sacks of grain that fall into the mill. */
-const events = EVENTS.map((name, i) => defineActor({ id: `evt.${name}`, create: () => createSack({ color: EVENT_COLORS[i] }).object }))
+const events = EVENTS.map((name, i) => defineActor({ id: `evt.${name}`, create: () => sized(createSack({ color: EVENT_COLORS[i] }), PROP_SCALE) }))
 /** The steps: carts with a barrel each, out of the mill onto its road. */
 const STEP_COLORS = [palette.butter, palette.lilac, palette.peach, palette.sage, palette.butter, palette.lilac]
-const steps = STEPS.map((name, i) => defineActor({ id: `step.${name}`, create: () => createCart({ load: 'barrel', color: STEP_COLORS[i] }).object }))
+const steps = STEPS.map((name, i) => defineActor({ id: `step.${name}`, create: () => sized(createCart({ load: 'barrel', color: STEP_COLORS[i] }), CART_SCALE) }))
 /** The mill's road: from its door westward, laid as the carts come out (5.2). It starts at its east end. */
 const roadMill = defineActor({
   id: 'road.mill',
@@ -489,18 +497,22 @@ const triage = defineActor({
 /** Three runs of the same work: three trails of different shapes in the grass. */
 const runPaths = RUN_PATHS.map((points, i) => defineActor({ id: `p6.path.${i}`, create: () => createTrail(through(points), { wobble: 0.09, reveal: 0 }).object }))
 /** Pieces of work: carts under a tarp, on the wobbly paths and in the queue at the exit. */
-const pile = PILE.map((_, i) => defineActor({ id: `p6.ball.${i}`, create: () => createCart({ load: 'tarp', color: [palette.peach, palette.lilac, palette.butter, palette.sage][i % 4] }).object }))
+const pile = PILE.map((_, i) => defineActor({ id: `p6.ball.${i}`, create: () => sized(createCart({ load: 'tarp', color: [palette.peach, palette.lilac, palette.butter, palette.sage][i % 4] }), CART_SCALE) }))
 /** The tasks: carts with a white crate at the hall's arcade; part 10 paints them as they land on the loop. */
-const tasks = TASKS.map((name) => defineActor({ id: `task.${name}`, create: () => createCart({ load: 'crate', color: palette.surface }).object }))
+const tasks = TASKS.map((name) => defineActor({ id: `task.${name}`, create: () => sized(createCart({ load: 'crate', color: palette.surface }), CART_SCALE) }))
 /** Tokens: gold coins that stack up as the agent reasons about simple work (6.2), placed by the parts. */
 const tokens = defineActor({
   id: 'tokens',
-  create: () => createSwarm({ count: TOKEN_COINS, geometry: coinGeometry(), color: palette.butter, outline: { width: 2.2, color: inkOf(palette.butter, palette.outline), boil: 0.25 } }).object,
+  create: () => {
+    const g = coinGeometry().clone()
+    g.scale(PROP_SCALE, PROP_SCALE, PROP_SCALE)
+    return createSwarm({ count: TOKEN_COINS, geometry: g, color: palette.butter, outline: { width: 2.2, color: inkOf(palette.butter, palette.outline), boil: 0.25 } }).object
+  },
 })
 const reviewer = defineActor({
   id: 'reviewer',
   create: () => {
-    const el = createVillager({ hat: palette.peach })
+    const el = createVillager({ hat: palette.peach, size: PERSON_SCALE })
     at(el.object, REVIEWER)
     el.object.rotation.y = -Math.PI / 2 + 0.3
     return el.object
@@ -514,7 +526,7 @@ const team = TEAM.map((p, i) =>
   defineActor({
     id: `team.${i}`,
     create: () => {
-      const el = createVillager({ hat: [palette.lilac, palette.sage, palette.peach][i] })
+      const el = createVillager({ hat: [palette.lilac, palette.sage, palette.peach][i], size: PERSON_SCALE })
       at(el.object, p)
       el.object.rotation.y = 0.6 - i * 0.4
       return el.object
@@ -601,12 +613,12 @@ const cleanPath = defineActor({
   },
 })
 /** Unsafe commands: stones thrown at the parapet. */
-const commands = COMMANDS_FROM.map((_, i) => defineActor({ id: `cmd.${i}`, create: () => createStone({ size: 0.12 + (i % 2) * 0.02 }).object }))
+const commands = COMMANDS_FROM.map((_, i) => defineActor({ id: `cmd.${i}`, create: () => createStone({ size: (0.12 + (i % 2) * 0.02) * PROP_SCALE * 1.5 }).object }))
 /** The developer, with a copy of the hall and its parapet, small, at their side (9.5). */
 const developer = defineActor({
   id: 'dev',
   create: () => {
-    const el = createVillager({ hat: palette.lilac })
+    const el = createVillager({ hat: palette.lilac, size: PERSON_SCALE })
     at(el.object, DEV_POS)
     el.object.rotation.y = Math.PI - 0.5
     return el.object
@@ -688,7 +700,7 @@ const tower = defineActor({
 const requester = defineActor({
   id: 'requester',
   create: () => {
-    const el = createVillager({ hat: palette.sage })
+    const el = createVillager({ hat: palette.sage, size: PERSON_SCALE })
     at(el.object, REQUESTER)
     el.object.rotation.y = Math.PI
     return el.object
@@ -699,7 +711,7 @@ const requester = defineActor({
 const repair = defineActor({
   id: 'repair',
   create: () => {
-    const el = createVillager({ hat: palette.butter })
+    const el = createVillager({ hat: palette.butter, size: PERSON_SCALE })
     homePoint(FOLK_HOME.find((f) => f.id === FOLK.tower)!.spot, HALL_BIG, el.object.position)
     el.object.rotation.y = 0.5
     return el.object
@@ -775,13 +787,13 @@ const verbs = VERBS.map((v) =>
     id: `verb.${v.id}`,
     create: () => {
       if (v.hollow) {
-        const s = createSlot({ radius: 0.12, width: 2.2 })
+        const s = createSlot({ radius: 0.12 * PROP_SCALE * 1.5, width: 2.2 })
         s.reveal.value = 0
         s.object.position.set(...v.at)
         s.object.rotation.y = Math.PI / 4
         return s.object
       }
-      const el = createSeal({ radius: 0.12, color: palette.butter })
+      const el = createSeal({ radius: 0.12 * PROP_SCALE * 1.5, color: palette.butter })
       el.object.position.set(...v.at)
       el.object.rotation.y = Math.PI / 4
       return el.object
@@ -837,7 +849,7 @@ const newCoin = defineActor({ id: 'metric.new', create: () => createCoin({ color
 const elder = defineActor({
   id: 'elder',
   create: () => {
-    const el = createVillager({ hat: town.thatch })
+    const el = createVillager({ hat: town.thatch, size: PERSON_SCALE })
     homePoint(FOLK_HOME.find((f) => f.id === FOLK.elder)!.spot, HALL_BIG, el.object.position)
     el.object.rotation.y = 0.5
     return el.object

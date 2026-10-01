@@ -48,7 +48,7 @@ References: Townscaper and Monument Valley for the look (pastel volumes, soft sh
 | 12.4 Needs a human | an astronaut with a card | the village elder at a notice board |
 | 12.6 The loop | a path from audit to the router | the watchtower's report goes into the gatehouse as a new cart |
 | 13 One real issue | the blue ball on the route | a blue cart: gate, splitter, three workshops, the walls, the exit gate, the market |
-| 14 Closing | pull back over the disc | pull back over the whole town, belts running, then the road and the title |
+| 14 Closing | pull back over the disc | the same frame, the whole town inside its walls, belts running, then the road and the title |
 
 The people stay chibi, with a hat instead of a helmet. The paper, the ink outlines that boil, the burned titles, the palette and the type all stay. Work items stay small colored spheres or become crates.
 
@@ -56,7 +56,7 @@ The people stay chibi, with a hat instead of a helmet. The paper, the ink outlin
 
 - Buildings are simple toon volumes in the palette: a box, a roof, a chimney, an inked outline. No textures, no windows drawn one by one. Townscaper, not Warcraft.
 - The ground is the paper with the grid. Belts are inked dashed lines whose dashes move (a dash offset driven by progress), so the audience sees what flows and where.
-- The camera looks from a corner, about 40 degrees up, with a narrow field of view from far away, so it reads like the near-orthographic view of a strategy game. Pan and zoom only. The film moves stay for the cover, the road (part 3) and the closing.
+- The camera looks from a corner, about 33 degrees up, with a narrow field of view from far away, so it reads like the near-orthographic view of a strategy game. Since 2026-10-01 it never moves at all: one frame holds the whole town out to its fifth wall, and the story is told by what is built between the walls.
 
 ## What it costs
 

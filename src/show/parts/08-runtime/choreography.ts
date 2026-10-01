@@ -93,7 +93,7 @@ export const runtimeMoves = defineChoreography('08-runtime', (tl, cast, t) => {
     [homeAt(FOLK.smiths[1], HALL_SCALE.triage), [-1.2, 0, 3.0], [-3.5, 0, 3.3], [-5.9, 0, -1.2], [-3.6, 0, -6.4], [0.4, 0, -8.8], [-0.6, 0, -14.4]],
   ] as const
   walks.forEach((points, i) => {
-    const walk = span(B.forge + 0.5 + i * 0.3, B.forge + 2.75 + i * 0.3)
+    const walk = span(B.forge + 0.5 + i * 0.3, B.forge + 4.75 + i * 0.3)
     walkPath(tl, cast, FOLK.smiths[i]!, walk.start, walk.duration, [...points])
   })
   const smaller = span(B.forge + 2.25, B.forge + 3.25)

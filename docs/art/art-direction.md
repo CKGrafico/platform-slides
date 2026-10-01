@@ -120,8 +120,8 @@ We do not take its illustrations, characters, textures, fonts, or colors. Our pa
 | 10 Agentic Workflows | The core grows large, with white task moons set in its surface. They pop out, one per beat, and settle on outer orbits as pastel satellites. The core shrinks. The satellites stack into a ladder with the core near the top. A capture ring at the entrance (the router). Orbit lanes for the workers, and a checkpoint ring on the way out (the merge gate). Slot 2 fills. |
 | 11 Foundations | The disc forms under everything, with its grid. Low walls rise around the lanes. Each satellite shows a few small verb moons, and the missing verbs are hollow. Slot 3 fills. |
 | 12 Project Health | Columns rise at the edge of the disc, and two stay hollow. A small panel counts what needs a human. Our numbers stand next to the industry's. One satellite circles and drops a ball back in (the audit loop). Slot 4 fills. |
-| 13 Issue to production | The camera follows the blue ball: captured by the router, spiraling in to implement, out through the walls and the merge gate, and escaping to production. Each pillar lights as the ball passes. |
-| 14 Closing | The camera pulls back over the whole system on its disc. The four slots on the outer ring are full. The core is small at the center. The timeline arc returns with its "?". The title burns in, then the last line. |
+| 13 Issue to production | The blue cart rides the whole road, from the west edge of the frame through every gate to production, and the road lights up behind it. Each pillar lights on the map as the cart passes. |
+| 14 Closing | The same frame as the whole talk: the town inside its five walls, the hall small at the center. The four slots of the map of the talk are full. The milestone names return one after the other, with the "?". The title burns in, then the last line. |
 
 ## Revision 2026-09-29: one shape family
 
@@ -167,6 +167,5 @@ A check of every stop found text that the old checks could not see: a first line
 - **Captions have a halo of paper.** A soft glow in the surface color sits around the letters. On the plain void it does not show. Where a line or a planet passes behind the words, it keeps them readable.
 - **A caption goes where the frame is empty.** The bottom left is the default. When a shot fills it, the caption moves to the top left for that stop (4.6, 8.1, 12.1), like the split in part 3. In part 13 every step caption sits top left: each shot looks down on the disc, so the sky is at the top.
 - **The map's corner stays clear.** No planet sits behind the map of the talk in the top right. Shots move a little to keep it clear (6, 8.3, 10). When a shot needs the corner, the map steps out and comes back (12.2 to 12.5).
-- **A label leaves with its subject.** When the camera moves on and a label's element is at the edge of the new shot, the label fades out. It comes back for the wide shot of the whole system (the router and the person who asks, in part 10).
-- **Part 9 is wider.** The camera is far enough back that the whole column (the workflow, the core, Forge, and the models) sits above the caption.
+- **A name stands where it has room.** Since 2026-10-01 the camera never moves and the whole town is in the frame, so a label is wider than most buildings. Names that show together take different rows of the screen, on the side with room; sequences show one name at a time; a name comes once its element stands still. The rows are measured, not guessed: `docs/art/elements.md` has the rule.
 

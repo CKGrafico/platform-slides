@@ -12,7 +12,7 @@ import { palette } from '@/art/palette'
 import { town } from '@/art/town'
 import { yawOnPath } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
-import { RING_ARCS, RINGS, VERBS } from '../../layout'
+import { CART_SCALE, RING_ARCS, RINGS, VERBS } from '../../layout'
 import { raiseSign } from '../../signs'
 import { B, grid } from '.'
 
@@ -63,7 +63,7 @@ export const foundationsMoves = defineChoreography('11-foundations', (tl, cast, 
       const path = k % 2 === 0 ? tidyPath : messyPaths[(k >> 1) % 3]!
       path.point(w, tmp)
       tmp.y += 0.02
-      work.place(k, tmp.x, tmp.y, tmp.z, w > 0 && w < 1 ? 1 : 0, 0, 0, yawOnPath((v, out) => path.point(v, out), w))
+      work.place(k, tmp.x, tmp.y, tmp.z, w > 0 && w < 1 ? CART_SCALE : 0, 0, 0, yawOnPath((v, out) => path.point(v, out), w))
     })
     work.commit()
   })

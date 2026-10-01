@@ -34,7 +34,8 @@ The look of each element follows [art-direction.md](art-direction.md). The syste
 | Villager | a person: the one who asks, the reviewer, the developer, the team, the elder, and the folk of the hall | a round chibi with a hat, no face. Eight folk stand at the hall's arcade at the start; one by one they walk out to the house that does their job now, and stay by it |
 | Cottage | a product the team runs | a small house in the hamlet north east of the town |
 | Field | the town's produce, once it works | a tilled plot inside a fence, with hay bales |
-| Slot | an empty place waiting for a pillar | a dashed outline of the shape that will fill it |
+| Slot | an empty place waiting for a pillar | a dashed circle on the ground, at the entrance of the district the pillar will build; its sign stands in it when the pillar is named |
+| District sign | a pillar's district: Agent Harness inside the first wall, Agentic Workflows by the road between the gatehouse and triage, Foundations between the two houses, Project Health before the barn | a tall wooden post with a board under a small tiled roof and a pennant, in the slot that waited for it (`src/show/signs.ts`); the district's name on the map stands by it |
 
 ## Rules
 
@@ -47,7 +48,8 @@ The look of each element follows [art-direction.md](art-direction.md). The syste
 - **Every element enters and leaves the same way:** "inking" in, shrink out. Use the helpers in `src/art/motion.ts`. Walls rise from the ground; roads are laid from their west end.
 - **Every building with a job flies a pennant** in the color that names it (the hall's banner is butter; triage lilac; refine and Forge peach; the scriptorium, the barn and the tidy house sage; the mill and the outer gates butter; the cottages take turns), so buildings can be told apart from a distance, with their name on the map.
 - **People are villagers.** A hat, no face. No avatars, no icons of people.
-- **The camera never moves.** One angle, one distance, one frame for the whole talk (`src/show/shots.ts`): the whole town out to its fifth wall, about 185 units wide at the hall. Nothing pans and nothing zooms. Build for that distance: walls heavy enough to read, buildings with room between them, and a name or a sign where a thing is too small to tell.
+- **The camera never moves.** One angle, one distance, one frame for the whole talk (`src/show/shots.ts`): the whole town out to its fifth wall, about 185 units wide at the hall. Nothing pans and nothing zooms. Build for that distance: walls heavy enough to read, buildings with room between them, and a name or a sign where a thing is too small to tell. People, carts and the small props are sized up for it (`PERSON_SCALE`, `CART_SCALE`, `PROP_SCALE` in `src/show/layout.ts`).
+- **Names take their own row.** At this distance a label is wider than most buildings, so names that show together stand on different rows of the screen, measured with the checks (`window.__checks` and the map probe in the debug panel), each on the side with room. A sequence shows one name at a time, and a name comes once its element stands still. The names of the map (`src/show/map/entries.ts`) are small, and the district signs carry the pillars' names.
 
 ## Do and do not
 

@@ -22,7 +22,7 @@ import { Stage } from '@/engine/Stage'
 import type { MessageKey } from '@/i18n'
 import { TASKS } from '../../actors'
 import { stackPoint } from '../../coins'
-import { COINS, TOKEN_COINS } from '../../layout'
+import { COINS, PROP_SCALE, TOKEN_COINS } from '../../layout'
 import { MAP_SHOT } from '../../shots'
 
 export const grid = beatStops([10, 6, 7])
@@ -32,7 +32,7 @@ export const B = { title: 0, runs: 4, cost: 10, human: 16 }
 const win = (a: number, bb: number, c = 1e3, d = 1e3 + 1) => (local: number) => Math.min(range(local, b(a), b(bb)), 1 - range(local, b(c), b(d)))
 
 // Above the full stack of coins.
-const tokenTop = stackPoint(COINS, TOKEN_COINS - 1).add(new Vector3(0, 1.6, 0))
+const tokenTop = stackPoint(COINS, TOKEN_COINS - 1, PROP_SCALE).add(new Vector3(0, 1.6, 0))
 const aboveTokens = () => tokenTop
 
 /** What the agent does with its reasoning in 6.2: one name at a time, above its task. */

@@ -183,7 +183,7 @@ export const actionsToAgentsMoves = defineChoreography('05-actions-to-agents', (
   const triage = el('triage')
   const triIn = span(B.clusters + 2, B.clusters + 3)
   inkIn(tl, triage, triIn.start, triIn.duration)
-  const walk = span(B.clusters + 0.5, B.clusters + 2.75)
+  const walk = span(B.clusters + 0.5, B.clusters + 4.5)
   walkPath(tl, cast, FOLK.triage, walk.start, walk.duration, [homeAt(FOLK.triage, HALL_SCALE.start), [-2.8, 0, 3.4], [-5.6, 0, 5.6], [-7.6, 0, 6.6], [-15.6, 0, 5.4], [-16.6, 0, 4.7]])
   const smaller = span(B.clusters + 2, B.clusters + 3)
   hallStep(tl, cast, smaller.start, smaller.duration, HALL_SCALE.start, HALL_SCALE.triage, homeAfter(FOLK.triage))

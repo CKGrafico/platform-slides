@@ -34,6 +34,10 @@ export const ARCH_SCALE = 1.6
 export const TOWER_SCALE = 1.8
 export const MILESTONE_SCALE = 1.8
 export const SIGN_SCALE = 1.8
+/** People, carts and the small props too: a person is a figure, not a dot, and a cart reads as a cart. */
+export const PERSON_SCALE = 2.2
+export const CART_SCALE = 2.0
+export const PROP_SCALE = 2.0
 
 // ---- the hall: the agent ---------------------------------------------------------------------
 
@@ -356,7 +360,7 @@ export const METRIC_BASES: V3[] = [
 export const METRIC_COINS = [9, 6, 7, 11, 5, 7]
 export const GHOST_COINS = 8
 /** Metric coins are bigger than token coins. */
-export const METRIC_COIN_SCALE = 1.5
+export const METRIC_COIN_SCALE = 2.5
 /** The stack of token coins beside the hall (6.2): three coins per simple task. */
 export const TOKEN_COINS = 12
 /** Coins left once the simple work leaves the agent (10.3). */

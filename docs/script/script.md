@@ -541,7 +541,7 @@ The real problem was never bad decisions. It was silence: work that stopped and 
 ### 14.1 Back to the start
 
 - **Goal:** close every open loop of the talk.
-- **On screen:** the camera pulls back over the whole system on its disc. The core is small at the center. Then three returns, one after the other:
+- **On screen:** the same frame as the whole talk: the town inside its five walls, the hall small at the center. Then three returns, one after the other:
   1. The four slots of level 5, now full.
   2. The timeline, with its "?".
   3. The title.

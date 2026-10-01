@@ -12,7 +12,7 @@ import { easeInOut } from '@/art/orbits'
 import { palette } from '@/art/palette'
 import { faceOnPath, type PathAt } from '@/art/town-units'
 import { defineChoreography } from '@/world/actors'
-import { METRIC_BASES, METRIC_COIN_SCALE, METRIC_COINS } from '../../layout'
+import { CART_SCALE, METRIC_BASES, METRIC_COIN_SCALE, METRIC_COINS } from '../../layout'
 import { stackPoint } from '../../coins'
 import { routePoint, ROUTE } from '../../route'
 import { grid, stepBeat } from '.'
@@ -36,7 +36,7 @@ export const issueToProductionMoves = defineChoreography('13-issue-to-production
   tl.set(issue.object.position, { x: start.x, y: 0.06, z: start.z }, span(0, 0).start)
   const back = span(1.5, 2.5)
   inkIn(tl, issue, back.start, back.duration)
-  tl.set(issue.object.scale, { x: 1.2, y: 1.2, z: 1.2 }, back.start)
+  tl.set(issue.object.scale, { x: 1.2 * CART_SCALE, y: 1.2 * CART_SCALE, z: 1.2 * CART_SCALE }, back.start)
   const routeAt: PathAt = (u, out) => routePoint(u, out)
 
   const path = sketchOf(cast.get<Group>('p13.path'))

@@ -27,7 +27,7 @@ import { loopAt, mainAt as mainPath } from '../../route'
 import { stackPoint, stackTilt } from '../../coins'
 import { FOLK, FOLK_HOME, HALL_SCALE, hallStep, homeAfter, homeAt, homePoint, setHallScale, walkPath } from '../../hall'
 import { raiseSign } from '../../signs'
-import { BALES, BOOTH, COINS, FARMS, FIELDS, FIELD_TILE, HALL_DOOR, LINE_BENT, LINE_X, LINE_Y, LINE_Z, LOOP_LANDING, LOOP_SWEEP, MAIN_AT, PLATFORM_TOP, SPAGHETTI, STEP_LANDING, TOKEN_COINS, TOKENS_LEFT } from '../../layout'
+import { BALES, BOOTH, CART_SCALE, COINS, FARMS, FIELDS, FIELD_TILE, HALL_DOOR, LINE_BENT, LINE_X, LINE_Y, LINE_Z, LOOP_LANDING, LOOP_SWEEP, MAIN_AT, PLATFORM_TOP, PROP_SCALE, SPAGHETTI, STEP_LANDING, TOKEN_COINS, TOKENS_LEFT } from '../../layout'
 import { grid, PB, pipeGrid, QB } from '.'
 
 const PULL = '10-agentic-workflows/pull-out'
@@ -101,7 +101,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       const v = win(beat, popAt(i), popAt(i) + POP)
       if (beat < popAt(i)) {
         task.object.position.copy(door)
-        task.object.scale.setScalar(1)
+        task.object.scale.setScalar(CART_SCALE)
         task.object.rotation.y = 0
         return
       }
@@ -123,7 +123,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
         faceOnPath(task.object, loopAt, ride)
       }
       task.object.position.copy(tmp)
-      task.object.scale.setScalar(1 + 0.16 * Math.sin(Math.PI * clamp01(v / 0.35)))
+      task.object.scale.setScalar(CART_SCALE * (1 + 0.16 * Math.sin(Math.PI * clamp01(v / 0.35))))
     })
   })
 
@@ -145,7 +145,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       if (w < 1) faceAlong(step.object, starts[k]!, tmp2)
       else faceOnPath(step.object, loopAt, at)
       step.object.position.copy(tmp)
-      step.object.scale.setScalar(1 - 0.15 * w)
+      step.object.scale.setScalar(CART_SCALE * (1 - 0.15 * w))
     })
   })
 
@@ -158,7 +158,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
   drive(tl, coins.start, coins.duration, (u) => {
     const beat = PB.resort + u * (grid.totalBeats - PB.resort)
     for (let c = 0; c < TOKEN_COINS; c++) {
-      stackPoint(COINS, c, 1, tmp)
+      stackPoint(COINS, c, PROP_SCALE, tmp)
       const [rx, rz] = stackTilt(c)
       const w = c < TOKENS_LEFT ? 0 : easeInOut(win(beat, coinAway(c), coinAway(c) + 1.1))
       away.set(tmp.x + 1.4 + (c % 3) * 0.5, tmp.y + 2.4 + (c % 4) * 0.3, tmp.z - 1.4 + ((c % 2) - 0.5) * 1.2)
@@ -212,7 +212,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
       const on = spagOn * easeInOut(win(beat, 0.75 + i * 0.3, 1.75 + i * 0.3))
       line.point(p, tmp)
       tmp.y += 0.02
-      flow.place(k, tmp.x, tmp.y, tmp.z, on, 0, 0, yawOnPath(spagAt[i]!, p))
+      flow.place(k, tmp.x, tmp.y, tmp.z, on * CART_SCALE, 0, 0, yawOnPath(spagAt[i]!, p))
     }
     spagStations.forEach((s, i) => {
       let pulse = 0
@@ -235,7 +235,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
         tmp.lerpVectors(tmp2, booth, clamp01((p - MAIN_AT.exit) / 0.08))
         yaw = yawAlong(tmp2, booth)
       }
-      flow.place(6 + k, tmp.x, tmp.y, tmp.z, shownCart, 0, 0, yaw)
+      flow.place(6 + k, tmp.x, tmp.y, tmp.z, shownCart * CART_SCALE, 0, 0, yaw)
     }
     flow.commit()
   })
@@ -251,7 +251,7 @@ export const agenticWorkflowsMoves = defineChoreography('10-agentic-workflows', 
     const a = q(QB.lanes + from, QB.lanes + to)
     inkIn(tl, el(id), a.start, a.duration)
   }
-  const refineWalk = q(QB.lanes + 0.25, QB.lanes + 2.25)
+  const refineWalk = q(QB.lanes + 0.25, QB.lanes + 3.5)
   walkPath(tl, cast, FOLK.refine, refineWalk.start, refineWalk.duration, [homeAt(FOLK.refine, HALL_SCALE.router), [-1.0, 0, 3.8], [-5.4, 0, 5.4], [-7.6, 0, 6.4], [-11.0, 0, 5.4], [-11.6, 0, 4.7]])
   const refineStep = q(QB.lanes + 1.75, QB.lanes + 2.75)
   hallStep(tl, cast, refineStep.start, refineStep.duration, HALL_SCALE.router, HALL_SCALE.refine, homeAfter(FOLK.refine))

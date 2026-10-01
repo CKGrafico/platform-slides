@@ -15,7 +15,7 @@ import { defineChoreography } from '@/world/actors'
 import { TASKS } from '../../actors'
 import { stackPoint, stackTilt, drop } from '../../coins'
 import { HALL_SCALE } from '../../hall'
-import { COINS, DOOR_GROUND, PILE, TASK_SPOTS, TOKEN_COINS } from '../../layout'
+import { COINS, DOOR_GROUND, PILE, PROP_SCALE, TASK_SPOTS, TOKEN_COINS } from '../../layout'
 import { B, grid } from '.'
 
 const KEY = '06-problems/problems'
@@ -111,7 +111,7 @@ export const problemsMoves = defineChoreography('06-problems', (tl, cast, t) => 
     const beat = B.cost + u * (grid.totalBeats - B.cost)
     for (let c = 0; c < TOKEN_COINS; c++) {
       const d = drop(win(beat, coinAt(c), coinAt(c) + 0.45))
-      stackPoint(COINS, c, 1, tmp)
+      stackPoint(COINS, c, PROP_SCALE, tmp)
       const [rx, rz] = stackTilt(c)
       tokens.place(c, tmp.x, tmp.y + d.lift, tmp.z, d.scale, rx, rz)
     }
