@@ -113,8 +113,9 @@ body,
 /* Act titles: Outfit Black, tight, with a thin indigo outline. */
 .art-title {
   font-family: var(--font-display);
-  font-weight: 900;
-  font-size: calc(var(--su) * 11);
+  font-weight: 800;
+  /* Mono is wider than the old display face: the size drops so the box keeps fitting. */
+  font-size: calc(var(--su) * 9.2);
   line-height: 0.95;
   letter-spacing: -0.03em;
   color: var(--c-ink);
@@ -172,7 +173,7 @@ body,
   width: calc(var(--su) * 88);
   height: calc(var(--su) * 34);
   margin: 0;
-  font-size: calc(var(--su) * 8.4);
+  font-size: calc(var(--su) * 7.2);
   overflow: hidden;
 }
 
@@ -218,7 +219,7 @@ body,
 
 .part-title .art-title {
   margin: calc(var(--su) * 1) 0 0;
-  font-size: calc(var(--su) * 10);
+  font-size: calc(var(--su) * 8.4);
   line-height: 0.95;
 }
 
@@ -255,7 +256,7 @@ body,
 }
 
 .about-name.art-title {
-  font-size: calc(var(--su) * 8);
+  font-size: calc(var(--su) * 6.6);
   white-space: nowrap;
 }
 
@@ -377,10 +378,10 @@ body,
   height: calc(var(--su) * 26);
   overflow: hidden;
   font-family: var(--font-display);
-  font-weight: 800;
-  font-size: calc(var(--su) * 5.6);
-  line-height: 1.08;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-size: calc(var(--su) * 5);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
   color: var(--c-text);
   text-wrap: balance;
 }
@@ -402,8 +403,8 @@ body,
 
 .word .art-burn {
   font-family: var(--font-display);
-  font-weight: 900;
-  font-size: calc(var(--su) * 7.2);
+  font-weight: 800;
+  font-size: calc(var(--su) * 6.2);
   line-height: 1.1;
   letter-spacing: -0.03em;
   color: var(--c-surface);
@@ -453,8 +454,8 @@ body,
 .stats-head {
   height: calc(var(--su) * 8);
   font-family: var(--font-display);
-  font-weight: 900;
-  font-size: calc(var(--su) * 5.6);
+  font-weight: 800;
+  font-size: calc(var(--su) * 4.8);
   letter-spacing: -0.02em;
   color: var(--c-surface);
   -webkit-text-stroke: calc(var(--su) * 0.4) var(--c-outline);
@@ -508,8 +509,8 @@ body,
 
 .stat-value {
   font-family: var(--font-display);
-  font-weight: 900;
-  font-size: calc(var(--su) * 6.4);
+  font-weight: 800;
+  font-size: calc(var(--su) * 5.6);
   line-height: 1;
   letter-spacing: -0.02em;
   color: var(--c-surface);
@@ -590,7 +591,7 @@ body,
   height: calc(var(--su) * 30);
   transform: translate(-50%, -50%);
   text-align: center;
-  font-size: calc(var(--su) * 7);
+  font-size: calc(var(--su) * 6);
 }
 
 /* A part title that takes two lines (the use case in 7.2). */
@@ -601,7 +602,7 @@ body,
 
 .part-title--tall .art-title {
   white-space: normal;
-  font-size: calc(var(--su) * 9.5);
+  font-size: calc(var(--su) * 8);
   line-height: 0.95;
 }
 
