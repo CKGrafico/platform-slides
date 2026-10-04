@@ -39,6 +39,8 @@ hudCues.hide({ rise: { key: KEY, from: b(B.numbers), to: b(B.numbers + 1) }, fal
 
 const mapKey = (from: number, to: number) => ({ key: KEY, from: b(from), to: b(to) })
 const mapPulse = (from: number, to: number) => ({ rise: mapKey(from, from + 0.75), fall: mapKey(to, to + 0.75) })
+// The numbers need the whole frame: the names step out with the hud, and come back for the loop.
+mapCues.hide({ rise: mapKey(B.numbers - 2, B.numbers - 1), fall: mapKey(B.loop + 0.75, B.loop + 1.75) })
 mapCues.focus(['market', 'exit'], mapPulse(B.claim, B.measure))
 mapCues.focus([], mapPulse(B.measure, B.human))
 // The district's sign is named with the pillar; its role, what still needs a human, comes once the elder stands by the stacks.

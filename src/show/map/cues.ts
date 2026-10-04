@@ -15,7 +15,8 @@ import { level, pulse, type Cue, type Pulse } from '../cues'
 
 const cues = {
   show: null as Cue | null,
-  hide: null as Cue | null,
+  /** A pulse steps the layer out and back. A plain cue hides it for good. */
+  hides: [] as Array<Pulse | Cue>,
   appear: new Map<string, Cue>(),
   leave: new Map<string, Cue>(),
   role: new Map<string, Pulse[]>(),
@@ -26,8 +27,12 @@ export const mapCues = {
   show(cue: Cue) {
     cues.show = cue
   },
-  hide(cue: Cue) {
-    cues.hide = cue
+  /**
+   * Hides the whole layer. Pass a `Pulse` to step it out and bring it back;
+   * pass a `Cue` to hide it from then on.
+   */
+  hide(hide: Pulse | Cue) {
+    cues.hides.push(hide)
   },
   appear(id: string, cue: Cue) {
     cues.appear.set(id, cue)
@@ -58,7 +63,9 @@ export interface MapState {
 }
 
 export function mapState(model: ShowModel, position: number): MapState {
-  const on = level(model, position, cues.show) * (1 - level(model, position, cues.hide))
+  let hidden = 0
+  for (const h of cues.hides) hidden = Math.max(hidden, 'rise' in h ? pulse(model, position, h) : level(model, position, h))
+  const on = level(model, position, cues.show) * (1 - hidden)
   const labels: Record<string, MapLabelState> = {}
   // The strongest focus pulse right now, and which entries it names.
   let strongest = 0
