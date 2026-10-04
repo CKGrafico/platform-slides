@@ -485,17 +485,18 @@ body,
 .stat.art-burn {
   box-sizing: border-box;
   height: 100%;
-  border-radius: calc(var(--su) * 2.2);
-  border: calc(var(--su) * 0.35) solid var(--c-outline);
+  border-radius: calc(var(--su) * 1);
+  border: 1px solid color-mix(in srgb, var(--c-dust) 55%, transparent);
   padding: calc(var(--su) * 1.6) calc(var(--su) * 2.2);
 }
 
 .stat--ours {
-  background: var(--c-lilac);
+  background: color-mix(in srgb, var(--c-accent) 16%, var(--c-backdrop));
+  border-color: color-mix(in srgb, var(--c-accent) 70%, transparent) !important;
 }
 
 .stat--public {
-  background: var(--c-sage);
+  background: color-mix(in srgb, var(--c-backdrop) 88%, var(--c-ink));
 }
 
 .stat.art-burn {
