@@ -5,7 +5,7 @@
  * rest.ts. The land and its woods are placed here, once: the map exists
  * before the talk starts.
  */
-import { Vector3, type Object3D, type Points, type ShaderMaterial } from 'three'
+import { BufferAttribute, BufferGeometry, Points, PointsMaterial, Vector3, type Object3D, type ShaderMaterial } from 'three'
 import { artOf, coinGeometry, createCoin, createSwarm, type Swarm } from '@/art/elements'
 import { createEntity } from '@/art/entity'
 import { createGhostStacks, createGrid, createSketchLine, createSlot, straight, through } from '@/art/lines'
@@ -892,9 +892,43 @@ const entity = defineActor({
   },
 })
 
+/**
+ * The field grid: a faint grid of dots on the ground, so the void reads as a
+ * measured plane (docs/art/art-direction.md).
+ */
+const dotGrid = defineActor({
+  id: 'dots',
+  create: () => {
+    const step = 2.6
+    const half = 95
+    const n = Math.floor((half * 2) / step)
+    const count = (n + 1) * (n + 1)
+    const positions = new Float32Array(count * 3)
+    let k = 0
+    for (let i = 0; i <= n; i++) {
+      for (let j = 0; j <= n; j++) {
+        positions[k++] = -half + i * step
+        positions[k++] = 0.05
+        positions[k++] = -half + j * step
+      }
+    }
+    const geometry = new BufferGeometry()
+    geometry.setAttribute('position', new BufferAttribute(positions, 3))
+    const material = new PointsMaterial({ color: palette.dust, size: 1.3, sizeAttenuation: false, transparent: true, opacity: 0.22, depthWrite: false })
+    const points = new Points(geometry, material)
+    points.frustumCulled = false
+    points.userData.dispose = () => {
+      geometry.dispose()
+      material.dispose()
+    }
+    return points
+  },
+})
+
 export const actors: ActorDef[] = [
   entity,
   land,
+  dotGrid,
   trunks,
   canopies,
   pines,
