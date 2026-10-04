@@ -11,7 +11,7 @@ import { applyPaletteCssVars } from '@/art/palette'
 import { EnvironmentProvider } from '@/engine/environment'
 import { I18nProvider } from '@/i18n'
 import { Keynote } from '@/engine/Keynote'
-import { actors, choreographies, Hud, MapLabels, show } from '@/show'
+import { actors, choreographies, MapLabels, show, Veil } from '@/show'
 
 applyPaletteCssVars()
 
@@ -32,12 +32,7 @@ void fontsReady().then(() => {
     <StrictMode>
       <EnvironmentProvider>
         <I18nProvider>
-          <Keynote show={show} actors={actors} choreographies={choreographies} world={<ArtRuntime />} overlay={
-            <>
-              <Hud />
-              <MapLabels />
-            </>
-          } grain={<Grain />} />
+          <Keynote show={show} actors={actors} choreographies={choreographies} world={<><ArtRuntime /><Veil /></>} overlay={<MapLabels />} grain={<Grain />} />
         </I18nProvider>
       </EnvironmentProvider>
     </StrictMode>,

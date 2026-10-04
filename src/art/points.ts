@@ -1,10 +1,10 @@
 /**
  * Point clouds: the one renderer of the world (docs/art/art-direction.md).
  *
- * A form is a set of points sampled on the surface of a geometry. The shader
- * draws each point as a flat, matte dot, shaded from one fixed key, so density
- * reads as light and the surface stays faceted. No glow, no specular. Points
- * land on faces, so a low-poly unit never reads as a smooth sphere.
+ * A form is a set of beads on the surface of a low-poly geometry. The beads
+ * sit on a regular grid inside each face, so a surface reads as a faceted,
+ * beaded volume. The shader draws each bead as a flat, matte dot, shaded per
+ * face from one fixed key, so density reads as light. No glow, no specular.
  */
 import { BufferAttribute, BufferGeometry, Color, Matrix3, Matrix4, Points, ShaderMaterial, Vector3 } from 'three'
 
@@ -94,6 +94,58 @@ export function sampleSurface(geometry: BufferGeometry, count: number, seed = 1)
   return { position, normal: normals, seed: seeds }
 }
 
+/**
+ * Beads on a regular grid inside every face. Each triangle splits into k by k
+ * cells and one bead sits at the centre of each cell, so no two faces share a
+ * bead and the spacing is even. The normal is the flat normal of the face, so
+ * the shading steps from face to face and the facets read clearly.
+ * `spacing` is in the geometry's own units.
+ */
+export function sampleSurfaceGrid(geometry: BufferGeometry, spacing: number, seed = 1): SampledSurface {
+  const g = geometry.index ? geometry.toNonIndexed() : geometry
+  const pos = g.getAttribute('position')
+  const tris = Math.floor(pos.count / 3)
+  const a = new Vector3()
+  const b = new Vector3()
+  const c = new Vector3()
+  const ab = new Vector3()
+  const ac = new Vector3()
+  const n = new Vector3()
+  const centroid = new Vector3()
+  const r = rng(seed)
+  const position: number[] = []
+  const normal: number[] = []
+  const seeds: number[] = []
+
+  const bead = (u: number, v: number) => {
+    const w = 1 - u - v
+    position.push(a.x * w + b.x * u + c.x * v, a.y * w + b.y * u + c.y * v, a.z * w + b.z * u + c.z * v)
+    normal.push(n.x, n.y, n.z)
+    seeds.push(r())
+  }
+
+  for (let t = 0; t < tris; t++) {
+    a.fromBufferAttribute(pos, t * 3)
+    b.fromBufferAttribute(pos, t * 3 + 1)
+    c.fromBufferAttribute(pos, t * 3 + 2)
+    ab.subVectors(b, a)
+    ac.subVectors(c, a)
+    n.crossVectors(ab, ac).normalize()
+    centroid.copy(a).add(b).add(c).divideScalar(3)
+    if (n.dot(centroid) < 0) n.negate()
+    const edge = Math.max(a.distanceTo(b), b.distanceTo(c), c.distanceTo(a))
+    const k = Math.max(1, Math.round(edge / spacing))
+    for (let i = 0; i < k; i++) {
+      for (let j = 0; j < k - i; j++) {
+        bead((i + 1 / 3) / k, (j + 1 / 3) / k)
+        if (i + j < k - 1) bead((i + 2 / 3) / k, (j + 2 / 3) / k)
+      }
+    }
+  }
+  if (g !== geometry) g.dispose()
+  return { position: Float32Array.from(position), normal: Float32Array.from(normal), seed: Float32Array.from(seeds) }
+}
+
 const VERTEX = /* glsl */ `
   attribute float aSeed;
   attribute vec3 aColor;
@@ -107,16 +159,16 @@ const VERTEX = /* glsl */ `
   varying vec3 vColor;
   varying float vShade;
   void main() {
-    // uAssemble 1 puts every point on its unit; 0 leaves it in the scatter field.
+    // uAssemble 1 puts every bead on its unit; 0 leaves it in the scatter field.
     vec3 p = position + aScatter * (1.0 - uAssemble);
     // uFluidity makes a reasoning entity breathe; a rigid one stays still.
     p += normal * sin(uTime * 1.6 + aSeed * 43.0) * uFluidity * 0.05;
     vec4 mv = modelViewMatrix * vec4(p, 1.0);
     vec3 n = normalize(normalMatrix * normal);
     float d = max(0.0, dot(n, normalize(uKey)));
-    vShade = 0.45 + 0.55 * d;
+    vShade = 0.30 + 0.70 * d;
     vColor = aColor;
-    gl_PointSize = uSize * uPixelRatio * (0.85 + 0.35 * aSeed);
+    gl_PointSize = uSize * uPixelRatio * (0.9 + 0.2 * aSeed);
     gl_Position = projectionMatrix * mv;
   }
 `
@@ -161,16 +213,22 @@ export interface PointPart {
   /** Where the part sits, in the cloud's local space. */
   matrix?: Matrix4
   color: Color | number | string
-  count: number
+  /** Random beads over the surface. Ignored when `spacing` is set. */
+  count?: number
+  /** Beads on a regular grid inside each face, this far apart in the geometry's own units. */
+  spacing?: number
 }
 
 /**
  * Merge many parts into one Points object. The geometry carries position,
- * normal, a per point seed and a per point colour. All parts share the material.
+ * normal, a per bead seed, colour and scatter offset. All parts share the material.
  */
 export function buildPointCloud(parts: PointPart[], material: ShaderMaterial, seed = 1): Points {
+  const samples = parts.map((part, index) =>
+    part.spacing ? sampleSurfaceGrid(part.geometry, part.spacing, seed + index) : sampleSurface(part.geometry, part.count ?? 400, seed + index),
+  )
   let total = 0
-  for (const part of parts) total += part.count
+  for (const sample of samples) total += sample.seed.length
 
   const position = new Float32Array(total * 3)
   const normal = new Float32Array(total * 3)
@@ -183,12 +241,12 @@ export function buildPointCloud(parts: PointPart[], material: ShaderMaterial, se
   const color = new Color()
   const scatter = rng(seed * 7 + 13)
   let offset = 0
-  let s = seed
-  for (const part of parts) {
-    const sample = sampleSurface(part.geometry, part.count, s++)
+  parts.forEach((part, index) => {
+    const sample = samples[index]!
+    const count = sample.seed.length
     const nm = part.matrix ? normalMatrix.getNormalMatrix(part.matrix) : null
     color.set(part.color)
-    for (let i = 0; i < part.count; i++) {
+    for (let i = 0; i < count; i++) {
       v.set(sample.position[i * 3]!, sample.position[i * 3 + 1]!, sample.position[i * 3 + 2]!)
       n.set(sample.normal[i * 3]!, sample.normal[i * 3 + 1]!, sample.normal[i * 3 + 2]!)
       if (part.matrix) {
@@ -215,8 +273,8 @@ export function buildPointCloud(parts: PointPart[], material: ShaderMaterial, se
       aScatter[o + 1] = (sy / sl) * sm
       aScatter[o + 2] = (sz / sl) * sm
     }
-    offset += part.count
-  }
+    offset += count
+  })
 
   const geometry = new BufferGeometry()
   geometry.setAttribute('position', new BufferAttribute(position, 3))

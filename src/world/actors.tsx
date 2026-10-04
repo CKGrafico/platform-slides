@@ -75,6 +75,11 @@ export function getActorObject(id: string): Object3D | undefined {
   return registry.get(id)
 }
 
+/** Every actor id and object, in cast order. For global passes over the cast. */
+export function actorEntries(): Array<[string, Object3D]> {
+  return [...registry.entries()]
+}
+
 const ActorContext = createContext<Map<string, Object3D>>(new Map())
 
 export function useActor<T extends Object3D = Object3D>(id: string): T {

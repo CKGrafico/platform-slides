@@ -45,3 +45,4 @@ export const choreographies = [restMoves, coverMoves, stateOfAiMoves, maturityMo
 export { actors } from './actors'
 export { Hud } from './hud/Hud'
 export { MapLabels } from './map/MapLabels'
+export { Veil } from './veil'

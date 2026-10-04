@@ -42,12 +42,9 @@ body,
   font-family: var(--font-display);
 }
 
-/* The field: a near-black backdrop with a faint grid of dots (art-direction.md). */
+/* The void: near black, with a soft centre so the entities lift off it. */
 .layer[data-layer='world'] {
-  background-color: var(--c-backdrop);
-  background-image: radial-gradient(circle at center, color-mix(in srgb, var(--c-dust) 26%, transparent) 1px, transparent 1.6px);
-  background-size: calc(var(--su) * 2.4) calc(var(--su) * 2.4);
-  background-position: center;
+  background: radial-gradient(130% 120% at 50% 44%, #0e0e12 0%, var(--c-backdrop) 60%);
 }
 
 /*
@@ -713,9 +710,9 @@ body,
 }
 
 .stop-chip-number::before {
-  content: '#';
+  content: 'pc@studio:~$';
   color: var(--c-dust);
-  margin-right: 0.1em;
+  margin-right: 0.5em;
 }
 
 .stop-chip-number::after {

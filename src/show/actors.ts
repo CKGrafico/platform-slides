@@ -7,7 +7,7 @@
  */
 import { BufferAttribute, BufferGeometry, Points, PointsMaterial, Vector3, type Object3D, type ShaderMaterial } from 'three'
 import { artOf, coinGeometry, createCoin, createSwarm, type Swarm } from '@/art/elements'
-import { createEntity } from '@/art/entity'
+import { createEntity, createFlow } from '@/art/entity'
 import { createGhostStacks, createGrid, createSketchLine, createSlot, straight, through } from '@/art/lines'
 import { palette } from '@/art/palette'
 import { inkOf } from '@/art/toon'
@@ -875,18 +875,33 @@ const litPath = defineActor({
  * The point-cloud entity: the new world in one form (docs/art/elements.md).
  * It floats over the cover, idle and never still.
  */
-const FLOAT_Y = 11
+const FLOAT_Y = 5
+const ENTITY_X = 2
 const entity = defineActor({
   id: 'entity',
   create: () => {
-    const el = createEntity({ seed: 7, units: 40, radius: 13, pointsPerUnit: 560, accentUnits: 5, pointSize: 3 })
-    el.object.position.set(0, FLOAT_Y, 0)
+    const el = createEntity({ seed: 7, units: 13, radius: 7, sizeRange: [3, 5.6], bead: 0.5, accentUnits: 2, pointSize: 3.2 })
+    el.object.position.set(ENTITY_X, FLOAT_Y, 0)
     return el.object
   },
   ambient: (object, time) => {
-    object.rotation.y = time * 0.06
-    object.rotation.x = Math.sin(time * 0.21) * 0.07
-    object.position.y = FLOAT_Y + Math.sin(time * 0.5) * 0.6
+    object.rotation.y = time * 0.05
+    object.rotation.x = Math.sin(time * 0.19) * 0.05
+    object.position.y = FLOAT_Y + Math.sin(time * 0.4) * 0.5
+    const material = (object as Points).material as ShaderMaterial
+    material.uniforms.uTime!.value = time
+  },
+})
+
+/** The stream: the same units in a loose flow that leaves the body and disperses. */
+const stream = defineActor({
+  id: 'stream',
+  create: () => {
+    const el = createFlow({ seed: 21, units: 80, from: [11, FLOAT_Y - 1, 3], to: [50, FLOAT_Y + 3, -10], bend: 4, size: 1.5, bead: 0.4, pointSize: 2.8 })
+    return el.object
+  },
+  ambient: (object, time) => {
+    object.position.y = Math.sin(time * 0.35) * 0.4
     const material = (object as Points).material as ShaderMaterial
     material.uniforms.uTime!.value = time
   },
@@ -927,6 +942,7 @@ const dotGrid = defineActor({
 
 export const actors: ActorDef[] = [
   entity,
+  stream,
   land,
   dotGrid,
   trunks,

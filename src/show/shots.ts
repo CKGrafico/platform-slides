@@ -17,7 +17,7 @@ const ELEVATION = 0.58
 export const TOWN_DISTANCE = 330
 export const TOWN_FOV = 18
 /** The orthographic half-height, in world units: it fits the whole city and its walls. */
-export const TOWN_ORTHO = 62
+export const TOWN_ORTHO = 27
 const DIR: Vec3 = [Math.sin(AZIMUTH) * Math.cos(ELEVATION), Math.sin(ELEVATION), Math.cos(AZIMUTH) * Math.cos(ELEVATION)]
 
 /** A shot of the map at `target`, at the one distance and field of view. */
@@ -36,4 +36,4 @@ export function townShot(target: Vec3, distance = TOWN_DISTANCE, fov = TOWN_FOV)
  * keeps the fifth wall off the bottom edge and the rings in the middle of the
  * screen.
  */
-export const MAP_SHOT = townShot([12, 0, 12])
+export const MAP_SHOT = townShot([13, 15, 4])

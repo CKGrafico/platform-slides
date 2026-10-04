@@ -1,21 +1,18 @@
 /**
- * Entities: an abstract form, built as an aggregate of many small polyhedra
- * sampled into one point cloud (docs/art/elements.md).
+ * Entities: an abstract body, built as an aggregate of many rounded, faceted
+ * polyhedra sampled into one beaded point cloud (docs/art/elements.md).
  *
- * Units hold together by proximity, never by fusion, so an entity can split
- * apart and rejoin. The accent marks a few units. Nothing here is a perfect
- * sphere and nothing is a plain sharp cube on its own.
+ * Monochrome, one accent. Nothing is a cube and nothing is a smooth sphere:
+ * the units are low-poly rounded forms, held together by proximity, so a body
+ * can split and rejoin. A flow is the same units in a loose stream.
  */
 import {
-  BoxGeometry,
-  CylinderGeometry,
   DodecahedronGeometry,
   Euler,
   IcosahedronGeometry,
   Matrix4,
   OctahedronGeometry,
   Quaternion,
-  TetrahedronGeometry,
   Vector3,
   type BufferGeometry,
   type Points,
@@ -24,6 +21,8 @@ import {
 import { palette } from './palette'
 import { buildPointCloud, createPointMaterial, type PointPart } from './points'
 
+type V3 = readonly [number, number, number]
+
 export interface EntityOptions {
   /** The same seed builds the same entity. */
   seed?: number
@@ -31,10 +30,28 @@ export interface EntityOptions {
   units?: number
   /** How wide the body is. */
   radius?: number
-  /** Base points sampled on each unit. */
-  pointsPerUnit?: number
+  /** Distance between beads, in world units. The same on every unit, so big units get more beads. */
+  bead?: number
   /** How many units carry the accent. */
   accentUnits?: number
+  /** Point size in device pixels. */
+  pointSize?: number
+  /** Smallest and largest unit size. */
+  sizeRange?: readonly [number, number]
+}
+
+export interface FlowOptions {
+  seed?: number
+  /** How many units make the stream. */
+  units?: number
+  from: V3
+  to: V3
+  /** How far the stream bends upward in the middle. */
+  bend?: number
+  /** Base size of a unit in the stream. */
+  size?: number
+  /** Distance between beads, in world units. */
+  bead?: number
   /** Point size in device pixels. */
   pointSize?: number
 }
@@ -52,33 +69,36 @@ function rng(seed: number): () => number {
   }
 }
 
+/** Rounded, faceted low-poly forms. No cubes, no smooth spheres. */
 const UNIT_KIT: Array<() => BufferGeometry> = [
+  () => new IcosahedronGeometry(1, 1),
   () => new DodecahedronGeometry(1, 0),
-  () => new OctahedronGeometry(1, 0),
   () => new IcosahedronGeometry(1, 0),
-  () => new TetrahedronGeometry(1, 0),
-  () => new BoxGeometry(1.15, 1.15, 1.15),
-  () => new CylinderGeometry(0.72, 0.72, 1.5, 6, 1),
+  () => new OctahedronGeometry(1, 1),
 ]
 
-/**
- * A body of `units` polyhedra packed into a cluster and sampled into one point
- * cloud. Flat-faced, matte, no fusion. The accent marks a few units.
- */
-export function createEntity(options: EntityOptions = {}): Entity {
-  const seed = options.seed ?? 1
-  const count = options.units ?? 24
-  const radius = options.radius ?? 3
-  const perUnit = options.pointsPerUnit ?? 460
-  const accentUnits = options.accentUnits ?? 3
-  const r = rng(seed)
-
+function shuffle(count: number, r: () => number): number[] {
   const order = Array.from({ length: count }, (_, i) => i)
   for (let i = order.length - 1; i > 0; i--) {
     const j = Math.floor(r() * (i + 1))
     ;[order[i], order[j]] = [order[j]!, order[i]!]
   }
-  const accent = new Set(order.slice(0, accentUnits))
+  return order
+}
+
+/**
+ * A body of `units` rounded polyhedra packed into a cluster and sampled into
+ * one point cloud. The accent marks a few units.
+ */
+export function createEntity(options: EntityOptions = {}): Entity {
+  const seed = options.seed ?? 1
+  const count = options.units ?? 14
+  const radius = options.radius ?? 8
+  const bead = options.bead ?? 0.34
+  const [sizeMin, sizeMax] = options.sizeRange ?? [2.4, 5]
+  const accentUnits = options.accentUnits ?? 3
+  const r = rng(seed)
+  const accent = new Set(shuffle(count, r).slice(0, accentUnits))
 
   const parts: PointPart[] = []
   const matrix = new Matrix4()
@@ -90,25 +110,69 @@ export function createEntity(options: EntityOptions = {}): Entity {
     const azimuth = r() * Math.PI * 2
     const polar = Math.acos(2 * r() - 1)
     const rad = radius * Math.cbrt(r())
-    position.set(Math.sin(polar) * Math.cos(azimuth) * rad, Math.cos(polar) * rad * 0.82, Math.sin(polar) * Math.sin(azimuth) * rad)
+    position.set(Math.sin(polar) * Math.cos(azimuth) * rad, Math.cos(polar) * rad * 0.85, Math.sin(polar) * Math.sin(azimuth) * rad)
     euler.set(r() * Math.PI, r() * Math.PI, r() * Math.PI)
     quat.setFromEuler(euler)
-    const size = 0.5 + r() * 0.95
+    const size = sizeMin + r() * (sizeMax - sizeMin)
     scale.set(size, size, size)
     matrix.compose(position, quat, scale)
-    const geometry = UNIT_KIT[Math.floor(r() * UNIT_KIT.length)]!()
     parts.push({
-      geometry,
+      geometry: UNIT_KIT[Math.floor(r() * UNIT_KIT.length)]!(),
       matrix: matrix.clone(),
-      color: accent.has(i) ? palette.accent : r() > 0.45 ? palette.ink : palette.dust,
-      count: Math.round(perUnit * size),
+      color: accent.has(i) ? palette.accent : r() > 0.3 ? palette.ink : palette.dust,
+      spacing: bead / size,
     })
   }
 
-  const material = createPointMaterial({
-    pixelRatio: Math.min(2, window.devicePixelRatio || 1),
-    size: options.pointSize ?? 2.6,
-  })
+  const material = createPointMaterial({ pixelRatio: Math.min(2, window.devicePixelRatio || 1), size: options.pointSize ?? 3 })
+  const object = buildPointCloud(parts, material, seed + 1)
+  return { object, material }
+}
+
+/**
+ * A stream: the same rounded units loose along a bent path, mostly accent, so
+ * work reads as a flow that forms and disperses.
+ */
+export function createFlow(options: FlowOptions): Entity {
+  const seed = options.seed ?? 1
+  const count = options.units ?? 70
+  const size = options.size ?? 1.1
+  const bead = options.bead ?? 0.3
+  const r = rng(seed)
+  const [ax, ay, az] = options.from
+  const [bx, by, bz] = options.to
+  const cx = (ax + bx) / 2
+  const cy = (ay + by) / 2 + (options.bend ?? 5)
+  const cz = (az + bz) / 2
+
+  const parts: PointPart[] = []
+  const matrix = new Matrix4()
+  const position = new Vector3()
+  const quat = new Quaternion()
+  const scale = new Vector3()
+  const euler = new Euler()
+  for (let i = 0; i < count; i++) {
+    const w = i / Math.max(1, count - 1)
+    const m = 1 - w
+    const px = m * m * ax + 2 * m * w * cx + w * w * bx
+    const py = m * m * ay + 2 * m * w * cy + w * w * by
+    const pz = m * m * az + 2 * m * w * cz + w * w * bz
+    const spread = 2.6 * (0.4 + w)
+    position.set(px + (r() * 2 - 1) * spread, py + (r() * 2 - 1) * spread, pz + (r() * 2 - 1) * spread)
+    euler.set(r() * Math.PI, r() * Math.PI, r() * Math.PI)
+    quat.setFromEuler(euler)
+    const s = size * (0.5 + r() * 1.3) * (1 - w * 0.3)
+    scale.set(s, s, s)
+    matrix.compose(position, quat, scale)
+    parts.push({
+      geometry: UNIT_KIT[Math.floor(r() * UNIT_KIT.length)]!(),
+      matrix: matrix.clone(),
+      color: r() > 0.4 ? palette.accent : palette.ink,
+      spacing: bead / s,
+    })
+  }
+
+  const material = createPointMaterial({ pixelRatio: Math.min(2, window.devicePixelRatio || 1), size: options.pointSize ?? 2.6 })
   const object = buildPointCloud(parts, material, seed + 1)
   return { object, material }
 }
