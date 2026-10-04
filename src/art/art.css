@@ -624,10 +624,10 @@ body,
   white-space: nowrap;
   will-change: opacity;
   /* A terminal panel: a dark plate, a hairline border, mono text. */
-  padding: calc(var(--su) * 0.45) calc(var(--su) * 0.8);
-  border: 1px solid color-mix(in srgb, var(--c-dust) 42%, transparent);
-  border-radius: calc(var(--su) * 0.5);
-  background: color-mix(in srgb, var(--c-backdrop) 80%, transparent);
+  padding: calc(var(--su) * 0.3) calc(var(--su) * 0.55);
+  border: 1px solid color-mix(in srgb, var(--c-dust) 26%, transparent);
+  border-radius: calc(var(--su) * 0.4);
+  background: color-mix(in srgb, var(--c-backdrop) 58%, transparent);
 }
 
 .map-label--above { transform: translate(-50%, -100%); }
@@ -639,7 +639,7 @@ body,
 .map-name {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: calc(var(--su) * 2.1);
+  font-size: calc(var(--su) * 1.6);
   line-height: 1.2;
   color: var(--c-ink);
 }
@@ -648,7 +648,7 @@ body,
 .map-role {
   font-family: var(--font-label);
   font-weight: 500;
-  font-size: calc(var(--su) * 1.7);
+  font-size: calc(var(--su) * 1.4);
   line-height: 1.3;
   color: var(--c-dust);
   will-change: opacity;

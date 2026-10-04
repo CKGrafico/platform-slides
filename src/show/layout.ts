@@ -383,7 +383,7 @@ export const TIMELINE_SPLIT = 5
 // ---- the land --------------------------------------------------------------------------------------------
 
 /** Size of the land plane: it reaches past every edge of the frame. */
-export const LAND_SIZE = 260
+export const LAND_SIZE = 600
 
 /** Deterministic 2D value noise, -1..1. */
 function noise2(x: number, z: number): number {

@@ -875,11 +875,11 @@ const litPath = defineActor({
  * The point-cloud entity: the new world in one form (docs/art/elements.md).
  * It floats over the cover, idle and never still.
  */
-const FLOAT_Y = 9
+const FLOAT_Y = 11
 const entity = defineActor({
   id: 'entity',
   create: () => {
-    const el = createEntity({ seed: 7, units: 28, radius: 8, pointsPerUnit: 520, accentUnits: 4, pointSize: 2.6 })
+    const el = createEntity({ seed: 7, units: 40, radius: 13, pointsPerUnit: 560, accentUnits: 5, pointSize: 3 })
     el.object.position.set(0, FLOAT_Y, 0)
     return el.object
   },
