@@ -66,8 +66,10 @@ export function World({
         // Development only: keep the frame, so screenshots and captures are reliable.
         preserveDrawingBuffer: import.meta.env.DEV,
       }}
-      // The near and far planes fit a map seen from far away (show/shots.ts): nothing stands closer than the land's near corner, and the far corner of the land must be inside.
-      camera={{ fov: 45, near: 10, far: 900, position: [0, 0, 8] }}
+      // The camera is orthographic and isometric (docs/art/art-direction.md).
+      // The rig writes the frustum every frame; these props only set the type and the clip planes.
+      orthographic
+      camera={{ near: 1, far: 2000, position: [140, 220, 420] }}
       onCreated={({ gl }) => {
         debugBus.rendererCreations += 1
         const canvas = gl.domElement

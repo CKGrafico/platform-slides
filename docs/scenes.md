@@ -80,9 +80,9 @@ export const intro = defineChapter({
 
 ## How to create a new scene
 
-1. Make a folder: `src/show/<chapter>/<scene>/`.
-2. Write `index.tsx`. Export one `defineScene(...)`. Keep the scene's GLSL, SVG, and CSS in the same folder.
-3. Add the scene to its chapter's `scenes` list in `src/show/<chapter>/index.ts`. If the chapter is new, add the chapter to `src/show/index.ts`.
+1. Make a folder: `src/show/parts/NN-name/`.
+2. Write `index.tsx`. Export one `defineChapter(...)` with its scenes. Keep the GLSL, SVG and CSS in the same folder, and the moves on the shared actors in `choreography.ts`.
+3. List the chapter and its choreography in `src/show/index.ts`.
 4. Animate only through progress. Use `useSceneTimeline` for tweens and `useProgress` for computed values.
 5. If an object must live across scenes, make it an actor in `src/show/actors.ts`.
 6. Run `npm run dev`. Jump to the scene from the debug panel. Scrub it with the slider, forward and back. Make sure that every position looks the same each time you land on it.

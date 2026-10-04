@@ -2,64 +2,55 @@
 
 The keynote uses a small set of elements. Each element has one meaning for the whole talk. The audience learns the meaning once and reads it everywhere after that. So an agent that builds a scene must never give an element a new meaning, and must never invent a new element without adding it here first.
 
-The look of each element follows [art-direction.md](art-direction.md). The system is a town on a map; the reasons are in [town-proposal.md](town-proposal.md).
+The look of each element follows [art-direction.md](art-direction.md). The system is an abstract world of geometric entities drawn as point clouds. The reason for the direction is in [art-direction.md](art-direction.md).
+
+## The three laws
+
+1. **The picture is material, not objects.** A form is an aggregate of many small units. It forms and unforms. Nothing is a solid object with a fixed shape.
+2. **Rigidity is determinism.** A rigid entity, aligned and still, is work that repeats. A fluid entity, loose and deforming, is work that reasons. The core stays fluid. Work solidifies as it moves away from the core.
+3. **One accent, one meaning.** The world is monochrome. Exactly one colour, the blue, marks the work we follow at this moment.
+
+A story rule sits under the three: nothing appears without a reason the beat before it showed.
 
 ## The elements
 
 | Element | Means | Look |
 |---|---|---|
-| The hall | the agent: the model and its runtime, OpenCode | the town center in the middle of the map: a cobbled platform, an arcade, a half-timbered floor, a big tiled roof, a turret. Big and closed at first, with all its folk at the arcade. It steps down a size each time one of them moves out to a house of their own, a third smaller by the end. One keeper stays |
-| The curtain wall | the Agent Harness: the rules the hall keeps around the agent | a crenellated wall of stone on the edge of the hall's platform, with a tower at each corner and a gate of two towers at the arcade, where it stays open. It scales with the hall |
-| The banner | OpenCode, the one runtime | a butter banner on the hall's turret |
-| The forge and the kilns | Forge, the AI gateway, and the models behind it | a stone shed with a big chimney north of the hall; three stone kilns behind it. Two smiths from the hall work it |
-| The mill | GitHub Actions: deterministic, cheap | a stone mill with a half-timbered top and lattice sails that always turn |
-| Sack | an event | a sack of grain in a pastel cloth, tied at the neck. It falls into the mill |
-| Cart | a piece of work, or a step that repeats | a two-wheeled wooden cart with a load. A barrel is a step of GitHub Actions, a crate is a task, a tarp covers a piece of work, a sack is a delivery. Every cart faces the way it goes. Many carts of one kind are instanced |
-| The blue cart | "the issue", the one work item we follow | a cart with a Platform blue tarp, a little larger. The motif of the talk |
-| Road | where work travels, again and again | a strip of sand; the loop around the hall is cobbled; the mill's road is laid as its carts come out. Before the loop is cobbled, the blue cart wears a dirt track round the hall |
-| Trail | where a piece of work once went: a run, a call to Forge, a shortcut, the audit's report | a wide line in the tone of dirt, worn in the grass, on the ground. Wobbly where a run did not repeat. It breaks in two when a way is closed |
-| Gatehouse | a gate that puts one cart on one route: the router, the merge gate | two stone towers with hoardings and tiled roofs, an arch with merlons, open door leaves, on a ring wall |
-| Arch | the small gate of an inner ring over the road | two stone jambs and a lintel with merlons |
-| Workshop | an agent with one job: triage, refine | a house on the main road: a stone base, timbers, a tiled roof, shutters. One of the hall's folk stands by its door |
-| The scriptorium | the compiler | a small house north west of the hall; the scroll goes in, the crate comes out |
-| The scroll and the crate | the workflow file, and the compiled workflow with its shell | a rolled scroll; a wooden crate with a palisade of stakes planted round it |
-| Stake | one piece of the shell the compiler builds: permissions, the firewall, safe outputs, threat detection, telemetry, the runtime, our own step | a wooden stake with a pointed top and a band that names it, planted on a ring round the crate. Our own step is the peach one. Threat detection is pulled out and tips over in part 8 |
-| Stone | an unsafe command | a grey stone thrown at the parapet. It bounces off and tumbles |
-| Seal | a verb: a right a worker holds | a flat butter disc that faces the camera; a dashed ring where the right is not given |
-| The market and the booth | production, and the person a risky change goes to | a stall with a striped awning outside the second ring; a small stall by the merge gate |
-| The watchtower and the repair crew | the audit, and housekeeping | a stone tower with a hoarding on the first ring; one of the hall's folk who leaves it to walk the loop |
-| Milestone | a step of the timeline | a signpost on the road into the town; the second half stand on stone; the last is a dashed slot, "?" |
-| Ring wall | a maturity level (part 4); the three inner rings are the three phases of Foundations, and every ring a guardrail (part 11) | one of five ring walls of the town's stone round the land, fifteen units apart, level 1 the smallest: a band of stone with merlons and towers, open where a gate stands. They rise arc by arc in part 4, with their gates, and never leave: every district of the town is built between two of them. Part 11 lights each one for a moment as it names it |
-| Measure | a measurement: tokens, Project Health | a stack of coins by the hall, or by the barn. A ghost stack of dashed rings when a metric is not collected |
-| Villager | a person: the one who asks, the reviewer, the developer, the team, the elder, and the folk of the hall | a round chibi with a hat, no face. Eight folk stand at the hall's arcade at the start; one by one they walk out to the house that does their job now, and stay by it |
-| Cottage | a product the team runs | a small house in the hamlet north east of the town |
-| Field | the town's produce, once it works | a tilled plot inside a fence, with hay bales |
-| Slot | an empty place waiting for a pillar | a dashed circle on the ground, at the entrance of the district the pillar will build; its sign stands in it when the pillar is named |
-| District sign | a pillar's district: Agent Harness inside the first wall, Agentic Workflows by the road between the gatehouse and triage, Foundations between the two houses, Project Health before the barn | a tall wooden post with a board under a small tiled roof and a pennant, in the slot that waited for it (`src/show/signs.ts`); the district's name on the map stands by it |
+| Unit | the smallest piece of the world | one small flat-faced polyhedron: a rhombic dodecahedron, a truncated octahedron, a cuboctahedron, a low-poly icosahedron, a hexagonal prism or a beveled slab. Never a perfect sphere, never a plain sharp cube |
+| Entity | a body of work | an aggregate of units, packed in a cluster. Units hold together by proximity, never by fusion. An entity can be dense or sparse |
+| The core | the agent: the model and its runtime, OpenCode | the largest entity, the densest, and the only one that stays fluid. Its units slowly reshuffle. It loses units as work leaves it |
+| Deterministic work | a step that repeats | a rigid entity: units aligned, gaps closed, motion stopped, grey |
+| Reasoning work | a step that needs the model | a fluid entity near the core: units loose, drifting, deforming |
+| The flow | work that travels | a stream of loose units moving along a channel, like a material caught mid-motion |
+| The guardrail | a constraint that fails the build | a rigid wall of aligned units that stops a flow |
+| The gate | the merge gate | a rigid wall with one opening where a single blue unit passes |
+| The issue | the one work item we follow | one blue unit. It changes state as it travels: fluid when it needs thought, rigid when it is understood |
+| The measure | a measurement: tokens, Project Health | a rigid bank of units, like stacked blanks. A gap stays empty for a metric that is not collected |
+| The panel | the name of an entity | a terminal panel: a thin rounded rectangle, a name, and a short role line. It follows its entity on screen |
+| The command line | where the talk is | one line of mono text in the top left, the current beat, ending in a blue block cursor |
 
 ## Rules
 
-- **Nothing floats and nothing is a sphere.** What moves rides a road on wheels, or is carried; lines lie on the ground. The town has no moons, no balls, no orbits.
-- **Distance from the hall is determinism.** Work that needs no reasoning rides the belt loop around the hall or the main road; only the hall reasons.
-- **The hall gives work away; it does not lose it.** Each time a job moves out, one of its folk walks from the arcade to the house that does it now, the house appears as they arrive, and the hall steps down a size (`src/show/hall.ts`). The step down always comes with a new roof, never alone.
-- **Only the ambient layer moves by time:** the sails, the blue cart's round on the cover, the sway of the people, the boil. Everything else moves by progress.
-- **Only the blue cart is blue**, with two exceptions: the element that is active right now, and the lit road in part 13. Nothing else uses the accent.
-- **Elements are never replaced.** They appear, move, split, merge, or leave. Once a building stands, it stays; the map only grows.
-- **Every element enters and leaves the same way:** "inking" in, shrink out. Use the helpers in `src/art/motion.ts`. Walls rise from the ground; roads are laid from their west end.
-- **Every building with a job flies a pennant** in the color that names it (the hall's banner is butter; triage lilac; refine and Forge peach; the scriptorium, the barn and the tidy house sage; the mill and the outer gates butter; the cottages take turns), so buildings can be told apart from a distance, with their name on the map.
-- **People are villagers.** A hat, no face. No avatars, no icons of people.
-- **The camera never moves.** One angle, one distance, one frame for the whole talk (`src/show/shots.ts`): the whole town out to its fifth wall, about 185 units wide at the hall. Nothing pans and nothing zooms. Build for that distance: walls heavy enough to read, buildings with room between them, and a name or a sign where a thing is too small to tell. People, carts and the small props are sized up for it (`PERSON_SCALE`, `CART_SCALE`, `PROP_SCALE` in `src/show/layout.ts`).
-- **Names take their own row.** At this distance a label is wider than most buildings, so names that show together stand on different rows of the screen, measured with the checks (`window.__checks` and the map probe in the debug panel), each on the side with room. A sequence shows one name at a time, and a name comes once its element stands still. The names of the map (`src/show/map/entries.ts`) are small, and the district signs carry the pillars' names.
+- **Units never fuse.** An entity is held by proximity and thin struts, so it can split and rejoin.
+- **Rigidity is determinism.** Colour stays monochrome. Rigidity is shown by alignment and stillness, not by colour.
+- **Only the core reasons, and only the core stays fluid.** Work solidifies as it moves outward.
+- **Only the issue is blue**, with two exceptions: the element that is active right now, and the command line cursor. Nothing else uses the accent.
+- **Nothing floats without a reason and nothing is a sphere.** Units are flat-faced. The world has no balls and no orbits.
+- **Connections are events.** The world draws no web of lines between entities. When work moves from one entity to another, a short beam of units travels the path and fades. A visible connection means a transfer in that instant.
+- **Every element enters and leaves the same way:** it assembles from scattered units, and it scatters back to dust. Use the helpers in `src/art/motion.ts` and `src/art/points.ts`.
+- **People are not drawn.** There are no figures. The team is a small entity, the requester is a single unit that arrives from the edge, the reviewer is a wall of units that stops a flow.
+- **The camera is isometric and fixed.** One orthographic angle. It steps between regions, it does not swing.
+- **Names live in the panels and the command line.** No floating label web, no HUD ring.
 
 ## Do and do not
 
 | Do | Do not |
 |---|---|
-| Show a piece of work as a cart on a road, facing the way it goes | Draw a ball, a dot, a moon, or an orbit |
-| Show where work went as a trail worn in the grass, and a level as a ring wall round the land | Draw a dashed ink line, a wire in the air, a circle that floats, or a low kerb of blocks |
-| Show the router as a gatehouse on the wall that lets one cart onto the road | Draw a router icon, an arrow junction, or a box with the word "router" |
-| Show a guardrail as a ring wall with towers | Show a padlock or a shield icon |
-| Show a missing metric as a ghost stack of dashed rings | Show a grey stack, a red cross, or an empty chart |
-| Make the hall smaller as its folk move out, with a person walking and a new house | Add a second hall to show "less AI", or shrink the hall with nothing leaving it |
-| Keep past elements on the map in a quieter tone | Delete past elements to make room |
-| Label an element with a short HTML label in a `data-fit` box, or a name on the map | Put long sentences next to elements |
+| Show a body of work as an aggregate of units | Draw a solid mesh, a person, or an icon |
+| Show work moving as a stream of units along a channel | Draw a permanent line or a dotted web between entities |
+| Show a guardrail as a rigid wall of units | Show a padlock, a shield, or a checkbox |
+| Show a missing metric as a gap in the bank of units | Show a grey bar, a red cross, or a chart |
+| Mark the issue with the one blue unit | Use a second colour, or light the blue with a glow |
+| Let the core lose units as work leaves it | Shrink the core with nothing leaving it |
+| Keep past entities in the field, quieter and sparser | Delete them to make room |
+| Name an entity in a panel or the command line | Float a long label in the empty space |

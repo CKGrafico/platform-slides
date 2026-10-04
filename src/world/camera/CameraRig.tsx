@@ -1,6 +1,6 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useMemo } from 'react'
-import { PerspectiveCamera, Vector3 } from 'three'
+import { OrthographicCamera, PerspectiveCamera, Vector3 } from 'three'
 import { noise1 } from '@/animation/progress'
 import { usePresentation } from '@/engine/context'
 import { debugBus } from '@/debug/bus'
@@ -12,14 +12,17 @@ const target = new Vector3()
  * Places the single world camera from the camera track every frame.
  * The shot depends on the playhead only. Shake adds clock-based noise,
  * which is ambient: it never changes the composition.
+ *
+ * The camera is orthographic and isometric (docs/art/art-direction.md): the rig
+ * writes the frustum from the shot's `ortho` half-height. A perspective camera
+ * still works, so a future shot can ask for one.
  */
 export function CameraRig() {
   const p = usePresentation()
   const camera = useThree((s) => s.camera)
   const track = useMemo(() => createCameraTrack(p.model), [p.model])
 
-  useFrame(({ clock }) => {
-    if (!(camera instanceof PerspectiveCamera)) return
+  useFrame(({ clock, size }) => {
     const shot = track.shotAt(p.framePosition)
     camera.position.set(shot.position[0], shot.position[1], shot.position[2])
     if (shot.shake > 0) {
@@ -30,14 +33,29 @@ export function CameraRig() {
     target.set(shot.target[0], shot.target[1], shot.target[2])
     camera.lookAt(target)
     if (shot.roll !== 0) camera.rotateZ(shot.roll)
-    if (camera.fov !== shot.fov) {
-      camera.fov = shot.fov
-      camera.updateProjectionMatrix()
+
+    if (camera instanceof OrthographicCamera) {
+      const halfHeight = shot.ortho
+      const halfWidth = halfHeight * (size.width / Math.max(1, size.height))
+      if (camera.top !== halfHeight || camera.left !== -halfWidth) {
+        camera.top = halfHeight
+        camera.bottom = -halfHeight
+        camera.left = -halfWidth
+        camera.right = halfWidth
+        camera.updateProjectionMatrix()
+      }
+      debugBus.camera.fov = halfHeight
+    } else if (camera instanceof PerspectiveCamera) {
+      if (camera.fov !== shot.fov) {
+        camera.fov = shot.fov
+        camera.updateProjectionMatrix()
+      }
+      debugBus.camera.fov = camera.fov
     }
+
     debugBus.camera.x = camera.position.x
     debugBus.camera.y = camera.position.y
     debugBus.camera.z = camera.position.z
-    debugBus.camera.fov = camera.fov
   })
 
   return null

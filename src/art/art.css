@@ -18,10 +18,12 @@
  */
 
 :root {
-  --font-display: 'Outfit Variable', system-ui, sans-serif;
+  /* The one voice is mono (docs/art/art-direction.md): titles, captions and
+   * labels all read as terminal text. */
+  --font-display: 'JetBrains Mono Variable', ui-monospace, monospace;
   --font-label: 'JetBrains Mono Variable', ui-monospace, monospace;
-  --bg: var(--c-void-bottom);
-  --fg: var(--c-text);
+  --bg: var(--c-backdrop);
+  --fg: var(--c-ink);
   --safe: 6%;
   /*
    * Type for a conference room: label and caption boxes (sized in su in the
@@ -29,20 +31,23 @@
    */
   --label-scale: 1.4;
   --caption-scale: 1.2;
-  color-scheme: light;
+  color-scheme: dark;
 }
 
 html,
 body,
 #root {
-  background: var(--c-void-bottom);
-  color: var(--c-text);
+  background: var(--c-backdrop);
+  color: var(--c-ink);
   font-family: var(--font-display);
 }
 
-/* The void: a soft vertical gradient behind the transparent canvas. */
+/* The field: a near-black backdrop with a faint grid of dots (art-direction.md). */
 .layer[data-layer='world'] {
-  background: linear-gradient(180deg, var(--c-void-top) 0%, var(--c-void-bottom) 100%);
+  background-color: var(--c-backdrop);
+  background-image: radial-gradient(circle at center, color-mix(in srgb, var(--c-dust) 26%, transparent) 1px, transparent 1.6px);
+  background-size: calc(var(--su) * 2.4) calc(var(--su) * 2.4);
+  background-position: center;
 }
 
 /*
@@ -90,11 +95,12 @@ body,
    * show; where a line or a planet passes behind the text, it keeps the words
    * readable from the back of the room.
    */
+  /* A dark halo of the field around the letters, so captions read over the
+   * point cloud without any glow. */
   text-shadow:
-    0 0 0.1em var(--c-surface),
-    0 0 0.25em var(--c-surface),
-    0 0 0.5em var(--c-surface),
-    0 0 0.9em color-mix(in srgb, var(--c-surface) 60%, transparent);
+    0 0 0.08em var(--c-backdrop),
+    0 0 0.22em var(--c-backdrop),
+    0 0 0.5em var(--c-backdrop);
   overflow: hidden;
   text-wrap: pretty;
 }
@@ -111,10 +117,7 @@ body,
   font-size: calc(var(--su) * 11);
   line-height: 0.95;
   letter-spacing: -0.03em;
-  color: var(--c-surface);
-  /* The stroke is painted under the fill, so only half of it shows: about 3 px at 1080p. */
-  -webkit-text-stroke: calc(var(--su) * 0.6) var(--c-outline);
-  paint-order: stroke fill;
+  color: var(--c-ink);
 }
 
 .art-kicker {
@@ -141,10 +144,7 @@ body,
   font-weight: 700;
   font-size: calc(var(--su) * 2.8);
   line-height: 1.35;
-  /* Outlined like the titles, so a label reads on the dark core and on the void. */
-  color: var(--c-surface);
-  -webkit-text-stroke: 0.2em var(--c-outline);
-  paint-order: stroke fill;
+  color: var(--c-ink);
   overflow: hidden;
   white-space: nowrap;
 }
@@ -617,11 +617,16 @@ body,
   top: 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: calc(var(--su) * 0.2);
-  text-align: center;
+  align-items: flex-start;
+  gap: calc(var(--su) * 0.1);
+  text-align: left;
   white-space: nowrap;
   will-change: opacity;
+  /* A terminal panel: a dark plate, a hairline border, mono text. */
+  padding: calc(var(--su) * 0.45) calc(var(--su) * 0.8);
+  border: 1px solid color-mix(in srgb, var(--c-dust) 42%, transparent);
+  border-radius: calc(var(--su) * 0.5);
+  background: color-mix(in srgb, var(--c-backdrop) 80%, transparent);
 }
 
 .map-label--above { transform: translate(-50%, -100%); }
@@ -635,21 +640,16 @@ body,
   font-weight: 700;
   font-size: calc(var(--su) * 2.1);
   line-height: 1.2;
-  color: var(--c-surface);
-  -webkit-text-stroke: 0.2em var(--c-outline);
-  paint-order: stroke fill;
+  color: var(--c-ink);
 }
 
 /* The one-line role, on a chip of paper, only on the stop that introduces the element. */
 .map-role {
   font-family: var(--font-label);
-  font-weight: 600;
-  font-size: calc(var(--su) * 1.9);
+  font-weight: 500;
+  font-size: calc(var(--su) * 1.7);
   line-height: 1.3;
-  color: var(--c-outline);
-  background: color-mix(in srgb, var(--c-surface) 88%, transparent);
-  border-radius: calc(var(--su) * 0.5);
-  padding: calc(var(--su) * 0.15) calc(var(--su) * 0.7);
+  color: var(--c-dust);
   will-change: opacity;
 }
 
@@ -676,8 +676,9 @@ body,
   font-family: var(--font-label);
   font-size: calc(var(--su) * 2.2);
   line-height: 1;
-  color: var(--c-outline);
-  opacity: 0.45;
+  color: var(--c-dust);
+  font-variant-numeric: tabular-nums;
+  opacity: 0.5;
   transition: opacity 0.25s;
   pointer-events: none;
 }
@@ -703,4 +704,34 @@ body,
   height: 100%;
   transform-origin: 0 50%;
   transform: scaleX(0);
+}
+
+/* The stop number as a command line readout: a hash, the number, a blue caret. */
+.stop-chip-number {
+  color: var(--c-ink);
+}
+
+.stop-chip-number::before {
+  content: '#';
+  color: var(--c-dust);
+  margin-right: 0.1em;
+}
+
+.stop-chip-number::after {
+  content: '';
+  display: inline-block;
+  width: 0.5em;
+  height: 1em;
+  margin-left: 0.3em;
+  vertical-align: -0.12em;
+  background: var(--c-accent);
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stop-chip-number::after { animation: none; }
 }

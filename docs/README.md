@@ -2,7 +2,7 @@
 
 This repository holds a web keynote. The keynote runs in a browser, full screen, and the presenter controls it from the keyboard. It has no sound.
 
-The engine and the art direction are done. The show holds the style frame: the cover (part 1) and part 10 (the tasks leave the agent). The other parts are built from the script, one folder per part in `src/show/parts/`.
+The engine is done. The art direction is decided: an abstract world of geometric entities drawn as point clouds ([art/art-direction.md](art/art-direction.md), [art/elements.md](art/elements.md)). All 14 parts are built, one folder per part in `src/show/parts/`. The world is being rebuilt on the point-cloud direction.
 
 ## Run it
 

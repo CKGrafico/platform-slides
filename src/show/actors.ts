@@ -5,8 +5,9 @@
  * rest.ts. The land and its woods are placed here, once: the map exists
  * before the talk starts.
  */
-import { Vector3, type Object3D } from 'three'
+import { Vector3, type Object3D, type Points, type ShaderMaterial } from 'three'
 import { artOf, coinGeometry, createCoin, createSwarm, type Swarm } from '@/art/elements'
+import { createEntity } from '@/art/entity'
 import { createGhostStacks, createGrid, createSketchLine, createSlot, straight, through } from '@/art/lines'
 import { palette } from '@/art/palette'
 import { inkOf } from '@/art/toon'
@@ -870,7 +871,29 @@ const litPath = defineActor({
   create: () => createSketchLine({ path: (u, out) => routePoint(u, out), segments: 300, width: 3.5, color: palette.accent, opacity: 0.9, reveal: 0 }).object,
 })
 
+/**
+ * The point-cloud entity: the new world in one form (docs/art/elements.md).
+ * It floats over the cover, idle and never still.
+ */
+const FLOAT_Y = 9
+const entity = defineActor({
+  id: 'entity',
+  create: () => {
+    const el = createEntity({ seed: 7, units: 28, radius: 8, pointsPerUnit: 520, accentUnits: 4, pointSize: 2.6 })
+    el.object.position.set(0, FLOAT_Y, 0)
+    return el.object
+  },
+  ambient: (object, time) => {
+    object.rotation.y = time * 0.06
+    object.rotation.x = Math.sin(time * 0.21) * 0.07
+    object.position.y = FLOAT_Y + Math.sin(time * 0.5) * 0.6
+    const material = (object as Points).material as ShaderMaterial
+    material.uniforms.uTime!.value = time
+  },
+})
+
 export const actors: ActorDef[] = [
+  entity,
   land,
   trunks,
   canopies,

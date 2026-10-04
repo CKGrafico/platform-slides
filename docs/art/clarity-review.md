@@ -1,6 +1,6 @@
 # Clarity review: the diagram site against the keynote
 
-Date: 2026-09-30. Branch `study/clarity`. Nothing here is decided yet.
+Date: 2026-09-30. Branch `study/clarity`. Nothing here is decided yet. Superseded on 2026-10-04 by the fortress direction in [art-direction.md](art-direction.md). Kept for reference only.
 
 ## The question
 

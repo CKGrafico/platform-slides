@@ -4,19 +4,25 @@
  * See docs/art/art-direction.md for the role of each color.
  */
 export const palette = {
-  voidTop: '#C8C1D6',
-  voidBottom: '#D9E0D7',
-  surface: '#F2F1EE',
-  sage: '#9FB7A6',
-  lilac: '#B7A7CC',
-  /** Warm pastels for planets and coins, so the satellites are not all one tone. */
-  peach: '#EDC1A5',
-  butter: '#E9D59E',
-  outline: '#2E2A4A',
-  text: '#1F1D33',
+  /** The world is monochrome plus one accent (docs/art/art-direction.md). */
+  voidTop: '#121216',
+  voidBottom: '#0A0A0B',
+  surface: '#E8E9EC',
+  sage: '#8A8F98',
+  lilac: '#63686F',
+  peach: '#A7ABB1',
+  butter: '#C7CAD0',
+  outline: '#8A8F98',
+  text: '#E8E9EC',
   accent: '#2F69FF',
-  core: '#28233F',
-  coreNoise: '#4E4679',
+  core: '#1A1A20',
+  coreNoise: '#3A3A44',
+  /** The dark backdrop of the point-cloud world. */
+  backdrop: '#0A0A0B',
+  /** Point off-white: the lit side of a unit. */
+  ink: '#E8E9EC',
+  /** Point grey: the shadow side, and distant, cheap work. */
+  dust: '#8A8F98',
 } as const
 
 export type PaletteColor = keyof typeof palette

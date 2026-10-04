@@ -7,8 +7,10 @@ export type Vec3 = readonly [number, number, number]
 export interface CameraShot {
   position: Vec3
   target: Vec3
-  /** Vertical field of view in degrees. Default 45. */
+  /** Vertical field of view in degrees. Default 45. Used by a perspective camera. */
   fov?: number
+  /** Orthographic half-height in world units. Used by the orthographic camera. Default 62. */
+  ortho?: number
   /** Rotation around the view axis in radians. Default 0. */
   roll?: number
   /** Shake strength, 0..1. Default 0. The rig adds deterministic noise. */
@@ -19,6 +21,7 @@ export const DEFAULT_SHOT: Required<CameraShot> = {
   position: [0, 0, 8],
   target: [0, 0, 0],
   fov: 45,
+  ortho: 62,
   roll: 0,
   shake: 0,
 }
@@ -37,6 +40,7 @@ export function blendShots(a: CameraShot, b: CameraShot, t: number): Required<Ca
     position: lerp3(A.position, B.position, t),
     target: lerp3(A.target, B.target, t),
     fov: lerp(A.fov, B.fov, t),
+    ortho: lerp(A.ortho, B.ortho, t),
     roll: lerp(A.roll, B.roll, t),
     shake: lerp(A.shake, B.shake, t),
   }

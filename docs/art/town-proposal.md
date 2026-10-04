@@ -1,6 +1,6 @@
 # Proposal: the system as a town
 
-Date: 2026-09-30. Branch `study/clarity`. A proposal, not a decision. It follows [clarity-review.md](clarity-review.md).
+Date: 2026-09-30. Branch `study/clarity`. A proposal, not a decision. It follows [clarity-review.md](clarity-review.md). Superseded on 2026-10-04 by the fortress direction in [art-direction.md](art-direction.md). Kept for reference only.
 
 ## The idea
 

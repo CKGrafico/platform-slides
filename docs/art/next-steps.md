@@ -1,6 +1,6 @@
 # Next technical steps for the art
 
-The style frame (the cover and part 10) is built on the art kit in `src/art/`. These are the next pieces of the kit, from the technical review of 2026-09-29. Build them before or while building the other parts.
+The art kit is in `src/art/`. All 14 parts are built. On 2026-10-04 the world moved to the point-cloud direction ([art-direction.md](art-direction.md), [elements.md](elements.md)): see `src/art/points.ts` and `src/art/entity.ts`. The lists below come from the technical review of 2026-09-29 and describe the orbit world. Read them as history. The live work is the point-cloud rebuild.
 
 ## Done in the style frame
 

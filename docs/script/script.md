@@ -2,7 +2,7 @@
 
 The script comes before the web. We work the content here first, beat by beat. Only when a part is solid does it become scenes in `src/show/`.
 
-Status: **draft 2**, 2026-09-29. Every part has full beats. Beat 12.5 has our anonymised numbers. All 14 parts are built in `src/show/parts/` (93 stops), in English and Spanish.
+Status: **draft 2**, 2026-09-29. Every part has full beats. Beat 12.5 has our anonymised numbers. All 14 parts are built in `src/show/parts/` (62 stops), in English and Spanish.
 
 Working title: **From issue to production with GitHub Agentic Workflows**
 
@@ -21,11 +21,11 @@ Each beat has these fields:
 
 ## The one system
 
-The whole talk is one town on a map that grows, in the art of [art-direction.md](../art/art-direction.md). Since 2026-09-30 the "On screen" lines below describe the world of orbits the web was first built on; the town version of each beat is in [elements.md](../art/elements.md) and [town-proposal.md](../art/town-proposal.md): the core is the hall, GitHub Actions is the mill, the compiler is the scriptorium, the Harness is the parapet of the hall, the router and the merge gate are gatehouses, the guardrails are three ring walls, the measures are stacks by the barn, and the blue ball is the blue cart on the road. Every ball is a cart, the events are sacks that fall into the mill, the shell of the compiled workflow is a palisade of stakes, and the unsafe commands are stones. The beats, the stops and the words are the same.
+The whole talk is an abstract world of geometric entities, in the art of [art-direction.md](../art/art-direction.md). The "On screen" lines below describe the world of orbits the web was first built on. The current world is described in [elements.md](../art/elements.md): the core is the agent, deterministic work is a rigid entity, reasoning work is a fluid entity, the issue is one blue unit, a guardrail is a wall of units, and the merge gate is a wall with one opening. The beats, the stops and the words are the same.
 
-The hall is a commune that becomes a village. Eight folk stand at its arcade at the start. Each time the town takes a job off the hall, one of them walks out to the house that does it now, and the hall steps down a size: the triage clerk in 5.7, two smiths to Forge in 8.3, the task carts roll out onto the loop in 10.2, the router's keeper in 10.4, refine in 10.6, the repair crew to the loop in 10.6, the elder to the stacks in 12.4. A third smaller by the end; one keeper stays. The step down never comes alone: someone walks, and a roof appears.
+The core is one body that hands its work out. Eight units sit with it at the start. Each time the system takes a job off the core, one unit leaves for the assembly that does that job now, and the core steps down a size: triage in 5.7, two units to the harbour in 8.3, the task units roll out in 10.2, the router's keeper in 10.4, refine in 10.6, the repair crew in 10.6, the elder to the measures in 12.4. A third smaller by the end; one unit stays. The step down never comes alone: a unit leaves, and an assembly appears.
 
-It starts with one house, the hall, alone on the land. Elements appear, move, and stay, until the screen shows the real system: the work router, the deterministic jobs, the agentic workers, OpenCode, the Harness, Forge, the models, the guardrails, and the metrics, all around one hall: the agent.
+It starts with one body, the core, alone in the void. Elements appear, move, and stay, until the screen shows the real system: the router, the deterministic assemblies, the reasoning entities, OpenCode, the Harness, Forge, the models, the guardrails, and the measures, all around one core: the agent.
 
 Rules for the system:
 
