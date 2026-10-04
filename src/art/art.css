@@ -30,7 +30,7 @@
    * parts) grow with these factors, so text that fits keeps fitting.
    */
   --label-scale: 1.4;
-  --caption-scale: 1.2;
+  --caption-scale: 1.45;
   color-scheme: dark;
 }
 
@@ -83,8 +83,8 @@ body,
   position: absolute;
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: calc(var(--su) * 3.2);
-  line-height: 1.25;
+  font-size: calc(var(--su) * 2.8);
+  line-height: 1.42;
   letter-spacing: -0.005em;
   color: var(--c-text);
   /*
@@ -338,9 +338,9 @@ body,
 
 /* A lead caption: the one line the audience must read, larger. */
 .art-caption--lead {
-  font-size: calc(var(--su) * 4.2);
+  font-size: calc(var(--su) * 3.5);
   font-weight: 600;
-  line-height: 1.2;
+  line-height: 1.38;
   letter-spacing: -0.01em;
 }
 
@@ -739,3 +739,4 @@ body,
 @media (prefers-reduced-motion: reduce) {
   .stop-chip-number::after { animation: none; }
 }
+
