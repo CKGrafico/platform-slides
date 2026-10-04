@@ -61,6 +61,50 @@ export interface Entity {
   material: ShaderMaterial
 }
 
+export interface LatticeOptions {
+  seed?: number
+  cols: number
+  rows: number
+  /** Distance between unit centres. */
+  gap: number
+  /** Size of one unit. */
+  size: number
+  bead?: number
+  pointSize?: number
+  /** Colour of the units. Default off-white. */
+  color?: string
+}
+
+/**
+ * A rigid body: identical units on a regular grid, all facing the same way.
+ * Aligned, still, repeating. It is what deterministic work looks like.
+ */
+export function createLattice(options: LatticeOptions): Entity {
+  const { cols, rows, gap, size } = options
+  const bead = options.bead ?? 0.3
+  const parts: PointPart[] = []
+  const matrix = new Matrix4()
+  const position = new Vector3()
+  const quat = new Quaternion()
+  const scale = new Vector3(size, size, size)
+  for (let i = 0; i < cols; i++) {
+    for (let j = 0; j < rows; j++) {
+      position.set((i - (cols - 1) / 2) * gap, 0, (j - (rows - 1) / 2) * gap)
+      matrix.compose(position, quat, scale)
+      parts.push({
+        geometry: new IcosahedronGeometry(1, 0),
+        matrix: matrix.clone(),
+        color: options.color ?? palette.ink,
+        spacing: bead / size,
+      })
+    }
+  }
+  const material = createPointMaterial({ pixelRatio: Math.min(2, window.devicePixelRatio || 1), size: options.pointSize ?? 2.8 })
+  material.uniforms.uFluidity!.value = 0
+  const object = buildPointCloud(parts, material, (options.seed ?? 3) + 1)
+  return { object, material }
+}
+
 function rng(seed: number): () => number {
   let s = (seed >>> 0) || 1
   return () => {

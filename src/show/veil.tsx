@@ -12,7 +12,7 @@ import { useLayoutEffect } from 'react'
 import { actorEntries } from '@/world/actors'
 
 /** Only the new forms show: the agent entity and its flow. Everything else is hidden. */
-const KEEP = new Set(['entity', 'stream'])
+const KEEP = new Set(['entity', 'stream', 'work.0', 'work.1', 'work.2', 'work.3', 'wall'])
 
 function keep(id: string): boolean {
   return KEEP.has(id)

@@ -37,3 +37,19 @@ export function townShot(target: Vec3, distance = TOWN_DISTANCE, fov = TOWN_FOV)
  * screen.
  */
 export const MAP_SHOT = townShot([13, 15, 4])
+
+/**
+ * World position of a point seen at `sx`, `sy` on the screen (in world units
+ * from the centre of the frame, right and up) and at height `y`. The camera
+ * never moves, so this places a body exactly where the audience will see it.
+ */
+export function screenToWorld(sx: number, sy: number, y: number): [number, number, number] {
+  const t = MAP_SHOT.target
+  const rx = Math.cos(AZIMUTH)
+  const rz = -Math.sin(AZIMUTH)
+  const ux = -Math.sin(ELEVATION) * Math.sin(AZIMUTH)
+  const uy = Math.cos(ELEVATION)
+  const uz = -Math.sin(ELEVATION) * Math.cos(AZIMUTH)
+  const k = (y - t[1] - sy * uy) / DIR[1]
+  return [t[0] + sx * rx + sy * ux + k * DIR[0], y, t[2] + sx * rz + sy * uz + k * DIR[2]]
+}

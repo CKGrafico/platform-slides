@@ -7,7 +7,7 @@
  */
 import { BufferAttribute, BufferGeometry, Points, PointsMaterial, Vector3, type Object3D, type ShaderMaterial } from 'three'
 import { artOf, coinGeometry, createCoin, createSwarm, type Swarm } from '@/art/elements'
-import { createEntity, createFlow } from '@/art/entity'
+import { createEntity, createFlow, createLattice } from '@/art/entity'
 import { createGhostStacks, createGrid, createSketchLine, createSlot, straight, through } from '@/art/lines'
 import { palette } from '@/art/palette'
 import { inkOf } from '@/art/toon'
@@ -18,6 +18,7 @@ import { createArch, createWallArc, type Gap } from '@/art/town-walls'
 import { defineActor, type ActorDef } from '@/world/actors'
 import { FOLK, FOLK_HOME, homePoint } from './hall'
 import { routePoint } from './route'
+import { screenToWorld } from './shots'
 import {
   APPS,
   ARCH_3E,
@@ -940,9 +941,46 @@ const dotGrid = defineActor({
   },
 })
 
+/**
+ * Deterministic work that has left the core: rigid lattices of identical units.
+ * They wait at scale 0 and the story (parts/story.ts) brings them in.
+ */
+export const WORK_IDS = ['work.0', 'work.1', 'work.2', 'work.3'] as const
+const WORK_SPOTS: Array<{ at: [number, number]; cols: number; rows: number }> = [
+  { at: [-26, 0], cols: 2, rows: 2 },
+  { at: [-37, 9], cols: 3, rows: 2 },
+  { at: [-20, -8], cols: 2, rows: 3 },
+  { at: [-7, -11], cols: 3, rows: 3 },
+]
+const work = WORK_IDS.map((id, i) =>
+  defineActor({
+    id,
+    create: () => {
+      const spot = WORK_SPOTS[i]!
+      const el = createLattice({ seed: 40 + i, cols: spot.cols, rows: spot.rows, gap: 3.4, size: 1.5, bead: 0.32 })
+      el.object.position.set(...screenToWorld(spot.at[0], spot.at[1], 3))
+      el.object.scale.setScalar(0.001)
+      return el.object
+    },
+  }),
+)
+
+/** The perimeter: a rigid wall of aligned units that stops the stream. */
+const wall = defineActor({
+  id: 'wall',
+  create: () => {
+    const el = createLattice({ seed: 60, cols: 1, rows: 8, gap: 2.8, size: 1.5, bead: 0.32, color: '#8A8F98' })
+    el.object.position.set(...screenToWorld(24, -10, 5))
+    el.object.scale.setScalar(0.001)
+    return el.object
+  },
+})
+
 export const actors: ActorDef[] = [
   entity,
   stream,
+  ...work,
+  wall,
   land,
   dotGrid,
   trunks,

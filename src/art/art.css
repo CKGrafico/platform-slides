@@ -127,8 +127,13 @@ body,
   color: var(--c-outline);
 }
 
-/* Screen anchors: the outer box is moved by JS, the label centers itself. */
+/* Names pinned to the old town point at nothing now: the entities carry the story. */
 .art-anchor {
+  display: none;
+}
+
+/* Screen anchors: the outer box is moved by JS, the label centers itself. */
+.art-anchor-unused {
   position: absolute;
   left: 0;
   top: 0;
