@@ -77,10 +77,10 @@ export function updateAnchors(camera: Camera, width: number, height: number, dpr
     if (resolve(a.target, tmp)) {
       tmp.add(a.offset).project(camera)
       if (tmp.z <= 1) {
-        // Snap to device pixels, so still text stays crisp. The point stays inside a
-        // safe box, so a label never runs off the frame.
-        const nx = Math.min(0.7, Math.max(0.1, tmp.x * 0.5 + 0.5))
-        const ny = Math.min(0.88, Math.max(0.1, -tmp.y * 0.5 + 0.5))
+        // Snap to device pixels, so still text stays crisp. The point stays inside the
+        // frame, so a pinned panel never runs off the edge.
+        const nx = Math.min(0.97, Math.max(0.03, tmp.x * 0.5 + 0.5))
+        const ny = Math.min(0.95, Math.max(0.05, -tmp.y * 0.5 + 0.5))
         const x = Math.round(nx * width * dpr) / dpr
         const y = Math.round(ny * height * dpr) / dpr
         next = `translate3d(${x}px, ${y}px, 0)`

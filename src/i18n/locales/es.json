@@ -330,5 +330,9 @@
   "town.booth": "Responsable",
   "town.booth.role": "solo si hay riesgo",
   "town.coins": "Tokens",
-  "town.coins.role": "lo que quema el agente"
+  "town.coins.role": "lo que quema el agente",
+  "node.core": "agente · razona",
+  "node.work": "determinista · repite",
+  "node.stream": "el issue · en vuelo",
+  "node.wall": "guardrails · rompen el build"
 }

@@ -330,5 +330,9 @@
   "town.booth": "The owner",
   "town.booth.role": "only if there is risk",
   "town.coins": "Tokens",
-  "town.coins.role": "what the agent burns"
+  "town.coins.role": "what the agent burns",
+  "node.core": "agent · reasons",
+  "node.work": "deterministic · repeats",
+  "node.stream": "the issue · in flight",
+  "node.wall": "guardrails · fail the build"
 }

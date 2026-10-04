@@ -895,10 +895,14 @@ const entity = defineActor({
 })
 
 /** The stream: the same units in a loose flow that leaves the body and disperses. */
+const STREAM_FROM = [11, FLOAT_Y - 1, 3] as const
+const STREAM_TO = [50, FLOAT_Y + 3, -10] as const
+/** A point on the stream, for a panel to point at. */
+export const STREAM_POINT: V3 = [STREAM_FROM[0] + (STREAM_TO[0] - STREAM_FROM[0]) * 0.72, FLOAT_Y + 2.2, STREAM_FROM[2] + (STREAM_TO[2] - STREAM_FROM[2]) * 0.72]
 const stream = defineActor({
   id: 'stream',
   create: () => {
-    const el = createFlow({ seed: 21, units: 80, from: [11, FLOAT_Y - 1, 3], to: [50, FLOAT_Y + 3, -10], bend: 4, size: 1.5, bead: 0.4, pointSize: 2.8 })
+    const el = createFlow({ seed: 21, units: 80, from: STREAM_FROM, to: STREAM_TO, bend: 4, size: 1.5, bead: 0.4, pointSize: 2.8 })
     return el.object
   },
   ambient: (object, time) => {
@@ -969,8 +973,8 @@ const work = WORK_IDS.map((id, i) =>
 const wall = defineActor({
   id: 'wall',
   create: () => {
-    const el = createLattice({ seed: 60, cols: 1, rows: 8, gap: 2.8, size: 1.5, bead: 0.32, color: '#8A8F98' })
-    el.object.position.set(...screenToWorld(24, -10, 5))
+    const el = createLattice({ seed: 60, cols: 8, rows: 1, gap: 3, size: 1.55, bead: 0.32, color: '#8A8F98' })
+    el.object.position.set(...screenToWorld(33, 4, 5))
     el.object.scale.setScalar(0.001)
     return el.object
   },
@@ -1078,3 +1082,4 @@ export const actors: ActorDef[] = [
   auditLoop,
   litPath,
 ]
+

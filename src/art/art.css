@@ -740,3 +740,62 @@ body,
   .stop-chip-number::after { animation: none; }
 }
 
+
+/* ---- panels with a leader line: they name a form (src/show/callouts.tsx) -------- */
+
+.callout-root {
+  pointer-events: none;
+}
+
+.callout-anchor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+
+.callout {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: opacity;
+}
+
+.callout-dot {
+  position: absolute;
+  left: calc(var(--su) * -0.45);
+  top: calc(var(--su) * -0.45);
+  width: calc(var(--su) * 0.9);
+  height: calc(var(--su) * 0.9);
+  border-radius: 50%;
+  background: var(--c-ink);
+}
+
+.callout-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--su) * 1);
+  height: calc(var(--su) * 1);
+  overflow: visible;
+}
+
+.callout-line line {
+  stroke: color-mix(in srgb, var(--c-ink) 55%, transparent);
+  stroke-width: 1px;
+}
+
+.callout-panel {
+  position: absolute;
+  white-space: nowrap;
+  padding: calc(var(--su) * 0.5) calc(var(--su) * 1);
+  font-family: var(--font-label);
+  font-weight: 600;
+  font-size: calc(var(--su) * 1.9);
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: var(--c-ink);
+  border: 1px solid color-mix(in srgb, var(--c-dust) 60%, transparent);
+  border-radius: calc(var(--su) * 0.6);
+  background: color-mix(in srgb, var(--c-backdrop) 82%, transparent);
+}
