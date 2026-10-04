@@ -104,7 +104,7 @@ html.cursor-hidden * {
 .language-switch {
   position: absolute;
   right: calc(var(--stage-x) + var(--stage-w) * 0.04);
-  bottom: calc(var(--stage-y) + var(--stage-h) * 0.05);
+  bottom: calc(var(--stage-y) + var(--stage-h) * 0.13);
   display: flex;
   gap: calc(var(--su) * 1);
   pointer-events: auto;
