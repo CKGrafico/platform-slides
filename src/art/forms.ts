@@ -67,6 +67,26 @@ export function createForm(units: FormUnit[], seed: number, spacing = 0.34, glyp
   }
   object.geometry.setAttribute('aCenter', new BufferAttribute(centers, 3))
   object.geometry.setAttribute('aUnitPhase', new BufferAttribute(phases, 1))
+  // aEdge is 0 at the middle of a face and 1 at an edge or corner of the same unit.
+  // The shader assembles edges first, so a unit draws its outline before its faces.
+  const radius = new Float32Array(positions.count)
+  const nearest = new Map<number, number>()
+  const farthest = new Map<number, number>()
+  for (let i = 0; i < positions.count; i++) {
+    const owner = owners.getX(i)
+    const at = units[owner]!.at
+    const r = Math.hypot(positions.getX(i) - at[0], positions.getY(i) - at[1], positions.getZ(i) - at[2])
+    radius[i] = r
+    nearest.set(owner, Math.min(nearest.get(owner) ?? Infinity, r))
+    farthest.set(owner, Math.max(farthest.get(owner) ?? 0, r))
+  }
+  const edges = new Float32Array(positions.count)
+  for (let i = 0; i < positions.count; i++) {
+    const owner = owners.getX(i)
+    const span = farthest.get(owner)! - nearest.get(owner)!
+    edges[i] = span > 1e-6 ? (radius[i]! - nearest.get(owner)!) / span : 0
+  }
+  object.geometry.setAttribute('aEdge', new BufferAttribute(edges, 1))
   const faces = parts.map((part, owner) => {
     const geometry = part.geometry.clone().applyMatrix4(part.matrix!)
     const count = geometry.getAttribute('position').count

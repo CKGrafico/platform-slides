@@ -15,7 +15,9 @@ export const CONNECTIONS = {
   'path.review': { from: 'gate', to: 'review', bend: 0 },
   'path.apply': { from: 'review', to: 'core', bend: 6 },
   'path.release': { from: 'gate', to: 'release', bend: 0 },
-  'path.observe': { from: 'release', to: 'measure', bend: 0 },
+  'path.accept': { from: 'triage', to: 'core', bend: 0 },
+  'path.deploy': { from: 'gate', to: 'deployment', bend: 0 },
+  'path.observe': { from: 'deployment', to: 'measure', bend: 5 },
   'path.audit': { from: 'measure', to: 'audit', bend: 4 },
   'path.return': { from: 'audit', to: 'refine', bend: 6 },
   'path.local': { from: 'harness', to: 'core', bend: 0 },
@@ -36,7 +38,7 @@ export const CONNECTIONS = {
   'path.health.workflows': { from: 'measure', to: 'automation', bend: 9 },
 } as const
 export type PathId = keyof typeof CONNECTIONS
-const FORM_IDS = ['core', 'packet', 'context', 'intake', 'refine', 'automation', 'harness', 'forge', 'wall', 'gate', 'measure', 'missing', 'flow', 'parcel.0', 'parcel.1', 'parcel.2', 'parcel.3', 'triage', 'split', 'review', 'audit', 'release', 'outputs', 'level.0', 'level.1', 'level.2', 'level.3', 'level.4'] as const
+const FORM_IDS = ['core', 'packet', 'context', 'intake', 'refine', 'automation', 'harness', 'forge', 'wall', 'gate', 'measure', 'missing', 'flow', 'parcel.0', 'parcel.1', 'parcel.2', 'parcel.3', 'triage', 'split', 'review', 'audit', 'release', 'outputs', 'level.0', 'level.1', 'level.2', 'level.3', 'level.4', 'deployment'] as const
 export const LIVE_IDS = [...FORM_IDS, ...Object.keys(CONNECTIONS) as PathId[]]
 export type LiveId = typeof LIVE_IDS[number]
 export type WorkId = typeof FORM_IDS[number]
@@ -97,6 +99,7 @@ const factories: Record<WorkId, () => Points> = {
   audit: () => createForm(Array.from({ length: 6 }, (_, i) => ({ at: [(i % 3 - 1) * 2.2, Math.floor(i / 3) * 2.2 - 1.1, 0] as [number, number, number], size: 0.8, shape: 'prism' })), 48, 0.23, 11),
   release: () => createForm(Array.from({ length: 4 }, (_, i) => ({ at: [0, (i - 1.5) * 1.5, 0] as [number, number, number], size: 1.5, shape: 'slab' })), 49, 0.23, 11),
   outputs: () => lattice(50, 2, 2, 2),
+  deployment: () => lattice(56, 4, 2, 2),
   'level.0': () => createForm([{ at: [0, 0, 0], size: 2.1, shape: 'block' }], 51, 0.24, 11),
   'level.1': () => createForm([{ at: [-2.1, -1, 0], size: 1.2, shape: 'block' }, { at: [1.2, 1.4, 0.8], size: 1.5 }, { at: [2.7, -1.4, 0], size: 0.8, shape: 'slab' }], 52, 0.24, 11),
   'level.2': () => frame(53),
@@ -116,6 +119,7 @@ export const actors = LIVE_IDS.map((id) => defineActor({
       object.userData.transfer = { from: 'core', to: 'core', progress: 1 } satisfies Transfer
     }
     if (id === 'core' || id === 'refine') object.userData.workPart = 2
+    if (id === 'deployment') object.userData.workPart = 14
     object.userData.pose = { x: 18, y: 0, scale: 1, opacity: 0, assemble: 1, accent: 0, fluid: 0, turn: 0, phase: 0, focus: 0, work: 0, cut: 0 } satisfies Pose
     return object
   },

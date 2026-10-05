@@ -8,9 +8,9 @@ export const part: Part = {
   "title": "Project Health measures and improves the system",
   "beats": [
     {
-      "heading": "talk.health.dora.title",
-      "line": "talk.health.dora.body",
-      "command": "talk.health.dora.command",
+      "heading": "talk.health.measure.title",
+      "line": "talk.health.measure.body",
+      "command": "talk.health.measure.command",
       "picture": "feedback",
       "step": 0,
       "labels": [
@@ -27,48 +27,12 @@ export const part: Part = {
           "dx": -12,
           "dy": 18,
           "width": 30
-        }
-      ],
-      "layout": "wide",
-      "cloud": true
-    },
-    {
-      "heading": "talk.health.agent.title",
-      "line": "talk.health.agent.body",
-      "command": "talk.health.agent.command",
-      "picture": "feedback",
-      "step": 1,
-      "labels": [
-        {
-          "target": "measure",
-          "name": "talk.label.health",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
-        }
-      ],
-      "layout": "wide",
-      "cloud": true
-    },
-    {
-      "heading": "talk.health.people.title",
-      "line": "talk.health.people.body",
-      "command": "talk.health.people.command",
-      "picture": "feedback",
-      "step": 2,
-      "labels": [
-        {
-          "target": "review",
-          "name": "show.review.label",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
         },
         {
-          "target": "measure",
-          "name": "talk.label.health",
+          "target": "review",
+          "name": "talk.label.attention",
           "dx": -12,
-          "dy": 18,
+          "dy": -20,
           "width": 30
         }
       ],
@@ -80,7 +44,7 @@ export const part: Part = {
       "line": "talk.health.improve.body",
       "command": "talk.health.improve.command",
       "picture": "feedback",
-      "step": 3,
+      "step": 1,
       "labels": [
         {
           "target": "audit",
@@ -109,6 +73,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('workflow', 8),
+  before: picture('workflow', 4),
 }
 export const health = makePart(part)

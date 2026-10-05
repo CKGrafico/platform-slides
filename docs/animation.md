@@ -113,7 +113,10 @@ GSAP writes actor poses and the transfer track. `AsciiRuntime` applies them befo
 The runtime scales glyphs with the stage height and renderer DPR. It warms the shader before the talk.
 Bounded clock functions add idle drift. They never change narrative progress or worker outcomes.
 
-`beatStops` puts moves on the 120 BPM grid. Each rebuilt stop takes four beats. The forms finish their move before the stop so the speaker can hold a readable composition. Each frame shows only the active scene and beat.
+`beatStops` puts moves on the 120 BPM grid. Each stop takes four beats, which is two seconds.
+Bodies move first and land by 60 percent of the stop. A short stillness follows, and then the title, the caption, and the labels arrive in that order.
+An exit fades and loosens in place. A quiet body that must cross more than 12 units dissolves where it is and re-forms at its new place. Only the active bodies and the Issue travel.
+The constants are `TIMING` and `REVEAL` in `src/show/narrative.tsx`. Each body has its own drift period, so no two bodies move in step. Fluid bodies breathe by 1.5 percent.
 
 The fixed shot includes `ortho`, the orthographic half-height. `screenToWorld` maps positions onto its isometric screen plane. Camera orientation stays fixed throughout the show.
 

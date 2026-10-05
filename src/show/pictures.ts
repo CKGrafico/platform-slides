@@ -74,30 +74,28 @@ export function picture(kind: Picture, step: number): PictureState {
       if (step === 1) areas(true)
       break
     case 'evolution':
-      local(step === 0 ? 1 : 3)
+      local(3)
       levels()
       areas()
       if (step === 0) {
-        put('context', -20, -2, 1.9, { focus: 1 })
-        put('core', 14, -2, 1.9, { fluid: 1, focus: 1 })
-        path('path.context', 0.7, 1)
+        put('context', -34, -1, 1.5, { focus: 1 })
+        put('automation', -12, -2, 1.5, { focus: 1 })
+        put('harness', 11, -2, 1.9, { focus: 1 })
+        put('core', 34, -2, 1.5, { fluid: 1, focus: 1 })
+        path('path.skills', 0.7, 1)
+        path('path.environment', 0.7)
+        path('path.local', 0.7)
       } else {
         put('context', -33, -6, 0.85, { opacity: 0.55 })
-        put('automation', -14, -1, 1.85, { focus: 1 })
-        put('harness', 16, -2, 2.35, { focus: 1 })
-        put('core', 35, -11, 0.6, { fluid: 1, opacity: 0.6 })
+        put('automation', -9, -12, 0.7, { opacity: 0.45 })
+        put('harness', 11, -1, 2.3, { focus: 1 })
+        put('core', 31, -8, 0.85, { fluid: 1 })
+        put('intake', -27, -1, 1.8, { focus: 1 })
         path('path.skills', 0.5)
         path('path.environment', 0.7)
         path('path.local', 0.5)
-        owner = 'harness'
-        if (step === 2) {
-          put('intake', -27, -1, 1.8, { focus: 1 })
-          put('automation', -9, -12, 0.7, { opacity: 0.45 })
-          put('harness', 11, -1, 2.3, { focus: 1 })
-          put('core', 31, -8, 0.85, { fluid: 1 })
-          owner = 'intake'
-          path('path.facts', 0.65)
-        }
+        path('path.facts', 0.65)
+        owner = 'intake'
       }
       break
     case 'platform':
@@ -122,17 +120,9 @@ export function picture(kind: Picture, step: number): PictureState {
       break
     case 'baseline':
       field()
-      focus(step === 0 ? ['context'] : step === 1 ? ['wall'] : step === 2 ? ['context', 'wall'] : ['gate', 'review'])
+      focus(step === 0 ? ['context', 'wall'] : ['gate', 'review'])
       put('core', 34, -11, 0.65, { fluid: 1, opacity: 0.35 })
       if (step === 0) {
-        put('context', 0, -1, 3.35, { focus: 1 })
-        owner = 'context'
-      } else if (step === 1) {
-        put('wall', 3, -1, 3.0, { focus: 1 })
-        put('context', -30, -7, 1.0, { opacity: 0.5 })
-        path('path.baseline', 0.75)
-        owner = 'wall'
-      } else if (step === 2) {
         put('context', -20, -2, 2.3, { focus: 1 })
         put('wall', 20, -2, 2.1, { focus: 1 })
         path('path.baseline', 0.85)
@@ -146,121 +136,99 @@ export function picture(kind: Picture, step: number): PictureState {
       break
     case 'environment':
       field()
-      focus(step === 0 ? ['harness', 'context'] : step === 1 ? ['context', 'automation'] : step === 2 ? ['automation', 'harness'] : ['harness', 'forge'])
+      focus(step === 0 ? ['harness', 'context'] : ['automation', 'harness', 'forge'])
       put('core', 35, -12, 0.55, { fluid: 1, opacity: 0.4 })
       if (step === 0) {
         put('harness', 0, -1, 2.9, { focus: 1 })
         put('context', -29, -2, 1.45, { focus: 1 })
         owner = 'harness'
-      } else if (step === 1) {
-        put('context', -22, -2, 2.4, { focus: 1 })
-        put('automation', 18, -2, 2.1, { focus: 1 })
-        path('path.skills', 0.85)
-        owner = 'context'
-      } else if (step === 2) {
-        put('automation', -20, -2, 2.35, { focus: 1 })
-        put('harness', 22, -2, 2.25, { focus: 1 })
-        path('path.environment', 0.8)
-        owner = 'automation'
       } else {
-        put('harness', -21, -1, 2.5, { focus: 1 })
-        put('forge', 20, -2, 2.75, { focus: 1 })
+        put('automation', -30, -2, 1.9, { focus: 1 })
+        put('harness', -2, -1, 2.5, { focus: 1 })
+        put('forge', 27, -2, 2.5, { focus: 1 })
+        path('path.environment', 0.8)
         path('path.runtime', 0.85)
+        path('path.local', 0.45)
         owner = 'harness'
       }
       break
     case 'workflow':
-      if (step === 2 || step === 3 || step === 5) {
-        pipeline(step === 3 ? 'refine' : 'core')
+      if (step === 1 || step === 2 || step === 3) {
+        pipeline(step === 2 ? 'refine' : 'core')
+        if (step === 2) {
+          put('split', -20, -14, 0.6, { opacity: 0.45 })
+          path('path.split', 0.4)
+        }
       } else {
         field()
         if (step === 0) {
-          focus(['automation', 'harness'])
-          put('automation', -20, -1, 2.0, { focus: 1 })
-          put('harness', 20, -2, 2.3, { focus: 1 })
-          path('path.environment', 0.8)
-          owner = 'automation'
-        } else if (step === 1) {
-          focus(['intake', 'refine'])
+          focus(['automation', 'intake', 'refine'])
+          put('automation', -38, 2, 0.9, { focus: 1 })
           put('intake', -20, -1, 2.1, { focus: 1 })
           put('refine', 17, -2, 3.9, { focus: 1, fluid: 1 })
           put('triage', -34, -13, 0.65, { opacity: 0.5 })
           path('path.refine', 0.85)
           owner = 'intake'
-        } else if (step === 4) {
-          focus(['intake', 'refine', 'split'], true)
-          put('intake', -30, -3, 1.7, { focus: 1 })
-          put('refine', 0, -1, 4.15, { focus: 1, fluid: 1 })
-          put('split', 31, -3, 2.0, { focus: 1 })
-          path('path.refine', 0.55)
-          path('path.author', 0.9)
-          path('path.split', 0.9)
-          owner = 'refine'
-        } else if (step === 6) {
+        } else {
           focus(['wall', 'gate', 'review'])
-          put('wall', -29, -2, 1.75, { focus: 1 })
+          put('wall', -27, -2, 1.75, { focus: 1 })
           put('gate', 3, -2, 2.2, { focus: 1 })
-          put('review', 32, -3, 1.3, { focus: 1 })
+          put('review', 31, -3, 1.4, { focus: 1 })
+          put('core', -38, -8, 0.7, { fluid: 1, opacity: 0.6 })
           path('path.gate', 0.85)
           path('path.review', 0.7)
+          path('path.fix', 0.8)
+          path('path.apply', 0.75)
           owner = 'gate'
-        } else {
-          put('triage', -36, 7, 0.65)
-          put('split', -20, -14, 0.85)
-          put('review', 26, 9, 0.8)
-          put('release', 39, 9, 1.0)
-          focus(step === 7 ? ['core', 'gate', 'review', 'wall'] : ['intake', 'gate', 'release'], true)
-          for (const id of ['path.refine', 'path.implement', 'path.check', 'path.gate'] as PathId[]) path(id, 0.6)
-          if (step === 7) {
-            path('path.fix', 0.85)
-            path('path.review', 0.6)
-            path('path.apply', 0.85)
-            owner = 'core'
-          } else {
-            path('path.release', 0.85)
-            owner = 'release'
-          }
         }
       }
       break
     case 'feedback':
-    case 'system':
       field()
-      put('triage', -37, 7, 0.55)
-      put('split', -20, -14, 0.65)
-      put('review', 29, 8, 0.65)
-      put('release', 40, 5, 0.8)
       put('audit', -34, -14, 0.9)
-      if (kind === 'feedback') {
-        focus(step === 2 ? ['measure', 'review'] : step === 3 ? ['measure', 'audit', 'refine'] : ['measure'])
-        if (step < 2) {
-          put('measure', 5, -1, 2.3, { focus: 1 })
-          if (step === 0) put('missing', 32, -3, 2.0, { opacity: 0.6, focus: 1 })
-          owner = 'measure'
-        } else if (step === 2) {
-          put('review', -20, -2, 2.2, { focus: 1 })
-          put('measure', 22, -2, 1.9, { focus: 1 })
-          owner = 'review'
-        } else {
-          put('audit', -29, -2, 2.2, { focus: 1 })
-          put('refine', 2, -2, 3.25, { focus: 1, fluid: 1 })
-          put('measure', 31, -2, 1.5, { focus: 1 })
-          path('path.audit', 0.6)
-          path('path.return', 0.9)
-          path('path.health.foundations', 0.5)
-          path('path.health.harness', 0.5)
-          path('path.health.workflows', 0.5)
-          owner = 'audit'
-        }
+      focus(step === 0 ? ['measure', 'missing', 'review'] : ['measure', 'audit', 'refine'])
+      if (step === 0) {
+        put('measure', -8, -1, 2.3, { focus: 1 })
+        put('missing', 16, -3, 2.0, { opacity: 0.6, focus: 1 })
+        put('review', 36, -3, 1.4, { focus: 1 })
+        owner = 'measure'
       } else {
-        for (const id of LIVE_IDS) if (state[id].opacity > 0) state[id].opacity = Math.max(0.55, state[id].opacity)
-        for (const id of ['path.entry', 'path.triage', 'path.implement', 'path.check', 'path.gate', 'path.review', 'path.apply', 'path.release', 'path.observe', 'path.audit', 'path.return', 'path.local', 'path.runtime'] as PathId[]) path(id, 0.42)
-        path('path.health.foundations', 0.34)
-        path('path.health.harness', 0.34)
-        path('path.health.workflows', 0.34)
-        owner = 'core'
+        put('audit', -29, -2, 2.2, { focus: 1 })
+        put('refine', 2, -2, 3.25, { focus: 1, fluid: 1 })
+        put('measure', 31, -2, 1.5, { focus: 1 })
+        path('path.audit', 0.6)
+        path('path.return', 0.9)
+        path('path.health.foundations', 0.5)
+        path('path.health.harness', 0.5)
+        path('path.health.workflows', 0.5)
+        owner = 'audit'
       }
       break
+    case 'system': {
+      const quiet = (id: LiveId, x: number, y: number, scale: number, opacity: number) => put(id, x, y, scale, { opacity })
+      put('triage', -38, 3, 1.35, { focus: 1 })
+      put('core', -19, 3, 1.2, { fluid: 1, cut: 4, focus: 1 })
+      put('wall', 1, 3, 1.25, { focus: 1 })
+      put('gate', 20, 3, 1.25, { focus: 1 })
+      put('deployment', 37.5, 3, 1.3, { focus: 1 })
+      quiet('context', 0, -13, 0.75, 0.5)
+      quiet('harness', 12, -13, 0.7, 0.5)
+      quiet('automation', 24, -13, 0.75, 0.5)
+      quiet('measure', 36, -13, 0.75, 0.5)
+      for (let i = 0; i < 5; i++) put(`level.${i}` as LiveId, -42 + i * 6, -12, 0.32, { opacity: 0.3 })
+      quiet('intake', -46, 3, 0.5, 0.22)
+      quiet('split', -28, -8, 0.45, 0.22)
+      quiet('refine', -9, -8, 0.45, 0.22)
+      quiet('outputs', 10.5, -8, 0.45, 0.22)
+      quiet('review', 29, -8, 0.4, 0.22)
+      path('path.accept', 0.8, 1)
+      path('path.check', 0.8, 1)
+      path('path.gate', 0.8, 1)
+      path('path.deploy', 0.8, 1)
+      path('path.observe', 0.5)
+      owner = 'deployment'
+      break
+    }
   }
   if (state.refine.fluid > 0) state.core.fluid = 0
   state[owner].work = 1

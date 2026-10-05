@@ -73,6 +73,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('evolution', 2),
+  before: picture('evolution', 1),
 }
 export const platform = makePart(part)

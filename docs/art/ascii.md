@@ -7,6 +7,7 @@ Each aggregate uses one character draw and one invisible depth draw. Channels us
 The depth pass hides characters behind nearer surfaces. It draws no visible mesh. Marks and depth geometry share the same unit motion.
 The self-hosted font loads before the first frame. Materials release their atlas when the cast releases them.
 
+Each point carries an edge value. A unit assembles from its edges first and fills its faces last, so a form draws its outline before its surface.
 The core is a loose cluster. Repeatable work uses aligned units. A guardrail is a wall. The merge gate has one opening. The blue unit is the Issue. These meanings follow `elements.md`.
 
 The Issue colors a real unit in its current assembly. A traveling packet appears only between ports during a handoff.
@@ -26,6 +27,10 @@ Main paths, repair, review, manual release, and the Audit return use channels in
 For reduced motion, the engine cuts to each stop and the runtime freezes surface movement. The atlas size follows the actual renderer DPR. The geometry stays constant while the presenter moves through the show.
 
 The content ledger is `scripts/keynote-content.mjs`. `scripts/rebuild-show.mjs` writes the English script, both locale files, and the scene contracts.
-It keeps 31 stops across nine chapters. The first chapter contains the cover and the PC introduction.
+It keeps 20 stops across nine chapters. The first chapter contains the cover and the PC introduction.
 The five maturity assemblies and four assessment banks retain their meanings in the final world.
 Precomputed facts, reasoning, validation, and Safe Outputs occupy distinct positions in the worker close views.
+
+The closing view puts Triage, the reasoning core, the guardrail wall, the gate, and the deployment bank on one row. The deployment bank is a rigid lattice, and its front unit holds the Issue.
+Foundations, the Harness, the workflow configuration, and Health sit below the row at half opacity. The five maturity names are one line of text.
+The accept, check, gate, and deploy channels are blue. The observe channel returns evidence from the deployed bank to Health in grey.

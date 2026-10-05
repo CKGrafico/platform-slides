@@ -32,35 +32,11 @@ export const part: Part = {
       "layout": "wide"
     },
     {
-      "heading": "talk.harness.change.title",
-      "line": "talk.harness.change.body",
-      "command": "talk.harness.change.command",
+      "heading": "talk.harness.runtime.title",
+      "line": "talk.harness.runtime.body",
+      "command": "talk.harness.runtime.command",
       "picture": "environment",
       "step": 1,
-      "labels": [
-        {
-          "target": "context",
-          "name": "talk.label.specs",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
-        },
-        {
-          "target": "automation",
-          "name": "talk.label.skills",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
-        }
-      ],
-      "layout": "wide"
-    },
-    {
-      "heading": "talk.harness.plugins.title",
-      "line": "talk.harness.plugins.body",
-      "command": "talk.harness.plugins.command",
-      "picture": "environment",
-      "step": 2,
       "labels": [
         {
           "target": "automation",
@@ -75,27 +51,17 @@ export const part: Part = {
           "dx": -12,
           "dy": 18,
           "width": 30
-        }
-      ],
-      "layout": "wide"
-    },
-    {
-      "heading": "talk.harness.shared.title",
-      "line": "talk.harness.shared.body",
-      "command": "talk.harness.shared.command",
-      "picture": "environment",
-      "step": 3,
-      "labels": [
+        },
         {
-          "target": "harness",
-          "name": "talk.label.harness",
+          "target": "forge",
+          "name": "map.forge",
           "dx": -12,
           "dy": -20,
           "width": 30
         },
         {
-          "target": "forge",
-          "name": "map.forge",
+          "target": "core",
+          "name": "talk.label.agent",
           "dx": -12,
           "dy": 18,
           "width": 30
@@ -105,6 +71,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('baseline', 3),
+  before: picture('baseline', 1),
 }
 export const harness = makePart(part)

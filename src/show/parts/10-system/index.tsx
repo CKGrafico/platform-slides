@@ -15,74 +15,57 @@ export const part: Part = {
       "step": 0,
       "labels": [
         {
-          "target": "context",
-          "name": "talk.label.foundations",
-          "dx": -15,
-          "dy": 4,
-          "width": 30
+          "target": "triage",
+          "name": "talk.label.triage",
+          "dx": 0,
+          "dy": 9.4,
+          "width": 20,
+          "align": "center",
+          "anchorY": -6
         },
         {
-          "target": "harness",
-          "name": "talk.label.harness",
-          "dx": -15,
-          "dy": -14,
-          "width": 30
+          "target": "core",
+          "name": "talk.label.route",
+          "dx": 0,
+          "dy": 5.7,
+          "width": 24,
+          "align": "center",
+          "anchorY": -8
         },
         {
-          "target": "intake",
-          "name": "talk.label.workflows",
-          "dx": -15,
-          "dy": 18,
-          "width": 30
+          "target": "wall",
+          "name": "talk.label.ci",
+          "dx": 0,
+          "dy": 10.4,
+          "width": 20,
+          "align": "center",
+          "anchorY": -5.5
         },
         {
-          "target": "measure",
-          "name": "talk.label.health",
-          "dx": -15,
-          "dy": -15,
-          "width": 30
+          "target": "gate",
+          "name": "talk.label.gate",
+          "dx": 0,
+          "dy": 10.4,
+          "width": 20,
+          "align": "center",
+          "anchorY": -5.5
         },
         {
-          "target": "level.0",
-          "name": "talk.level.1",
-          "dx": -15,
-          "dy": -5,
-          "width": 30
-        },
-        {
-          "target": "level.1",
-          "name": "talk.level.2",
-          "dx": -15,
-          "dy": -5,
-          "width": 30
-        },
-        {
-          "target": "level.2",
-          "name": "talk.level.3",
-          "dx": -15,
-          "dy": -5,
-          "width": 30
-        },
-        {
-          "target": "level.3",
-          "name": "talk.level.4",
-          "dx": -15,
-          "dy": -5,
-          "width": 30
-        },
-        {
-          "target": "level.4",
-          "name": "talk.level.5",
-          "dx": -15,
-          "dy": -5,
-          "width": 30
+          "target": "deployment",
+          "name": "talk.label.production",
+          "dx": 0,
+          "dy": 15,
+          "width": 20,
+          "align": "center",
+          "anchorY": -3
         }
       ],
       "layout": "wide",
+      "footnote": "talk.maturity.line",
       "cloud": true
     }
   ]
 },
-  before: picture('feedback', 3),
+  before: picture('feedback', 1),
 }
 export const system = makePart(part)

@@ -11,7 +11,18 @@ import { LIVE_IDS, poseOf, type LiveId, type Transfer } from './actors'
 import { picture, workOwner, type Picture, type PictureState } from './pictures'
 import { MAP_SHOT } from './shots'
 
-export interface Annotation { target: LiveId; name: MessageKey; dx?: number; dy?: number; width?: number }
+/**
+ * Fractions of one beat (two seconds at 120 BPM). Bodies move first and land by 0.6.
+ * A short stillness follows, and then the title, the caption and the labels arrive in order.
+ */
+const TIMING = {
+  exitStart: 0.05, exit: 0.35, arrive: 0.3, travel: 12, transfer: 0.8,
+  heroStart: 0.03, hero: 0.55, supportStart: 0.06, support: 0.45, supportStep: 0.025,
+  enterStart: 0.08, enterStep: 0.03,
+}
+const REVEAL = { title: [0.6, 0.8], caption: [0.68, 0.88], label: [0.76, 0.96] } as const
+
+export interface Annotation { target: LiveId; name: MessageKey; dx?: number; dy?: number; width?: number; align?: 'center'; anchorY?: number }
 export interface Beat {
   heading: MessageKey
   line?: MessageKey
@@ -20,22 +31,24 @@ export interface Beat {
   step: number
   labels?: Annotation[]
   layout?: 'cover' | 'wide' | 'statement'
+  footnote?: MessageKey
   cloud?: boolean
 }
 export interface Part { id: string; scene: string; title: string; beats: Beat[]; before: PictureState; intro?: Beat }
 
 function Annotation({ item }: { item: Annotation }) {
   const anchor = useRef<HTMLDivElement>(null)
-  useAnchor(anchor, item.target)
+  useAnchor(anchor, item.target, [0, item.anchorY ?? 0, 0])
   const dx = item.dx ?? 2
   const dy = item.dy ?? -9
+  const centered = item.align === 'center'
   return (
     <div ref={anchor} className="ascii-anchor">
       <svg className="ascii-leader" viewBox="-40 -24 80 48" aria-hidden="true">
-        <polyline pathLength="1" points={`0,0 ${dx / 2},${dy} ${dx},${dy}`} />
+        <polyline pathLength="1" points={centered ? `0,0 0,${dy / 2} 0,${dy}` : `0,0 ${dx / 2},${dy} ${dx},${dy}`} />
         <rect x="-0.35" y="-0.35" width="0.7" height="0.7" />
       </svg>
-      <div className="ascii-label" style={{ left: `calc(var(--su) * ${dx})`, top: `calc(var(--su) * ${dy})`, width: `calc(var(--su) * ${item.width ?? 30})` }} data-fit={item.name}>
+      <div className={centered ? 'ascii-label ascii-label--center' : 'ascii-label'} style={{ left: `calc(var(--su) * ${dx})`, top: `calc(var(--su) * ${dy})`, width: `calc(var(--su) * ${item.width ?? 30})` }} data-fit={item.name}>
         <span className="art-burn"><T k={item.name} /></span>
       </div>
     </div>
@@ -60,9 +73,9 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
         const value = local === 0 ? 1 : Math.min(1, Math.max(0, (progress - start) / (end - start)))
         return String(1 - (1 - value) ** 3)
       }
-      node.style.setProperty('--title-reveal', reveal(0.03, 0.38))
-      node.style.setProperty('--caption-reveal', reveal(0.25, 0.7))
-      node.style.setProperty('--label-reveal', reveal(0.45, 0.9))
+      node.style.setProperty('--title-reveal', reveal(REVEAL.title[0], REVEAL.title[1]))
+      node.style.setProperty('--caption-reveal', reveal(REVEAL.caption[0], REVEAL.caption[1]))
+      node.style.setProperty('--label-reveal', reveal(REVEAL.label[0], REVEAL.label[1]))
       node.setAttribute('aria-hidden', String(!shown))
     }
   })
@@ -74,6 +87,7 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
             <div className="ascii-prompt" data-fit="show.prompt"><T k={beat.cloud ? 'show.cloudPrompt' : 'show.prompt'} /><span className="ascii-command"><T k={beat.command} /></span><span className="ascii-cursor" aria-hidden="true" /></div>
             <h1 className="ascii-heading" data-fit={beat.heading}><span className="art-burn"><T k={beat.heading} /></span></h1>
             {beat.line ? <p className="ascii-caption" data-fit={beat.line}><span className="art-burn"><T k={beat.line} /></span></p> : null}
+            {beat.footnote ? <p className="ascii-footnote" data-fit={beat.footnote}><span className="art-burn"><T k={beat.footnote} /></span></p> : null}
             {beat.layout === 'cover' ? <div className="ascii-byline" data-fit="p01.name"><span className="art-burn"><T k="p01.name" /><span className="ascii-role"><T k="p01.role" /></span></span></div> : null}
           </Stage>
           {beat.labels?.map((item) => <Annotation key={item.target} item={item} />)}
@@ -108,30 +122,50 @@ export function makeMoves(part: Part) {
       const to = picture(beat.picture, beat.step)
       const window = t.span(`${part.id}/${part.scene}`, i / part.beats.length, (i + 1) / part.beats.length)
       tl.set(transfer, { from: workOwner(from), to: workOwner(to), immediateRender: false }, window.start)
-      tl.fromTo(transfer, { progress: 0 }, { progress: 1, immediateRender: false, duration: window.duration * 0.88, ease: 'power3.inOut' }, window.start)
+      tl.fromTo(transfer, { progress: 0 }, { progress: 1, immediateRender: false, duration: window.duration * TIMING.transfer, ease: 'power3.inOut' }, window.start + window.duration * 0.06)
+      let arrivals = 0
       for (const [slot, id] of LIVE_IDS.entries()) {
         const pose = poseOf(cast.get<Points>(id))
         const entering = from[id].opacity <= 0.005 && to[id].opacity > 0.005
+        const leaving = from[id].opacity > 0.005 && to[id].opacity <= 0.005
         const origin = entering ? {
-          ...from[id], x: from.core.x, y: from.core.y, scale: Math.max(0.08, to[id].scale * 0.15),
+          ...from[id], x: from.core.x, y: from.core.y, scale: Math.max(0.08, to[id].scale * 0.15), fluid: 1, assemble: 0.35,
         } : { ...from[id] }
         const distance = Math.hypot(to[id].x - origin.x, to[id].y - origin.y)
-        const transfer = (id === 'packet' || id.startsWith('parcel.')) && distance > 8 && to[id].opacity > 0.1
-        const delay = entering ? 0.08 + slot % 4 * 0.025 : to[id].focus > 0.8 ? 0.02 : 0.04 + slot % 4 * 0.025
-        if (transfer) {
+        const hero = to[id].focus > 0.8
+        const flight = (id === 'packet' || id.startsWith('parcel.')) && distance > 8 && to[id].opacity > 0.1
+        const dissolve = !entering && !leaving && !hero && !flight && !id.startsWith('path.') && distance > TIMING.travel && to[id].opacity > 0.005
+        const at = (fraction: number) => window.start + window.duration * fraction
+        if (leaving) {
+          // An exit stays in place: it fades, loosens, and then waits hidden at its next pose.
+          const hold = { opacity: from[id].opacity, scale: from[id].scale, assemble: from[id].assemble }
+          tl.fromTo(pose, hold, { opacity: 0, scale: from[id].scale * 0.85, assemble: 0.3, immediateRender: false, duration: window.duration * TIMING.exit, ease: 'power2.in' }, at(TIMING.exitStart))
+          tl.set(pose, { ...to[id] }, at(TIMING.exitStart + TIMING.exit))
+        } else if (dissolve) {
+          // A quiet body far from its next place dissolves where it is and re-forms there.
+          const hold = { opacity: from[id].opacity, assemble: from[id].assemble }
+          tl.fromTo(pose, hold, { opacity: 0, assemble: 0.3, immediateRender: false, duration: window.duration * TIMING.exit, ease: 'power2.in' }, at(TIMING.exitStart))
+          const rise = at(TIMING.exitStart + TIMING.exit)
+          tl.set(pose, { ...to[id], opacity: 0, assemble: 0.3 }, rise)
+          tl.fromTo(pose, { opacity: 0, assemble: 0.3 }, { opacity: to[id].opacity, assemble: to[id].assemble, immediateRender: false, duration: window.duration * TIMING.arrive, ease: 'power3.out' }, rise)
+        } else if (flight) {
           const middle = {
             ...to[id], x: (origin.x + to[id].x) / 2, y: (origin.y + to[id].y) / 2 + Math.min(4, distance * 0.12),
             scale: origin.scale + (to[id].scale - origin.scale) * 0.48,
             assemble: origin.assemble + (to[id].assemble - origin.assemble) * 0.6,
           }
-          const start = window.start + window.duration * delay
-          tl.fromTo(pose, origin, { ...middle, immediateRender: false, duration: window.duration * 0.38, ease: 'power2.in' }, start)
-          tl.to(pose, { ...to[id], duration: window.duration * 0.45, ease: 'power3.out' }, start + window.duration * 0.38)
+          const start = at(TIMING.heroStart)
+          tl.fromTo(pose, origin, { ...middle, immediateRender: false, duration: window.duration * 0.3, ease: 'power2.in' }, start)
+          tl.to(pose, { ...to[id], duration: window.duration * 0.3, ease: 'power3.out' }, start + window.duration * 0.3)
         } else {
-          tl.fromTo(pose, origin, {
-            ...to[id], immediateRender: false, duration: window.duration * (to[id].focus > 0.8 ? 0.9 : 0.72),
-            ease: entering ? 'power3.out' : 'power3.inOut',
-          }, window.start + window.duration * delay)
+          const { cut: fromCut, ...startPose } = origin
+          const { cut: toCut, turn: toTurn, ...endPose } = to[id]
+          const delay = entering ? TIMING.enterStart + Math.min(arrivals++, 6) * TIMING.enterStep : hero ? TIMING.heroStart : TIMING.supportStart + (slot % 4) * TIMING.supportStep
+          const duration = window.duration * (hero ? TIMING.hero : TIMING.support)
+          tl.fromTo(pose, startPose, { ...endPose, immediateRender: false, duration, ease: entering ? 'power3.out' : 'power3.inOut' }, at(delay))
+          // The turn trails the move a little, and the cut of a body takes half the beat.
+          tl.fromTo(pose, { turn: origin.turn }, { turn: toTurn, immediateRender: false, duration: duration * 1.15, ease: 'power3.inOut' }, at(delay))
+          if (fromCut !== toCut) tl.fromTo(pose, { cut: fromCut }, { cut: toCut, immediateRender: false, duration: window.duration * 0.5, ease: 'none' }, at(TIMING.heroStart))
         }
       }
       from = to

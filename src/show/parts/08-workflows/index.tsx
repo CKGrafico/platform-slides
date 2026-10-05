@@ -8,9 +8,9 @@ export const part: Part = {
   "title": "Agentic Workflows: jobs, reasoning, validated writes",
   "beats": [
     {
-      "heading": "talk.workflows.compile.title",
-      "line": "talk.workflows.compile.body",
-      "command": "talk.workflows.compile.command",
+      "heading": "talk.workflows.router.title",
+      "line": "talk.workflows.router.body",
+      "command": "talk.workflows.router.command",
       "picture": "workflow",
       "step": 0,
       "labels": [
@@ -18,39 +18,21 @@ export const part: Part = {
           "target": "automation",
           "name": "talk.label.workflows",
           "dx": -12,
-          "dy": -20,
+          "dy": 17,
           "width": 30
         },
-        {
-          "target": "harness",
-          "name": "talk.label.harness",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
-        }
-      ],
-      "layout": "wide",
-      "cloud": true
-    },
-    {
-      "heading": "talk.workflows.router.title",
-      "line": "talk.workflows.router.body",
-      "command": "talk.workflows.router.command",
-      "picture": "workflow",
-      "step": 1,
-      "labels": [
         {
           "target": "intake",
           "name": "talk.label.router",
           "dx": -12,
-          "dy": -20,
+          "dy": 20,
           "width": 30
         },
         {
           "target": "refine",
           "name": "talk.label.refine",
           "dx": -12,
-          "dy": 18,
+          "dy": -20,
           "width": 30
         }
       ],
@@ -62,7 +44,7 @@ export const part: Part = {
       "line": "talk.workflows.hybrid.body",
       "command": "talk.workflows.hybrid.command",
       "picture": "workflow",
-      "step": 2,
+      "step": 1,
       "labels": [
         {
           "target": "intake",
@@ -101,7 +83,7 @@ export const part: Part = {
       "line": "talk.workflows.refine.body",
       "command": "talk.workflows.refine.command",
       "picture": "workflow",
-      "step": 3,
+      "step": 2,
       "labels": [
         {
           "target": "intake",
@@ -136,43 +118,11 @@ export const part: Part = {
       "cloud": true
     },
     {
-      "heading": "talk.workflows.refineReturns.title",
-      "line": "talk.workflows.refineReturns.body",
-      "command": "talk.workflows.refineReturns.command",
-      "picture": "workflow",
-      "step": 4,
-      "labels": [
-        {
-          "target": "intake",
-          "name": "talk.label.author",
-          "dx": -15,
-          "dy": 19,
-          "width": 30
-        },
-        {
-          "target": "refine",
-          "name": "talk.label.refine",
-          "dx": -12,
-          "dy": -18,
-          "width": 30
-        },
-        {
-          "target": "split",
-          "name": "talk.label.split",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
-        }
-      ],
-      "layout": "wide",
-      "cloud": true
-    },
-    {
       "heading": "talk.workflows.implement.title",
       "line": "talk.workflows.implement.body",
       "command": "talk.workflows.implement.command",
       "picture": "workflow",
-      "step": 5,
+      "step": 3,
       "labels": [
         {
           "target": "intake",
@@ -211,7 +161,7 @@ export const part: Part = {
       "line": "talk.workflows.gate.body",
       "command": "talk.workflows.gate.command",
       "picture": "workflow",
-      "step": 6,
+      "step": 4,
       "labels": [
         {
           "target": "wall",
@@ -233,69 +183,12 @@ export const part: Part = {
           "dx": -12,
           "dy": -18,
           "width": 30
-        }
-      ],
-      "layout": "wide",
-      "cloud": true
-    },
-    {
-      "heading": "talk.workflows.returns.title",
-      "line": "talk.workflows.returns.body",
-      "command": "talk.workflows.returns.command",
-      "picture": "workflow",
-      "step": 7,
-      "labels": [
+        },
         {
           "target": "core",
           "name": "talk.label.implement",
-          "dx": 2,
-          "dy": -20,
-          "width": 30
-        },
-        {
-          "target": "review",
-          "name": "talk.label.review",
           "dx": -12,
-          "dy": 9,
-          "width": 30
-        },
-        {
-          "target": "gate",
-          "name": "talk.label.gate",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
-        }
-      ],
-      "layout": "wide",
-      "cloud": true
-    },
-    {
-      "heading": "talk.workflows.handoff.title",
-      "line": "talk.workflows.handoff.body",
-      "command": "talk.workflows.handoff.command",
-      "picture": "workflow",
-      "step": 8,
-      "labels": [
-        {
-          "target": "gate",
-          "name": "talk.label.gate",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
-        },
-        {
-          "target": "release",
-          "name": "talk.label.release",
-          "dx": -22,
-          "dy": 8,
-          "width": 30
-        },
-        {
-          "target": "intake",
-          "name": "talk.label.router",
-          "dx": -15,
-          "dy": 18,
+          "dy": 10,
           "width": 30
         }
       ],
@@ -304,6 +197,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('environment', 3),
+  before: picture('environment', 1),
 }
 export const workflows = makePart(part)

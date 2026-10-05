@@ -1,6 +1,6 @@
 # Art rehearsal
 
-The live kit uses ASCII surfaces on faceted forms. Its 31 stops follow the Issue through 28 forms and 31 route channels.
+The live kit uses ASCII surfaces on faceted forms. Its 20 stops follow the Issue through 29 forms and 33 route channels.
 The blue work unit docks inside each assembly. Idle drift keeps the field alive between stops.
 The town and orbit implementations are removed. Git preserves them.
 

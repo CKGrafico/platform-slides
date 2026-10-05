@@ -45,9 +45,9 @@ Rules:
 ## Typography
 
 - **JetBrains Mono** for everything: panels, the command line, labels, numbers. Mono is the voice of the world.
-- **Outfit** for act titles if the mono reads flat. Outfit Black, tight tracking, one line.
+- Titles use the same mono face at weight 700 with tight tracking (-0.02em). There is no second typeface.
 - Both are self-hosted through `@fontsource-variable`, so the show works offline at the venue. The show waits for `document.fonts.ready` before the first frame.
-- Sizes in stage units (1 su is 1% of the stage height): minimum 1.8 su, act titles 10 to 14 su. Real text is crisp and large; the point cloud carries the machine.
+- Sizes in stage units (1 su is 1% of the stage height): labels and the command line 1.8 su, captions 2.8 su, titles 5.6 to 7.2 su, the cover title 9.6 su. Real text is crisp and large; the point cloud carries the machine.
 - Product and technical names stay in English in both languages.
 
 ## Motion grammar

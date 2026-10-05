@@ -8,9 +8,9 @@ export const part: Part = {
   "title": "Prompts to asynchronous work",
   "beats": [
     {
-      "heading": "talk.evolution.instructions.title",
-      "line": "talk.evolution.instructions.body",
-      "command": "talk.evolution.instructions.command",
+      "heading": "talk.evolution.path.title",
+      "line": "talk.evolution.path.body",
+      "command": "talk.evolution.path.command",
       "picture": "evolution",
       "step": 0,
       "labels": [
@@ -22,32 +22,22 @@ export const part: Part = {
           "width": 30
         },
         {
-          "target": "core",
-          "name": "node.core",
-          "dx": 2,
-          "dy": -20,
-          "width": 30
-        }
-      ],
-      "layout": "wide"
-    },
-    {
-      "heading": "talk.evolution.environment.title",
-      "line": "talk.evolution.environment.body",
-      "command": "talk.evolution.environment.command",
-      "picture": "evolution",
-      "step": 1,
-      "labels": [
-        {
           "target": "automation",
           "name": "talk.label.plugins",
           "dx": -12,
-          "dy": 18,
+          "dy": -20,
           "width": 30
         },
         {
           "target": "harness",
           "name": "talk.label.harness",
+          "dx": -12,
+          "dy": 18,
+          "width": 30
+        },
+        {
+          "target": "core",
+          "name": "talk.label.agent",
           "dx": -12,
           "dy": -20,
           "width": 30
@@ -60,7 +50,7 @@ export const part: Part = {
       "line": "talk.evolution.async.body",
       "command": "talk.evolution.async.command",
       "picture": "evolution",
-      "step": 2,
+      "step": 1,
       "labels": [
         {
           "target": "intake",

@@ -9,6 +9,18 @@ import type { FormUnit } from '@/art/forms'
 import { CONNECTIONS, poseOf, type PathId, type Transfer } from './actors'
 import { screenToWorld } from './shots'
 
+/**
+ * Ambient motion per class of body. Rates are radians per second, so the periods are 9 to 37 s.
+ * Amplitudes are in pose units (yaw, pitch and roll in radians). Fluid bodies breathe a little.
+ * Rigid banks and walls keep their internal alignment and only drift as one piece.
+ */
+const CALM_OFF = { dx: 0, dy: 0, dxRate: 0, dyRate: 0, pitch: 0, yaw: 0, roll: 0, pitchRate: 0, yawRate: 0, rollRate: 0, breath: 0 }
+const CALM = {
+  fluid: { dx: 0.25, dy: 0.6, dxRate: 0.48, dyRate: 0.7, pitch: 0.06, yaw: 0.12, roll: 0.03, pitchRate: 0.3, yawRate: 0.22, rollRate: 0.37, breath: 0.015 },
+  rigid: { dx: 0.15, dy: 0.45, dxRate: 0.39, dyRate: 0.5, pitch: 0.03, yaw: 0.05, roll: 0.02, pitchRate: 0.25, yawRate: 0.2, rollRate: 0.33, breath: 0 },
+  heavy: { dx: 0.1, dy: 0.3, dxRate: 0.33, dyRate: 0.42, pitch: 0.02, yaw: 0.035, roll: 0, pitchRate: 0.22, yawRate: 0.17, rollRate: 0, breath: 0 },
+}
+
 const start = new Vector3()
 const end = new Vector3()
 const direction = new Vector3()
@@ -54,16 +66,23 @@ export function AsciiRuntime() {
     for (const [id, object] of actorEntries()) {
       if (!(object instanceof Points) || !(object.material instanceof ShaderMaterial)) continue
       const pose = poseOf(object)
-      const phase = index++ * 2.399
+      const phase = index * 2.399
+      // Each body has its own period, so no two bodies move in step.
+      const jitter = 1 + 0.12 * (((index++ * 7) % 5) - 2) / 2
       const weight = 0.7 + pose.focus * 0.5
-      const dx = reducedMotion ? 0 : Math.sin(time * 0.38 + phase) * 0.23 * weight
-      const dy = reducedMotion ? 0 : Math.sin(time * 0.52 + phase) * 0.72 * weight
+      const fluid = pose.fluid > 0.5
+      const heavy = id === 'wall' || id === 'gate' || id === 'review'
+      const motion = reducedMotion ? CALM_OFF : fluid ? CALM.fluid : heavy ? CALM.heavy : CALM.rigid
+      const t = time * jitter
+      const dx = Math.sin(t * motion.dxRate + phase) * motion.dx * weight
+      const dy = Math.sin(t * motion.dyRate + phase) * motion.dy * weight
+      const breath = 1 + Math.sin(t * 0.9 + phase) * motion.breath
       object.position.set(...screenToWorld((pose.x + dx) * ratio, (pose.y + dy) * ratio, 5))
-      object.scale.setScalar(pose.scale * ratio)
+      object.scale.setScalar(pose.scale * ratio * breath)
       object.rotation.set(
-        reducedMotion ? 0 : Math.sin(time * 0.24 + phase) * 0.075 * weight,
-        pose.turn + (reducedMotion ? 0 : Math.sin(time * 0.19 + phase) * 0.18 * weight),
-        reducedMotion ? 0 : Math.sin(time * 0.28 + phase) * 0.045 * weight,
+        Math.sin(t * motion.pitchRate + phase) * motion.pitch * weight,
+        pose.turn + Math.sin(t * motion.yawRate + phase) * motion.yaw * weight,
+        Math.sin(t * motion.rollRate + phase) * motion.roll * weight,
       )
       object.visible = pose.opacity > 0.005 && pose.scale > 0.001
       if (!object.visible && id !== 'packet') continue
@@ -96,7 +115,7 @@ export function AsciiRuntime() {
         ;(source.material as ShaderMaterial).uniforms.uWorkAccent!.value = same ? 1 : 1 - smooth(0, 0.22, p)
         ;(target.material as ShaderMaterial).uniforms.uWorkAccent!.value = same ? 1 : smooth(0.78, 1, p)
         up.setFromMatrixColumn(cam.matrixWorld, 1)
-        const arc = Math.sin(p * Math.PI) * Math.min(3.5, start.distanceTo(end) * 0.13)
+        const arc = Math.sin(p * Math.PI) * Math.min(6, start.distanceTo(end) * 0.11)
         packet.position.lerpVectors(start, end, p).addScaledVector(up, arc)
         packet.quaternion.slerpQuaternions(source.quaternion, target.quaternion, p)
         const size = origin.size * poseOf(source).scale * (1 - p) + destination.size * poseOf(target).scale * p

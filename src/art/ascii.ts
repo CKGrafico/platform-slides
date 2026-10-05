@@ -97,6 +97,7 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       attribute float aSeed;
       attribute vec3 aColor;
       attribute vec3 aScatter;
+      attribute float aEdge;
       ${UNIT_MOTION}
       uniform float uSize;
       uniform float uPixelRatio;
@@ -114,7 +115,9 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       void main() {
         mat3 spin = unitSpin();
         vec3 p = unitPosition(position + normal * 0.015, spin);
-        p += aScatter * (1.0 - uAssemble) * 1.5;
+        float formed = clamp((uAssemble - 0.3 * (1.0 - aEdge)) / 0.7, 0.0, 1.0);
+        formed = formed * formed * (3.0 - 2.0 * formed);
+        p += aScatter * (1.0 - formed) * 1.5;
         vec3 n = normalize(normalMatrix * spin * normal);
         vFacing = n.z;
         vUnitScale = unitScale();
