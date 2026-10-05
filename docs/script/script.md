@@ -16,11 +16,11 @@ The old script is in [the source archive](script-orbits-archive.md). Its visual 
 
 Source: [reference](../knowledge/talk-notes.md).
 
-### 1. From your PC to Platform
+### 1. From Issue to production with GitHub Agentic Workflows
 
 On screen: a close view of the reasoning core. The blue Issue is one of its units. The cover introduces the speaker.
 
-Say: This talk follows work from an engineer's PC into the Plain Concepts Platform.
+Say: This talk follows one Issue from an engineer's PC to production, through the Plain Concepts Platform.
 
 ### 2. You work with AI on your PC.
 
@@ -164,9 +164,9 @@ Speaker notes: GitHub Agentic Workflows supplies the compiler and execution infr
 
 On screen: workflow, state 1. Panels name facts · jobs, OpenCode · agent, validate · jobs, safe-outputs.
 
-Slide: Jobs collect facts. The agent decides with read-only access. Validators check its result. Safe Outputs applies only allowed writes.
+Slide: Jobs collect facts. OpenCode decides through Forge, our AI gateway, with read-only access. Validators check the result. Safe Outputs applies allowed writes.
 
-Speaker notes: Read the whole chain from left to right. Normal jobs authorize, select, and collect facts. The agent receives those facts and performs the work that needs judgment. Deterministic validators enforce the result contract. Fixed jobs apply allowed writes. Safe Outputs defines the permitted verbs. The agent itself has read-only repository permissions. Neither a label check nor a fixed comment needs a model.
+Speaker notes: Read the whole chain from left to right. Normal jobs authorize, select, and collect facts. The agent receives those facts and performs the work that needs judgment. The agent is OpenCode, and it never talks to a model provider itself. It talks to Forge, the Plain Concepts AI gateway. Forge chooses the provider and the model, and each project has its own key, so we control cost and access for each project. The model, the provider, and the runtime can change. The architecture around them stays. Deterministic validators enforce the result contract. Fixed jobs apply allowed writes. Safe Outputs defines the permitted verbs. The agent itself has read-only repository permissions. Neither a label check nor a fixed comment needs a model.
 
 ### 18. Refine: from Issue to story.
 

@@ -57,7 +57,7 @@ body { font-family: var(--font-label); }
   font: 600 calc(var(--su) * 2.8) / 1.4 var(--font-label);
 }
 .ascii-role { display: block; font-size: calc(var(--su) * 1.8); font-weight: 400; color: #a7abb1; }
-.ascii-frame--cover .ascii-heading { top: calc(var(--su) * 19); width: calc(var(--su) * 100); font-size: calc(var(--su) * 11); height: calc(var(--su) * 26); }
+.ascii-frame--cover .ascii-heading { top: calc(var(--su) * 16); width: calc(var(--su) * 110); font-size: calc(var(--su) * 8.5); height: calc(var(--su) * 30); }
 .ascii-frame--cover .ascii-caption { bottom: calc(var(--su) * 21); height: calc(var(--su) * 12); font-size: calc(var(--su) * 2.8); }
 .ascii-frame--wide .ascii-heading { top: calc(var(--su) * 10); height: calc(var(--su) * 15); width: calc(var(--su) * 150); font-size: calc(var(--su) * 6.5); white-space: normal; text-wrap: balance; }
 .ascii-frame--wide .ascii-caption { bottom: calc(var(--su) * 5.5); height: calc(var(--su) * 12); width: calc(var(--su) * 130); font-size: calc(var(--su) * 2.8); }

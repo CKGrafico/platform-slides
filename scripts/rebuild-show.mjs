@@ -24,7 +24,7 @@ const header = `# Talk script\n\nDraft 8, 2026-10-05. ${count} stops, including 
 let number = 1
 const script = sections.map((section) => {
   let text = `## ${section.title}\n\nSource: [reference](${section.source}).\n\n`
-  if (section.intro) text += `### ${number++}. From your PC to Platform\n\nOn screen: a close view of the reasoning core. The blue Issue is one of its units. The cover introduces the speaker.\n\nSay: This talk follows work from an engineer's PC into the Plain Concepts Platform.\n\n`
+  if (section.intro) text += `### ${number++}. From Issue to production with GitHub Agentic Workflows\n\nOn screen: a close view of the reasoning core. The blue Issue is one of its units. The cover introduces the speaker.\n\nSay: This talk follows one Issue from an engineer's PC to production, through the Plain Concepts Platform.\n\n`
   text += section.beats.map((beat) => beat.layout === 'chapter' ? `### ${number++}. Chapter: ${clean(beat.title[0])}\n\nOn screen: the title over the dimmed world.\n\nSpeaker notes: ${beat.notes}\n\n` : `### ${number++}. ${clean(beat.title[0])}\n\nOn screen: ${beat.picture}, state ${beat.step}. ${beat.labels.length ? `Panels name ${beat.labels.map((label) => sharedCopy[label.name]?.[0] ?? label.name).join(', ')}.` : 'The composition holds the current subject.'}\n\nSlide: ${clean(beat.body[0])}\n\nSpeaker notes: ${beat.notes}\n\n`).join('')
   return text
 }).join('')

@@ -36,7 +36,7 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
   switch (kind) {
     case 'cover':
     case 'local':
-      hero('core', 23, 0, kind === 'cover' ? 2.25 : 2.15, { fluid: 1, turn: 0.16 })
+      hero('core', kind === 'cover' ? 29 : 23, 0, kind === 'cover' ? 2.0 : 2.15, { fluid: 1, turn: 0.16 })
       break
     case 'assessment':
       if (step === 0) {
