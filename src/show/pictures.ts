@@ -156,8 +156,9 @@ export function picture(kind: Picture, step: number): PictureState {
       if (step === 1 || step === 2 || step === 3) {
         pipeline(step === 2 ? 'refine' : 'core')
         if (step === 2) {
-          put('split', -20, -14, 0.6, { opacity: 0.45 })
-          path('path.split', 0.4)
+          put('split', -38, -12, 0.9, { focus: 1 })
+          path('path.split', 0.8)
+          path('path.author', 0.6)
         }
       } else {
         field()

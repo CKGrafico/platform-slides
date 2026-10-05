@@ -100,11 +100,11 @@ export const part: Part = {
           "width": 22
         },
         {
-          "target": "wall",
-          "name": "talk.label.validate",
-          "dx": -10,
-          "dy": -18,
-          "width": 22
+          "target": "split",
+          "name": "talk.label.split",
+          "dx": -2,
+          "dy": 6,
+          "width": 26
         },
         {
           "target": "outputs",

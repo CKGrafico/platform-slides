@@ -41,8 +41,8 @@ export const part: Part = {
         {
           "target": "gate",
           "name": "talk.label.gate",
-          "dx": -12,
-          "dy": -20,
+          "dx": -50,
+          "dy": -6,
           "width": 30
         },
         {

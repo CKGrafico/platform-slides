@@ -152,7 +152,7 @@ Speaker notes: Read the whole chain from left to right. Normal jobs authorize, s
 
 ### 15. Refine: from Issue to story.
 
-On screen: workflow, state 2. Panels name facts · jobs, Refine, validate · jobs, safe-outputs.
+On screen: workflow, state 2. Panels name facts · jobs, Refine, Split · child Issues, safe-outputs.
 
 Slide: It reads the code and writes testable criteria with an estimate. It asks the author when intent is missing. Large Issues split into children.
 
