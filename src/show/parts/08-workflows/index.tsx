@@ -8,6 +8,16 @@ export const part: Part = {
   "title": "Agentic Workflows: jobs, reasoning, validated writes",
   "beats": [
     {
+      "heading": "talk.workflows.chapter.title",
+      "command": "talk.workflows.chapter.command",
+      "picture": "environment",
+      "step": 1,
+      "labels": [],
+      "layout": "chapter",
+      "dim": true,
+      "cloud": true
+    },
+    {
       "heading": "talk.workflows.router.title",
       "line": "talk.workflows.router.body",
       "command": "talk.workflows.router.command",
@@ -17,23 +27,20 @@ export const part: Part = {
         {
           "target": "automation",
           "name": "talk.label.workflows",
-          "dx": -12,
-          "dy": 17,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "intake",
           "name": "talk.label.router",
-          "dx": -12,
-          "dy": 20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "refine",
           "name": "talk.label.refine",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide",
@@ -49,30 +56,26 @@ export const part: Part = {
         {
           "target": "intake",
           "name": "talk.label.facts",
-          "dx": -10,
-          "dy": -18,
-          "width": 22
+          "width": 28,
+          "under": true
         },
         {
           "target": "core",
           "name": "talk.label.agent",
-          "dx": -10,
-          "dy": 20,
-          "width": 22
+          "width": 28,
+          "under": true
         },
         {
           "target": "wall",
           "name": "talk.label.validate",
-          "dx": -10,
-          "dy": -18,
-          "width": 22
+          "width": 28,
+          "under": true
         },
         {
           "target": "outputs",
           "name": "talk.label.outputs",
-          "dx": -10,
-          "dy": 20,
-          "width": 22
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide",
@@ -88,30 +91,26 @@ export const part: Part = {
         {
           "target": "intake",
           "name": "talk.label.facts",
-          "dx": -10,
-          "dy": -18,
-          "width": 22
+          "width": 28,
+          "under": true
         },
         {
           "target": "refine",
           "name": "talk.label.refine",
-          "dx": -10,
-          "dy": 20,
-          "width": 22
+          "width": 28,
+          "under": true
         },
         {
           "target": "split",
           "name": "talk.label.split",
-          "dx": -2,
-          "dy": 6,
-          "width": 26
+          "width": 28,
+          "under": true
         },
         {
           "target": "outputs",
           "name": "talk.label.outputs",
-          "dx": -10,
-          "dy": 20,
-          "width": 22
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide",
@@ -127,30 +126,26 @@ export const part: Part = {
         {
           "target": "intake",
           "name": "talk.label.facts",
-          "dx": -10,
-          "dy": -18,
-          "width": 22
+          "width": 28,
+          "under": true
         },
         {
           "target": "core",
           "name": "talk.label.agent",
-          "dx": -10,
-          "dy": 20,
-          "width": 22
+          "width": 28,
+          "under": true
         },
         {
           "target": "wall",
           "name": "talk.label.validate",
-          "dx": -10,
-          "dy": -18,
-          "width": 22
+          "width": 28,
+          "under": true
         },
         {
           "target": "outputs",
           "name": "talk.label.outputs",
-          "dx": -10,
-          "dy": 20,
-          "width": 22
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide",
@@ -166,30 +161,26 @@ export const part: Part = {
         {
           "target": "wall",
           "name": "talk.label.ci",
-          "dx": -12,
-          "dy": -18,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "gate",
           "name": "talk.label.gate",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "review",
           "name": "show.review.label",
-          "dx": -12,
-          "dy": -18,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "core",
           "name": "talk.label.implement",
-          "dx": -12,
-          "dy": 10,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide",

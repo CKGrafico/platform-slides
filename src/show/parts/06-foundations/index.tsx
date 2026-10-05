@@ -8,6 +8,15 @@ export const part: Part = {
   "title": "Foundations: conventions enforced in code",
   "beats": [
     {
+      "heading": "talk.foundations.chapter.title",
+      "command": "talk.foundations.chapter.command",
+      "picture": "platform",
+      "step": 1,
+      "labels": [],
+      "layout": "chapter",
+      "dim": true
+    },
+    {
       "heading": "talk.foundations.guardrails.title",
       "line": "talk.foundations.guardrails.body",
       "command": "talk.foundations.guardrails.command",
@@ -17,16 +26,14 @@ export const part: Part = {
         {
           "target": "context",
           "name": "talk.label.foundations",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "wall",
           "name": "map.walls",
-          "dx": -10,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide"
@@ -41,16 +48,14 @@ export const part: Part = {
         {
           "target": "gate",
           "name": "talk.label.gate",
-          "dx": -50,
-          "dy": -6,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "review",
           "name": "show.review.label",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide"

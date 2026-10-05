@@ -32,7 +32,7 @@ A story rule sits under the three: nothing appears without a reason the beat bef
 | Release | a manually dispatched publishing step | a stack of beveled slabs after the merge gate |
 | Deployed application | the eligible change in production | a rigid bank with the blue Issue docked in one of its front units. It is separate from the manual package Release worker |
 | The measure | a measurement: tokens, Project Health | a rigid bank of units, like stacked blanks. A gap stays empty for a metric that is not collected |
-| The panel | the name of an entity | a terminal panel: a thin rounded rectangle, a name, and a short role line. It follows its entity on screen |
+| The name | the name of an entity | one line of mono text centred under the body, with a small square at the lowest edge of the body. No box and no leader line. It follows its entity on screen |
 | The command line | where the talk is | one line of mono text in the top left, the current beat, ending in a blue block cursor |
 | Maturity level | a set of team practices in the assessment | five assemblies with increasing structure: one unit, loose units, a frame, repeated banks, and a frame with measured banks. Their names stay fixed. They do not represent a measured Platform score |
 | Assessment area | one weighted area in the assessment | four rigid banks, named SDLC, determinism, control, and impact. These banks stay visible at the edge of the final system |

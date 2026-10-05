@@ -44,10 +44,10 @@ Rules:
 
 ## Typography
 
-- **JetBrains Mono** for everything: panels, the command line, labels, numbers. Mono is the voice of the world.
-- Titles use the same mono face at weight 700 with tight tracking (-0.02em). There is no second typeface.
+- **Outfit Black** for titles, with tight tracking (-0.04em). The titles carry the talk, so they need the presence of a display face.
+- **JetBrains Mono** for the world: names under bodies, the command line, captions, and numbers. Mono is the voice of the machine.
 - Both are self-hosted through `@fontsource-variable`, so the show works offline at the venue. The show waits for `document.fonts.ready` before the first frame.
-- Sizes in stage units (1 su is 1% of the stage height): labels and the command line 1.8 su, captions 2.8 su, titles 5.6 to 7.2 su, the cover title 9.6 su. Real text is crisp and large; the point cloud carries the machine.
+- Sizes in stage units (1 su is 1% of the stage height): names and the command line 1.8 su, captions 2.8 su, titles 6.5 to 8.5 su, chapter cards 12 su, the cover title 11 su. Real text is crisp and large; the point cloud carries the machine.
 - Product and technical names stay in English in both languages.
 
 ## Motion grammar

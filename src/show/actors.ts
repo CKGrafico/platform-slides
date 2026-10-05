@@ -1,6 +1,7 @@
-import { cluster, constraint, createForm, frame, lattice, steps } from '@/art/forms'
+import { cluster, createForm, gate, harness, lattice, level, plate, steps, triage, upright, wall, type FormUnit } from '@/art/forms'
+import { createAsciiMaterial } from '@/art/ascii'
 import { defineActor } from '@/world/actors'
-import type { Points, ShaderMaterial } from 'three'
+import { Points, type BufferGeometry, type Color, type ShaderMaterial } from 'three'
 
 export const CONNECTIONS = {
   'path.entry': { from: 'intake', to: 'triage', bend: 0 },
@@ -61,54 +62,80 @@ export interface Pose {
 
 export function poseOf(object: Points): Pose { return object.userData.pose as Pose }
 
-function stream() {
-  const object = createForm(Array.from({ length: 34 }, (_, i) => ({
-    at: [(i / 33 - 0.5) * 22, Math.sin(i * 2.4) * 0.45, Math.cos(i * 1.7) * 0.6] as [number, number, number],
-    size: 0.22 + i % 4 * 0.055,
-    shape: 'block' as const,
-  })), 40, 0.12, 5.5)
-  ;(object.material as ShaderMaterial).uniforms.uStream!.value = 1
+/** Three lanes of small beads. Same-lane pitch keeps the beads apart, so they never fuse. */
+function streamUnits(n = 45): FormUnit[] {
+  return Array.from({ length: n }, (_, i) => {
+    const lane = i % 3
+    return {
+      at: [(i / (n - 1) - 0.5) * 22, [-0.7, 0.1, 0.7][lane]! + Math.sin(i * 2.4) * 0.15, [0.6, -0.7, 0.1][lane]! + Math.cos(i * 1.7) * 0.15] as [number, number, number],
+      size: 0.28 + (i % 5) * 0.055,
+      shape: (['cell', 'cubocta', 'block'] as const)[lane],
+      rotation: [i * 0.31, i * 0.22, 0] as [number, number, number],
+    }
+  })
+}
+
+/** Every channel draws the same beads, so they share one geometry. The last owner disposes it. */
+let shared: { geometry: BufferGeometry; source: Points; users: number } | undefined
+
+function stream(): Points {
+  let object: Points
+  if (!shared) {
+    object = createForm(streamUnits(), 40, 0.17, 7, { depth: false })
+    shared = { geometry: object.geometry, source: object, users: 0 }
+  } else {
+    object = new Points(shared.geometry, createAsciiMaterial(7))
+    object.frustumCulled = false
+    const { units, formSeed, workPart, drift } = shared.source.userData
+    Object.assign(object.userData, { units, formSeed, workPart, drift })
+  }
+  const owner = shared
+  owner.users++
+  const material = object.material as ShaderMaterial
+  material.uniforms.uStream!.value = 1
+  // The lifted blue the art direction allows for the smallest marks.
+  ;(material.uniforms.uBlue!.value as Color).set('#5C8BFF')
+  object.userData.dispose = () => {
+    material.dispose()
+    owner.users--
+    if (owner.users === 0) {
+      owner.geometry.dispose()
+      if (shared === owner) shared = undefined
+    }
+  }
   return object
 }
 
 const factories: Record<WorkId, () => Points> = {
   core: () => cluster(7),
-  packet: () => createForm([{ at: [0, 0, 0], size: 1.25, shape: 'block' }], 91, 0.2, 12),
-  context: () => lattice(30, 2, 3),
-  intake: () => lattice(31, 2, 2),
-  refine: () => cluster(32, 0.4),
+  packet: () => createForm([{ at: [0, 0, 0], size: 1.25, shape: 'block' }], 91, 0.2, 13),
+  context: () => lattice(30, 5, 2, 1),
+  intake: () => lattice(31, 2, 2, 4),
+  refine: () => cluster(32, 0.42),
   automation: () => steps(33),
-  harness: () => frame(34),
-  forge: () => createForm(Array.from({ length: 12 }, (_, i) => ({ at: [(i % 4 - 1.5) * 1.5, Math.floor(i / 4) * 1.5 - 1.5, 0] as [number, number, number], size: 0.85, shape: 'slab' })), 35, 0.22, 11),
-  wall: () => constraint(36),
-  gate: () => constraint(37, true),
-  measure: () => lattice(38, 3, 4),
-  missing: () => createForm([{ at: [-2, 0, 0], size: 0.4 }, { at: [2, 0, 0], size: 0.4 }], 39),
-  flow: () => createForm(Array.from({ length: 38 }, (_, i) => ({
-    at: [(i / 37 - 0.5) * 22, Math.sin(i * 2.4) * 0.65, Math.cos(i * 1.7) * 1.1] as [number, number, number],
-    size: 0.18 + (i % 5) * 0.065,
-    rotation: [i * 0.31, i * 0.22, 0] as [number, number, number],
-  })), 40, 0.12, 4.5),
-  'parcel.0': () => lattice(41, 3, 2),
-  'parcel.1': () => lattice(42, 2, 2, 3),
-  'parcel.2': () => lattice(43, 2, 3),
-  'parcel.3': () => lattice(44, 3, 1, 3),
-  triage: () => frame(45),
-  split: () => createForm([{ at: [-2.4, 0, 0], size: 1, shape: 'block' }, { at: [0, 1.7, 0], size: 1, shape: 'block' }, { at: [2.4, 0, 0], size: 1, shape: 'block' }], 46, 0.23, 11),
-  review: () => constraint(47, true),
-  audit: () => createForm(Array.from({ length: 6 }, (_, i) => ({ at: [(i % 3 - 1) * 2.2, Math.floor(i / 3) * 2.2 - 1.1, 0] as [number, number, number], size: 0.8, shape: 'prism' })), 48, 0.23, 11),
-  release: () => createForm(Array.from({ length: 4 }, (_, i) => ({ at: [0, (i - 1.5) * 1.5, 0] as [number, number, number], size: 1.5, shape: 'slab' })), 49, 0.23, 11),
+  harness: () => harness(34),
+  forge: () => plate(35),
+  wall: () => wall(36),
+  gate: () => gate(37),
+  measure: () => lattice(38, 3, 3, 3, 2.1, 1, 0.24),
+  missing: () => createForm([{ at: [-2, 0, 0], size: 0.4 }, { at: [2, 0, 0], size: 0.4 }], 39, 0.3, 9),
+  flow: () => stream(),
+  'parcel.0': () => lattice(41, 3, 2, 1, 2.1, 1, 0.26),
+  'parcel.1': () => lattice(42, 2, 2, 3, 2.1, 1, 0.26),
+  'parcel.2': () => lattice(43, 2, 3, 1, 2.1, 1, 0.26),
+  'parcel.3': () => lattice(44, 3, 1, 3, 2.1, 1, 0.26),
+  triage: () => triage(45),
+  split: () => createForm([{ at: [-2.6, -0.3, 0], size: 1, shape: 'block' }, { at: [0, 1.8, 0], size: 1, shape: 'block' }, { at: [2.6, -0.3, 0], size: 1, shape: 'block' }], 46, 0.24, 11, { work: 1 }),
+  review: () => upright(47),
+  audit: () => createForm(Array.from({ length: 6 }, (_, i) => ({ at: [(i % 3 - 1) * 2.2, Math.floor(i / 3) * 2.8 - 1.4, 0] as [number, number, number], size: 0.9, shape: 'prism' as const })), 48, 0.24, 11),
+  release: () => createForm(Array.from({ length: 4 }, (_, i) => ({ at: [0, (i - 1.5) * 1.5, 0] as [number, number, number], size: 1.5, shape: 'slab' as const })), 49, 0.24, 11),
   outputs: () => lattice(50, 2, 2, 2),
   deployment: () => lattice(56, 4, 2, 2),
-  'level.0': () => createForm([{ at: [0, 0, 0], size: 2.1, shape: 'block' }], 51, 0.24, 11),
-  'level.1': () => createForm([{ at: [-2.1, -1, 0], size: 1.2, shape: 'block' }, { at: [1.2, 1.4, 0.8], size: 1.5 }, { at: [2.7, -1.4, 0], size: 0.8, shape: 'slab' }], 52, 0.24, 11),
-  'level.2': () => frame(53),
-  'level.3': () => lattice(54, 3, 3, 2),
-  'level.4': () => createForm(Array.from({ length: 35 }, (_, i) => {
-    const x = i % 5 - 2
-    const y = Math.floor(i / 5) - 3
-    return { at: [x * 2.1, y * 1.6, Math.abs(x) === 2 || Math.abs(y) === 3 ? -1.3 : 1.3] as [number, number, number], size: Math.abs(x) === 2 || Math.abs(y) === 3 ? 0.8 : 0.55, shape: 'block' as const }
-  }), 55, 0.24, 11),
+  'level.0': () => level(51, 0),
+  'level.1': () => level(52, 1),
+  'level.2': () => level(53, 2),
+  'level.3': () => level(54, 3),
+  'level.4': () => level(55, 4),
 }
 
 export const actors = LIVE_IDS.map((id) => defineActor({
@@ -118,8 +145,6 @@ export const actors = LIVE_IDS.map((id) => defineActor({
     if (id === 'packet') {
       object.userData.transfer = { from: 'core', to: 'core', progress: 1 } satisfies Transfer
     }
-    if (id === 'core' || id === 'refine') object.userData.workPart = 2
-    if (id === 'deployment') object.userData.workPart = 14
     object.userData.pose = { x: 18, y: 0, scale: 1, opacity: 0, assemble: 1, accent: 0, fluid: 0, turn: 0, phase: 0, focus: 0, work: 0, cut: 0 } satisfies Pose
     return object
   },

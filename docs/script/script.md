@@ -1,6 +1,6 @@
 # Talk script
 
-Draft 7, 2026-10-05. 20 stops, including the cover. Draft 7 merges the 31 stops of Draft 6, and each stop now changes the picture. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
+Draft 8, 2026-10-05. 24 stops, including the cover and four chapter cards. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
 
 The same Issue moves through the talk. Each new layer answers a practical need and stays in the field. Foundations supplies enforceable conventions. The Harness supplies the agent environment. Workflows give events bounded runs. Health supplies evidence and returns findings to the same route.
 
@@ -74,7 +74,13 @@ Speaker notes: Move the same work item into an event-driven environment. Work ca
 
 Source: [reference](../knowledge/website-reading.md).
 
-### 7. Four repositories carry the method.
+### 7. Chapter: How we built Platform
+
+On screen: the title over the dimmed world.
+
+Speaker notes: Pause. The talk moves from your PC to the Platform department and its four repositories.
+
+### 8. Four repositories carry the method.
 
 On screen: platform, state 0. Panels name Foundations, agent-harness, agentic-workflows, project-health.
 
@@ -82,7 +88,7 @@ Slide: Foundations sets conventions. agent-harness installs them for agents. age
 
 Speaker notes: Platform is a Plain Concepts department that builds and maintains applications. Foundations defines conventions. agent-harness installs the agent environment. agentic-workflows runs workers on events. project-health measures delivery and agent work. Each repository supplies an input the next one needs.
 
-### 8. Discovery → Foundations → Maintenance
+### 9. Discovery → Foundations → Maintenance
 
 On screen: platform, state 1. Panels name Foundations, Router · shell.
 
@@ -94,7 +100,13 @@ Speaker notes: Discovery defines product outcomes and constraints. Foundations t
 
 Source: [reference](../knowledge/website-reading.md).
 
-### 9. A guardrail fails the build.
+### 10. Chapter: Foundations
+
+On screen: the title over the dimmed world.
+
+Speaker notes: Pause. The first pillar: conventions that code enforces.
+
+### 11. A guardrail fails the build.
 
 On screen: baseline, state 0. Panels name Foundations, map.walls.
 
@@ -102,7 +114,7 @@ Slide: One stack for people and agents. The linter blocks cross-layer code. A be
 
 Speaker notes: Give engineers and agents a defined stack. The frontend uses Next.js, strict TypeScript, and shared tokens. The backend uses .NET, one-way layer dependencies, and vertical slices. Foundations is a thin shared base. Application behavior stays in the application. A convention becomes a guardrail when code enforces it. A layer violation fails the build, and an agent must not make the test green by allowing the forbidden dependency. Widening the boundary rule needs its own control. CI links a behavior change to a specification, proposal, or decision record. Trivial refactors have an explicit opt-out. Test quality requires assertions about observable behavior, not code execution alone. Where the domain needs an audit trail, every state change must use the append path.
 
-### 10. Protected paths need an owner.
+### 12. Protected paths need an owner.
 
 On screen: baseline, state 1. Panels name Merge Gate, show.review.label.
 
@@ -114,7 +126,7 @@ Speaker notes: Protected paths have owner checkpoints. Authentication, authoriza
 
 Source: [reference](../knowledge/platform.md).
 
-### 11. agent-harness sets up the environment.
+### 13. agent-harness sets up the environment.
 
 On screen: environment, state 0. Panels name agent-harness, ARCHITECTURE + DESIGN.
 
@@ -122,7 +134,7 @@ Slide: One command installs pc-* skills, commands, agents, plugins and OpenSpec.
 
 Speaker notes: One npx command runs the installer wizard. It copies commands, skills, agents, plugins, and OpenSpec into the repository. The bootstrap reads the codebase and generates ARCHITECTURE.md and DESIGN.md for an existing project. A new project starts with placeholders. Saved configuration records the backlog, repository, and model tiers. Update preserves hand edits. OpenSpec separates intent, design, specifications, and tasks. The command /plan-propose writes the proposal, specs, and tasks. The command /plan-apply runs waves of engineers. Verification runs lint, types, tests, and build. The command /ops-ship opens the pull request. Planning and execution model tiers are configurable.
 
-### 12. One Harness on PC and CI.
+### 14. One Harness on PC and CI.
 
 On screen: environment, state 1. Panels name plugins, agent-harness, map.forge, OpenCode · agent.
 
@@ -134,7 +146,13 @@ Speaker notes: The pc-system-reminders plugin denies unsafe Git actions and enfo
 
 Source: [reference](../knowledge/workflow-routes.md).
 
-### 13. One router for every event.
+### 15. Chapter: Agentic Workflows
+
+On screen: the title over the dimmed world.
+
+Speaker notes: Pause. The work leaves the PC. Events start bounded runs in the cloud.
+
+### 16. One router for every event.
 
 On screen: workflow, state 0. Panels name agentic-workflows, Router · shell, Refine.
 
@@ -142,7 +160,7 @@ Slide: A Markdown file compiles to a GitHub Actions workflow. Shell code classif
 
 Speaker notes: GitHub Agentic Workflows supplies the compiler and execution infrastructure. Platform supplies the router, worker catalog, installer, shared defaults, and repository Harness. Frontmatter sets the runner, engine, model, permissions, and allowed outputs. The Markdown body contains the agent task. Compiling adds framework jobs, and Actions runs the lock file. The router owns all triggers. A pure shell classifier reads the event and selects one route without a model call. Requests from people without write access enter through Triage before Refine. Workers accept workflow_call inputs and declare no public triggers. Router concurrency prevents competing workers on an Issue. Labels describe state for people. They are not the lock. Bot comments must not retrigger their own worker.
 
-### 14. Jobs → agent → jobs → Safe Outputs
+### 17. Jobs → agent → jobs → Safe Outputs
 
 On screen: workflow, state 1. Panels name facts · jobs, OpenCode · agent, validate · jobs, safe-outputs.
 
@@ -150,7 +168,7 @@ Slide: Jobs collect facts. The agent decides with read-only access. Validators c
 
 Speaker notes: Read the whole chain from left to right. Normal jobs authorize, select, and collect facts. The agent receives those facts and performs the work that needs judgment. Deterministic validators enforce the result contract. Fixed jobs apply allowed writes. Safe Outputs defines the permitted verbs. The agent itself has read-only repository permissions. Neither a label check nor a fixed comment needs a model.
 
-### 15. Refine: from Issue to story.
+### 18. Refine: from Issue to story.
 
 On screen: workflow, state 2. Panels name facts · jobs, Refine, Split · child Issues, safe-outputs.
 
@@ -158,7 +176,7 @@ Slide: It reads the code and writes testable criteria with an estimate. It asks 
 
 Speaker notes: Fixed jobs authorize and collect the Issue and comments before the agent starts. Refine uses the real codebase to produce an implementable story with acceptance criteria and an estimate. A single result must be applied through the permitted output contract. Issue text is data inside a marked boundary, not a new instruction source. Two branches have different causes. Missing intent returns to the author. Oversized work splits into bounded children that follow the route on their own. Replies re-enter refinement. They do not restart an implementation with stale assumptions. The current route sends small work to Implement. The older polling cascade on the website is not the current router.
 
-### 16. Implement: code, checks and PR.
+### 19. Implement: code, checks and PR.
 
 On screen: workflow, state 3. Panels name facts · jobs, OpenCode · agent, validate · jobs, safe-outputs.
 
@@ -166,7 +184,7 @@ Slide: Prepare the Issue → /plan-goal → validate the patch → open PR. The 
 
 Speaker notes: Normal jobs read the Issue, reserve it, and supply facts. OpenCode runs the scoped implementation with the Harness. It writes code and verifies the change. Fixed output steps replay the validated patch and open the pull request. Implement stops at that handoff. It does not own merge, and it must not hold a runner while waiting for CI. A feature chain can accumulate stories on one branch before its final pull request.
 
-### 17. CI supplies evidence. Merge Gate decides.
+### 20. CI supplies evidence. Merge Gate decides.
 
 On screen: workflow, state 4. Panels name CI, Merge Gate, show.review.label, Implement.
 
@@ -178,7 +196,13 @@ Speaker notes: CI dispatches its conclusion to the router, and the gate runs as 
 
 Source: [reference](../knowledge/website-reading.md).
 
-### 18. Health measures what GitHub knows.
+### 21. Chapter: Project Health
+
+On screen: the title over the dimmed world.
+
+Speaker notes: Pause. The last pillar measures the system and feeds the other three.
+
+### 22. Health measures what GitHub knows.
 
 On screen: feedback, state 0. Panels name project-health, p12.notCollected, waits for a person.
 
@@ -186,7 +210,7 @@ Slide: Deployment frequency, lead time and rework. Tokens per run, as a floor. W
 
 Speaker notes: Project Health collects GitHub facts and publishes a static site. Deployment frequency and commit-to-production lead time describe delivery. Rework needs an explicit hotfix marker. Change fail rate and recovery time need production incident evidence. A red pipeline is not that evidence, so those values stay absent with a reason. Agent usage comes from run artifacts and from the actual agent step. A declared agent job that was skipped is not an agent run. Token totals can be incomplete when artifacts are absent, so show measured N of M. Costs stay in tokens. Human attention is its own measure: pending review and blocked Issues for each project, with bot pull requests counted apart. More PRs do not establish less work for people. This view shows where the automated route repeatedly stops.
 
-### 19. Audit sends work back to Refine.
+### 23. Audit sends work back to Refine.
 
 On screen: feedback, state 1. Panels name Audit · read-only, Refine, project-health.
 
@@ -198,7 +222,7 @@ Speaker notes: Audit reads the repository against its guardrails and files a fin
 
 Source: [reference](../knowledge/maturity.md).
 
-### 20. From Issue to production with GitHub Agentic Workflows.
+### 24. From Issue to production with GitHub Agentic Workflows.
 
 On screen: system, state 0. Panels name Triage, Refine · Implement, CI, Merge Gate, Production.
 

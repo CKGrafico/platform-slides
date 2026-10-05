@@ -17,30 +17,26 @@ export const part: Part = {
         {
           "target": "context",
           "name": "talk.label.skills",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "automation",
           "name": "talk.label.plugins",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "harness",
           "name": "talk.label.harness",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "core",
           "name": "talk.label.agent",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide"
@@ -55,16 +51,14 @@ export const part: Part = {
         {
           "target": "intake",
           "name": "talk.label.router",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "harness",
           "name": "talk.label.harness",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide"

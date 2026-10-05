@@ -1,7 +1,7 @@
 # Keynote reconstruction
 
 The presenter approved the current order on 2026-10-05.
-The keynote has 20 stops across nine chapters.
+The keynote has 24 stops across nine chapters. Four of them are chapter cards.
 The cover and the PC introduction share a chapter.
 The full beat contract and speaker notes are in [script.md](script.md).
 

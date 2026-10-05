@@ -8,6 +8,16 @@ export const part: Part = {
   "title": "How we built Platform",
   "beats": [
     {
+      "heading": "talk.platform.chapter.title",
+      "command": "talk.platform.chapter.command",
+      "picture": "evolution",
+      "step": 1,
+      "labels": [],
+      "layout": "chapter",
+      "dim": true,
+      "cloud": true
+    },
+    {
       "heading": "talk.platform.pillars.title",
       "line": "talk.platform.pillars.body",
       "command": "talk.platform.pillars.command",
@@ -17,30 +27,26 @@ export const part: Part = {
         {
           "target": "wall",
           "name": "talk.label.foundations",
-          "dx": -15,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "harness",
           "name": "talk.label.harness",
-          "dx": -15,
-          "dy": 20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "automation",
           "name": "talk.label.workflows",
-          "dx": -15,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "measure",
           "name": "talk.label.health",
-          "dx": -15,
-          "dy": 20,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide",
@@ -56,16 +62,14 @@ export const part: Part = {
         {
           "target": "wall",
           "name": "talk.label.foundations",
-          "dx": -10,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "intake",
           "name": "talk.label.router",
-          "dx": -15,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide",

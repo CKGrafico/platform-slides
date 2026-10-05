@@ -27,10 +27,17 @@ Main paths, repair, review, manual release, and the Audit return use channels in
 For reduced motion, the engine cuts to each stop and the runtime freezes surface movement. The atlas size follows the actual renderer DPR. The geometry stays constant while the presenter moves through the show.
 
 The content ledger is `scripts/keynote-content.mjs`. `scripts/rebuild-show.mjs` writes the English script, both locale files, and the scene contracts.
-It keeps 20 stops across nine chapters. The first chapter contains the cover and the PC introduction.
+It keeps 24 stops across nine chapters, with four chapter cards. The first chapter contains the cover and the PC introduction.
 The five maturity assemblies and four assessment banks retain their meanings in the final world.
 Precomputed facts, reasoning, validation, and Safe Outputs occupy distinct positions in the worker close views.
 
 The closing view puts Triage, the reasoning core, the guardrail wall, the gate, and the deployment bank on one row. The deployment bank is a rigid lattice, and its front unit holds the Issue.
 Foundations, the Harness, the workflow configuration, and Health sit below the row at half opacity. The five maturity names are one line of text.
 The accept, check, gate, and deploy channels are blue. The observe channel returns evidence from the deployed bank to Health in grey.
+
+Each role has its own silhouette, so the audience can tell bodies apart without reading a name.
+The units are chamfered blocks, prisms, slabs, beams, tiles, hexagonal prisms, cuboctahedra, and truncated octahedra. None is a sphere or a sharp cube.
+The reasoning core is one mass of 26 varied units. Unit 2 holds the Issue on the face that looks at the camera. Units 4 to 7 sit on the visible rim and leave when work separates.
+Banks are tight grids with a different footprint for each role. The guardrail is a tall wall one unit deep, with merlons. The merge gate has a door, a lintel, and a sill where the Issue docks.
+Owner review is an upright hollow square. Triage is a ring with four posts. The Harness is a ring of blocks around a raised ring of hexagonal prisms. Forge is a flat plate of tiles.
+All channels share one bead geometry in three lanes, drawn in the lifted blue. The docked Issue uses the densest mark and a larger point, and its blue never darkens below 85 percent.

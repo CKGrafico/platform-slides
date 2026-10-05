@@ -1,12 +1,13 @@
-import { useRef } from 'react'
+import { useMemo, useRef } from 'react'
 import { defineChapter, defineScene } from '@/engine/define'
 import { useProgress, useScene } from '@/engine/context'
 import { Stage } from '@/engine/Stage'
 import { T, type MessageKey } from '@/i18n'
-import { beatStops } from '@/animation/beat'
-import { defineChoreography } from '@/world/actors'
+import { BEAT } from '@/animation/beat'
+import { defineChoreography, getActorObject } from '@/world/actors'
 import { useAnchor } from '@/art/anchor'
-import type { Points } from 'three'
+import { Vector3, type Camera, type Points } from 'three'
+import type { FormUnit } from '@/art/forms'
 import { LIVE_IDS, poseOf, type LiveId, type Transfer } from './actors'
 import { picture, workOwner, type Picture, type PictureState } from './pictures'
 import { MAP_SHOT } from './shots'
@@ -21,8 +22,10 @@ const TIMING = {
   enterStart: 0.08, enterStep: 0.03,
 }
 const REVEAL = { title: [0.6, 0.8], caption: [0.68, 0.88], label: [0.76, 0.96] } as const
+/** A chapter card shows only its title, which arrives while the world fades behind it. */
+const CHAPTER_REVEAL = { title: [0.15, 0.55], caption: [0.15, 0.55], label: [0.15, 0.55] } as const
 
-export interface Annotation { target: LiveId; name: MessageKey; dx?: number; dy?: number; width?: number; align?: 'center'; anchorY?: number }
+export interface Annotation { target: LiveId; name: MessageKey; dx?: number; dy?: number; width?: number; align?: 'center'; anchorY?: number; under?: boolean }
 export interface Beat {
   heading: MessageKey
   line?: MessageKey
@@ -30,25 +33,58 @@ export interface Beat {
   picture: Picture
   step: number
   labels?: Annotation[]
-  layout?: 'cover' | 'wide' | 'statement'
+  layout?: 'cover' | 'wide' | 'statement' | 'chapter'
   footnote?: MessageKey
   cloud?: boolean
+  /** The picture fades to a trace. Chapter cards use it. */
+  dim?: boolean
 }
 export interface Part { id: string; scene: string; title: string; beats: Beat[]; before: PictureState; intro?: Beat }
 
+const point = new Vector3()
+const middle = new Vector3()
+const lift = new Vector3()
+const bottom = new Vector3()
+
+/**
+ * The point under the middle of a body, at the lowest edge of its silhouette on screen.
+ * Each unit counts as a sphere around its center, which follows the visible outline closely.
+ */
+function silhouetteBottom(id: LiveId) {
+  return (camera: Camera) => {
+    const object = getActorObject(id) as Points | undefined
+    if (!object?.visible) return null
+    const units = object.userData.units as FormUnit[] | undefined
+    if (!units?.length) return null
+    object.updateWorldMatrix(true, false)
+    lift.setFromMatrixColumn(camera.matrixWorld, 1).normalize()
+    const scale = object.scale.x
+    middle.set(0, 0, 0)
+    for (const unit of units) middle.add(point.set(...unit.at))
+    middle.multiplyScalar(1 / units.length).applyMatrix4(object.matrixWorld)
+    let lowest = 0
+    for (const unit of units) {
+      point.set(...unit.at).applyMatrix4(object.matrixWorld).sub(middle)
+      lowest = Math.min(lowest, point.dot(lift) - unit.size * 0.95 * scale)
+    }
+    return bottom.copy(middle).addScaledVector(lift, lowest)
+  }
+}
+
 function Annotation({ item }: { item: Annotation }) {
   const anchor = useRef<HTMLDivElement>(null)
-  useAnchor(anchor, item.target, [0, item.anchorY ?? 0, 0])
-  const dx = item.dx ?? 2
-  const dy = item.dy ?? -9
-  const centered = item.align === 'center'
+  const target = useMemo(() => (item.under ? silhouetteBottom(item.target) : item.target), [item.under, item.target])
+  useAnchor(anchor, target, [0, item.anchorY ?? 0, 0])
+  const dx = item.under ? 0 : item.dx ?? 2
+  const dy = item.under ? item.dy ?? 2.4 : item.dy ?? -9
+  const centered = item.align === 'center' || item.under
   return (
     <div ref={anchor} className="ascii-anchor">
       <svg className="ascii-leader" viewBox="-40 -24 80 48" aria-hidden="true">
-        <polyline pathLength="1" points={centered ? `0,0 0,${dy / 2} 0,${dy}` : `0,0 ${dx / 2},${dy} ${dx},${dy}`} />
+        {item.under ? null : <polyline pathLength="1" points={centered ? `0,0 0,${dy / 2} 0,${dy}` : `0,0 ${dx / 2},${dy} ${dx},${dy}`} />}
         <rect x="-0.35" y="-0.35" width="0.7" height="0.7" />
       </svg>
-      <div className={centered ? 'ascii-label ascii-label--center' : 'ascii-label'} style={{ left: `calc(var(--su) * ${dx})`, top: `calc(var(--su) * ${dy})`, width: `calc(var(--su) * ${item.width ?? 30})` }} data-fit={item.name}>
+      <div className={item.under ? 'ascii-label ascii-label--under' : centered ? 'ascii-label ascii-label--center' : 'ascii-label'} style={{ left: `calc(var(--su) * ${dx})`, top: `calc(var(--su) * ${dy})`, width: `calc(var(--su) * ${item.width ?? 30})` }} data-fit={item.name}>
         <span className="art-burn"><T k={item.name} /></span>
       </div>
     </div>
@@ -73,9 +109,10 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
         const value = local === 0 ? 1 : Math.min(1, Math.max(0, (progress - start) / (end - start)))
         return String(1 - (1 - value) ** 3)
       }
-      node.style.setProperty('--title-reveal', reveal(REVEAL.title[0], REVEAL.title[1]))
-      node.style.setProperty('--caption-reveal', reveal(REVEAL.caption[0], REVEAL.caption[1]))
-      node.style.setProperty('--label-reveal', reveal(REVEAL.label[0], REVEAL.label[1]))
+      const windows = frames[i]!.layout === 'chapter' ? CHAPTER_REVEAL : REVEAL
+      node.style.setProperty('--title-reveal', reveal(windows.title[0], windows.title[1]))
+      node.style.setProperty('--caption-reveal', reveal(windows.caption[0], windows.caption[1]))
+      node.style.setProperty('--label-reveal', reveal(windows.label[0], windows.label[1]))
       node.setAttribute('aria-hidden', String(!shown))
     }
   })
@@ -86,7 +123,7 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
           <Stage>
             <div className="ascii-prompt" data-fit="show.prompt"><T k={beat.cloud ? 'show.cloudPrompt' : 'show.prompt'} /><span className="ascii-command"><T k={beat.command} /></span><span className="ascii-cursor" aria-hidden="true" /></div>
             <h1 className="ascii-heading" data-fit={beat.heading}><span className="art-burn"><T k={beat.heading} /></span></h1>
-            {beat.line ? <p className="ascii-caption" data-fit={beat.line}><span className="art-burn"><T k={beat.line} /></span></p> : null}
+            {beat.line && beat.layout !== 'chapter' ? <p className="ascii-caption" data-fit={beat.line}><span className="art-burn"><T k={beat.line} /></span></p> : null}
             {beat.footnote ? <p className="ascii-footnote" data-fit={beat.footnote}><span className="art-burn"><T k={beat.footnote} /></span></p> : null}
             {beat.layout === 'cover' ? <div className="ascii-byline" data-fit="p01.name"><span className="art-burn"><T k="p01.name" /><span className="ascii-role"><T k="p01.role" /></span></span></div> : null}
           </Stage>
@@ -98,11 +135,12 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
 }
 
 export function makePart(part: Part) {
-  const grid = beatStops(part.beats.map(() => 4))
+  // Every beat takes one timeline unit. A chapter card plays in two beats, a picture in four.
+  const stops = part.beats.map((beat, i) => ({ at: (i + 1) / part.beats.length, duration: (beat.layout === 'chapter' ? 2 : 4) * BEAT, ease: 'none' }))
   return defineChapter({ id: part.id, title: part.title, scenes: [defineScene({
     id: part.scene,
     title: part.title,
-    stops: grid.stops,
+    stops,
     duration: part.beats.length,
     outro: 0,
     parts: { dom: () => <Frame beats={part.beats} intro={part.intro} /> },
@@ -119,7 +157,7 @@ export function makeMoves(part: Part) {
       tl.set(transfer, { from: workOwner(from), to: workOwner(from), progress: 1 }, 0)
     }
     part.beats.forEach((beat, i) => {
-      const to = picture(beat.picture, beat.step)
+      const to = picture(beat.picture, beat.step, beat.dim)
       const window = t.span(`${part.id}/${part.scene}`, i / part.beats.length, (i + 1) / part.beats.length)
       tl.set(transfer, { from: workOwner(from), to: workOwner(to), immediateRender: false }, window.start)
       tl.fromTo(transfer, { progress: 0 }, { progress: 1, immediateRender: false, duration: window.duration * TIMING.transfer, ease: 'power3.inOut' }, window.start + window.duration * 0.06)

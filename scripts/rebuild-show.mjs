@@ -6,7 +6,7 @@ import { sections, sharedCopy } from './keynote-content.mjs'
 const copy = { ...sharedCopy }
 for (const section of sections) for (const beat of section.beats) {
   copy[`talk.${beat.key}.title`] = beat.title
-  copy[`talk.${beat.key}.body`] = beat.body
+  if (beat.layout !== 'chapter') copy[`talk.${beat.key}.body`] = beat.body
   copy[`talk.${beat.key}.command`] = beat.command
 }
 for (const [locale, index] of [['en', 0], ['es', 1]]) {
@@ -20,12 +20,12 @@ for (const [locale, index] of [['en', 0], ['es', 1]]) {
 
 const clean = (text) => text.replaceAll('\n', ' ')
 const count = 1 + sections.reduce((sum, section) => sum + section.beats.length, 0)
-const header = `# Talk script\n\nDraft 7, 2026-10-05. ${count} stops, including the cover. Draft 7 merges the 31 stops of Draft 6, and each stop now changes the picture. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.\n\nThe same Issue moves through the talk. Each new layer answers a practical need and stays in the field. Foundations supplies enforceable conventions. The Harness supplies the agent environment. Workflows give events bounded runs. Health supplies evidence and returns findings to the same route.\n\nEarly work establishes the technical and agent base. As it settles, more effort goes into product definition. In Maintenance, people close to the product can file small eligible Issues and bugs. The route can ship them without human supervision. The final world connects this outcome to the controls built throughout the talk.\n\nMaturity describes team practices. The five levels are independent of tool choice. The final world shows the capabilities that support those practices. It does not claim a Platform assessment score.\n\nSources: [Platform facts](../knowledge/platform.md), [published method](../knowledge/website-reading.md), [current worker routes](../knowledge/workflow-routes.md), and [the supplied assessment](../knowledge/maturity.md). The assessment marketing figures remain off stage because their primary sources are absent.\n\nThe old script is in [the source archive](script-orbits-archive.md). Its visual directions are superseded. Each beat below defines the content before its scene is built.\n\n`
+const header = `# Talk script\n\nDraft 8, 2026-10-05. ${count} stops, including the cover and four chapter cards. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.\n\nThe same Issue moves through the talk. Each new layer answers a practical need and stays in the field. Foundations supplies enforceable conventions. The Harness supplies the agent environment. Workflows give events bounded runs. Health supplies evidence and returns findings to the same route.\n\nEarly work establishes the technical and agent base. As it settles, more effort goes into product definition. In Maintenance, people close to the product can file small eligible Issues and bugs. The route can ship them without human supervision. The final world connects this outcome to the controls built throughout the talk.\n\nMaturity describes team practices. The five levels are independent of tool choice. The final world shows the capabilities that support those practices. It does not claim a Platform assessment score.\n\nSources: [Platform facts](../knowledge/platform.md), [published method](../knowledge/website-reading.md), [current worker routes](../knowledge/workflow-routes.md), and [the supplied assessment](../knowledge/maturity.md). The assessment marketing figures remain off stage because their primary sources are absent.\n\nThe old script is in [the source archive](script-orbits-archive.md). Its visual directions are superseded. Each beat below defines the content before its scene is built.\n\n`
 let number = 1
 const script = sections.map((section) => {
   let text = `## ${section.title}\n\nSource: [reference](${section.source}).\n\n`
   if (section.intro) text += `### ${number++}. From your PC to Platform\n\nOn screen: a close view of the reasoning core. The blue Issue is one of its units. The cover introduces the speaker.\n\nSay: This talk follows work from an engineer's PC into the Plain Concepts Platform.\n\n`
-  text += section.beats.map((beat) => `### ${number++}. ${clean(beat.title[0])}\n\nOn screen: ${beat.picture}, state ${beat.step}. ${beat.labels.length ? `Panels name ${beat.labels.map((label) => sharedCopy[label.name]?.[0] ?? label.name).join(', ')}.` : 'The composition holds the current subject.'}\n\nSlide: ${clean(beat.body[0])}\n\nSpeaker notes: ${beat.notes}\n\n`).join('')
+  text += section.beats.map((beat) => beat.layout === 'chapter' ? `### ${number++}. Chapter: ${clean(beat.title[0])}\n\nOn screen: the title over the dimmed world.\n\nSpeaker notes: ${beat.notes}\n\n` : `### ${number++}. ${clean(beat.title[0])}\n\nOn screen: ${beat.picture}, state ${beat.step}. ${beat.labels.length ? `Panels name ${beat.labels.map((label) => sharedCopy[label.name]?.[0] ?? label.name).join(', ')}.` : 'The composition holds the current subject.'}\n\nSlide: ${clean(beat.body[0])}\n\nSpeaker notes: ${beat.notes}\n\n`).join('')
   return text
 }).join('')
 fs.writeFileSync('docs/script/script.md', (header + script).trimEnd() + '\n')
@@ -37,9 +37,10 @@ for (const section of sections) {
   const data = {
     id: section.id, scene: section.scene, title: section.title,
     beats: section.beats.map((beat) => ({
-      heading: `talk.${beat.key}.title`, line: `talk.${beat.key}.body`, command: `talk.${beat.key}.command`,
+      heading: `talk.${beat.key}.title`, ...(beat.layout === 'chapter' ? {} : { line: `talk.${beat.key}.body` }), command: `talk.${beat.key}.command`,
       picture: beat.picture, step: beat.step, labels: beat.labels, layout: beat.layout === 'default' ? undefined : beat.layout,
       ...(beat.footnote ? { footnote: beat.footnote } : {}),
+      ...(beat.dim ? { dim: true } : {}),
       ...(section.cloud ? { cloud: true } : {}),
     })),
     ...(section.intro ? { intro: section.intro } : {}),

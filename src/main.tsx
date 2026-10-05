@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import '@fontsource-variable/outfit'
 import '@fontsource-variable/jetbrains-mono'
 import '@/animation/gsap'
 import '@/styles/base.css'
@@ -20,7 +21,7 @@ applyPaletteCssVars()
  * Three seconds at most, so a missing font never blocks the show.
  */
 async function fontsReady(): Promise<void> {
-  const faces = ['700 1em "JetBrains Mono Variable"', '450 1em "JetBrains Mono Variable"', '600 1em "JetBrains Mono Variable"']
+  const faces = ['900 1em "Outfit Variable"', '450 1em "JetBrains Mono Variable"', '600 1em "JetBrains Mono Variable"']
   const timeout = new Promise<void>((resolve) => window.setTimeout(resolve, 3000))
   await Promise.race([Promise.all(faces.map((f) => document.fonts.load(f))).then(() => undefined), timeout])
 }

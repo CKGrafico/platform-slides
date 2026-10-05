@@ -92,7 +92,7 @@ Each dependency has a reason. Do not add a dependency without the same kind of r
 | `@react-three/fiber` | One declarative, persistent canvas. Scene world parts are ordinary React components inside it. |
 | `@react-three/drei` | `PerformanceMonitor` for adaptive DPR, and the GLTF and texture loaders with caching. Only imported parts ship. |
 | `gsap` | The one animation model. Paused timelines scrubbed by progress work for DOM, SVG, Three.js objects, and uniforms. DrawSVG and MorphSVG ship with it. |
-| `@fontsource-variable/jetbrains-mono` | The one typeface of the art direction, self-hosted, so the show works offline at the venue. The Latin subset covers Spanish. |
+| `@fontsource-variable/outfit`, `@fontsource-variable/jetbrains-mono` | The two typefaces of the art direction: Outfit for titles, JetBrains Mono for the world. Both are self-hosted, so the show works offline at the venue. The Latin subsets cover Spanish. |
 | `vite`, `@vitejs/plugin-react` | Dev server and build. |
 | `typescript`, `eslint`, `typescript-eslint`, `eslint-plugin-react-hooks`, `globals`, `@eslint/js` | Types and lint. |
 

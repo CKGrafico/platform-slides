@@ -17,47 +17,32 @@ export const part: Part = {
         {
           "target": "triage",
           "name": "talk.label.triage",
-          "dx": 0,
-          "dy": 9.4,
-          "width": 20,
-          "align": "center",
-          "anchorY": -6
+          "width": 28,
+          "under": true
         },
         {
           "target": "core",
           "name": "talk.label.route",
-          "dx": 0,
-          "dy": 5.7,
-          "width": 24,
-          "align": "center",
-          "anchorY": -8
+          "width": 28,
+          "under": true
         },
         {
           "target": "wall",
           "name": "talk.label.ci",
-          "dx": 0,
-          "dy": 10.4,
-          "width": 20,
-          "align": "center",
-          "anchorY": -5.5
+          "width": 28,
+          "under": true
         },
         {
           "target": "gate",
           "name": "talk.label.gate",
-          "dx": 0,
-          "dy": 10.4,
-          "width": 20,
-          "align": "center",
-          "anchorY": -5.5
+          "width": 28,
+          "under": true
         },
         {
           "target": "deployment",
           "name": "talk.label.production",
-          "dx": 0,
-          "dy": 15,
-          "width": 20,
-          "align": "center",
-          "anchorY": -3
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide",

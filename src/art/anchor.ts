@@ -10,7 +10,8 @@ import { useEffect, type RefObject } from 'react'
 import { Vector3, type Camera, type Object3D } from 'three'
 import { getActorObject } from '@/world/actors'
 
-export type AnchorTarget = Object3D | string | (() => Vector3 | null)
+/** A function target can use the camera, for example to find the lowest point of a body on screen. */
+export type AnchorTarget = Object3D | string | ((camera: Camera) => Vector3 | null)
 
 interface Anchor {
   el: HTMLElement
@@ -54,9 +55,9 @@ function visibleInWorld(o: Object3D): boolean {
   return true
 }
 
-function resolve(target: AnchorTarget, out: Vector3): boolean {
+function resolve(target: AnchorTarget, out: Vector3, camera: Camera): boolean {
   if (typeof target === 'function') {
-    const v = target()
+    const v = target(camera)
     if (!v) return false
     out.copy(v)
     return true
@@ -74,7 +75,7 @@ export function updateAnchors(camera: Camera, width: number, height: number, dpr
   camera.updateMatrixWorld()
   for (const a of anchors) {
     let next = 'hidden'
-    if (resolve(a.target, tmp)) {
+    if (resolve(a.target, tmp, camera)) {
       tmp.add(a.offset).project(camera)
       if (tmp.z <= 1) {
         // Snap to device pixels, so still text stays crisp. The point stays inside the

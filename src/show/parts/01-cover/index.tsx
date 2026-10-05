@@ -17,9 +17,8 @@ export const part: Part = {
         {
           "target": "core",
           "name": "talk.label.agent",
-          "dx": 2,
-          "dy": -25,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ]
     }

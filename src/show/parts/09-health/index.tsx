@@ -8,6 +8,16 @@ export const part: Part = {
   "title": "Project Health measures and improves the system",
   "beats": [
     {
+      "heading": "talk.health.chapter.title",
+      "command": "talk.health.chapter.command",
+      "picture": "workflow",
+      "step": 4,
+      "labels": [],
+      "layout": "chapter",
+      "dim": true,
+      "cloud": true
+    },
+    {
       "heading": "talk.health.measure.title",
       "line": "talk.health.measure.body",
       "command": "talk.health.measure.command",
@@ -17,23 +27,20 @@ export const part: Part = {
         {
           "target": "measure",
           "name": "talk.label.health",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "missing",
           "name": "p12.notCollected",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "review",
           "name": "talk.label.attention",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide",
@@ -49,23 +56,20 @@ export const part: Part = {
         {
           "target": "audit",
           "name": "talk.label.audit",
-          "dx": 3,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "refine",
           "name": "talk.label.refine",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "measure",
           "name": "talk.label.health",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide",

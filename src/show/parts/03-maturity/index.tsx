@@ -17,37 +17,32 @@ export const part: Part = {
         {
           "target": "level.0",
           "name": "talk.level.1",
-          "dx": -15,
-          "dy": -19,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "level.1",
           "name": "talk.level.2",
-          "dx": -15,
-          "dy": 19,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "level.2",
           "name": "talk.level.3",
-          "dx": -15,
-          "dy": -19,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "level.3",
           "name": "talk.level.4",
-          "dx": -15,
-          "dy": 19,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "level.4",
           "name": "talk.level.5",
-          "dx": -15,
-          "dy": -19,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide"
@@ -62,30 +57,26 @@ export const part: Part = {
         {
           "target": "parcel.0",
           "name": "talk.area.sdlc",
-          "dx": -15,
-          "dy": -19,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "parcel.1",
           "name": "talk.area.determinism",
-          "dx": -15,
-          "dy": 19,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "parcel.2",
           "name": "talk.area.control",
-          "dx": -15,
-          "dy": -19,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "parcel.3",
           "name": "talk.area.impact",
-          "dx": -15,
-          "dy": 19,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide"

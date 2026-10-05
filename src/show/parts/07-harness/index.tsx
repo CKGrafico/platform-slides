@@ -17,16 +17,14 @@ export const part: Part = {
         {
           "target": "harness",
           "name": "talk.label.harness",
-          "dx": -15,
-          "dy": -22,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "context",
           "name": "talk.label.docs",
-          "dx": -15,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide"
@@ -41,30 +39,26 @@ export const part: Part = {
         {
           "target": "automation",
           "name": "talk.label.plugins",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "harness",
           "name": "talk.label.harness",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "forge",
           "name": "map.forge",
-          "dx": -12,
-          "dy": -20,
-          "width": 30
+          "width": 28,
+          "under": true
         },
         {
           "target": "core",
           "name": "talk.label.agent",
-          "dx": -12,
-          "dy": 18,
-          "width": 30
+          "width": 28,
+          "under": true
         }
       ],
       "layout": "wide"

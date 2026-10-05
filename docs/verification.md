@@ -1,14 +1,11 @@
-The browser review on 2026-10-05 covered all 20 stops in English and Spanish at 1280 by 720 pixels.
-The visible text had no overflow, viewport clipping, or text overlaps. The check measured each `data-fit` box and each pair of boxes on screen.
+The browser review on 2026-10-05 covered all 24 stops in English and Spanish at 1280 by 720 pixels.
+The visible text had no overflow, viewport clipping, or overlaps. The check measured each `data-fit` box and each pair of boxes on screen.
 
-The closing stop shows Triage, Refine · Implement, CI, Merge Gate, and Production in one row from left to right.
-The blue Issue ends inside the Production bank. The deployment actor reports the work colour on its front unit, and the travelling packet is hidden.
+Each picture shows two to four bodies. Every role has its own silhouette: the fluid core, the banks, the guardrail wall, the gate with its door, the owner frame, the Triage ring, and the Harness double ring.
+Names sit centred under their bodies. The blue streams and the docked Issue are visible at a reduced screenshot scale.
 
-Three full round trips through the show kept the renderer at 50 geometries, 35 textures, 2 shader programs, and 1 renderer.
-The browser console reported no errors and no choreography warnings.
-
+Two full passes through the show kept the renderer at 52 geometries, 47 textures, 2 shader programs, and 1 renderer.
 With `?motion=reduced`, the position, scale, and rotation of four bodies stayed identical across three seconds.
-In normal motion the same bodies drift slowly. The fluid core breathes by about 0.2 percent between two captures taken three seconds apart.
 
 The embedded browser pane paints only when it takes a screenshot, so it cannot show the real frame rate or the exact feel of a move.
 Rehearse the moves on the venue laptop and projector. The required type, lint, language, and production build commands pass.

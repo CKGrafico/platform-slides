@@ -33,8 +33,15 @@ function unitPort(object: Points, time: number, idle: boolean, out: Vector3): Fo
   const part = Number(object.userData.workPart)
   const unit = (object.userData.units as FormUnit[])[part]!
   const phase = part * 2.399 + Number(object.userData.formSeed) * 0.17
-  const fluid = idle ? poseOf(object).fluid * 0.12 : 0
-  out.set(unit.at[0] + Math.sin(time * 0.42 + phase) * fluid, unit.at[1] + Math.cos(time * 0.53 + phase) * fluid, unit.at[2] + Math.sin(time * 0.37 + phase) * fluid)
+  // The same drift and breathing as UNIT_MOTION in src/art/ascii.ts, so a port stays on its unit.
+  const drift = idle ? poseOf(object).fluid * Number(object.userData.drift ?? 0.12) : 0
+  const length = Math.hypot(unit.at[0], unit.at[1], unit.at[2]) || 1
+  const radial = Math.sin(time * 0.45 + phase * 1.7) * 1.2 / length
+  out.set(
+    unit.at[0] + (Math.sin(time * 0.42 + phase) + unit.at[0] * radial) * drift,
+    unit.at[1] + (Math.cos(time * 0.53 + phase) + unit.at[1] * radial) * drift,
+    unit.at[2] + (Math.sin(time * 0.37 + phase) + unit.at[2] * radial) * drift,
+  )
   object.updateWorldMatrix(true, false)
   out.applyMatrix4(object.matrixWorld)
   return unit
@@ -87,10 +94,12 @@ export function AsciiRuntime() {
       object.visible = pose.opacity > 0.005 && pose.scale > 0.001
       if (!object.visible && id !== 'packet') continue
       const depthSurface = object.userData.depthSurface as { visible: boolean } | undefined
-      if (depthSurface) depthSurface.visible = pose.assemble > 0.98 && pose.opacity > 0.5
+      if (depthSurface) depthSurface.visible = pose.assemble > 0.98 && pose.opacity > 0.2
       const material = object.material
       material.uniforms.uPixelRatio!.value = gl.getPixelRatio()
-      material.uniforms.uSize!.value = Number(material.userData.glyphSize) * viewport.stage.height / 1080 * (0.78 + pose.focus * 0.34)
+      // Large bodies get larger marks, so they read as surfaces. Small bodies read as fine dust.
+      const bulk = Math.min(1.3, Math.max(0.7, 0.55 + 0.45 * pose.scale))
+      material.uniforms.uSize!.value = Number(material.userData.glyphSize) * viewport.stage.height / 1080 * (0.78 + pose.focus * 0.34) * bulk
       material.uniforms.uOpacity!.value = pose.opacity
       material.uniforms.uAssemble!.value = pose.assemble
       material.uniforms.uAccent!.value = pose.accent
@@ -127,7 +136,8 @@ export function AsciiRuntime() {
         material.uniforms.uAssemble!.value = 1
         material.uniforms.uWorkPart!.value = -1
         packet.visible = true
-        packet.userData.depthSurface.visible = opacity > 0.05
+        const packetDepth = packet.userData.depthSurface as { visible: boolean } | undefined
+        if (packetDepth) packetDepth.visible = opacity > 0.05
       }
     }
 
@@ -147,9 +157,12 @@ export function AsciiRuntime() {
       basis.makeBasis(direction, up, normal)
       channel.position.lerpVectors(start, end, 0.5)
       channel.quaternion.setFromRotationMatrix(basis)
-      channel.scale.set(distance / 22, 0.6 * ratio, 0.6 * ratio)
-      ;(channel.material as ShaderMaterial).uniforms.uBend!.value = connection.bend
-      channel.userData.depthSurface.visible = false
+      const thickness = 0.85 * ratio
+      channel.scale.set(distance / 22, thickness, thickness)
+      const uniforms = (channel.material as ShaderMaterial).uniforms
+      uniforms.uBend!.value = connection.bend * 0.7
+      // Undo the length scale on each bead, so beads keep their shape on long and short channels.
+      uniforms.uStretch!.value = distance / 22 / thickness
     }
     updateAnchors(cam, size.width, size.height, gl.getPixelRatio())
   })

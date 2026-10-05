@@ -11,6 +11,8 @@ const UNIT_MOTION = /* glsl */ `
   uniform float uStream;
   uniform float uBend;
   uniform float uExtract;
+  uniform float uDrift;
+  uniform float uStretch;
   float unitScale() {
     return (aPart >= 4.0 && aPart < 8.0) ? 1.0 - clamp(uExtract - (aPart - 4.0), 0.0, 1.0) : 1.0;
   }
@@ -22,12 +24,17 @@ const UNIT_MOTION = /* glsl */ `
   }
   vec3 unitPosition(vec3 point, mat3 spin) {
     vec3 drift = vec3(sin(uTime * 0.42 + aUnitPhase), cos(uTime * 0.53 + aUnitPhase), sin(uTime * 0.37 + aUnitPhase));
+    // Fluid units also breathe in and out of the mass.
+    vec3 radial = normalize(aCenter + vec3(1e-4)) * sin(uTime * 0.45 + aUnitPhase * 1.7) * 1.2;
     vec3 center = aCenter;
     if (uStream > 0.5) {
       center.x = mod(center.x + uTime * uIdle * 2.5 + 11.0, 22.0) - 11.0;
       center.y += sin((center.x + 11.0) / 22.0 * 3.14159265) * uBend;
     }
-    return center + spin * (point - aCenter) * unitScale() + drift * uFluidity * uIdle * 0.12;
+    vec3 offset = spin * (point - aCenter) * unitScale();
+    // A channel is scaled along x to its length. This keeps each bead its own size.
+    offset.x /= max(uStretch, 0.001);
+    return center + offset + (drift + radial) * uFluidity * uIdle * uDrift;
   }
 `
 
@@ -43,6 +50,8 @@ export function createAsciiDepthMaterial(surface: ShaderMaterial): ShaderMateria
       uStream: surface.uniforms.uStream!,
       uBend: surface.uniforms.uBend!,
       uExtract: surface.uniforms.uExtract!,
+      uDrift: surface.uniforms.uDrift!,
+      uStretch: surface.uniforms.uStretch!,
     },
     vertexShader: /* glsl */ `
       ${UNIT_MOTION}
@@ -87,6 +96,8 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       uWorkPart: { value: -1 },
       uWorkAccent: { value: 0 },
       uExtract: { value: 0 },
+      uDrift: { value: 0.12 },
+      uStretch: { value: 1 },
       uAssemble: { value: 1 },
       uOpacity: { value: 1 },
       uAccent: { value: 0 },
@@ -125,9 +136,13 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
         vShade = 0.28 + light * 0.72;
         vGlyph = floor(clamp(light * 7.0 + aSeed * 0.9, 0.0, 7.0));
         float work = (abs(aPart - uWorkPart) < 0.1) ? uWorkAccent : 0.0;
-        vColor = mix(aColor, uBlue, max(uAccent, work));
-        vShade = mix(vShade, max(vShade, 0.5), max(uAccent, work));
-        gl_PointSize = max(2.0, uSize * uPixelRatio);
+        float hot = max(uAccent, work);
+        vColor = mix(aColor, uBlue, hot);
+        // The blue stays bright on its shadow side, so it never darkens to navy.
+        vShade = mix(vShade, max(vShade, 0.85), hot);
+        // The docked Issue uses the densest mark and a larger point. It reads as one solid blue unit.
+        vGlyph = mix(vGlyph, 6.0, step(0.5, work));
+        gl_PointSize = max(2.0, uSize * uPixelRatio * (1.0 + 0.3 * work));
         gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
       }
     `,
