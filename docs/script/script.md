@@ -198,7 +198,7 @@ Speaker notes: Audit reads the repository against its guardrails and files a fin
 
 Source: [reference](../knowledge/maturity.md).
 
-### 20. From a product Issue to production.
+### 20. From Issue to production with GitHub Agentic Workflows.
 
 On screen: system, state 0. Panels name Triage, Refine · Implement, CI, Merge Gate, Production.
 

@@ -100,7 +100,7 @@
   "talk.health.improve.title": "Audit sends work back to Refine.",
   "talk.health.improve.body": "A read-only audit files an Issue through the same route. Health measures the result of the change.",
   "talk.health.improve.command": "Audit → Issue → Refine → Health",
-  "talk.system.title": "From a product Issue\nto production.",
+  "talk.system.title": "From Issue to production\nwith GitHub Agentic Workflows.",
   "talk.system.body": "Product experts who do not code file small eligible Issues or bugs. They reach production without human supervision.",
   "talk.system.command": "Maintenance · Issue → production → Health"
 }

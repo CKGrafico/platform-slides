@@ -37,7 +37,7 @@
   "talk.label.route": "Refine · Implement",
   "talk.label.production": "Producción",
   "show.cover": "Desde tu PC\na Platform.",
-  "show.subtitle": "La Platform de Plain Concepts",
+  "show.subtitle": "La Plataforma de Plain Concepts",
   "show.prompt": "pc@studio:~/local$",
   "show.cloudPrompt": "pc@studio:~/cloud$",
   "show.active.label": "el Issue activo",
@@ -100,7 +100,7 @@
   "talk.health.improve.title": "Audit devuelve trabajo a Refine.",
   "talk.health.improve.body": "Audit lee, abre un Issue y entra por la misma ruta. Health mide el resultado del cambio.",
   "talk.health.improve.command": "Audit → Issue → Refine → Health",
-  "talk.system.title": "Del Issue de producto\na producción.",
+  "talk.system.title": "De una Issue a producción\ncon GitHub Agentic Workflows.",
   "talk.system.body": "Personas no técnicas de producto crean Issues o bugs pequeños y elegibles. Llegan a producción sin supervisión humana.",
   "talk.system.command": "Maintenance · Issue → producción → Health"
 }

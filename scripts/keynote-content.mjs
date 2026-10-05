@@ -4,7 +4,7 @@ const B = (key, title, body, picture, step, labels, notes, command, layout = 'wi
 
 export const sharedCopy = {
   'show.cover': ['From your PC\nto Platform.', 'Desde tu PC\na Platform.'],
-  'show.subtitle': ['The Plain Concepts Platform', 'La Platform de Plain Concepts'],
+  'show.subtitle': ['The Plain Concepts Platform', 'La Plataforma de Plain Concepts'],
   'show.prompt': ['pc@studio:~/local$', 'pc@studio:~/local$'],
   'show.cloudPrompt': ['pc@studio:~/cloud$', 'pc@studio:~/cloud$'],
   'show.active.label': ['the active Issue', 'el Issue activo'],
@@ -131,7 +131,7 @@ export const sections = [
       'Audit reads the repository against its guardrails and files a finding. It does not edit code. The Issue enters Refine, then the ordinary pipeline. Repeated findings and attention patterns can lead to changes in Foundations, Harness, or worker logic. Measurement follows the revised system. This is the improvement loop in the assessment.', ['Audit → Issue → Refine → Health', 'Audit → Issue → Refine → Health']),
   ] },
   { id: '10-system', scene: 'whole', title: 'The whole Platform system', name: 'system', source: '../knowledge/maturity.md', cloud: true, beats: [
-    Object.assign(B('system', ['From a product Issue\nto production.', 'Del Issue de producto\na producción.'],
+    Object.assign(B('system', ['From Issue to production\nwith GitHub Agentic Workflows.', 'De una Issue a producción\ncon GitHub Agentic Workflows.'],
       ['Product experts who do not code file small eligible Issues or bugs. They reach production without human supervision.', 'Personas no técnicas de producto crean Issues o bugs pequeños y elegibles. Llegan a producción sin supervisión humana.'], 'system', 0,
       [L('triage', 'talk.label.triage', 0, 9.4, 20, { align: 'center', anchorY: -6 }), L('core', 'talk.label.route', 0, 5.7, 24, { align: 'center', anchorY: -8 }), L('wall', 'talk.label.ci', 0, 10.4, 20, { align: 'center', anchorY: -5.5 }), L('gate', 'talk.label.gate', 0, 10.4, 20, { align: 'center', anchorY: -5.5 }), L('deployment', 'talk.label.production', 0, 15, 20, { align: 'center', anchorY: -3 })],
       'Return to the person at the PC from the opening. The completed system now lets someone close to the product create a small eligible Issue or bug. That person does not need to code or supervise the agent. Trace their Issue through Triage, Refine, Implement, CI, Merge Gate, the application deployment, and Health. They define the intended behavior and answer product questions when needed. The system owns execution and its checks. This autonomy depends on the technical and agent base established in Foundations, with the Harness and workflow controls in place. Protected technical changes still need their owner. People with write access label an Issue straight into the route. Everyone else enters through Triage. Application deployment follows the project configuration. The manually dispatched package Release worker is a separate route. The five maturity forms remain in the field without claiming an assessment score. Health feeds evidence into the three earlier pillars. End on the product change in production and the measured improvement loop.', ['Maintenance · Issue → production → Health', 'Maintenance · Issue → producción → Health']), { footnote: 'talk.maturity.line' }),
