@@ -27,7 +27,7 @@ Main paths, repair, review, manual release, and the Audit return use channels in
 For reduced motion, the engine cuts to each stop and the runtime freezes surface movement. The atlas size follows the actual renderer DPR. The geometry stays constant while the presenter moves through the show.
 
 The content ledger is `scripts/keynote-content.mjs`. `scripts/rebuild-show.mjs` writes the English script, both locale files, and the scene contracts.
-It keeps 24 stops across nine chapters, with four chapter cards. The first chapter contains the cover and the PC introduction.
+It keeps 28 stops across nine chapters, with four chapter cards and nine worker flows. The first chapter contains the cover and the PC introduction.
 The five maturity assemblies and four assessment banks retain their meanings in the final world.
 Precomputed facts, reasoning, validation, and Safe Outputs occupy distinct positions in the worker close views.
 
@@ -41,3 +41,10 @@ The reasoning core is one mass of 26 varied units. Unit 2 holds the Issue on the
 Banks are tight grids with a different footprint for each role. The guardrail is a tall wall one unit deep, with merlons. The merge gate has a door, a lintel, and a sill where the Issue docks.
 Owner review is an upright hollow square. Triage is a ring with four posts. The Harness is a ring of blocks around a raised ring of hexagonal prisms. Forge is a flat plate of tiles.
 All channels share one bead geometry in three lanes, drawn in the lifted blue. The docked Issue uses the densest mark and a larger point, and its blue never darkens below 85 percent.
+
+## Worker flows
+
+`src/show/flows.ts` holds the nine worker flows as nodes and edges on a grid of six columns and four rows. The text keys live in `scripts/flow-copy.mjs`.
+`src/show/Flow.tsx` draws a flow as an SVG in stage units over the dimmed world. Shell jobs are outlined boxes, the agent is a filled box, a decision is a pill, the place where the work lands has a blue outline, a person is a dashed box, and a run that stops is grey.
+The main path is blue. Branches are grey. Returns are dashed and loop under the rows, or over the top when both ends sit in the first row.
+Nodes and edges appear in column order as `--flow-reveal` runs from 0 to 1, so the drawing comes from progress. The facts come from the Agentic Workflows diagrams listed in `docs/knowledge/workflow-routes.md`.

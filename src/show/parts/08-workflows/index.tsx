@@ -22,28 +22,11 @@ export const part: Part = {
       "line": "talk.workflows.router.body",
       "command": "talk.workflows.router.command",
       "picture": "workflow",
-      "step": 0,
-      "labels": [
-        {
-          "target": "automation",
-          "name": "talk.label.workflows",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "intake",
-          "name": "talk.label.router",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "refine",
-          "name": "talk.label.refine",
-          "width": 28,
-          "under": true
-        }
-      ],
+      "step": 1,
+      "labels": [],
       "layout": "wide",
+      "dim": true,
+      "flow": "router",
       "cloud": true
     },
     {
@@ -82,38 +65,39 @@ export const part: Part = {
       "cloud": true
     },
     {
+      "heading": "talk.workflows.chain.title",
+      "line": "talk.workflows.chain.body",
+      "command": "talk.workflows.chain.command",
+      "picture": "workflow",
+      "step": 1,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "flow": "chain",
+      "cloud": true
+    },
+    {
+      "heading": "talk.workflows.triage.title",
+      "line": "talk.workflows.triage.body",
+      "command": "talk.workflows.triage.command",
+      "picture": "workflow",
+      "step": 1,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "flow": "triage",
+      "cloud": true
+    },
+    {
       "heading": "talk.workflows.refine.title",
       "line": "talk.workflows.refine.body",
       "command": "talk.workflows.refine.command",
       "picture": "workflow",
-      "step": 2,
-      "labels": [
-        {
-          "target": "intake",
-          "name": "talk.label.facts",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "refine",
-          "name": "talk.label.refine",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "split",
-          "name": "talk.label.split",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "outputs",
-          "name": "talk.label.outputs",
-          "width": 28,
-          "under": true
-        }
-      ],
+      "step": 1,
+      "labels": [],
       "layout": "wide",
+      "dim": true,
+      "flow": "refine",
       "cloud": true
     },
     {
@@ -121,34 +105,11 @@ export const part: Part = {
       "line": "talk.workflows.implement.body",
       "command": "talk.workflows.implement.command",
       "picture": "workflow",
-      "step": 3,
-      "labels": [
-        {
-          "target": "intake",
-          "name": "talk.label.facts",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "core",
-          "name": "talk.label.agent",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "wall",
-          "name": "talk.label.validate",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "outputs",
-          "name": "talk.label.outputs",
-          "width": 28,
-          "under": true
-        }
-      ],
+      "step": 1,
+      "labels": [],
       "layout": "wide",
+      "dim": true,
+      "flow": "implement",
       "cloud": true
     },
     {
@@ -156,34 +117,35 @@ export const part: Part = {
       "line": "talk.workflows.gate.body",
       "command": "talk.workflows.gate.command",
       "picture": "workflow",
-      "step": 4,
-      "labels": [
-        {
-          "target": "wall",
-          "name": "talk.label.ci",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "gate",
-          "name": "talk.label.gate",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "review",
-          "name": "show.review.label",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "core",
-          "name": "talk.label.implement",
-          "width": 28,
-          "under": true
-        }
-      ],
+      "step": 1,
+      "labels": [],
       "layout": "wide",
+      "dim": true,
+      "flow": "gate",
+      "cloud": true
+    },
+    {
+      "heading": "talk.workflows.review.title",
+      "line": "talk.workflows.review.body",
+      "command": "talk.workflows.review.command",
+      "picture": "workflow",
+      "step": 1,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "flow": "review",
+      "cloud": true
+    },
+    {
+      "heading": "talk.workflows.release.title",
+      "line": "talk.workflows.release.body",
+      "command": "talk.workflows.release.command",
+      "picture": "workflow",
+      "step": 1,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "flow": "release",
       "cloud": true
     }
   ]

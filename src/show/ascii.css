@@ -116,4 +116,29 @@ body { font-family: var(--font-label); }
 .stop-chip[data-moving='true'] { opacity: 0.85; }
 .stop-chip-bar { width: calc(var(--su) * 6); height: calc(var(--su) * 0.3); overflow: hidden; }
 .stop-chip-fill { width: 100%; height: 100%; transform-origin: 0 50%; transform: scaleX(0); }
+/* The flow layer: a worker diagram in stage units. Each element reveals in order with --flow-reveal. */
+.flow { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; font-family: var(--font-label); }
+.flow-node, .flow-edge { --v: clamp(0, calc(var(--flow-reveal, 1) * var(--n) - var(--i)), 1); }
+.flow-node { opacity: var(--v); }
+.flow-node rect { fill: #0a0a0b; stroke: #8a8f98; stroke-width: 0.22; }
+.flow-node text { text-anchor: middle; fill: #e8e9ec; }
+.flow-title { font-size: 1.9px; font-weight: 600; }
+.flow-sub { font-size: 1.7px; font-weight: 450; fill: #a7abb1 !important; }
+.flow-node--event rect { stroke: #63686f; stroke-dasharray: 0.5 0.4; }
+.flow-node--agent rect { fill: #e8e9ec; stroke: #e8e9ec; }
+.flow-node--agent text { fill: #0a0a0b; }
+.flow-node--agent .flow-sub { fill: #42464e !important; }
+.flow-node--gate rect { stroke: #c5c8ce; stroke-width: 0.3; rx: 3.6; }
+.flow-node--end rect { stroke: #5c8bff; stroke-width: 0.34; }
+.flow-node--human rect { stroke: #a7abb1; stroke-dasharray: 0.9 0.5; }
+.flow-node--stop rect { stroke: #42464e; }
+.flow-node--stop text { fill: #8a8f98; }
+.flow-edge path { fill: none; stroke-width: 0.26; stroke: #8a8f98; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--v)); }
+.flow-edge--main path { stroke: #5c8bff; stroke-width: 0.34; }
+.flow-edge--return path { stroke-dasharray: 0.02 0.014; stroke-dashoffset: 0; opacity: var(--v); }
+.flow-edge-label { font-size: 1.7px; fill: #a7abb1; opacity: var(--v); paint-order: stroke; stroke: #0a0a0b; stroke-width: 0.8px; }
+.flow-edge--main .flow-edge-label { fill: #9db6ff; }
+.flow-arrow path { fill: #8a8f98; }
+.flow-arrow--main path { fill: #5c8bff; }
+
 @media (prefers-reduced-motion: reduce) { .ascii-frame { transform: none !important; } }

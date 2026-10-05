@@ -11,6 +11,8 @@ import type { FormUnit } from '@/art/forms'
 import { LIVE_IDS, poseOf, type LiveId, type Transfer } from './actors'
 import { picture, workOwner, type Picture, type PictureState } from './pictures'
 import { MAP_SHOT } from './shots'
+import { Flow } from './Flow'
+import type { FlowId } from './flows'
 
 /**
  * Fractions of one beat (two seconds at 120 BPM). Bodies move first and land by 0.6.
@@ -24,6 +26,8 @@ const TIMING = {
 const REVEAL = { title: [0.6, 0.8], caption: [0.68, 0.88], label: [0.76, 0.96] } as const
 /** A chapter card shows only its title, which arrives while the world fades behind it. */
 const CHAPTER_REVEAL = { title: [0.15, 0.55], caption: [0.15, 0.55], label: [0.15, 0.55] } as const
+/** A flow beat: the title first, then the diagram grows node by node, and the caption lands last. */
+const FLOW_REVEAL = { title: [0.04, 0.24], caption: [0.74, 0.94], label: [0.1, 0.82] } as const
 
 export interface Annotation { target: LiveId; name: MessageKey; dx?: number; dy?: number; width?: number; align?: 'center'; anchorY?: number; under?: boolean }
 export interface Beat {
@@ -36,8 +40,10 @@ export interface Beat {
   layout?: 'cover' | 'wide' | 'statement' | 'chapter'
   footnote?: MessageKey
   cloud?: boolean
-  /** The picture fades to a trace. Chapter cards use it. */
+  /** The picture fades to a trace. Chapter cards and flow beats use it. */
   dim?: boolean
+  /** A worker flow drawn over the dimmed world. */
+  flow?: FlowId
 }
 export interface Part { id: string; scene: string; title: string; beats: Beat[]; before: PictureState; intro?: Beat }
 
@@ -109,10 +115,12 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
         const value = local === 0 ? 1 : Math.min(1, Math.max(0, (progress - start) / (end - start)))
         return String(1 - (1 - value) ** 3)
       }
-      const windows = frames[i]!.layout === 'chapter' ? CHAPTER_REVEAL : REVEAL
+      const frame = frames[i]!
+      const windows = frame.layout === 'chapter' ? CHAPTER_REVEAL : frame.flow ? FLOW_REVEAL : REVEAL
       node.style.setProperty('--title-reveal', reveal(windows.title[0], windows.title[1]))
       node.style.setProperty('--caption-reveal', reveal(windows.caption[0], windows.caption[1]))
       node.style.setProperty('--label-reveal', reveal(windows.label[0], windows.label[1]))
+      node.style.setProperty('--flow-reveal', local === 0 ? '1' : String(Math.min(1, Math.max(0, (progress - windows.label[0]) / (windows.label[1] - windows.label[0])))))
       node.setAttribute('aria-hidden', String(!shown))
     }
   })
@@ -124,6 +132,7 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
             <div className="ascii-prompt" data-fit="show.prompt"><T k={beat.cloud ? 'show.cloudPrompt' : 'show.prompt'} /><span className="ascii-command"><T k={beat.command} /></span><span className="ascii-cursor" aria-hidden="true" /></div>
             <h1 className="ascii-heading" data-fit={beat.heading}><span className="art-burn"><T k={beat.heading} /></span></h1>
             {beat.line && beat.layout !== 'chapter' ? <p className="ascii-caption" data-fit={beat.line}><span className="art-burn"><T k={beat.line} /></span></p> : null}
+            {beat.flow ? <Flow id={beat.flow} /> : null}
             {beat.footnote ? <p className="ascii-footnote" data-fit={beat.footnote}><span className="art-burn"><T k={beat.footnote} /></span></p> : null}
             {beat.layout === 'cover' ? <div className="ascii-byline" data-fit="p01.name"><span className="art-burn"><T k="p01.name" /><span className="ascii-role"><T k="p01.role" /></span></span></div> : null}
           </Stage>

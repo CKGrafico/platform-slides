@@ -1,6 +1,6 @@
 # Talk script
 
-Draft 8, 2026-10-05. 24 stops, including the cover and four chapter cards. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
+Draft 8, 2026-10-05. 28 stops, including the cover and four chapter cards. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
 
 The same Issue moves through the talk. Each new layer answers a practical need and stays in the field. Foundations supplies enforceable conventions. The Harness supplies the agent environment. Workflows give events bounded runs. Health supplies evidence and returns findings to the same route.
 
@@ -154,11 +154,11 @@ Speaker notes: Pause. The work leaves the PC. Events start bounded runs in the c
 
 ### 16. One router for every event.
 
-On screen: workflow, state 0. Panels name agentic-workflows, Router · shell, Refine.
+On screen: the router flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
-Slide: A Markdown file compiles to a GitHub Actions workflow. Shell code classifies the event and calls at most one worker, or none.
+Slide: One event, one run, at most one worker. Classification is pure shell with no network calls. An idle run costs about ten seconds.
 
-Speaker notes: GitHub Agentic Workflows supplies the compiler and execution infrastructure. Platform supplies the router, worker catalog, installer, shared defaults, and repository Harness. Frontmatter sets the runner, engine, model, permissions, and allowed outputs. The Markdown body contains the agent task. Compiling adds framework jobs, and Actions runs the lock file. The router owns all triggers. A pure shell classifier reads the event and selects one route without a model call. Requests from people without write access enter through Triage before Refine. Workers accept workflow_call inputs and declare no public triggers. Router concurrency prevents competing workers on an Issue. Labels describe state for people. They are not the lock. Bot comments must not retrigger their own worker.
+Speaker notes: A Markdown file compiles to a GitHub Actions workflow with gh aw compile. GitHub Agentic Workflows supplies the compiler and the runtime. Platform supplies the router, the worker catalog, the installer, shared defaults, and the repository Harness. The router owns every trigger. Rung 1 classifies the event in pure shell, with no network call and no model. Then it authorizes: write access and organization membership, or the bot-working label for bots. Then it dispatches one worker through workflow_call, or none. Requests from people without write access enter through Triage. Cron and manual dispatch go to deterministic jobs that never run a model. Router concurrency prevents two workers on one Issue. Labels describe state for people. They are not the lock. An idle run still appears for every matching event and costs about ten seconds with every job skipped.
 
 ### 17. Jobs → agent → jobs → Safe Outputs
 
@@ -166,43 +166,75 @@ On screen: workflow, state 1. Panels name facts · jobs, OpenCode · agent, vali
 
 Slide: Jobs collect facts. OpenCode decides through Forge, our AI gateway, with read-only access. Validators check the result. Safe Outputs applies allowed writes.
 
-Speaker notes: Read the whole chain from left to right. Normal jobs authorize, select, and collect facts. The agent receives those facts and performs the work that needs judgment. The agent is OpenCode, and it never talks to a model provider itself. It talks to Forge, the Plain Concepts AI gateway. Forge chooses the provider and the model, and each project has its own key, so we control cost and access for each project. The model, the provider, and the runtime can change. The architecture around them stays. Deterministic validators enforce the result contract. Fixed jobs apply allowed writes. Safe Outputs defines the permitted verbs. The agent itself has read-only repository permissions. Neither a label check nor a fixed comment needs a model.
+Speaker notes: Every worker climbs the same ladder. Rung 1 classifies in shell. Rung 3 collects facts. Rung 4 reserves the Issue and checks eligibility. Rung 5 is the agent. Rung 6 concludes in shell. The agent is OpenCode, and it never talks to a model provider itself. It talks to Forge, the Plain Concepts AI gateway. Forge chooses the provider and the model, and each project has its own key, so we control cost and access for each project. The model, the provider, and the runtime can change. The architecture around them stays. Deterministic validators enforce the result contract. Fixed jobs apply allowed writes. Safe Outputs defines the permitted verbs. The agent itself has read-only repository permissions. Neither a label check nor a fixed comment needs a model.
 
-### 18. Refine: from Issue to story.
+### 18. How the routes chain.
 
-On screen: workflow, state 2. Panels name facts · jobs, Refine, Split · child Issues, safe-outputs.
+On screen: the chain flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
-Slide: It reads the code and writes testable criteria with an estimate. It asks the author when intent is missing. Large Issues split into children.
+Slide: Refine decides size: 5 or less goes to Implement, 8 or more splits. One PR, CI, the gate decides. Every return re-enters the same route.
 
-Speaker notes: Fixed jobs authorize and collect the Issue and comments before the agent starts. Refine uses the real codebase to produce an implementable story with acceptance criteria and an estimate. A single result must be applied through the permitted output contract. Issue text is data inside a marked boundary, not a new instruction source. Two branches have different causes. Missing intent returns to the author. Oversized work splits into bounded children that follow the route on their own. Replies re-enter refinement. They do not restart an implementation with stale assumptions. The current route sends small work to Implement. The older polling cascade on the website is not the current router.
+Speaker notes: Read the map from left to right. A user with write access labels the Issue straight into Refine. Everyone else enters through Triage. Refine estimates in points. Five or less goes to Implement. Eight or more splits into two to six children, and each child walks the route alone. Implement opens one pull request that closes the Issue. CI runs. Merge Gate merges, or asks for a human when the risk is high or a protected path changed. Three feedback loops: a question returns to the author and the reply re-enters Refine, a failed CI returns to a fix and then to the gate again, and the weekly Audit files one Issue into Refine, never into Implement.
 
-### 19. Implement: code, checks and PR.
+### 19. Triage: the front door.
 
-On screen: workflow, state 3. Panels name facts · jobs, OpenCode · agent, validate · jobs, safe-outputs.
+On screen: the triage flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
-Slide: Prepare the Issue → /plan-goal → validate the patch → open PR. The worker stops there.
+Slide: Four outcomes: pass, needs info, needs a maintainer, block. Three rounds at most. In round three, needs info is no longer allowed.
 
-Speaker notes: Normal jobs read the Issue, reserve it, and supply facts. OpenCode runs the scoped implementation with the Harness. It writes code and verifies the change. Fixed output steps replay the validated patch and open the pull request. Implement stops at that handoff. It does not own merge, and it must not hold a runner while waiting for CI. A feature chain can accumulate stories on one branch before its final pull request.
+Speaker notes: Triage runs only for outside collaborators. A user with write access skips it. The worker reserves the Issue with the bot-working label, collects the Issue and its comments, and the agent runs ten checks. Four valid outcomes. Pass adds the refine label with no human in the loop. Needs info posts questions, and an author reply re-runs the worker. Needs maintainer keeps the Issue open with a review label. Block closes it only on a genuine rejection. The round counter comes from markers already on the Issue. In round three, needs info is no longer allowed, so the loop ends. An invalid outcome is retried.
 
-### 20. CI supplies evidence. Merge Gate decides.
+### 20. Refine: size and split the work.
 
-On screen: workflow, state 4. Panels name CI, Merge Gate, show.review.label, Implement.
+On screen: the refine flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
-Slide: Code computes risk. The agent looks for defects. A validator sets the verdict. Fixes and reviews return through CI to the same gate.
+Slide: Explore the code one unit at a time. Write the story as Given, When, Then. Estimate in Fibonacci. Eight or more splits into 2 to 6 children.
 
-Speaker notes: CI dispatches its conclusion to the router, and the gate runs as its own bounded run. The gate reads the diff and the evidence and checks for defects. It can repair failed CI by pushing a patch, which starts CI again. A deterministic calculation supplies risk. A shell validator computes the disposition after the agent reports its findings. Protected paths require their owner. Only this worker merges. A review invokes Apply Review, which reads the whole conversation before it applies justified changes. Ambiguous or unsafe feedback needs a person. Both returns pass through CI and the same gate. A reconciler catches lost handoffs, and housekeeping retries machine failures within a budget. A question or an owner review is a decision, not a crash to retry. Release is a separate manual route. The agent writes the notes, and code sets the version, the tag, and the publishing.
+Speaker notes: Reserve, collect facts, then the agent explores the real codebase one unit at a time. A trivial change gets a plan without Gherkin. Everything else becomes a story in Given, When, Then, wrapped into the Issue form and passed through the humanizer. The estimate is Fibonacci against the estimate bands. Eight or more splits into two to six children of five or less, and each child walks the pipeline alone. Open questions go to the author in one batched comment. When nothing is open, the Issue is refined and the implement label is added. If the agent cannot ground the story in the code, the run is incomplete and retried.
+
+### 21. Implement: one PR, then stop.
+
+On screen: the implement flow, drawn step by step over the dimmed world. The composition holds the current subject.
+
+Slide: Eligible? Reserve, collect facts. Trivial marker takes the direct path, the rest runs plan-goal. Verify the scoped files. One PR. The gate decides.
+
+Speaker notes: Rung 4 checks eligibility: the Issue is open and not marked future. Reserve it. Rung 3 collects facts. A trivial marker takes the direct path, one todo per item. Everything else runs the plan-goal pipeline from the Harness. Verify checks the scoped files, and a failure goes back to the agent. Create PR is the one safe output. Then the worker hands off: the merge decision belongs to the gate. If the run died in under six minutes, that is an outage, and the worker retries up to five times. If it died later, something is wrong, and the Issue is parked with a review label.
+
+### 22. Merge Gate: the only one that merges.
+
+On screen: the gate flow, drawn step by step over the dimmed world. The composition holds the current subject.
+
+Slide: CI red? Repair, push, CI again. CI green? Measure the blast radius, the agent hunts defects, shell computes the verdict: merge, human, owner or blocked.
+
+Speaker notes: CI reports its conclusion to the router, or the reconciler finds a pull request that was missed. Rung 4 checks the subject: our open pull request. Checkout is fast-forward only. Rung 3 collects the diff, the pull request shape, and the CI logs. If CI failed, the agent repairs and verifies, pushes, and CI runs again. If CI passed, rung 4b measures the protected paths and the blast radius. The agent finds and verifies defects and reports them. The disposition is computed in shell from that report and the blast radius: auto-merge with squash and the Issue closed, human review when the change is fragile or the radius is high, owner review from CODEOWNERS for protected paths, or blocked when CI stays red at attempt six. Only this worker merges.
+
+### 23. Apply Review: the whole conversation.
+
+On screen: the review flow, drawn step by step over the dimmed world. The composition holds the current subject.
+
+Slide: Read every thread first. A reviewer makes one point across several comments. Apply only what the feedback justifies: a comment is not a licence to refactor.
+
+Speaker notes: A review or a comment on a bot pull request starts this worker. Rung 4 checks that the pull request is ours and that the reviewer has write access. Rung 3 puts the whole conversation on disk: threads, comments, and the diff. A reviewer often makes one point across several comments, and applying them one at a time produces contradictory commits. The agent decides what is still actionable, by thread id, and applies only what the feedback justifies. Verify runs on the changed files. A push runs CI and re-enters the gate. If everything was already addressed, nothing is pushed. Ambiguous or unsafe feedback needs a human.
+
+### 24. Release: the agent writes prose.
+
+On screen: the release flow, drawn step by step over the dimmed world. The composition holds the current subject.
+
+Slide: Its only output is a file on disk. The version bump, the tag and the Release are shell. A confused model cannot publish a release.
+
+Speaker notes: Release starts from a manual dispatch. Rung 3 collects the commit log since the last tag. Rung 5 is the agent, and its only output is release-notes.md on disk. Rung 6 concludes in shell: a BREAKING change bumps the major version, a feat bumps the minor. Commit, tag, push, and create the GitHub Release. If anything fails, there is no tag and nothing partial. Package release is a separate route from application deployment, which follows the project configuration.
 
 ## Project Health measures and improves the system
 
 Source: [reference](../knowledge/website-reading.md).
 
-### 21. Chapter: Project Health
+### 25. Chapter: Project Health
 
 On screen: the title over the dimmed world.
 
 Speaker notes: Pause. The last pillar measures the system and feeds the other three.
 
-### 22. Health measures what GitHub knows.
+### 26. Health measures what GitHub knows.
 
 On screen: feedback, state 0. Panels name project-health, p12.notCollected, waits for a person.
 
@@ -210,19 +242,19 @@ Slide: Deployment frequency, lead time and rework. Tokens per run, as a floor. W
 
 Speaker notes: Project Health collects GitHub facts and publishes a static site. Deployment frequency and commit-to-production lead time describe delivery. Rework needs an explicit hotfix marker. Change fail rate and recovery time need production incident evidence. A red pipeline is not that evidence, so those values stay absent with a reason. Agent usage comes from run artifacts and from the actual agent step. A declared agent job that was skipped is not an agent run. Token totals can be incomplete when artifacts are absent, so show measured N of M. Costs stay in tokens. Human attention is its own measure: pending review and blocked Issues for each project, with bot pull requests counted apart. More PRs do not establish less work for people. This view shows where the automated route repeatedly stops.
 
-### 23. Audit sends work back to Refine.
+### 27. Audit: read-only, files one Issue.
 
-On screen: feedback, state 1. Panels name Audit · read-only, Refine, project-health.
+On screen: the audit flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
-Slide: A read-only audit files an Issue through the same route. Health measures the result of the change.
+Slide: The only worker that creates work. It reads the repo, scores each finding, drops duplicates and files one Issue into Refine. Fewer than three open reports.
 
-Speaker notes: Audit reads the repository against its guardrails and files a finding. It does not edit code. The Issue enters Refine, then the ordinary pipeline. Repeated findings and attention patterns can lead to changes in Foundations, Harness, or worker logic. Measurement follows the revised system. This is the improvement loop in the assessment.
+Speaker notes: Audit runs weekly or on dispatch. Rung 1 applies backpressure: fewer than three open audit reports, or the run is idle because the backlog is full. Rung 3 collects the open Issues, titles, and labels. The agent audits the repository read-only against its guardrails with /repo-audit. It filters for findings that are specific, reproducible, and have impact. It scores them from one to ten on severity, likelihood, and blast radius, and drops anything already tracked or rejected. It records dispositions and reads them next time. It files one Issue with the top three findings refined as stories. That Issue enters Refine, gets sized and split, and follows the ordinary route. Repeated findings and attention patterns lead to changes in Foundations, the Harness, or the workers. Measurement follows the revised system. This is the improvement loop.
 
 ## The whole Platform system
 
 Source: [reference](../knowledge/maturity.md).
 
-### 24. From Issue to production with GitHub Agentic Workflows.
+### 28. From Issue to production with GitHub Agentic Workflows.
 
 On screen: system, state 0. Panels name Triage, Refine · Implement, CI, Merge Gate, Production.
 

@@ -11,7 +11,7 @@ export const part: Part = {
       "heading": "talk.health.chapter.title",
       "command": "talk.health.chapter.command",
       "picture": "workflow",
-      "step": 4,
+      "step": 1,
       "labels": [],
       "layout": "chapter",
       "dim": true,
@@ -47,36 +47,19 @@ export const part: Part = {
       "cloud": true
     },
     {
-      "heading": "talk.health.improve.title",
-      "line": "talk.health.improve.body",
-      "command": "talk.health.improve.command",
+      "heading": "talk.health.audit.title",
+      "line": "talk.health.audit.body",
+      "command": "talk.health.audit.command",
       "picture": "feedback",
-      "step": 1,
-      "labels": [
-        {
-          "target": "audit",
-          "name": "talk.label.audit",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "refine",
-          "name": "talk.label.refine",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "measure",
-          "name": "talk.label.health",
-          "width": 28,
-          "under": true
-        }
-      ],
+      "step": 0,
+      "labels": [],
       "layout": "wide",
+      "dim": true,
+      "flow": "audit",
       "cloud": true
     }
   ]
 },
-  before: picture('workflow', 4),
+  before: picture('workflow', 1, true),
 }
 export const health = makePart(part)

@@ -176,7 +176,7 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
   if (dim) {
     for (const id of LIVE_IDS) {
       const pose = state[id]
-      pose.opacity = id.startsWith('path.') ? 0 : pose.opacity * 0.12
+      pose.opacity = id.startsWith('path.') ? 0 : pose.opacity * 0.09
       pose.focus = 0
     }
   }

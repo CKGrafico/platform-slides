@@ -25,12 +25,12 @@ let number = 1
 const script = sections.map((section) => {
   let text = `## ${section.title}\n\nSource: [reference](${section.source}).\n\n`
   if (section.intro) text += `### ${number++}. From Issue to production with GitHub Agentic Workflows\n\nOn screen: a close view of the reasoning core. The blue Issue is one of its units. The cover introduces the speaker.\n\nSay: This talk follows one Issue from an engineer's PC to production, through the Plain Concepts Platform.\n\n`
-  text += section.beats.map((beat) => beat.layout === 'chapter' ? `### ${number++}. Chapter: ${clean(beat.title[0])}\n\nOn screen: the title over the dimmed world.\n\nSpeaker notes: ${beat.notes}\n\n` : `### ${number++}. ${clean(beat.title[0])}\n\nOn screen: ${beat.picture}, state ${beat.step}. ${beat.labels.length ? `Panels name ${beat.labels.map((label) => sharedCopy[label.name]?.[0] ?? label.name).join(', ')}.` : 'The composition holds the current subject.'}\n\nSlide: ${clean(beat.body[0])}\n\nSpeaker notes: ${beat.notes}\n\n`).join('')
+  text += section.beats.map((beat) => beat.layout === 'chapter' ? `### ${number++}. Chapter: ${clean(beat.title[0])}\n\nOn screen: the title over the dimmed world.\n\nSpeaker notes: ${beat.notes}\n\n` : `### ${number++}. ${clean(beat.title[0])}\n\nOn screen: ${beat.flow ? `the ${beat.flow} flow, drawn step by step over the dimmed world.` : `${beat.picture}, state ${beat.step}.`} ${beat.labels.length ? `Panels name ${beat.labels.map((label) => sharedCopy[label.name]?.[0] ?? label.name).join(', ')}.` : 'The composition holds the current subject.'}\n\nSlide: ${clean(beat.body[0])}\n\nSpeaker notes: ${beat.notes}\n\n`).join('')
   return text
 }).join('')
 fs.writeFileSync('docs/script/script.md', (header + script).trimEnd() + '\n')
 
-let previous = ['cover', 0]
+let previous = ['cover', 0, false]
 for (const section of sections) {
   const dir = path.join('src/show/parts', section.id)
   fs.mkdirSync(dir, { recursive: true })
@@ -41,14 +41,15 @@ for (const section of sections) {
       picture: beat.picture, step: beat.step, labels: beat.labels, layout: beat.layout === 'default' ? undefined : beat.layout,
       ...(beat.footnote ? { footnote: beat.footnote } : {}),
       ...(beat.dim ? { dim: true } : {}),
+      ...(beat.flow ? { flow: beat.flow } : {}),
       ...(section.cloud ? { cloud: true } : {}),
     })),
     ...(section.intro ? { intro: section.intro } : {}),
   }
-  fs.writeFileSync(path.join(dir, 'index.tsx'), `import { makePart, type Part } from '../../narrative'\nimport { picture } from '../../pictures'\n\nexport const part: Part = {\n  ...${JSON.stringify(data, null, 2)},\n  before: picture('${previous[0]}', ${previous[1]}),\n}\nexport const ${section.name} = makePart(part)\n`)
+  fs.writeFileSync(path.join(dir, 'index.tsx'), `import { makePart, type Part } from '../../narrative'\nimport { picture } from '../../pictures'\n\nexport const part: Part = {\n  ...${JSON.stringify(data, null, 2)},\n  before: picture('${previous[0]}', ${previous[1]}${previous[2] ? ', true' : ''}),\n}\nexport const ${section.name} = makePart(part)\n`)
   fs.writeFileSync(path.join(dir, 'choreography.ts'), `import { makeMoves } from '../../narrative'\nimport { part } from '.'\n\nexport const ${section.name}Moves = makeMoves(part)\n`)
   const last = section.beats.at(-1)
-  previous = [last.picture, last.step]
+  previous = [last.picture, last.step, Boolean(last.dim)]
 }
 fs.writeFileSync('src/show/index.ts', `import { defineShow } from '@/engine/define'\n${sections.map((section) => `import { ${section.name} } from './parts/${section.id}'\nimport { ${section.name}Moves } from './parts/${section.id}/choreography'`).join('\n')}\n\nexport const show = defineShow({ chapters: [${sections.map((section) => section.name).join(', ')}], mountWindow: 1 })\nexport const choreographies = [${sections.map((section) => section.name + 'Moves').join(', ')}]\nexport { actors } from './actors'\n`)
 console.log(`${count} stops across ${sections.length} chapters`)

@@ -51,6 +51,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('feedback', 1),
+  before: picture('feedback', 0, true),
 }
 export const system = makePart(part)
