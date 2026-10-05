@@ -4,15 +4,13 @@ import '@fontsource-variable/outfit'
 import '@fontsource-variable/jetbrains-mono'
 import '@/animation/gsap'
 import '@/styles/base.css'
-import '@/art/art.css'
-import { ArtRuntime } from '@/art/ArtRuntime'
-import { Grain } from '@/art/Grain'
 import { applyPaletteCssVars } from '@/art/palette'
 import { EnvironmentProvider } from '@/engine/environment'
 import { I18nProvider } from '@/i18n'
 import { Keynote } from '@/engine/Keynote'
-import { actors, choreographies, show, Veil } from '@/show'
-import { Callouts } from '@/show/callouts'
+import { actors, choreographies, show } from '@/show'
+import { AsciiRuntime } from '@/show/AsciiRuntime'
+import '@/show/ascii.css'
 
 applyPaletteCssVars()
 
@@ -33,7 +31,7 @@ void fontsReady().then(() => {
     <StrictMode>
       <EnvironmentProvider>
         <I18nProvider>
-          <Keynote show={show} actors={actors} choreographies={choreographies} world={<><ArtRuntime /><Veil /></>} overlay={<Callouts />} grain={<Grain />} />
+          <Keynote show={show} actors={actors} choreographies={choreographies} world={<AsciiRuntime />} />
         </I18nProvider>
       </EnvironmentProvider>
     </StrictMode>,

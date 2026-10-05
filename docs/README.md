@@ -2,7 +2,10 @@
 
 This repository holds a web keynote. The keynote runs in a browser, full screen, and the presenter controls it from the keyboard. It has no sound.
 
-The engine is done. The art direction is decided: an abstract world of geometric entities drawn as point clouds ([art/art-direction.md](art/art-direction.md), [art/elements.md](art/elements.md)). All 14 parts are built, one folder per part in `src/show/parts/`. The world is being rebuilt on the point-cloud direction.
+The show uses abstract geometric entities with ASCII surfaces ([art/art-direction.md](art/art-direction.md), [art/elements.md](art/elements.md)). Its 31 stops follow work from a personal PC to the Plain Concepts Platform. The cover also introduces the speaker. The maturity assessment precedes the capability path. Foundations and the local Harness come before cloud workflows.
+
+The cast has 28 form actors and 31 route channels. Bounded idle motion keeps the field alive between stops.
+The town, orbit visuals, and visibility veil are removed. Git preserves their source history. The previous script stays in `docs/script/script-orbits-archive.md`.
 
 ## Run it
 
@@ -48,8 +51,12 @@ npm run i18n:check
 | Presenter controls and the debug workflow | [presenting.md](presenting.md) |
 | What the keynote is about: the Platform repos and site | [knowledge/platform.md](knowledge/platform.md) |
 | The talk script, beat by beat (work here first) | [script/script.md](script/script.md) |
+| Verified routes, returns, worker ownership, and manual release | [knowledge/workflow-routes.md](knowledge/workflow-routes.md) |
+| Published phases, hard guardrails, the Harness, and measurement limits | [knowledge/website-reading.md](knowledge/website-reading.md) |
+| Five maturity levels, four assessment areas, and scoring | [knowledge/maturity.md](knowledge/maturity.md) |
 | Art direction: the style bible | [art/art-direction.md](art/art-direction.md) |
 | Element grammar: what each element means | [art/elements.md](art/elements.md) |
+| ASCII forms, poses, materials, and resource disposal | [art/ascii.md](art/ascii.md) |
 | Next technical steps for the art kit | [art/next-steps.md](art/next-steps.md) |
 | Our anonymised numbers | [knowledge/our-numbers.md](knowledge/our-numbers.md) |
 | Draft story of the talk (not binding) | [knowledge/talk-notes.md](knowledge/talk-notes.md) |

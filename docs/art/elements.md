@@ -2,12 +2,12 @@
 
 The keynote uses a small set of elements. Each element has one meaning for the whole talk. The audience learns the meaning once and reads it everywhere after that. So an agent that builds a scene must never give an element a new meaning, and must never invent a new element without adding it here first.
 
-The look of each element follows [art-direction.md](art-direction.md). The system is an abstract world of geometric entities drawn as point clouds. The reason for the direction is in [art-direction.md](art-direction.md).
+The look of each element follows [art-direction.md](art-direction.md). The system is an abstract world of geometric entities drawn with ASCII surfaces. The form kit is in [ascii.md](ascii.md).
 
 ## The three laws
 
 1. **The picture is material, not objects.** A form is an aggregate of many small units. It forms and unforms. Nothing is a solid object with a fixed shape.
-2. **Rigidity is determinism.** A rigid entity, aligned and still, is work that repeats. A fluid entity, loose and deforming, is work that reasons. The core stays fluid. Work solidifies as it moves away from the core.
+2. **Rigidity is determinism.** Aligned units show repeatable work. Whole assemblies can float without changing their internal alignment. The active reasoning core alone keeps its units fluid.
 3. **One accent, one meaning.** The world is monochrome. Exactly one colour, the blue, marks the work we follow at this moment.
 
 A story rule sits under the three: nothing appears without a reason the beat before it showed.
@@ -19,28 +19,42 @@ A story rule sits under the three: nothing appears without a reason the beat bef
 | Unit | the smallest piece of the world | one small flat-faced polyhedron: a rhombic dodecahedron, a truncated octahedron, a cuboctahedron, a low-poly icosahedron, a hexagonal prism or a beveled slab. Never a perfect sphere, never a plain sharp cube |
 | Entity | a body of work | an aggregate of units, packed in a cluster. Units hold together by proximity, never by fusion. An entity can be dense or sparse |
 | The core | the agent: the model and its runtime, OpenCode | the largest entity, the densest, and the only one that stays fluid. Its units slowly reshuffle. It loses units as work leaves it |
-| Deterministic work | a step that repeats | a rigid entity: units aligned, gaps closed, motion stopped, grey |
+| Deterministic work | a step that repeats | a rigid assembly of aligned units that floats as one body |
 | Reasoning work | a step that needs the model | a fluid entity near the core: units loose, drifting, deforming |
 | The flow | work that travels | a stream of loose units moving along a channel, like a material caught mid-motion |
 | The guardrail | a constraint that fails the build | a rigid wall of aligned units that stops a flow |
 | The gate | the merge gate | a rigid wall with one opening where a single blue unit passes |
-| The issue | the one work item we follow | one blue unit. It changes state as it travels: fluid when it needs thought, rigid when it is understood |
+| The issue | the one work item we follow | one blue unit within an assembly. It leaves a real unit during a transfer and docks inside the next assembly |
+| Triage | the front door for outside collaborators | an open frame of aligned units before Refine |
+| Split | large work becomes smaller Issues | separate beveled units that feed the same route independently |
+| Owner review | a decision that needs a person | a second open frame on the branch from Merge Gate |
+| Audit | read the repo and create one Issue | an aligned bank of prisms that returns work to Refine |
+| Release | a manually dispatched publishing step | a stack of beveled slabs after the merge gate |
+| Deployed application | the eligible change in production | a rigid bank with the blue Issue docked in one of its front units. It is separate from the manual package Release worker |
 | The measure | a measurement: tokens, Project Health | a rigid bank of units, like stacked blanks. A gap stays empty for a metric that is not collected |
 | The panel | the name of an entity | a terminal panel: a thin rounded rectangle, a name, and a short role line. It follows its entity on screen |
 | The command line | where the talk is | one line of mono text in the top left, the current beat, ending in a blue block cursor |
+| Maturity level | a set of team practices in the assessment | five assemblies with increasing structure: one unit, loose units, a frame, repeated banks, and a frame with measured banks. Their names stay fixed. They do not represent a measured Platform score |
+| Assessment area | one weighted area in the assessment | four rigid banks, named SDLC, determinism, control, and impact. These banks stay visible at the edge of the final system |
+| Safe output | a permitted write from a worker | a compact rigid bank after validation. It is separate from the merge gate |
 
 ## Rules
 
 - **Units never fuse.** An entity is held by proximity and thin struts, so it can split and rejoin.
-- **Rigidity is determinism.** Colour stays monochrome. Rigidity is shown by alignment and stillness, not by colour.
-- **Only the core reasons, and only the core stays fluid.** Work solidifies as it moves outward.
+- **Rigidity is determinism.** Aligned units stay aligned during idle drift. Only units in a reasoning body shift independently.
+- **Only the active reasoning core stays fluid.** Refine uses a smaller instance of the same core geometry. When it reasons, the background core holds its units still. Work solidifies as it moves outward.
 - **Only the issue is blue**, with two exceptions: the element that is active right now, and the command line cursor. Nothing else uses the accent.
-- **Nothing floats without a reason and nothing is a sphere.** Units are flat-faced. The world has no balls and no orbits.
-- **Connections are events.** The world draws no web of lines between entities. When work moves from one entity to another, a short beam of units travels the path and fades. A visible connection means a transfer in that instant.
-- **Every element enters and leaves the same way:** it assembles from scattered units, and it scatters back to dust. Use the helpers in `src/art/motion.ts` and `src/art/points.ts`.
+- **Idle gives the field life.** Whole bodies float and turn slowly. Units are flat-faced. The world has no balls and no orbits.
+- **Connections are events.** Traveling units show the active route and its next handoff. Curved channels show feedback. Channels follow ports on real units.
+- **Every element enters and leaves the same way:** it assembles from scattered marks, and it scatters back to dust. Use the assembly pose in `src/show/pictures.ts` and the sampled surfaces in `src/art/points.ts`.
 - **People are not drawn.** There are no figures. The team is a small entity, the requester is a single unit that arrives from the edge, the reviewer is a wall of units that stops a flow.
 - **The camera is isometric and fixed.** One orthographic angle. It steps between regions, it does not swing.
 - **Names live in the panels and the command line.** No floating label web, no HUD ring.
+
+The closing view has one main route: Triage, the reasoning core, CI, Merge Gate, and the deployed application.
+Foundations, Harness, workflow configuration, and Health sit below it as supporting assemblies.
+Compact labels sit outside the silhouettes. The five maturity names use one text line, without five more panels over the world.
+The main flow is blue and the evidence return is grey. It retains the same meanings as the earlier close views.
 
 ## Do and do not
 

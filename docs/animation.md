@@ -105,16 +105,18 @@ The engine does not ship transitions. It keeps these open:
 - The camera track makes moves between compositions continuous.
 - DOM, SVG, and WebGL share one frame and one progress value, so a DOM element can hand over to a 3D object on the same frame.
 
-## Choreographies, ambient life, and the beat grid
+## The ASCII show
 
-These were added with the art direction (see `docs/art/art-direction.md`).
+Each part lists its translated beat keys in `index.tsx` and exports its moves from `choreography.ts`. `makeMoves` joins complete states from `src/show/pictures.ts`. A new state keeps the layers introduced before it. Each move starts from the preceding state.
 
-- **Choreographies.** Each part of the talk moves the shared actors in its own file, `src/show/parts/NN-name/choreography.ts`, with `defineChoreography(key, (tl, cast, t) => ...)`. `cast.get(id)` returns an actor. `t.at` and `t.span` place tweens on global timeline units. All choreographies compose, in show order, into one paused timeline. In development, a console warning names two choreographies that write the same property in overlapping windows.
-- **Ambient life.** An actor may have `ambient(object, time, position)`. It runs every frame with the clock, for noise, sway, and slow tumbles. It must only write properties that no timeline writes. For art elements, that means `inner.position` and `inner.rotation`: the choreography owns `object`, entrances and exits own `inner.scale`.
-- **The beat grid.** `beatStops([4, 10, 6])` returns stops whose moves last 4, 10, and 6 beats at 120 BPM, with `ease: 'none'`, plus `b(n)`, the local progress n beats into the scene. Because the move itself is linear, a tween placed at `b(n)` lands exactly n beats after the press. Put the easing on each tween.
-- **drive().** `drive(tl, at, duration, fn)` (in `src/art/motion.ts`) calls `fn(u)` with u from 0 to 1 on every render of the timeline, forward or back. It is the one writer for anything that follows a path or needs math that a tween cannot express: the extraction in part 10, the route of the blue ball in part 13, swarms. `fn` must be pure.
-- **Drives and tweens do not share a property.** If a drive writes a property (the core's scale, a swarm's matrices), only drives may write it. Going back, a tween restores the value it recorded while the timeline was built, and drives do not run in that pass. At the edge of two drive windows, the later drive's fn(0) must equal the earlier drive's fn(1).
-- **The rest state.** `src/show/rest.ts` hides, at position 0, every art element that is not on the cover. Parts only ink things in and out.
-- **Scene outro.** A scene stays on screen for `outro` seconds (default one beat) into the next move, and its text burns out with it (`useProgress` passes `outro` from 0 to 1). So the press that starts a part also clears the last part's text.
-- **Show overlays.** `usePlayhead(fn)` gives an overlay the playhead on every frame. The map of the talk (`src/show/hud/`) uses it with cues that parts register on their own beat grid.
-- **framePosition.** The presentation tick runs before GSAP moves the playhead in the same frame, so scenes and actors show the position of that tick. Anything drawn later in the frame (the camera rig, shader uniforms) reads `presentation.framePosition`, or it would run one frame ahead.
+GSAP writes actor poses and the transfer track. `AsciiRuntime` applies them before updating screen anchors.
+The runtime scales glyphs with the stage height and renderer DPR. It warms the shader before the talk.
+Bounded clock functions add idle drift. They never change narrative progress or worker outcomes.
+
+`beatStops` puts moves on the 120 BPM grid. Each rebuilt stop takes four beats. The forms finish their move before the stop so the speaker can hold a readable composition. Each frame shows only the active scene and beat.
+
+The fixed shot includes `ortho`, the orthographic half-height. `screenToWorld` maps positions onto its isometric screen plane. Camera orientation stays fixed throughout the show.
+
+Assembly, opacity, focus, extraction, work ownership, and handoff progress come from the playhead.
+Title, caption, and label reveals follow that same progress in sequence.
+Reduced motion cuts to the destination and freezes ambient movement. Reversing or restoring a stop restores the same narrative pose.

@@ -1,0 +1,825 @@
+{
+  "date": "2026-10-05",
+  "viewport": {
+    "width": 1280,
+    "height": 720
+  },
+  "stops": 31,
+  "localeKeys": 133,
+  "english": [
+    {
+      "heading": "Foundations → Harness\n→ Workflows → Health",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "31"
+    },
+    {
+      "heading": "Audit sends work back to Refine.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "30"
+    },
+    {
+      "heading": "Work that still needs a person.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "29"
+    },
+    {
+      "heading": "Tokens and time for each run.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "28"
+    },
+    {
+      "heading": "DORA: delivery and rework.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "27"
+    },
+    {
+      "heading": "Each worker hands off and stops.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "26"
+    },
+    {
+      "heading": "Fix or review → CI → gate.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "25"
+    },
+    {
+      "heading": "CI supplies evidence.\nMerge Gate decides.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "24"
+    },
+    {
+      "heading": "Implement: code, checks and PR.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "23"
+    },
+    {
+      "heading": "Refine asks or splits.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "22"
+    },
+    {
+      "heading": "Refine: from Issue\nto user story.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "21"
+    },
+    {
+      "heading": "Jobs → agent → jobs.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "20"
+    },
+    {
+      "heading": "One router for every event.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "19"
+    },
+    {
+      "heading": "From Markdown\nto GitHub Actions.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "18"
+    },
+    {
+      "heading": "The same Harness\non PC and CI.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "17"
+    },
+    {
+      "heading": "Plugins block unsafe tool calls.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "16"
+    },
+    {
+      "heading": "Proposal → specs → tasks → PR.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "15"
+    },
+    {
+      "heading": "agent-harness\nsets up the environment.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "14"
+    },
+    {
+      "heading": "Auth, data and CI\nneed an owner.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "13"
+    },
+    {
+      "heading": "Specs and tests\npin observable behavior.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "12"
+    },
+    {
+      "heading": "A guardrail fails the build.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "11"
+    },
+    {
+      "heading": "A shared technical baseline.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "10"
+    },
+    {
+      "heading": "Discovery → Foundations\n→ Maintenance",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "9"
+    },
+    {
+      "heading": "Four repositories\ncarry the method.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "8"
+    },
+    {
+      "heading": "The next step is asynchronous.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "7"
+    },
+    {
+      "heading": "Plugins → guardrails → Harness.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "6"
+    },
+    {
+      "heading": "Prompts → skills → agents.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "5"
+    },
+    {
+      "heading": "We assess four areas.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "4"
+    },
+    {
+      "heading": "Adoption and maturity\nare different.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "3"
+    },
+    {
+      "heading": "You work with AI\non your PC.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "2"
+    },
+    {
+      "heading": "From your PC\nto Platform.",
+      "lang": "en",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "1"
+    }
+  ],
+  "spanish": [
+    {
+      "heading": "Desde tu PC\na Platform.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "1",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced"
+    },
+    {
+      "heading": "Trabajas con IA\nen tu PC.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "2",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/01-cover/local/0"
+    },
+    {
+      "heading": "Adopción y madurez\nson distintas.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "3",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/03-maturity/assessment/0"
+    },
+    {
+      "heading": "Evaluamos cuatro áreas.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "4",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/03-maturity/assessment/1"
+    },
+    {
+      "heading": "Prompts → skills → agentes.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "5",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/04-evolution/layers/0"
+    },
+    {
+      "heading": "Plugins → guardrails → Harness.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "6",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/04-evolution/layers/1"
+    },
+    {
+      "heading": "El siguiente paso es asíncrono.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "7",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/04-evolution/layers/2"
+    },
+    {
+      "heading": "Cuatro repositorios\nsostienen el método.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "8",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/05-platform/method/0"
+    },
+    {
+      "heading": "Discovery → Foundations\n→ Maintenance",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "9",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/05-platform/method/1"
+    },
+    {
+      "heading": "Una base técnica compartida.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "10",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/06-foundations/constraints/0"
+    },
+    {
+      "heading": "Un guardrail falla el build.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "11",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/06-foundations/constraints/1"
+    },
+    {
+      "heading": "Specs y tests\nfijan comportamiento observable.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "12",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/06-foundations/constraints/2"
+    },
+    {
+      "heading": "Auth, datos y CI\nrequieren dueño.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "13",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/06-foundations/constraints/3"
+    },
+    {
+      "heading": "agent-harness\nprepara el entorno.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "14",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/07-harness/environment/0"
+    },
+    {
+      "heading": "Propuesta → specs → tareas → PR.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "15",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/07-harness/environment/1"
+    },
+    {
+      "heading": "Los plugins bloquean acciones inseguras.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "16",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/07-harness/environment/2"
+    },
+    {
+      "heading": "El mismo Harness\nen PC y CI.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "17",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/07-harness/environment/3"
+    },
+    {
+      "heading": "De Markdown\na GitHub Actions.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "18",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/08-workflows/pipeline/0"
+    },
+    {
+      "heading": "Un router para cada evento.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "19",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/08-workflows/pipeline/1"
+    },
+    {
+      "heading": "Jobs → agente → jobs.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "20",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/08-workflows/pipeline/2"
+    },
+    {
+      "heading": "Refine: del Issue\na una historia.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "21",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/08-workflows/pipeline/3"
+    },
+    {
+      "heading": "Refine pregunta o divide.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "22",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/08-workflows/pipeline/4"
+    },
+    {
+      "heading": "Implement: código, checks y PR.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "23",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/08-workflows/pipeline/5"
+    },
+    {
+      "heading": "CI aporta pruebas.\nMerge Gate decide.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "24",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/08-workflows/pipeline/6"
+    },
+    {
+      "heading": "Arreglo o review → CI → gate.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "25",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/08-workflows/pipeline/7"
+    },
+    {
+      "heading": "Cada worker entrega y termina.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "26",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/08-workflows/pipeline/8"
+    },
+    {
+      "heading": "DORA: entrega y retrabajo.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "27",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/09-health/feedback/0"
+    },
+    {
+      "heading": "Tokens y tiempo por ejecución.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "28",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/09-health/feedback/1"
+    },
+    {
+      "heading": "Lo que aún necesita una persona.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "29",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/09-health/feedback/2"
+    },
+    {
+      "heading": "Audit devuelve trabajo a Refine.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "30",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/09-health/feedback/3"
+    },
+    {
+      "heading": "Foundations → Harness\n→ Workflows → Health",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "31",
+      "url": "http://localhost:5173/?debug&lang=es&motion=reduced#/10-system/whole/0"
+    }
+  ],
+  "animated": [
+    {
+      "heading": "Desde tu PC\na Platform.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "1"
+    },
+    {
+      "heading": "Trabajas con IA\nen tu PC.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "2"
+    },
+    {
+      "heading": "Adopción y madurez\nson distintas.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "3"
+    },
+    {
+      "heading": "Evaluamos cuatro áreas.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "4"
+    },
+    {
+      "heading": "Prompts → skills → agentes.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "5"
+    },
+    {
+      "heading": "Plugins → guardrails → Harness.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "6"
+    },
+    {
+      "heading": "El siguiente paso es asíncrono.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "7"
+    },
+    {
+      "heading": "Cuatro repositorios\nsostienen el método.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "8"
+    },
+    {
+      "heading": "Discovery → Foundations\n→ Maintenance",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "9"
+    },
+    {
+      "heading": "Una base técnica compartida.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "10"
+    },
+    {
+      "heading": "Un guardrail falla el build.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "11"
+    },
+    {
+      "heading": "Specs y tests\nfijan comportamiento observable.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "12"
+    },
+    {
+      "heading": "Auth, datos y CI\nrequieren dueño.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "13"
+    },
+    {
+      "heading": "agent-harness\nprepara el entorno.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "14"
+    },
+    {
+      "heading": "Propuesta → specs → tareas → PR.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "15"
+    },
+    {
+      "heading": "Los plugins bloquean herramientas.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "16"
+    },
+    {
+      "heading": "El mismo Harness\nen PC y CI.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "17"
+    },
+    {
+      "heading": "De Markdown\na GitHub Actions.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "18"
+    },
+    {
+      "heading": "Un router para cada evento.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "19"
+    },
+    {
+      "heading": "Jobs → agente → jobs.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "20"
+    },
+    {
+      "heading": "Refine: del Issue\na una historia.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "21"
+    },
+    {
+      "heading": "Refine pregunta o divide.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "22"
+    },
+    {
+      "heading": "Implement: código, checks y PR.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "23"
+    },
+    {
+      "heading": "CI aporta pruebas.\nMerge Gate decide.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "24"
+    },
+    {
+      "heading": "Arreglo o review → CI → gate.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "25"
+    },
+    {
+      "heading": "Cada worker entrega y termina.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "26"
+    },
+    {
+      "heading": "DORA: entrega y retrabajo.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "27"
+    },
+    {
+      "heading": "Tokens y tiempo por ejecución.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "28"
+    },
+    {
+      "heading": "Lo que aún necesita una persona.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "29"
+    },
+    {
+      "heading": "Audit devuelve trabajo a Refine.",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "30"
+    },
+    {
+      "heading": "Foundations → Harness\n→ Workflows → Health",
+      "lang": "es",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "31"
+    }
+  ],
+  "errors": {
+    "normal": [],
+    "reduced": []
+  },
+  "motion": {
+    "idleChangesFrame": true,
+    "reducedFrameFrozen": true
+  },
+  "resources": {
+    "firstTraversal": "global\n0.967 (29.00 / 30)\nchapter\n8. 09-health\nscene\n8. feedback\nlocal\n1.000\nstop\n4/4\ndirection\n1\nfps\n58 (17.3 ms)\ngl\n34 calls, 1936 tris\nmemory\n80 geo, 54 tex, 2 prog\ncamera\n208.18, 195.85, 199.18 fov 27\nrenderers\n1\nwarm-up\n2 programs in 125 ms\nviewport\n1280x720 dpr 1.00\nlanguage\nen\nes\n L toggles\noverflow\nnone\noverlap\nnone\ntier\nhigh\nmedium\nlow\n reduced motion",
+    "afterTwoRoundTrips": "global\n0.933 (28.00 / 30)\nchapter\n8. 09-health\nscene\n8. feedback\nlocal\n0.750\nstop\n3/4\ndirection\n1\nfps\n60 (16.6 ms)\ngl\n28 calls, 2640 tris\nmemory\n80 geo, 54 tex, 2 prog\ncamera\n208.18, 195.85, 199.18 fov 27\nrenderers\n1\nwarm-up\n2 programs in 125 ms\nviewport\n1280x720 dpr 1.00\nlanguage\nen\nes\n L toggles\noverflow\nnone\noverlap\nnone\ntier\nhigh\nmedium\nlow\n reduced motion"
+  },
+  "scope": "DOM text fit and browser checks at 1280 by 720. Resource counts are after shader warmup. Normal motion also checks handoffs and reverse navigation.",
+  "finalCopyChecks": {
+    "spanish": {
+      "heading": "Plugins bloquean acciones inseguras.",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "16"
+    },
+    "english": {
+      "heading": "Plugins block unsafe tool calls.",
+      "outside": [],
+      "over": [],
+      "overlap": [],
+      "stop": "16"
+    }
+  },
+  "commands": {
+    "typecheck": "passed",
+    "lint": "passed",
+    "i18n:check": "passed: 133 keys",
+    "build": "passed"
+  }
+}

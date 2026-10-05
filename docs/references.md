@@ -4,6 +4,10 @@ These sites set the level of ambition for the keynote. This file records what ea
 
 Researched on 2026-09-29. Facts marked "(inferred)" come from reasoning, not from a source.
 
+The user supplied [WebGL ASCII Hero](https://nextjs-ascii-hero.vercel.app/) as a form reference on 2026-10-05.
+The keynote takes its large character surfaces and readable volume as visual guidance.
+The live forms use the existing art kit and retain the fixed isometric angle.
+
 Most of these sites are driven by scroll, and many use sound. Our keynote is driven by the presenter, and it is silent. Take the visual ideas. Do not take the input model or the audio. Section "Carrying rhythm without sound" below says what replaces each sound.
 
 ## What we take, in short

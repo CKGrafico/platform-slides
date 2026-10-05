@@ -8,7 +8,8 @@
  * - Locale comes from ?lang=es|en, then the last choice, then English.
  *   The presenter switches it live with the L key. The playhead does not move.
  */
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { I18nContext, type I18n } from './context'
 import en from './locales/en.json'
 import es from './locales/es.json'
 
@@ -36,15 +37,6 @@ function format(template: string, values?: Record<string, string | number>): str
   if (!values) return template
   return template.replace(/\{(\w+)\}/g, (match, name: string) => (name in values ? String(values[name]) : match))
 }
-
-interface I18n {
-  locale: Locale
-  setLocale: (locale: Locale) => void
-  toggleLocale: () => void
-  t: (key: MessageKey, values?: Record<string, string | number>) => string
-}
-
-const I18nContext = createContext<I18n | null>(null)
 
 export function I18nProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>(initialLocale)

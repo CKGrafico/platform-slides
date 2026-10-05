@@ -18,7 +18,7 @@ The system is the point. Only the core reasons. Deterministic work moves away fr
 
 ## The look
 
-- **Point clouds.** A form is a set of points sampled on the surface of a low-poly unit. Each point is a flat, matte dot. The density of points encodes light and form, so a surface reads as a dotted, faceted volume, never a smooth sphere.
+- **ASCII surfaces.** A form is a set of character marks on the surface of a faceted unit. A font atlas supplies each mark. The faces carry regular rows. Light changes the mark brightness. The surface stays matte.
 - **Flat and matte.** One fixed key light from the upper left, baked into the point shader. No specular, no reflections, no environment map, no bloom, no glow, no neon.
 - **Faceted units.** Small flat-faced polyhedra: rhombic dodecahedra, truncated octahedra, cuboctahedra, low-poly icosahedra, hexagonal prisms, beveled slabs. Units hold together by proximity and thin struts, never fused, so an entity can split and rejoin.
 - **The field.** A near-black backdrop with a faint grid of dots. No horizon, no fog, no sky.
@@ -56,16 +56,24 @@ Rules:
 - **Signature easing:** `power3.inOut` for camera steps and most moves. Entrances use `power3.out`, exits use `power2.in`.
 - **Beat grid:** 120 BPM, so one beat is 0.5 s. Durations: quick 0.25 s, standard 0.5 s, slow 1 s. Moves between stops take 1, 1.5 or 2 s.
 - **Assemble and scatter:** an entity assembles from scattered units, edges first, and scatters back to dust on exit. The core never fully scatters.
-- **The dial:** an entity has a rigidity value. Rigid is aligned, still, gaps closed. Fluid is loose, drifting, deforming. The core sits at the fluid end and never freezes.
-- **Ambient:** the core drifts a few degrees, and its units reshuffle slowly on the clock. At a stop the picture is the same.
-- **Determinism:** positions come from progress. Only the ambient drift uses time. A step-by-step simulation is out of scope; the motion is a pure function of progress, or a baked motion scrubbed by the playhead.
+- **The dial:** rigid units keep their alignment within an assembly. Fluid units shift within the core. Both assemblies float as whole bodies.
+- **Holds:** bounded drift and slow turns keep the field alive while the speaker talks. The presenter controls every change in the story.
+- **Determinism:** narrative positions, assembly, cuts, and transfers come from progress. Reversing a move restores its structure. Idle drift uses analytical clock functions without simulation state.
+- **Reduced motion:** the engine cuts between stops. The runtime freezes all drift, turns, and channel movement.
+- **Focus:** the active assembly grows in the frame. The isometric camera angle stays fixed. Previous layers remain visible at a smaller scale.
+
+The user requested continuous idle motion on 2026-10-05. This is an exception to the progress-only rule for ambient motion.
+Idle never advances the story or changes a worker outcome.
+The command arrives first, followed by the heading, caption, and leader lines.
 
 ## Silent rhythm
 
-- The command line types the current beat, with a block cursor, and clears between acts.
-- An act title assembles from units, then scatters.
-- The core losing units is the beat of the second half. Each unit that leaves is a small, readable event.
-- Under tension (part 6) the flow scatters further and the field darkens. On release it returns.
+- The command line names the current beat and ends with a blue block cursor. Its path changes from local to cloud.
+- The title holds while the viewer reads. The shapes carry the change.
+- The core loses four units as repeatable work separates. Each new bank grows from the core and settles into alignment.
+- The blue Issue occupies a real unit in its current assembly. During a transfer, it leaves that unit and enters another assembly.
+- Route channels contain traveling ASCII units. Return paths curve away from the main route. They appear when the beat explains their cause.
+- Refine and Implement show fixed jobs around a reasoning core. Repair and review use curved returns through CI.
 
 ## Composition and text
 

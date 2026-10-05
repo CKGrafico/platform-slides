@@ -22,6 +22,10 @@ one render: DOM, SVG, 2D canvas, WebGL, in the same frame
 
 The playhead is the only source of truth. A picture is a function of the playhead. If the playhead is at 3.25, the screen always shows the same thing, however the presenter got there.
 
+The show uses one fixed orthographic camera. `src/show/AsciiRuntime.tsx` maps stage coordinates into its isometric view. It also scales character marks for the viewport and the current renderer DPR. Letterboxing preserves the same composition.
+
+`src/show/pictures.ts` defines complete visual states. Each part owns its moves through `choreography.ts`. `src/show/narrative.tsx` joins those states with GSAP and shows only the active beat. The scene definitions hold the translated message keys. `scripts/rebuild-show.mjs` authors the scene contracts and script together.
+
 ## Global timeline
 
 The show is a line of numbers called timeline units. Each scene takes `duration` units on the line (default 1). Scenes sit end to end in chapter order.
@@ -69,9 +73,8 @@ src/procedural/  procedural systems (instanced grid), FxCanvas for 2D
 src/assets/      asset URLs, texture and model loaders, disposal
 src/perf/        tier detection and DPR caps
 src/debug/       debug bus and panel (dev or ?debug only)
-src/art/         the art kit: palette, toon and outline materials, the monolith, elements, orbits,
-                 entrances and exits, screen anchors, burn, captions, grain
-src/styles/      base CSS. The visual identity goes in theme.css later
+src/art/         the art kit: palette, surface sampling, ASCII materials, forms, and screen anchors
+src/styles/      base CSS. Show styles live in src/show/ascii.css
 src/show/        the show: chapters, scenes, actors. Agents work here
 public/assets/   svg, textures, models, fonts, images, video, generated
 ```

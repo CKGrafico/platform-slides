@@ -1,44 +1,15 @@
-# Next technical steps for the art
+# Art rehearsal
 
-The art kit is in `src/art/`. All 14 parts are built. On 2026-10-04 the world moved to the point-cloud direction ([art-direction.md](art-direction.md), [elements.md](elements.md)): see `src/art/points.ts` and `src/art/entity.ts`. The lists below come from the technical review of 2026-09-29 and describe the orbit world. Read them as history. The live work is the point-cloud rebuild.
+The live kit uses ASCII surfaces on faceted forms. Its 31 stops follow the Issue through 28 forms and 31 route channels.
+The blue work unit docks inside each assembly. Idle drift keeps the field alive between stops.
+The town and orbit implementations are removed. Git preserves them.
 
-## Done in the style frame
+Before a live talk, rehearse the keynote on the venue projector. Read the small panels from the back of the room. Adjust the palette only if the projector loses the shadow faces.
 
-- Toon and line materials without tone mapping, and lights calibrated so the light band shows the palette color (ambient + key = pi).
-- Grain on its own layer, blended with `soft-light`, so it adds texture without a grey veil.
-- Screen anchors that update the camera matrices first and write only when a value changes.
-- The entrance hides with `inner.visible`, so "outline first, then fill" is on screen, and from-values never render at build time.
-- One flat master timeline for all choreographies, so start values chain in time order.
-- Bounded ambient motion: a few degrees of sway; the cover orbit of the blue ball closes during the first move.
-- Reduced motion freezes time and the boil. The low tier turns the boil off.
-- Shader warm-up before the talk (`compileAsync`), shown in the debug panel.
-- The title burn in 16 steps.
+Run the full path in English and Spanish. Use the debug panel to make sure that no text overlaps or extends outside its box. Move backward across chapter boundaries. Refresh at Refine, Implement, and the complete system.
 
-## Done while building the parts
+Use reduced motion to make sure that each stop is readable without movement. Make sure that the renderer count stays at one. Compare geometry, texture, and shader counts before and after a complete round trip.
 
-- Routes: `src/show/route.ts`, one pure path for work through the whole system (part 10 and part 13).
-- Swarms: `createSwarm` in `src/art/elements.ts`, instanced balls or rings with shared outlines.
-- Camera from the previous shot: function cameras get `from`; `shotSequence` composes moves.
-- Kit: rings, capsules, columns, hollow columns, walls, the disc and its grid, the Harness frame, dashed slots, sketch lines with `reveal`.
-- Scene outro, the rest state, and the map of the talk (HUD).
+The slides use qualitative evidence. Before adding a metric, resolve its collection window and the open points in [the knowledge base](../knowledge/platform.md).
 
-## To build next
-
-1. **Routes.** A route system that owns `object.position` for bound actors, made of pure path segments (`orbitArc`, `arc`, `capture`, `spiral`, `escape`, `wobbly`, `park`, `cameraPin`), with a check that segments meet. Part 10 moves its proxy tweens to routes. Part 13 (the blue ball's journey) needs it.
-2. **Swarms.** Instanced balls and moons on routes, for events and work items in bulk, with per-instance inking. Use a swarm for more than 8 copies of one element.
-3. **Camera from choreographies.** `camera.hold`, `move` (arcs, FOV kick, distance in log space), `cut`, `matchCut`, and `follow`, composed into one track. A part must never import another part's shot.
-4. **Choreography context.** `rest` on actors for initial states, `t.beat(sceneKey, n)` computed from the model, `claim()` so writers outside GSAP are checked, and the checks for writes outside a part's chapter and for jumps in value.
-5. **Cold open.** At position 0: the void, then the core alone, then (after warm-up) the blue ball inks in and the title burns in, once. Reduced motion or a restored hash skips it.
-6. **Kit additions.** Sketch lines (frame, slots, hollow columns, trails), capsule, disc with grid, wall, column, blob shadows under elements, and dust for exits.
-7. **Burn.** Replace `feTurbulence` with `feImage` of a seeded tile. At most 2 burns at once, never during camera travel.
-
-## Budgets (laptop GPU, 1080p, DPR at most 1.5)
-
-| Item | Budget |
-|---|---|
-| Frame | GPU 8 ms, CPU 6 ms, p95 16.7 ms |
-| Draw calls | 120. Each element costs 2 |
-| Triangles | 250k |
-| Shader programs | 16, none compiled after warm-up |
-| Anchored labels | 20 |
-| Burns at once | 2 |
+The engine has no automated test suite. Browser rehearsal and the required type, lint, language, and build commands remain the delivery checks.

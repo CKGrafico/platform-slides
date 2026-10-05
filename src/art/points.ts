@@ -1,10 +1,9 @@
 /**
  * Point clouds: the one renderer of the world (docs/art/art-direction.md).
  *
- * A form is a set of beads on the surface of a low-poly geometry. The beads
- * sit on a regular grid inside each face, so a surface reads as a faceted,
- * beaded volume. The shader draws each bead as a flat, matte dot, shaded per
- * face from one fixed key, so density reads as light. No glow, no specular.
+ * Marks sit on a regular grid across each polygon of a faceted geometry.
+ * The show draws each mark as a character. One fixed light gives faces
+ * different densities and brightness. The surface stays matte.
  */
 import { BufferAttribute, BufferGeometry, Color, Matrix3, Matrix4, Points, ShaderMaterial, Vector3 } from 'three'
 
@@ -95,10 +94,8 @@ export function sampleSurface(geometry: BufferGeometry, count: number, seed = 1)
 }
 
 /**
- * Beads on a regular grid inside every face. Each triangle splits into k by k
- * cells and one bead sits at the centre of each cell, so no two faces share a
- * bead and the spacing is even. The normal is the flat normal of the face, so
- * the shading steps from face to face and the facets read clearly.
+ * Sample a shared planar grid across coplanar triangles. Rows continue across
+ * triangle boundaries, so each polygon reads as one machined face.
  * `spacing` is in the geometry's own units.
  */
 export function sampleSurfaceGrid(geometry: BufferGeometry, spacing: number, seed = 1): SampledSurface {
@@ -117,12 +114,7 @@ export function sampleSurfaceGrid(geometry: BufferGeometry, spacing: number, see
   const normal: number[] = []
   const seeds: number[] = []
 
-  const bead = (u: number, v: number) => {
-    const w = 1 - u - v
-    position.push(a.x * w + b.x * u + c.x * v, a.y * w + b.y * u + c.y * v, a.z * w + b.z * u + c.z * v)
-    normal.push(n.x, n.y, n.z)
-    seeds.push(r())
-  }
+  const faces = new Map<string, { normal: Vector3; distance: number; triangles: Vector3[][] }>()
 
   for (let t = 0; t < tris; t++) {
     a.fromBufferAttribute(pos, t * 3)
@@ -133,12 +125,40 @@ export function sampleSurfaceGrid(geometry: BufferGeometry, spacing: number, see
     n.crossVectors(ab, ac).normalize()
     centroid.copy(a).add(b).add(c).divideScalar(3)
     if (n.dot(centroid) < 0) n.negate()
-    const edge = Math.max(a.distanceTo(b), b.distanceTo(c), c.distanceTo(a))
-    const k = Math.max(1, Math.round(edge / spacing))
-    for (let i = 0; i < k; i++) {
-      for (let j = 0; j < k - i; j++) {
-        bead((i + 1 / 3) / k, (j + 1 / 3) / k)
-        if (i + j < k - 1) bead((i + 2 / 3) / k, (j + 2 / 3) / k)
+    const distance = n.dot(a)
+    const key = [n.x, n.y, n.z, distance].map((v) => Math.round(v * 10000)).join(',')
+    let face = faces.get(key)
+    if (!face) {
+      face = { normal: n.clone(), distance, triangles: [] }
+      faces.set(key, face)
+    }
+    face.triangles.push([a.clone(), b.clone(), c.clone()])
+  }
+  for (const face of faces.values()) {
+    const reference = Math.abs(face.normal.y) < 0.85 ? new Vector3(0, 1, 0) : new Vector3(1, 0, 0)
+    const u = reference.cross(face.normal).normalize()
+    const v = face.normal.clone().cross(u).normalize()
+    const triangles = face.triangles.map((tri) => tri.map((p) => [p.dot(u), p.dot(v)] as const))
+    const vertices = triangles.flat()
+    const minX = Math.min(...vertices.map((p) => p[0]))
+    const maxX = Math.max(...vertices.map((p) => p[0]))
+    const minY = Math.min(...vertices.map((p) => p[1]))
+    const maxY = Math.max(...vertices.map((p) => p[1]))
+    const inside = (x: number, y: number) => triangles.some(([A, B, C]) => {
+      const d0 = (B![0] - A![0]) * (y - A![1]) - (B![1] - A![1]) * (x - A![0])
+      const d1 = (C![0] - B![0]) * (y - B![1]) - (C![1] - B![1]) * (x - B![0])
+      const d2 = (A![0] - C![0]) * (y - C![1]) - (A![1] - C![1]) * (x - C![0])
+      return (d0 >= -1e-6 && d1 >= -1e-6 && d2 >= -1e-6) || (d0 <= 1e-6 && d1 <= 1e-6 && d2 <= 1e-6)
+    })
+    for (let row = Math.ceil(minY / spacing); row * spacing < maxY; row++) {
+      for (let col = Math.ceil(minX / spacing); col * spacing < maxX; col++) {
+        const x = (col + 0.15) * spacing
+        const y = (row + 0.15) * spacing
+        if (!inside(x, y)) continue
+        const p = u.clone().multiplyScalar(x).addScaledVector(v, y).addScaledVector(face.normal, face.distance)
+        position.push(p.x, p.y, p.z)
+        normal.push(face.normal.x, face.normal.y, face.normal.z)
+        seeds.push(r())
       }
     }
   }
@@ -233,6 +253,7 @@ export function buildPointCloud(parts: PointPart[], material: ShaderMaterial, se
   const position = new Float32Array(total * 3)
   const normal = new Float32Array(total * 3)
   const aSeed = new Float32Array(total)
+  const aPart = new Float32Array(total)
   const aColor = new Float32Array(total * 3)
   const aScatter = new Float32Array(total * 3)
   const v = new Vector3()
@@ -264,6 +285,7 @@ export function buildPointCloud(parts: PointPart[], material: ShaderMaterial, se
       aColor[o + 1] = color.g
       aColor[o + 2] = color.b
       aSeed[offset + i] = sample.seed[i]!
+      aPart[offset + i] = index
       const sx = scatter() * 2 - 1
       const sy = scatter() * 2 - 1
       const sz = scatter() * 2 - 1
@@ -280,6 +302,7 @@ export function buildPointCloud(parts: PointPart[], material: ShaderMaterial, se
   geometry.setAttribute('position', new BufferAttribute(position, 3))
   geometry.setAttribute('normal', new BufferAttribute(normal, 3))
   geometry.setAttribute('aSeed', new BufferAttribute(aSeed, 1))
+  geometry.setAttribute('aPart', new BufferAttribute(aPart, 1))
   geometry.setAttribute('aColor', new BufferAttribute(aColor, 3))
   geometry.setAttribute('aScatter', new BufferAttribute(aScatter, 3))
   geometry.computeBoundingSphere()
