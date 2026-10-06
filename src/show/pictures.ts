@@ -71,13 +71,14 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
     }
     case 'platform':
       if (step === 0) {
-        hero('wall', -31, -2, 1.8)
-        hero('harness', -10, -2, 1.9)
-        hero('automation', 12, -2, 1.7)
-        hero('measure', 34, -2, 1.7)
-        back('path.health.foundations', 0.45)
-        back('path.health.harness', 0.45)
-        back('path.health.workflows', 0.45)
+        // The four pillars as one row on one baseline, joined in order edge to edge.
+        // project-health closes the cycle: thin arcs over the row return to each of the other three.
+        hero('wall', -34, -5, 1.3)
+        hero('harness', -11.5, -5, 1.45)
+        hero('automation', 11.5, -5, 1.4)
+        hero('measure', 34, -5, 1.35)
+        for (let i = 0; i < 3; i++) back(`path.pillar.${i}` as PathId, 0.6)
+        for (let i = 0; i < 3; i++) back(`path.pillar.back.${i}` as PathId, 0.55)
         owner = 'wall'
       } else {
         hero('context', -29, -2, 2.0)

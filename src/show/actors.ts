@@ -7,8 +7,10 @@ import { Points, type BufferGeometry, type Color, type ShaderMaterial } from 'th
 /**
  * A channel between two bodies. By default it runs between the Issue ports of the two bodies.
  * With `edge`, it is a thin link that leaves the edge of one body and enters the edge of the next, for a row of steps.
+ * With `over` as well, the thin link leaves the top of one body and lands on the top of the other, and `bend` arcs it
+ * upward by that many stage units. Rows use it for a return that must not cross the row or its names.
  */
-export interface Connection { from: WorkId; to: WorkId; bend: number; edge?: true }
+export interface Connection { from: WorkId; to: WorkId; bend: number; edge?: true; over?: true }
 
 export const CONNECTIONS = {
   'path.entry': { from: 'intake', to: 'triage', bend: 0 },
@@ -44,6 +46,14 @@ export const CONNECTIONS = {
   'path.health.foundations': { from: 'measure', to: 'wall', bend: 5 },
   'path.health.harness': { from: 'measure', to: 'harness', bend: 7 },
   'path.health.workflows': { from: 'measure', to: 'automation', bend: 9 },
+  // The four pillars of Platform, in order.
+  'path.pillar.0': { from: 'wall', to: 'harness', bend: 0, edge: true },
+  'path.pillar.1': { from: 'harness', to: 'automation', bend: 0, edge: true },
+  'path.pillar.2': { from: 'automation', to: 'measure', bend: 0, edge: true },
+  // project-health feeds what it measures back to the other three pillars: one cycle.
+  'path.pillar.back.2': { from: 'measure', to: 'automation', bend: 4, edge: true, over: true },
+  'path.pillar.back.1': { from: 'measure', to: 'harness', bend: 8, edge: true, over: true },
+  'path.pillar.back.0': { from: 'measure', to: 'wall', bend: 12, edge: true, over: true },
   // The five maturity levels, as one line from level to level.
   'path.level.0': { from: 'level.0', to: 'level.1', bend: 0, edge: true },
   'path.level.1': { from: 'level.1', to: 'level.2', bend: 0, edge: true },
@@ -101,10 +111,10 @@ function streamUnits(n = 45): FormUnit[] {
 }
 
 /** A thin link: one dense lane of equal beads, so it reads as a fine line. */
-function linkUnits(n = 66): FormUnit[] {
+function linkUnits(n = 150): FormUnit[] {
   return Array.from({ length: n }, (_, i) => ({
     at: [(i / (n - 1) - 0.5) * 22, 0, 0] as [number, number, number],
-    size: 0.26,
+    size: 0.22,
     shape: 'cubocta' as const,
     rotation: [i * 0.31, i * 0.22, 0] as [number, number, number],
   }))

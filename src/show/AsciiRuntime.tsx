@@ -53,6 +53,7 @@ function unitPort(object: Points, time: number, idle: boolean, out: Vector3): Fo
 const center = new Vector3()
 const forward = new Vector3()
 const along = new Vector3()
+const lift = new Vector3()
 
 /** The middle of a body on screen: the mean of its unit centers, in world space. */
 function bodyCenter(object: Points, out: Vector3) {
@@ -177,7 +178,15 @@ export function AsciiRuntime() {
       const source = getActorObject(connection.from) as Points
       const target = getActorObject(connection.to) as Points
       if (!source.visible || !target.visible) { channel.visible = false; continue }
-      if (connection.edge) {
+      if (connection.over) {
+        // A return over a row: it leaves the top of one body and lands on the top of the other, with a small gap.
+        bodyCenter(source, start)
+        bodyCenter(target, end)
+        lift.setFromMatrixColumn(cam.matrixWorld, 1).normalize()
+        const gap = 0.5 * ratio
+        start.addScaledVector(lift, bodyReach(source, start, lift) + gap)
+        end.addScaledVector(lift, bodyReach(target, end, lift) + gap)
+      } else if (connection.edge) {
         // An edge link leaves the near edge of one body and enters the near edge of the next, with a small gap at each end.
         // The edge is measured on the screen plane, so the gap looks the same whatever the depth between the two bodies.
         bodyCenter(source, start)
@@ -205,7 +214,8 @@ export function AsciiRuntime() {
       const thickness = (connection.edge ? 0.4 : 0.85) * ratio
       channel.scale.set(distance / 22, thickness, thickness)
       const uniforms = (channel.material as ShaderMaterial).uniforms
-      uniforms.uBend!.value = connection.bend * 0.7
+      // A thin link is scaled across by its thickness, so its arc is given in stage units and undone here.
+      uniforms.uBend!.value = connection.edge ? (connection.bend * ratio) / thickness : connection.bend * 0.7
       // Undo the length scale on each bead, so beads keep their shape on long and short channels.
       uniforms.uStretch!.value = distance / 22 / thickness
     }
