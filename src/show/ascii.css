@@ -66,7 +66,7 @@ body { font-family: var(--font-label); }
 .ascii-anchor { position: absolute; left: 0; top: 0; }
 .ascii-leader { position: absolute; left: calc(var(--su) * -40); top: calc(var(--su) * -24); width: calc(var(--su) * 80); height: calc(var(--su) * 48); overflow: visible; }
 .ascii-leader polyline { fill: none; stroke: #8a8f98; stroke-width: 0.25; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--label-reveal, 1)); }
-.ascii-leader rect { fill: #8a8f98; opacity: var(--label-reveal, 1); }
+.ascii-leader rect { fill: #5c8bff; opacity: var(--label-reveal, 1); }
 .ascii-footnote {
   opacity: var(--caption-reveal, 1);
   position: absolute;
@@ -127,9 +127,10 @@ body { font-family: var(--font-label); }
 .flow-title { font-size: 1.9px; font-weight: 600; }
 .flow-sub { font-size: 1.7px; font-weight: 450; fill: #a7abb1 !important; }
 .flow-node--event rect { stroke: #63686f; stroke-dasharray: 0.5 0.4; }
-.flow-node--agent rect { fill: #e8e9ec; stroke: #e8e9ec; }
-.flow-node--agent text { fill: #0a0a0b; }
-.flow-node--agent .flow-sub { fill: #42464e !important; }
+/* The agent is the model at work: a solid blue box with light text. */
+.flow-node--agent rect { fill: #2f69ff; stroke: #2f69ff; }
+.flow-node--agent text { fill: #f2f4ff; }
+.flow-node--agent .flow-sub { fill: #d4ddff !important; }
 .flow-node--gate rect { stroke: #c5c8ce; stroke-width: 0.3; rx: 3.6; }
 .flow-node--end rect { stroke: #5c8bff; stroke-width: 0.34; }
 .flow-node--human rect { stroke: #a7abb1; stroke-dasharray: 0.9 0.5; }
@@ -172,32 +173,5 @@ body { font-family: var(--font-label); }
 .board-stat { font-size: 6px; font-weight: 700; font-family: var(--font-display); }
 .board-bar { fill: #63686f; }
 .board-bar--ok { fill: #5c8bff; }
-
-/* Colour study (src/show/palette.ts). The semantic and pillars variants colour state in flows and boards only. */
-:root[data-palette='semantic'], :root[data-palette='pillars'] { --ok: #3abaaf; --stop: #f33859; --wait: #fbc740; }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-node--end rect { stroke: var(--ok); }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-node--stop rect { stroke: var(--stop); stroke-width: 0.3; }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-node--stop .flow-title { fill: var(--stop); }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-node--human rect { stroke: var(--wait); }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-edge--return path { stroke: var(--stop); opacity: calc(var(--v) * 0.85); }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-edge--return .flow-edge-label { fill: var(--stop); }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-arrow--return path { fill: var(--stop); }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .board-card--production .board-chip { stroke: var(--ok); }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .board-card--production .board-chip-text { fill: var(--ok) !important; }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .board-card--preproduction .board-chip { stroke: var(--wait); }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .board-card--preproduction .board-chip-text { fill: var(--wait) !important; }
-:root:is([data-palette='semantic'], [data-palette='pillars']) .board-bar--ok { fill: var(--ok); }
-
-/* duo: grey, the Issue blue, and one rose for where the system says no. Flows only. */
-:root[data-palette='duo'] { --stop: #e2566f; }
-:root[data-palette='duo'] .flow-node--stop rect { stroke: var(--stop); stroke-width: 0.3; }
-:root[data-palette='duo'] .flow-node--stop .flow-title { fill: var(--stop); }
-:root[data-palette='duo'] .flow-edge--return path { stroke: var(--stop); opacity: calc(var(--v) * 0.8); }
-:root[data-palette='duo'] .flow-edge--return .flow-edge-label { fill: var(--stop); }
-:root[data-palette='duo'] .flow-arrow--return path { fill: var(--stop); }
-
-/* blue: more of the one accent, no new hues. Flow agent boxes turn pale blue. */
-:root[data-palette='blue'] .flow-node--agent rect { fill: #c9d6ff; stroke: #c9d6ff; }
-:root[data-palette='blue'] .flow-node--end rect { stroke: #5c8bff; }
 
 @media (prefers-reduced-motion: reduce) { .ascii-frame { transform: none !important; } }

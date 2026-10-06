@@ -48,8 +48,8 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
         // The Issue unit lands on level 2, Exploratory: work with an agent on a PC.
         into('core', CORE_LOCAL.x, CORE_LOCAL.y, CORE_LOCAL.scale)
         state.core.morph2 = 1
-        // Thin grey links join the levels in order, from the edge of one to the edge of the next.
-        for (let i = 0; i < 4; i++) back(`path.level.${i}` as PathId, 0.6)
+        // Thin blue links join the levels in order, from the edge of one to the edge of the next.
+        for (let i = 0; i < 4; i++) path(`path.level.${i}` as PathId, 0.9)
       } else {
         for (let i = 0; i < 4; i++) hero(`parcel.${i}` as LiveId, -30 + i * 20, i % 2 ? -3 : 1, 1.9)
       }
@@ -62,9 +62,9 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
         ['harness', 0.54, {}], ['era.loop', 0.92, {}], ['era.loops', 0.78, {}], ['era.future', 0.95, { assemble: 0.32, opacity: 0.7 }],
       ]
       row.forEach(([id, scale, extra], i) => hero(id, -40 + i * 10, -1, scale, { turn: 0.04 * i, ...extra }))
-      // One straight row joined in order by thin grey links, edge to edge, like a timeline. Names alternate under and over the line.
+      // One straight row joined in order by thin blue links, edge to edge, like a timeline. Names alternate under and over the line.
       // The way to the unknown future is fainter.
-      for (let i = 0; i < 8; i++) back(`path.era.${i}` as PathId, i === 7 ? 0.3 : 0.6)
+      for (let i = 0; i < 8; i++) path(`path.era.${i}` as PathId, i === 7 ? 0.45 : 0.9)
       break
     }
     case 'platform':
@@ -75,8 +75,8 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
         hero('harness', -11.5, -5, 1.45)
         hero('automation', 11.5, -5, 1.4)
         hero('measure', 34, -5, 1.35)
-        for (let i = 0; i < 3; i++) back(`path.pillar.${i}` as PathId, 0.6)
-        for (let i = 0; i < 3; i++) back(`path.pillar.back.${i}` as PathId, 0.55)
+        for (let i = 0; i < 3; i++) path(`path.pillar.${i}` as PathId, 0.9)
+        for (let i = 0; i < 3; i++) path(`path.pillar.back.${i}` as PathId, 0.75)
         owner = 'wall'
       } else {
         hero('context', -29, -2, 2.0)
@@ -92,7 +92,7 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
       hero('parcel.0', 16, 9, 1.15)
       hero('parcel.1', 16, -2.5, 0.95)
       hero('parcel.2', 16, -13.5, 1.15)
-      for (let i = 0; i < 3; i++) back(`path.found.${i}` as PathId, 0.6)
+      for (let i = 0; i < 3; i++) path(`path.found.${i}` as PathId, 0.9)
       owner = 'wall'
       break
     case 'environment':
@@ -102,7 +102,7 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
       hero('kit.plugin', 28, 7, 2.2)
       hero('context', 6, -11, 0.85)
       hero('wall', 28, -11, 0.7)
-      for (let i = 0; i < 4; i++) back(`path.kit.${i}` as PathId, 0.6)
+      for (let i = 0; i < 4; i++) path(`path.kit.${i}` as PathId, 0.9)
       owner = 'harness'
       break
     case 'workflow':
@@ -119,7 +119,7 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
         hero('automation', -11, -2, 1.2)
         hero('core', 12, -2, 0.9, { fluid: 1 })
         hero('outputs', 34, -2, 1.3)
-        for (let i = 0; i < 3; i++) back(`path.async.${i}` as PathId, 0.6)
+        for (let i = 0; i < 3; i++) path(`path.async.${i}` as PathId, 0.9)
         owner = 'intake'
       } else {
         hero('wall', -21, 1, 1.45)

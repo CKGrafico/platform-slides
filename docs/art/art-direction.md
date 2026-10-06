@@ -36,7 +36,7 @@ The system is the point. Only the core reasons. Deterministic work moves away fr
 
 Rules:
 
-- One accent only, locked for the whole talk.
+- One accent only, locked for the whole talk. Use it generously on what connects and acts (links, routes, agent boxes, name markers), never as a tint on the forms. The forms stay grey and white, and the Issue is their only blue unit.
 - The accent is flat. It never glows.
 - No pure black and no pure white.
 - Text must reach 7:1 contrast against the backdrop.
