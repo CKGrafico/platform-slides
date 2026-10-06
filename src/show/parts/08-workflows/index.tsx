@@ -8,13 +8,38 @@ export const part: Part = {
   "title": "Agentic Workflows: jobs, reasoning, validated writes",
   "beats": [
     {
-      "heading": "talk.workflows.chapter.title",
-      "command": "talk.workflows.chapter.command",
-      "picture": "environment",
-      "step": 1,
-      "labels": [],
-      "layout": "chapter",
-      "dim": true,
+      "heading": "talk.workflows.intro.title",
+      "line": "talk.workflows.intro.body",
+      "command": "talk.workflows.intro.command",
+      "picture": "workflow",
+      "step": 0,
+      "labels": [
+        {
+          "target": "intake",
+          "name": "talk.label.issueEvent",
+          "width": 28,
+          "under": true
+        },
+        {
+          "target": "automation",
+          "name": "talk.label.workflows",
+          "width": 28,
+          "under": true
+        },
+        {
+          "target": "core",
+          "name": "talk.label.agentForge",
+          "width": 28,
+          "under": true
+        },
+        {
+          "target": "outputs",
+          "name": "talk.label.safeOutputs",
+          "width": 28,
+          "under": true
+        }
+      ],
+      "layout": "wide",
       "cloud": true
     },
     {
@@ -162,6 +187,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('environment', 1),
+  before: picture('environment', 0),
 }
 export const workflows = makePart(part)

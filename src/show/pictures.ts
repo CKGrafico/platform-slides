@@ -17,8 +17,6 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
   }
   /** A body the current beat talks about. */
   const hero = (id: LiveId, x: number, y: number, scale: number, extra: Partial<Pose> = {}) => put(id, x, y, scale, { focus: 1, ...extra })
-  /** A trace of an earlier beat: small and faint, never labelled. */
-  const ghost = (id: LiveId, x: number, y: number, scale: number, extra: Partial<Pose> = {}) => put(id, x, y, scale, { opacity: 0.22, ...extra })
   /** A body that leaves by gliding into the place of another, which then forms there. It ends hidden. */
   const into = (id: LiveId, x: number, y: number, scale: number) => Object.assign(state[id], { x, y, scale, opacity: 0, assemble: 1 })
   const path = (id: PathId, opacity = 0.95, accent = 1) => put(id, 0, 0, 1, { opacity, accent, focus: 0.45 })
@@ -89,31 +87,23 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
       }
       break
     case 'baseline':
-      if (step === 0) {
-        hero('context', -20, -1, 2.5)
-        hero('wall', 20, 2, 1.9)
-        path('path.baseline')
-        owner = 'context'
-      } else {
-        hero('gate', -13, 2, 1.9)
-        hero('review', 22, 1, 1.9)
-        path('path.review')
-        owner = 'review'
-      }
+      // Foundations holds three convention sets: backend, frontend and branding, in a column fed by thin links.
+      hero('wall', -20, -2, 1.45)
+      hero('parcel.0', 16, 9, 1.15)
+      hero('parcel.1', 16, -2.5, 0.95)
+      hero('parcel.2', 16, -13.5, 1.15)
+      for (let i = 0; i < 3; i++) back(`path.found.${i}` as PathId, 0.6)
+      owner = 'wall'
       break
     case 'environment':
-      if (step === 0) {
-        hero('harness', 2, -1, 2.9)
-        hero('context', -29, -2, 1.8)
-        owner = 'harness'
-      } else {
-        hero('automation', -30, -2, 1.9)
-        hero('harness', -2, -1, 2.5)
-        hero('forge', 27, -2, 2.5)
-        path('path.environment')
-        path('path.runtime')
-        owner = 'harness'
-      }
+      // agent-harness installs four parts: OpenSpec, plugins, the skills each project needs, and guardrails.
+      hero('harness', -24, -2, 1.35)
+      hero('kit.spec', 6, 7, 1.7)
+      hero('kit.plugin', 28, 7, 2.2)
+      hero('context', 6, -11, 0.85)
+      hero('wall', 28, -11, 0.7)
+      for (let i = 0; i < 4; i++) back(`path.kit.${i}` as PathId, 0.6)
+      owner = 'harness'
       break
     case 'workflow':
       if (step === 1 || step === 3) {
@@ -124,11 +114,12 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
         path('path.split', 0.85)
         back('path.author', 0.5)
       } else if (step === 0) {
-        hero('automation', -38, 2, 1.1)
-        hero('intake', -20, -1, 2.1)
-        hero('refine', 17, -2, 3.9, { fluid: 1 })
-        ghost('triage', -34, -13, 0.65, { opacity: 0.3 })
-        path('path.refine')
+        // agentic-workflows in one row: a repo event, the workflow run, the agent through Forge, and the validated writes.
+        hero('intake', -34, -2, 1.25)
+        hero('automation', -11, -2, 1.2)
+        hero('core', 12, -2, 0.9, { fluid: 1 })
+        hero('outputs', 34, -2, 1.3)
+        for (let i = 0; i < 3; i++) back(`path.async.${i}` as PathId, 0.6)
         owner = 'intake'
       } else {
         hero('wall', -21, 1, 1.45)

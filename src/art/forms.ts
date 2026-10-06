@@ -443,8 +443,16 @@ function standingRing(center: readonly number[], radius: number, count: number, 
  * a prompt is one typed line, loops and graphs are one upright ring,
  * Agentic Workflows are two linked rings, and the future is a loose handful that never settles.
  */
-export function era(seed: number, kind: 'prompt' | 'loop' | 'loops' | 'future'): Points {
+export function era(seed: number, kind: 'prompt' | 'loop' | 'loops' | 'future' | 'spec' | 'plugin'): Points {
   switch (kind) {
+    // OpenSpec: a short stack of pages, each one a little offset, like proposal, specs and tasks.
+    case 'spec': return createForm(centered([0, 1, 2].map((i) => ({ at: [i * 0.35, i * 0.95, -i * 0.35] as [number, number, number], size: 1.25, shape: 'slab' as const }))), seed, 0.24, 11, { work: 2 })
+    // A plugin: one block with two prongs, the part that plugs into the tool call.
+    case 'plugin': return createForm(centered([
+      { at: [0, 0, 0], size: 1.1, shape: 'block' },
+      { at: [0, 1.75, 0.55], size: 0.42, shape: 'prism' },
+      { at: [0, 1.75, -0.55], size: 0.42, shape: 'prism' },
+    ]), seed, 0.24, 11, { work: 0 })
     case 'prompt': {
       const units: FormUnit[] = [0, 1, 2, 3].map((i) => ({ at: [0, 1, 2].map((k) => RIGHT[k]! * (i - 2) * 1.7) as [number, number, number], size: 0.62, shape: 'slab' as const }))
       units.push({ at: [0, 1, 2].map((k) => RIGHT[k]! * 2 * 1.7 + UP[k]! * 0.35) as [number, number, number], size: 0.62, shape: 'prism' })

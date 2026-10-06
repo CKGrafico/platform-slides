@@ -46,6 +46,19 @@ export const CONNECTIONS = {
   'path.health.foundations': { from: 'measure', to: 'wall', bend: 5 },
   'path.health.harness': { from: 'measure', to: 'harness', bend: 7 },
   'path.health.workflows': { from: 'measure', to: 'automation', bend: 9 },
+  // Foundations holds three convention sets.
+  'path.found.0': { from: 'wall', to: 'parcel.0', bend: 0, edge: true },
+  'path.found.1': { from: 'wall', to: 'parcel.1', bend: 0, edge: true },
+  'path.found.2': { from: 'wall', to: 'parcel.2', bend: 0, edge: true },
+  // agent-harness installs four parts.
+  'path.kit.0': { from: 'harness', to: 'kit.spec', bend: 0, edge: true },
+  'path.kit.1': { from: 'harness', to: 'kit.plugin', bend: 0, edge: true },
+  'path.kit.2': { from: 'harness', to: 'context', bend: 0, edge: true },
+  'path.kit.3': { from: 'harness', to: 'wall', bend: 0, edge: true },
+  // agentic-workflows: an event, the workflow, the agent, the validated writes.
+  'path.async.0': { from: 'intake', to: 'automation', bend: 0, edge: true },
+  'path.async.1': { from: 'automation', to: 'core', bend: 0, edge: true },
+  'path.async.2': { from: 'core', to: 'outputs', bend: 0, edge: true },
   // The four pillars of Platform, in order.
   'path.pillar.0': { from: 'wall', to: 'harness', bend: 0, edge: true },
   'path.pillar.1': { from: 'harness', to: 'automation', bend: 0, edge: true },
@@ -70,7 +83,7 @@ export const CONNECTIONS = {
   'path.era.7': { from: 'era.loops', to: 'era.future', bend: 0, edge: true },
 } as const satisfies Record<string, Connection>
 export type PathId = keyof typeof CONNECTIONS
-const FORM_IDS = ['core', 'packet', 'context', 'intake', 'refine', 'automation', 'harness', 'forge', 'wall', 'gate', 'measure', 'missing', 'flow', 'parcel.0', 'parcel.1', 'parcel.2', 'parcel.3', 'triage', 'split', 'review', 'audit', 'release', 'outputs', 'level.0', 'level.1', 'level.2', 'level.3', 'level.4', 'deployment', 'era.model', 'era.prompt', 'era.loop', 'era.loops', 'era.future'] as const
+const FORM_IDS = ['core', 'packet', 'context', 'intake', 'refine', 'automation', 'harness', 'forge', 'wall', 'gate', 'measure', 'missing', 'flow', 'parcel.0', 'parcel.1', 'parcel.2', 'parcel.3', 'triage', 'split', 'review', 'audit', 'release', 'outputs', 'level.0', 'level.1', 'level.2', 'level.3', 'level.4', 'deployment', 'era.model', 'era.prompt', 'era.loop', 'era.loops', 'era.future', 'kit.spec', 'kit.plugin'] as const
 export const LIVE_IDS = [...FORM_IDS, ...Object.keys(CONNECTIONS) as PathId[]]
 export type LiveId = typeof LIVE_IDS[number]
 export type WorkId = typeof FORM_IDS[number]
@@ -189,6 +202,9 @@ const factories: Record<WorkId, () => Points> = {
   'era.loop': () => era(60, 'loop'),
   'era.loops': () => era(61, 'loops'),
   'era.future': () => era(62, 'future'),
+  // agent-harness parts without an element of their own. Skills and guardrails reuse the context bank and the wall.
+  'kit.spec': () => era(63, 'spec'),
+  'kit.plugin': () => era(64, 'plugin'),
 }
 
 export const actors = LIVE_IDS.map((id) => defineActor({

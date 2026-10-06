@@ -5,12 +5,12 @@ export const part: Part = {
   ...{
   "id": "07-harness",
   "scene": "environment",
-  "title": "What agent-harness installs",
+  "title": "agent-harness: agentic conventions",
   "beats": [
     {
-      "heading": "talk.harness.contents.title",
-      "line": "talk.harness.contents.body",
-      "command": "talk.harness.contents.command",
+      "heading": "talk.harness.conventions.title",
+      "line": "talk.harness.conventions.body",
+      "command": "talk.harness.conventions.command",
       "picture": "environment",
       "step": 0,
       "labels": [
@@ -21,50 +21,35 @@ export const part: Part = {
           "under": true
         },
         {
-          "target": "context",
-          "name": "talk.label.docs",
+          "target": "kit.spec",
+          "name": "talk.label.specs",
           "width": 28,
           "under": true
-        }
-      ],
-      "layout": "wide"
-    },
-    {
-      "heading": "talk.harness.runtime.title",
-      "line": "talk.harness.runtime.body",
-      "command": "talk.harness.runtime.command",
-      "picture": "environment",
-      "step": 1,
-      "labels": [
+        },
         {
-          "target": "automation",
+          "target": "kit.plugin",
           "name": "talk.label.plugins",
           "width": 28,
           "under": true
         },
         {
-          "target": "harness",
-          "name": "talk.label.harness",
+          "target": "context",
+          "name": "talk.label.skillsProject",
           "width": 28,
           "under": true
         },
         {
-          "target": "forge",
-          "name": "map.forge",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "core",
-          "name": "talk.label.agent",
+          "target": "wall",
+          "name": "talk.label.guardrails",
           "width": 28,
           "under": true
         }
       ],
-      "layout": "wide"
+      "layout": "wide",
+      "cloud": true
     }
   ]
 },
-  before: picture('baseline', 1),
+  before: picture('baseline', 0),
 }
 export const harness = makePart(part)

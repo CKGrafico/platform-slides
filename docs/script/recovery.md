@@ -1,7 +1,7 @@
 # Keynote reconstruction
 
 The presenter approved the current order on 2026-10-05.
-The keynote has 28 stops across nine chapters. Four are chapter cards, ten draw a worker flow over the dimmed world, and two show a Project Health board.
+The keynote has 21 stops across nine chapters. One is a chapter card, nine draw a worker flow over the dimmed world, and one shows the Project Health board.
 The cover and the PC introduction share a chapter.
 The full beat contract and speaker notes are in [script.md](script.md).
 

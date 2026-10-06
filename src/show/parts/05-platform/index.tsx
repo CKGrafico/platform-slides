@@ -19,7 +19,6 @@ export const part: Part = {
     },
     {
       "heading": "talk.platform.pillars.title",
-      "line": "talk.platform.pillars.body",
       "command": "talk.platform.pillars.command",
       "picture": "platform",
       "step": 0,
@@ -45,29 +44,6 @@ export const part: Part = {
         {
           "target": "measure",
           "name": "talk.label.health",
-          "width": 28,
-          "under": true
-        }
-      ],
-      "layout": "wide",
-      "cloud": true
-    },
-    {
-      "heading": "talk.platform.phases.title",
-      "line": "talk.platform.phases.body",
-      "command": "talk.platform.phases.command",
-      "picture": "platform",
-      "step": 1,
-      "labels": [
-        {
-          "target": "wall",
-          "name": "talk.label.foundations",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "intake",
-          "name": "talk.label.router",
           "width": 28,
           "under": true
         }

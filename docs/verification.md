@@ -1,6 +1,6 @@
-The browser review on 2026-10-06 covered all 28 stops in English and Spanish at 1600 by 900 pixels.
+The browser review on 2026-10-06 covered all 21 stops in English and Spanish at 1600 by 900 pixels.
 The visible text had no overflow, viewport clipping, or overlaps. The check measured each `data-fit` box and each pair of boxes on screen.
-For the ten worker flows, the check also measured every SVG text against its node width and every edge label against its gap.
+For the nine worker flows, the check also measured every SVG text against its node width and every edge label against its gap.
 
 Each picture shows two to four bodies. Every role has its own silhouette: the fluid core, the banks, the guardrail wall, the gate with its door, the owner frame, the Triage ring, and the Harness double ring.
 Names sit centred under their bodies. The blue streams and the docked Issue are visible at a reduced screenshot scale.

@@ -27,7 +27,7 @@ Main paths, repair, review, manual release, and the Audit return use channels in
 For reduced motion, the engine cuts to each stop and the runtime freezes surface movement. The atlas size follows the actual renderer DPR. The geometry stays constant while the presenter moves through the show.
 
 The content ledger is `scripts/keynote-content.mjs`. `scripts/rebuild-show.mjs` writes the English script, both locale files, and the scene contracts.
-It keeps 28 stops across nine chapters, with four chapter cards, ten worker flows, and two Project Health boards. The first chapter contains the cover and the PC introduction.
+It keeps 21 stops across nine chapters, with one chapter card, nine worker flows, and one Project Health board. Foundations, agent-harness, and agentic-workflows each have one slide that feeds their parts from the pillar with thin links. Only Agentic Workflows has many slides, because the talk is about it. The first chapter contains the cover and the PC introduction.
 The five maturity assemblies retain their meanings in the final world.
 Precomputed facts, reasoning, validation, and Safe Outputs occupy distinct positions in the worker close views.
 
