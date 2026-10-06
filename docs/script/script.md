@@ -58,17 +58,17 @@ Speaker notes: Walk the line from left to right. Models made chat AI common. The
 
 Source: [reference](../knowledge/website-reading.md).
 
-### 5. Chapter: How we have built the Platform
+### 5. Chapter: How we built the Platform
 
 On screen: the title over the dimmed world.
 
 Speaker notes: Pause. The talk moves from your PC to the Platform department and its four repositories.
 
-### 6. Four repositories carry the method.
+### 6. The 4 pillars of Platform.
 
 On screen: platform, state 0. Panels name Foundations, agent-harness, agentic-workflows, project-health.
 
-Slide: Foundations sets conventions. agent-harness installs them for agents. agentic-workflows runs the agents. project-health measures the result.
+Slide: Foundations for technology conventions. Agent-Harness for agentic conventions. Agentic-Workflows for asynchronous development in the cloud. Project-Health to measure the result and improve.
 
 Speaker notes: Platform is a Plain Concepts department that builds and maintains applications. Foundations defines conventions. agent-harness installs the agent environment. agentic-workflows runs workers on events. project-health measures delivery and agent work. Each repository supplies an input the next one needs.
 
