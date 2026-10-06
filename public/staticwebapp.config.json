@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/staticwebapp.config.json",
+  "routes": [
+    { "route": "/.auth/login/aad", "statusCode": 404 },
+    { "route": "/.auth/login/twitter", "statusCode": 404 },
+    { "route": "/*", "allowedRoles": ["collaborator"] }
+  ],
+  "responseOverrides": {
+    "401": { "redirect": "/.auth/login/github?post_login_redirect_uri=.referrer", "statusCode": 302 }
+  },
+  "navigationFallback": { "rewrite": "/index.html" }
+}
