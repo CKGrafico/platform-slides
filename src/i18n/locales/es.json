@@ -333,5 +333,8 @@
   "talk.health.portfolio.command": "project-health · DORA · agentes",
   "talk.system.title": "De una Issue a producción\ncon GitHub Agentic Workflows.",
   "talk.system.body": "Personas no técnicas de producto crean Issues o bugs pequeños y elegibles. Llegan a producción sin supervisión humana.",
-  "talk.system.command": "Maintenance · Issue → producción → Health"
+  "talk.system.command": "Maintenance · Issue → producción → Health",
+  "talk.closing.question.title": "¿Qué debe hacer\nexactamente un\ningeniero de software?",
+  "talk.closing.question.body": "«Esto requiere disciplina de ingeniería. No requiere leer el código en detalle.»\nUncle Bob Martin",
+  "talk.closing.question.command": "¿qué hace un ingeniero?"
 }

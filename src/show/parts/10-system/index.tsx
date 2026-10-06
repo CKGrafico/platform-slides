@@ -48,6 +48,17 @@ export const part: Part = {
       "layout": "wide",
       "footnote": "talk.maturity.line",
       "cloud": true
+    },
+    {
+      "heading": "talk.closing.question.title",
+      "line": "talk.closing.question.body",
+      "command": "talk.closing.question.command",
+      "picture": "system",
+      "step": 0,
+      "labels": [],
+      "layout": "statement",
+      "dim": true,
+      "cloud": true
     }
   ]
 },

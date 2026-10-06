@@ -45,6 +45,7 @@ body { font-family: var(--font-label); }
   font: 450 calc(var(--su) * 2.8) / 1.4 var(--font-label);
   color: #c5c8ce;
   text-wrap: pretty;
+  white-space: pre-line;
 }
 .ascii-caption .art-burn { height: auto; }
 .ascii-byline {

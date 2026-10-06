@@ -1,4 +1,4 @@
-The browser review on 2026-10-06 covered all 18 stops in English and Spanish at 1600 by 900 pixels.
+The browser review on 2026-10-06 covered all 19 stops in English and Spanish at 1600 by 900 pixels.
 The visible text had no overflow, viewport clipping, or overlaps. The check measured each `data-fit` box and each pair of boxes on screen.
 For the five worker flows, the check also measured every SVG text against its node width and every edge label against its gap.
 
