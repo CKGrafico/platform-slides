@@ -24,7 +24,7 @@ export const part: Part = {
           "target": "era.prompt",
           "name": "talk.era.prompts",
           "width": 28,
-          "under": true
+          "over": true
         },
         {
           "target": "context",
@@ -36,7 +36,7 @@ export const part: Part = {
           "target": "core",
           "name": "talk.era.agents",
           "width": 28,
-          "under": true
+          "over": true
         },
         {
           "target": "wall",
@@ -48,7 +48,7 @@ export const part: Part = {
           "target": "harness",
           "name": "talk.era.harnesses",
           "width": 28,
-          "under": true
+          "over": true
         },
         {
           "target": "era.loop",
@@ -60,7 +60,7 @@ export const part: Part = {
           "target": "era.loops",
           "name": "talk.era.autonomous",
           "width": 30,
-          "under": true
+          "over": true
         },
         {
           "target": "era.future",

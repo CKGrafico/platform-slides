@@ -58,10 +58,13 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
       // The evolution of AI as a row, like the maturity levels. Agents is the core and holds the Issue.
       // Skills, Guardrails and Harnesses are the context bank, the wall and the Harness.
       const row: [LiveId, number, Partial<Pose>][] = [
-        ['era.model', 1.1, {}], ['era.prompt', 0.95, {}], ['context', 0.6, {}], ['core', 0.62, { fluid: 1 }], ['wall', 0.5, {}],
-        ['harness', 0.65, {}], ['era.loop', 0.95, {}], ['era.loops', 0.75, {}], ['era.future', 1.0, { assemble: 0.32, opacity: 0.7 }],
+        ['era.model', 1.25, {}], ['era.prompt', 1.15, {}], ['context', 0.6, {}], ['core', 0.62, { fluid: 1 }], ['wall', 0.5, {}],
+        ['harness', 0.65, {}], ['era.loop', 1.15, {}], ['era.loops', 0.95, {}], ['era.future', 1.15, { assemble: 0.32, opacity: 0.7 }],
       ]
-      row.forEach(([id, scale, extra], i) => hero(id, -38 + i * 9.5, i % 2 ? -9 : 5, scale, { turn: 0.04 * i, ...extra }))
+      row.forEach(([id, scale, extra], i) => hero(id, -38 + i * 9.5, -1, scale, { turn: 0.04 * i, ...extra }))
+      // One straight row joined in order by grey channels, like a timeline. Names alternate under and over the line.
+      // The way to the unknown future is fainter.
+      for (let i = 0; i < 8; i++) back(`path.era.${i}` as PathId, i === 7 ? 0.22 : 0.42)
       break
     }
     case 'platform':

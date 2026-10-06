@@ -38,6 +38,15 @@ export const CONNECTIONS = {
   'path.health.foundations': { from: 'measure', to: 'wall', bend: 5 },
   'path.health.harness': { from: 'measure', to: 'harness', bend: 7 },
   'path.health.workflows': { from: 'measure', to: 'automation', bend: 9 },
+  // The evolution of AI, as one line from step to step.
+  'path.era.0': { from: 'era.model', to: 'era.prompt', bend: 0 },
+  'path.era.1': { from: 'era.prompt', to: 'context', bend: 0 },
+  'path.era.2': { from: 'context', to: 'core', bend: 0 },
+  'path.era.3': { from: 'core', to: 'wall', bend: 0 },
+  'path.era.4': { from: 'wall', to: 'harness', bend: 0 },
+  'path.era.5': { from: 'harness', to: 'era.loop', bend: 0 },
+  'path.era.6': { from: 'era.loop', to: 'era.loops', bend: 0 },
+  'path.era.7': { from: 'era.loops', to: 'era.future', bend: 0 },
 } as const
 export type PathId = keyof typeof CONNECTIONS
 const FORM_IDS = ['core', 'packet', 'context', 'intake', 'refine', 'automation', 'harness', 'forge', 'wall', 'gate', 'measure', 'missing', 'flow', 'parcel.0', 'parcel.1', 'parcel.2', 'parcel.3', 'triage', 'split', 'review', 'audit', 'release', 'outputs', 'level.0', 'level.1', 'level.2', 'level.3', 'level.4', 'deployment', 'era.model', 'era.prompt', 'era.loop', 'era.loops', 'era.future'] as const

@@ -31,7 +31,7 @@ const CHAPTER_REVEAL = { title: [0.15, 0.55], caption: [0.15, 0.55], label: [0.1
 /** A flow beat: the title first, then the diagram grows node by node, and the caption lands last. */
 const FLOW_REVEAL = { title: [0.04, 0.24], caption: [0.74, 0.94], label: [0.1, 0.82] } as const
 
-export interface Annotation { target: LiveId; name: MessageKey; dx?: number; dy?: number; width?: number; align?: 'center'; anchorY?: number; under?: boolean }
+export interface Annotation { target: LiveId; name: MessageKey; dx?: number; dy?: number; width?: number; align?: 'center'; anchorY?: number; under?: boolean; over?: boolean }
 export interface Beat {
   heading: MessageKey
   line?: MessageKey
@@ -57,10 +57,10 @@ const lift = new Vector3()
 const bottom = new Vector3()
 
 /**
- * The point under the middle of a body, at the lowest edge of its silhouette on screen.
+ * The point under (side -1) or over (side 1) the middle of a body, at that edge of its silhouette on screen.
  * Each unit counts as a sphere around its center, which follows the visible outline closely.
  */
-function silhouetteBottom(id: LiveId) {
+function silhouetteEdge(id: LiveId, side: 1 | -1) {
   return (camera: Camera) => {
     const object = getActorObject(id) as Points | undefined
     if (!object?.visible) return null
@@ -72,29 +72,31 @@ function silhouetteBottom(id: LiveId) {
     middle.set(0, 0, 0)
     for (const unit of units) middle.add(point.set(...unit.at))
     middle.multiplyScalar(1 / units.length).applyMatrix4(object.matrixWorld)
-    let lowest = 0
+    let edge = 0
     for (const unit of units) {
       point.set(...unit.at).applyMatrix4(object.matrixWorld).sub(middle)
-      lowest = Math.min(lowest, point.dot(lift) - unit.size * 0.95 * scale)
+      edge = side < 0 ? Math.min(edge, point.dot(lift) - unit.size * 0.95 * scale) : Math.max(edge, point.dot(lift) + unit.size * 0.95 * scale)
     }
-    return bottom.copy(middle).addScaledVector(lift, lowest)
+    return bottom.copy(middle).addScaledVector(lift, edge)
   }
 }
 
 function Annotation({ item }: { item: Annotation }) {
   const anchor = useRef<HTMLDivElement>(null)
-  const target = useMemo(() => (item.under ? silhouetteBottom(item.target) : item.target), [item.under, item.target])
+  // A name over its body works like a name under it, mirrored: the square marks the highest edge.
+  const plain = item.under || item.over
+  const target = useMemo(() => (plain ? silhouetteEdge(item.target, item.over ? 1 : -1) : item.target), [plain, item.over, item.target])
   useAnchor(anchor, target, [0, item.anchorY ?? 0, 0])
-  const dx = item.under ? 0 : item.dx ?? 2
-  const dy = item.under ? item.dy ?? 2.4 : item.dy ?? -9
-  const centered = item.align === 'center' || item.under
+  const dx = plain ? 0 : item.dx ?? 2
+  const dy = item.over ? item.dy ?? -5.4 : item.under ? item.dy ?? 2.4 : item.dy ?? -9
+  const centered = item.align === 'center' || plain
   return (
     <div ref={anchor} className="ascii-anchor">
       <svg className="ascii-leader" viewBox="-40 -24 80 48" aria-hidden="true">
-        {item.under ? null : <polyline pathLength="1" points={centered ? `0,0 0,${dy / 2} 0,${dy}` : `0,0 ${dx / 2},${dy} ${dx},${dy}`} />}
+        {plain ? null : <polyline pathLength="1" points={centered ? `0,0 0,${dy / 2} 0,${dy}` : `0,0 ${dx / 2},${dy} ${dx},${dy}`} />}
         <rect x="-0.35" y="-0.35" width="0.7" height="0.7" />
       </svg>
-      <div className={item.under ? 'ascii-label ascii-label--under' : centered ? 'ascii-label ascii-label--center' : 'ascii-label'} style={{ left: `calc(var(--su) * ${dx})`, top: `calc(var(--su) * ${dy})`, width: `calc(var(--su) * ${item.width ?? 30})` }} data-fit={item.name}>
+      <div className={plain ? 'ascii-label ascii-label--under' : centered ? 'ascii-label ascii-label--center' : 'ascii-label'} style={{ left: `calc(var(--su) * ${dx})`, top: `calc(var(--su) * ${dy})`, width: `calc(var(--su) * ${item.width ?? 30})` }} data-fit={item.name}>
         <span className="art-burn"><T k={item.name} /></span>
       </div>
     </div>

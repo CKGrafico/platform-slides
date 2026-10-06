@@ -48,11 +48,11 @@ Source: [reference](../knowledge/talk-notes.md).
 
 ### 4. The evolution of AI.
 
-On screen: evolution, state 0. Panels name 2022 · Models, 2023 · Prompts, 2024 · Skills, 2024 · Agents, 2025 · Guardrails, 2026 · Harnesses, 2026 · Loop engineering, 2026 · Autonomous loops, ? · Future.
+On screen: evolution, state 0. Panels name Models, Prompts, Skills, Agents, Guardrails, Harnesses, Loop engineering, Autonomous loops, Future.
 
 Slide: Each step adds structure around the model. The next one runs without you: a repo event starts the work.
 
-Speaker notes: Walk the row from left to right. The years are approximate. Models made chat AI common. Then we wrote prompts: you ask, review the change and ask again, with the engineer always present. Skills keep a procedure, so the next session can reuse it. Agents plan, use tools and edit code. That needs guardrails, because instructions alone do not stop a bad tool call. A Harness puts the model, the tools, the skills and the repo rules in one place. Loop engineering lets the work continue after you leave the PC: a repo event starts it. This talk covers the last three steps. Nobody knows the next one yet.
+Speaker notes: Walk the line from left to right. Models made chat AI common. Then we wrote prompts: you ask, review the change and ask again, with the engineer always present. Skills keep a procedure, so the next session can reuse it. Agents plan, use tools and edit code. That needs guardrails, because instructions alone do not stop a bad tool call. A Harness puts the model, the tools, the skills and the repo rules in one place. Loop engineering lets the work continue after you leave the PC: a repo event starts it. This talk covers the last three steps. Nobody knows the next one yet.
 
 ## How we built Platform
 

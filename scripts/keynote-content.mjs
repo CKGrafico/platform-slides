@@ -3,6 +3,8 @@ import { flowCopy } from './flow-copy.mjs'
 // The presenter approved this order on 2026-10-05. Each beat has a distinct purpose.
 /** A name centred under its body. The label sits just below the lowest edge of the body on screen. */
 const U = (target, name, width = 28) => ({ target, name, width, under: true })
+/** A name centred over its body, for rows where names alternate above and below a line. */
+const O = (target, name, width = 28) => ({ target, name, width, over: true })
 const B = (key, title, body, picture, step, labels, notes, command, layout = 'wide') => ({ key, title, body, picture, step, labels, notes, command: command ?? title, layout })
 /** A flow beat: a worker diagram drawn step by step over the dimmed world. */
 const F = (key, title, body, flow, picture, step, notes, command) => ({ key, title, body, picture, step, labels: [], notes, command: command ?? title, layout: 'wide', flow, dim: true })
@@ -21,15 +23,15 @@ export const sharedCopy = {
   'talk.level.3': ['3 · Structured', '3 · Structured'],
   'talk.level.4': ['4 · Scaled', '4 · Scaled'],
   'talk.level.5': ['5 · Governed & Optimized', '5 · Governed & Optimized'],
-  'talk.era.models': ['2022 · Models', '2022 · Modelos'],
-  'talk.era.prompts': ['2023 · Prompts', '2023 · Prompts'],
-  'talk.era.skills': ['2024 · Skills', '2024 · Skills'],
-  'talk.era.agents': ['2024 · Agents', '2024 · Agentes'],
-  'talk.era.guardrails': ['2025 · Guardrails', '2025 · Guardrails'],
-  'talk.era.harnesses': ['2026 · Harnesses', '2026 · Harness'],
-  'talk.era.loops': ['2026 · Loop engineering', '2026 · Ingeniería de loops'],
-  'talk.era.autonomous': ['2026 · Autonomous loops', '2026 · Loops autónomos'],
-  'talk.era.future': ['? · Future', '? · Futuro'],
+  'talk.era.models': ['Models', 'Modelos'],
+  'talk.era.prompts': ['Prompts', 'Prompts'],
+  'talk.era.skills': ['Skills', 'Skills'],
+  'talk.era.agents': ['Agents', 'Agentes'],
+  'talk.era.guardrails': ['Guardrails', 'Guardrails'],
+  'talk.era.harnesses': ['Harnesses', 'Harness'],
+  'talk.era.loops': ['Loop engineering', 'Ingeniería de loops'],
+  'talk.era.autonomous': ['Autonomous loops', 'Loops autónomos'],
+  'talk.era.future': ['Future', 'Futuro'],
   'talk.label.skills': ['pc-* skills', 'skills pc-*'],
   'talk.label.plugins': ['plugins', 'plugins'],
   'talk.label.specs': ['OpenSpec', 'OpenSpec'],
@@ -75,8 +77,8 @@ export const sections = [
   { id: '04-evolution', scene: 'layers', title: 'The evolution of AI', name: 'evolution', source: '../knowledge/talk-notes.md', beats: [
     B('evolution.timeline', ['The evolution of AI.', 'La evolución de la IA.'],
       ['Each step adds structure around the model. The next one runs without you: a repo event starts the work.', 'Cada paso añade estructura al modelo. El siguiente corre sin ti: un evento del repo inicia el trabajo.'], 'evolution', 0,
-      [U('era.model', 'talk.era.models'), U('era.prompt', 'talk.era.prompts'), U('context', 'talk.era.skills'), U('core', 'talk.era.agents'), U('wall', 'talk.era.guardrails'), U('harness', 'talk.era.harnesses'), U('era.loop', 'talk.era.loops', 32), U('era.loops', 'talk.era.autonomous', 30), U('era.future', 'talk.era.future')],
-      'Walk the row from left to right. The years are approximate. Models made chat AI common. Then we wrote prompts: you ask, review the change and ask again, with the engineer always present. Skills keep a procedure, so the next session can reuse it. Agents plan, use tools and edit code. That needs guardrails, because instructions alone do not stop a bad tool call. A Harness puts the model, the tools, the skills and the repo rules in one place. Loop engineering lets the work continue after you leave the PC: a repo event starts it. This talk covers the last three steps. Nobody knows the next one yet.', ['models → prompts → skills → agents → loops', 'modelos → prompts → skills → agentes → loops']),
+      [U('era.model', 'talk.era.models'), O('era.prompt', 'talk.era.prompts'), U('context', 'talk.era.skills'), O('core', 'talk.era.agents'), U('wall', 'talk.era.guardrails'), O('harness', 'talk.era.harnesses'), U('era.loop', 'talk.era.loops', 32), O('era.loops', 'talk.era.autonomous', 30), U('era.future', 'talk.era.future')],
+      'Walk the line from left to right. Models made chat AI common. Then we wrote prompts: you ask, review the change and ask again, with the engineer always present. Skills keep a procedure, so the next session can reuse it. Agents plan, use tools and edit code. That needs guardrails, because instructions alone do not stop a bad tool call. A Harness puts the model, the tools, the skills and the repo rules in one place. Loop engineering lets the work continue after you leave the PC: a repo event starts it. This talk covers the last three steps. Nobody knows the next one yet.', ['models → prompts → skills → agents → loops', 'modelos → prompts → skills → agentes → loops']),
   ] },
   { id: '05-platform', scene: 'method', title: 'How we built Platform', name: 'platform', source: '../knowledge/website-reading.md', cloud: true, beats: [
     C('platform.chapter', ['How we built Platform', 'Cómo construimos Platform'], 'evolution', 0, 'Pause. The talk moves from your PC to the Platform department and its four repositories.'),
