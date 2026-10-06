@@ -6,7 +6,7 @@ import { debugBus } from '@/debug/bus'
 import { updateAnchors } from '@/art/anchor'
 import { Matrix4, Points, ShaderMaterial, Vector3 } from 'three'
 import type { FormUnit } from '@/art/forms'
-import { CONNECTIONS, poseOf, type PathId, type Transfer } from './actors'
+import { CONNECTIONS, poseOf, type Connection, type PathId, type Transfer } from './actors'
 import { screenToWorld } from './shots'
 
 /**
@@ -48,6 +48,31 @@ function unitPort(object: Points, time: number, idle: boolean, out: Vector3): Fo
   object.updateWorldMatrix(true, false)
   out.applyMatrix4(object.matrixWorld)
   return unit
+}
+
+const center = new Vector3()
+const forward = new Vector3()
+const along = new Vector3()
+
+/** The middle of a body on screen: the mean of its unit centers, in world space. */
+function bodyCenter(object: Points, out: Vector3) {
+  const units = object.userData.units as FormUnit[]
+  out.set(0, 0, 0)
+  for (const unit of units) out.add(center.set(...unit.at))
+  object.updateWorldMatrix(true, false)
+  return out.multiplyScalar(1 / units.length).applyMatrix4(object.matrixWorld)
+}
+
+/** How far a body reaches from its middle along `along`, counting each unit as a sphere. */
+function bodyReach(object: Points, middle: Vector3, along: Vector3) {
+  const units = object.userData.units as FormUnit[]
+  const scale = object.scale.x
+  let reach = 0
+  for (const unit of units) {
+    center.set(...unit.at).applyMatrix4(object.matrixWorld).sub(middle)
+    reach = Math.max(reach, center.dot(along) + unit.size * 0.95 * scale)
+  }
+  return reach
 }
 
 function smooth(a: number, b: number, value: number) {
@@ -146,14 +171,29 @@ export function AsciiRuntime() {
       }
     }
 
-    for (const [id, connection] of Object.entries(CONNECTIONS)) {
-      const channel = getActorObject(id as PathId) as Points | undefined
+    for (const [id, connection] of Object.entries(CONNECTIONS) as [PathId, Connection][]) {
+      const channel = getActorObject(id) as Points | undefined
       if (!channel?.visible) continue
       const source = getActorObject(connection.from) as Points
       const target = getActorObject(connection.to) as Points
       if (!source.visible || !target.visible) { channel.visible = false; continue }
-      unitPort(source, time, !reducedMotion, start)
-      unitPort(target, time, !reducedMotion, end)
+      if (connection.edge) {
+        // An edge link leaves the near edge of one body and enters the near edge of the next, with a small gap at each end.
+        // The edge is measured on the screen plane, so the gap looks the same whatever the depth between the two bodies.
+        bodyCenter(source, start)
+        bodyCenter(target, end)
+        direction.subVectors(end, start).normalize()
+        cam.getWorldDirection(forward)
+        along.copy(direction).addScaledVector(forward, -direction.dot(forward)).normalize()
+        const slope = Math.max(0.2, direction.dot(along))
+        const gap = 0.5 * ratio
+        start.addScaledVector(direction, (bodyReach(source, start, along) + gap) / slope)
+        along.negate()
+        end.addScaledVector(direction, -(bodyReach(target, end, along) + gap) / slope)
+      } else {
+        unitPort(source, time, !reducedMotion, start)
+        unitPort(target, time, !reducedMotion, end)
+      }
       const distance = start.distanceTo(end)
       if (distance < 2) { channel.visible = false; continue }
       direction.subVectors(end, start).normalize()
@@ -162,7 +202,7 @@ export function AsciiRuntime() {
       basis.makeBasis(direction, up, normal)
       channel.position.lerpVectors(start, end, 0.5)
       channel.quaternion.setFromRotationMatrix(basis)
-      const thickness = 0.85 * ratio
+      const thickness = (connection.edge ? 0.4 : 0.85) * ratio
       channel.scale.set(distance / 22, thickness, thickness)
       const uniforms = (channel.material as ShaderMaterial).uniforms
       uniforms.uBend!.value = connection.bend * 0.7

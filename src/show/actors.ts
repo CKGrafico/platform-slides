@@ -4,6 +4,12 @@ import { createAsciiMaterial } from '@/art/ascii'
 import { defineActor } from '@/world/actors'
 import { Points, type BufferGeometry, type Color, type ShaderMaterial } from 'three'
 
+/**
+ * A channel between two bodies. By default it runs between the Issue ports of the two bodies.
+ * With `edge`, it is a thin link that leaves the edge of one body and enters the edge of the next, for a row of steps.
+ */
+export interface Connection { from: WorkId; to: WorkId; bend: number; edge?: true }
+
 export const CONNECTIONS = {
   'path.entry': { from: 'intake', to: 'triage', bend: 0 },
   'path.triage': { from: 'triage', to: 'refine', bend: 0 },
@@ -38,16 +44,21 @@ export const CONNECTIONS = {
   'path.health.foundations': { from: 'measure', to: 'wall', bend: 5 },
   'path.health.harness': { from: 'measure', to: 'harness', bend: 7 },
   'path.health.workflows': { from: 'measure', to: 'automation', bend: 9 },
+  // The five maturity levels, as one line from level to level.
+  'path.level.0': { from: 'level.0', to: 'level.1', bend: 0, edge: true },
+  'path.level.1': { from: 'level.1', to: 'level.2', bend: 0, edge: true },
+  'path.level.2': { from: 'level.2', to: 'level.3', bend: 0, edge: true },
+  'path.level.3': { from: 'level.3', to: 'level.4', bend: 0, edge: true },
   // The evolution of AI, as one line from step to step.
-  'path.era.0': { from: 'era.model', to: 'era.prompt', bend: 0 },
-  'path.era.1': { from: 'era.prompt', to: 'context', bend: 0 },
-  'path.era.2': { from: 'context', to: 'core', bend: 0 },
-  'path.era.3': { from: 'core', to: 'wall', bend: 0 },
-  'path.era.4': { from: 'wall', to: 'harness', bend: 0 },
-  'path.era.5': { from: 'harness', to: 'era.loop', bend: 0 },
-  'path.era.6': { from: 'era.loop', to: 'era.loops', bend: 0 },
-  'path.era.7': { from: 'era.loops', to: 'era.future', bend: 0 },
-} as const
+  'path.era.0': { from: 'era.model', to: 'era.prompt', bend: 0, edge: true },
+  'path.era.1': { from: 'era.prompt', to: 'context', bend: 0, edge: true },
+  'path.era.2': { from: 'context', to: 'core', bend: 0, edge: true },
+  'path.era.3': { from: 'core', to: 'wall', bend: 0, edge: true },
+  'path.era.4': { from: 'wall', to: 'harness', bend: 0, edge: true },
+  'path.era.5': { from: 'harness', to: 'era.loop', bend: 0, edge: true },
+  'path.era.6': { from: 'era.loop', to: 'era.loops', bend: 0, edge: true },
+  'path.era.7': { from: 'era.loops', to: 'era.future', bend: 0, edge: true },
+} as const satisfies Record<string, Connection>
 export type PathId = keyof typeof CONNECTIONS
 const FORM_IDS = ['core', 'packet', 'context', 'intake', 'refine', 'automation', 'harness', 'forge', 'wall', 'gate', 'measure', 'missing', 'flow', 'parcel.0', 'parcel.1', 'parcel.2', 'parcel.3', 'triage', 'split', 'review', 'audit', 'release', 'outputs', 'level.0', 'level.1', 'level.2', 'level.3', 'level.4', 'deployment', 'era.model', 'era.prompt', 'era.loop', 'era.loops', 'era.future'] as const
 export const LIVE_IDS = [...FORM_IDS, ...Object.keys(CONNECTIONS) as PathId[]]
@@ -76,7 +87,7 @@ export interface Pose {
 
 export function poseOf(object: Points): Pose { return object.userData.pose as Pose }
 
-/** Three lanes of small beads. Same-lane pitch keeps the beads apart, so they never fuse. */
+/** A wide route: three lanes of small beads. Same-lane pitch keeps the beads apart, so they never fuse. */
 function streamUnits(n = 45): FormUnit[] {
   return Array.from({ length: n }, (_, i) => {
     const lane = i % 3
@@ -89,21 +100,32 @@ function streamUnits(n = 45): FormUnit[] {
   })
 }
 
-/** Every channel draws the same beads, so they share one geometry. The last owner disposes it. */
-let shared: { geometry: BufferGeometry; source: Points; users: number } | undefined
+/** A thin link: one dense lane of equal beads, so it reads as a fine line. */
+function linkUnits(n = 66): FormUnit[] {
+  return Array.from({ length: n }, (_, i) => ({
+    at: [(i / (n - 1) - 0.5) * 22, 0, 0] as [number, number, number],
+    size: 0.26,
+    shape: 'cubocta' as const,
+    rotation: [i * 0.31, i * 0.22, 0] as [number, number, number],
+  }))
+}
 
-function stream(): Points {
+type StreamKind = 'wide' | 'thin'
+/** Every channel of one kind draws the same beads, so they share one geometry. The last owner disposes it. */
+const shared: Partial<Record<StreamKind, { geometry: BufferGeometry; source: Points; users: number }>> = {}
+
+function stream(kind: StreamKind = 'wide'): Points {
   let object: Points
-  if (!shared) {
-    object = createForm(streamUnits(), 40, 0.17, 7, { depth: false })
-    shared = { geometry: object.geometry, source: object, users: 0 }
+  let owner = shared[kind]
+  if (!owner) {
+    object = kind === 'thin' ? createForm(linkUnits(), 41, 0.17, 7, { depth: false }) : createForm(streamUnits(), 40, 0.17, 7, { depth: false })
+    owner = shared[kind] = { geometry: object.geometry, source: object, users: 0 }
   } else {
-    object = new Points(shared.geometry, createAsciiMaterial(7))
+    object = new Points(owner.geometry, createAsciiMaterial(7))
     object.frustumCulled = false
-    const { units, formSeed, workPart, drift } = shared.source.userData
+    const { units, formSeed, workPart, drift } = owner.source.userData
     Object.assign(object.userData, { units, formSeed, workPart, drift })
   }
-  const owner = shared
   owner.users++
   const material = object.material as ShaderMaterial
   material.uniforms.uStream!.value = 1
@@ -114,7 +136,7 @@ function stream(): Points {
     owner.users--
     if (owner.users === 0) {
       owner.geometry.dispose()
-      if (shared === owner) shared = undefined
+      if (shared[kind] === owner) delete shared[kind]
     }
   }
   return object
@@ -162,7 +184,7 @@ const factories: Record<WorkId, () => Points> = {
 export const actors = LIVE_IDS.map((id) => defineActor({
   id,
   create: () => {
-    const object = id.startsWith('path.') ? stream() : factories[id as WorkId]()
+    const object = id.startsWith('path.') ? stream((CONNECTIONS[id as PathId] as Connection).edge ? 'thin' : 'wide') : factories[id as WorkId]()
     if (id === 'packet') {
       object.userData.transfer = { from: 'core', to: 'core', progress: 1 } satisfies Transfer
     }

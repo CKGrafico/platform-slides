@@ -46,7 +46,7 @@ A form can have up to two other builds. `createForm` takes the `morph` option, w
 The poses `morph` and `morph2` mix the builds. Each unit starts later than the one before and lifts out of the mass on the way, so the change reads as taking apart and building again. Forms without other builds ignore them.
 On the cover, the 26 units of the core stand as an open laptop. The lid is a screen of fifteen tiles, and the Issue is the middle tile. On the next beat the laptop comes apart into the core.
 On the maturity beat, the core comes apart again. Its units fly in five groups to the five maturity assemblies, which then form around them (`src/show/layout.ts`). The Issue unit lands on level 2, Exploratory.
-The evolution of AI is one row of nine steps after the maturity levels, built like them.
+The evolution of AI is one row of nine steps after the maturity levels, built like them. Both rows are joined by edge links: a connection with `edge` in `src/show/actors.ts` is a thin channel that starts at the near edge of one body and ends at the near edge of the next, with a small gap at each end, instead of running between the Issue ports.
 A new body comes out of the core only while the core stays on screen. Otherwise it draws itself in place, outline first, from left to right.
 
 ## Worker flows

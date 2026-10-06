@@ -50,6 +50,8 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
         // The Issue unit lands on level 2, Exploratory: work with an agent on a PC.
         into('core', CORE_LOCAL.x, CORE_LOCAL.y, CORE_LOCAL.scale)
         state.core.morph2 = 1
+        // Thin grey links join the levels in order, from the edge of one to the edge of the next.
+        for (let i = 0; i < 4; i++) back(`path.level.${i}` as PathId, 0.6)
       } else {
         for (let i = 0; i < 4; i++) hero(`parcel.${i}` as LiveId, -30 + i * 20, i % 2 ? -3 : 1, 1.9)
       }
@@ -58,13 +60,13 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
       // The evolution of AI as a row, like the maturity levels. Agents is the core and holds the Issue.
       // Skills, Guardrails and Harnesses are the context bank, the wall and the Harness.
       const row: [LiveId, number, Partial<Pose>][] = [
-        ['era.model', 1.25, {}], ['era.prompt', 1.15, {}], ['context', 0.6, {}], ['core', 0.62, { fluid: 1 }], ['wall', 0.5, {}],
-        ['harness', 0.65, {}], ['era.loop', 1.15, {}], ['era.loops', 0.95, {}], ['era.future', 1.15, { assemble: 0.32, opacity: 0.7 }],
+        ['era.model', 1.0, {}], ['era.prompt', 0.9, {}], ['context', 0.48, {}], ['core', 0.52, { fluid: 1 }], ['wall', 0.42, {}],
+        ['harness', 0.54, {}], ['era.loop', 0.92, {}], ['era.loops', 0.78, {}], ['era.future', 0.95, { assemble: 0.32, opacity: 0.7 }],
       ]
-      row.forEach(([id, scale, extra], i) => hero(id, -38 + i * 9.5, -1, scale, { turn: 0.04 * i, ...extra }))
-      // One straight row joined in order by grey channels, like a timeline. Names alternate under and over the line.
+      row.forEach(([id, scale, extra], i) => hero(id, -40 + i * 10, -1, scale, { turn: 0.04 * i, ...extra }))
+      // One straight row joined in order by thin grey links, edge to edge, like a timeline. Names alternate under and over the line.
       // The way to the unknown future is fainter.
-      for (let i = 0; i < 8; i++) back(`path.era.${i}` as PathId, i === 7 ? 0.22 : 0.42)
+      for (let i = 0; i < 8; i++) back(`path.era.${i}` as PathId, i === 7 ? 0.3 : 0.6)
       break
     }
     case 'platform':
