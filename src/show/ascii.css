@@ -196,4 +196,8 @@ body { font-family: var(--font-label); }
 :root[data-palette='duo'] .flow-edge--return .flow-edge-label { fill: var(--stop); }
 :root[data-palette='duo'] .flow-arrow--return path { fill: var(--stop); }
 
+/* blue: more of the one accent, no new hues. Flow agent boxes turn pale blue. */
+:root[data-palette='blue'] .flow-node--agent rect { fill: #c9d6ff; stroke: #c9d6ff; }
+:root[data-palette='blue'] .flow-node--end rect { stroke: #5c8bff; }
+
 @media (prefers-reduced-motion: reduce) { .ascii-frame { transform: none !important; } }

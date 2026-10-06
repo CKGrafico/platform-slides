@@ -5,13 +5,15 @@
  * - pillars: semantic, plus a soft tint per pillar on its forms. The blue stays the Issue's alone.
  * - duo: three colours in all. The world stays grey and white with the Issue blue. One rose marks only where
  *   the system says no in flows: a stop, a block, a rework return. Nothing else changes.
+ * - blue: one hue only, more of it. Every form takes a cool cast of the Platform blue, and flow agent boxes
+ *   turn pale blue. The Issue stays the only solid blue.
  */
-export type Palette = 'mono' | 'semantic' | 'pillars' | 'duo'
+export type Palette = 'mono' | 'semantic' | 'pillars' | 'duo' | 'blue'
 
 function read(): Palette {
   try {
     const value = new URLSearchParams(window.location.search).get('palette')
-    return value === 'semantic' || value === 'pillars' || value === 'duo' ? value : 'mono'
+    return value === 'semantic' || value === 'pillars' || value === 'duo' || value === 'blue' ? value : 'mono'
   } catch {
     return 'mono'
   }
@@ -31,9 +33,10 @@ const PILLAR: Record<string, string> = {
   measure: STATUS.rose,
 }
 
-/** How far a tinted form moves from its grey toward its pillar colour. Kept low, so the forms stay matte. */
-export const TINT = 0.5
+/** How far a tinted form moves from its grey toward its colour. Kept low, so the forms stay matte. */
+export const TINT = PALETTE === 'blue' ? 0.45 : 0.5
 
 export function tintOf(id: string): string | undefined {
+  if (PALETTE === 'blue') return id.startsWith('path.') ? undefined : '#5C8BFF'
   return PALETTE === 'pillars' ? PILLAR[id] : undefined
 }
