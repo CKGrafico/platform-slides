@@ -10,7 +10,7 @@ export type PictureState = Record<LiveId, Pose>
  * With `dim`, the whole picture fades to a trace behind a chapter title, and the Issue stays where it is.
  */
 export function picture(kind: Picture, step: number, dim = false): PictureState {
-  const state = Object.fromEntries(LIVE_IDS.map((id) => [id, { x: 20, y: 0, scale: 0.001, opacity: 0, assemble: 0, accent: 0, fluid: 0, turn: 0, phase: step, focus: 0, work: 0, cut: 0, morph: 0, morph2: 0, marks: 0 }])) as PictureState
+  const state = Object.fromEntries(LIVE_IDS.map((id) => [id, { x: 20, y: 0, scale: 0.001, opacity: 0, assemble: 0, accent: 0, fluid: 0, turn: 0, phase: step, focus: 0, work: 0, cut: 0, morph: 0, morph2: 0, marks: 1 }])) as PictureState
   let owner: WorkId = 'core'
   const put = (id: LiveId, x: number, y: number, scale = 1, extra: Partial<Pose> = {}) => {
     Object.assign(state[id], { x, y, scale, opacity: 1, assemble: 1 }, extra)
@@ -38,9 +38,10 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
     case 'cover':
     case 'local':
       // On the cover the core units stand as an open laptop. On the next beat they come apart into the core.
-      if (kind === 'cover') hero('core', 26, 1, 2.0, { turn: -0.55, morph: 1 })
+      // The laptop shows only its moving screen tile in blue, so its mark units stay grey.
+      if (kind === 'cover') hero('core', 26, 1, 2.0, { turn: -0.55, morph: 1, marks: 0 })
       // At work on the PC, three units of the core are blue: the Issue and two more.
-      else hero('core', CORE_LOCAL.x, CORE_LOCAL.y, CORE_LOCAL.scale, { fluid: 1, turn: 0.16, marks: 1 })
+      else hero('core', CORE_LOCAL.x, CORE_LOCAL.y, CORE_LOCAL.scale, { fluid: 1, turn: 0.16 })
       break
     case 'assessment':
       if (step === 0) {

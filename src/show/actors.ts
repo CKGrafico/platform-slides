@@ -106,7 +106,7 @@ export interface Pose {
   morph: number
   /** The same for the form's second other build. */
   morph2: number
-  /** 1 paints the body's mark units in the accent blue as well. See userData.markParts. */
+  /** 1 paints the body's mark units in the accent blue as well (the default). See userData.markParts. */
   marks: number
 }
 
@@ -215,6 +215,9 @@ const factories: Record<WorkId, () => Points> = {
   'kit.plugin': () => era(64, 'plugin'),
 }
 
+/** Forms that never take mark units: the traveling packet, and the future, which never settles. */
+const UNMARKED = new Set<string>(['packet', 'era.future'])
+
 export const actors = LIVE_IDS.map((id) => defineActor({
   id,
   create: () => {
@@ -222,7 +225,13 @@ export const actors = LIVE_IDS.map((id) => defineActor({
     if (id === 'packet') {
       object.userData.transfer = { from: 'core', to: 'core', progress: 1 } satisfies Transfer
     }
-    object.userData.pose = { x: 18, y: 0, scale: 1, opacity: 0, assemble: 1, accent: 0, fluid: 0, turn: 0, phase: 0, focus: 0, work: 0, cut: 0, morph: 0, morph2: 0, marks: 0 } satisfies Pose
+    // Every complex form carries some blue: two units on a large form, one on a medium form, none below four units.
+    // They face the camera and sit apart from the Issue unit and from each other. The core chose its own above.
+    const units = object.userData.units as FormUnit[] | undefined
+    if (!object.userData.markParts && units && !id.startsWith('path.') && !UNMARKED.has(id) && units.length >= 4) {
+      object.userData.markParts = spreadUnits(units, units.length >= 12 ? 2 : 1, Number(object.userData.workPart))
+    }
+    object.userData.pose = { x: 18, y: 0, scale: 1, opacity: 0, assemble: 1, accent: 0, fluid: 0, turn: 0, phase: 0, focus: 0, work: 0, cut: 0, morph: 0, morph2: 0, marks: 1 } satisfies Pose
     return object
   },
 }))
