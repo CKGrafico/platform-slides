@@ -8,9 +8,12 @@ Choose a variant with `?palette=` in the URL. The code is in `src/show/palette.t
 |---|---|---|
 | `mono` (default) | grey points, blue Issue | grey, blue main route |
 | `semantic` | unchanged | state in colour: done in teal, stopped or blocked in rose, waits for a person in amber, rework returns in rose. Status chips and success bars follow the same colours |
+| `duo` | unchanged | three colours in all: grey, the Issue blue, and one muted rose `#e2566f` only where the system says no (stop nodes, rework returns) |
 | `pillars` | as `semantic`, plus a soft tint per pillar: Foundations teal, agent-harness amber, agentic-workflows cyan, project-health rose | as `semantic` |
 
 The colours are the Platform status colours from `Foundations/ai/DESIGN.md`: rose `#f33859`, amber `#fbc740`, teal `#3abaaf`, cyan `#00b5f1`. A tinted form moves halfway from its grey toward its colour, so it stays matte. The Issue blue always wins over a tint.
+
+The presenter rejected `pillars` on 2026-10-06: the monochrome world with the blue Issue is the look they like. They asked for two or three colours at most.
 
 Open points before a decision:
 

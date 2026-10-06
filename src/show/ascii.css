@@ -188,4 +188,12 @@ body { font-family: var(--font-label); }
 :root:is([data-palette='semantic'], [data-palette='pillars']) .board-card--preproduction .board-chip-text { fill: var(--wait) !important; }
 :root:is([data-palette='semantic'], [data-palette='pillars']) .board-bar--ok { fill: var(--ok); }
 
+/* duo: grey, the Issue blue, and one rose for where the system says no. Flows only. */
+:root[data-palette='duo'] { --stop: #e2566f; }
+:root[data-palette='duo'] .flow-node--stop rect { stroke: var(--stop); stroke-width: 0.3; }
+:root[data-palette='duo'] .flow-node--stop .flow-title { fill: var(--stop); }
+:root[data-palette='duo'] .flow-edge--return path { stroke: var(--stop); opacity: calc(var(--v) * 0.8); }
+:root[data-palette='duo'] .flow-edge--return .flow-edge-label { fill: var(--stop); }
+:root[data-palette='duo'] .flow-arrow--return path { fill: var(--stop); }
+
 @media (prefers-reduced-motion: reduce) { .ascii-frame { transform: none !important; } }

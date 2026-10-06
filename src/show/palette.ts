@@ -3,13 +3,15 @@
  * - mono (default): the decided art direction. A monochrome world and one blue accent for the Issue.
  * - semantic: the world stays monochrome. Flows and boards colour state: done, stopped, waits for a person, rework.
  * - pillars: semantic, plus a soft tint per pillar on its forms. The blue stays the Issue's alone.
+ * - duo: three colours in all. The world stays grey and white with the Issue blue. One rose marks only where
+ *   the system says no in flows: a stop, a block, a rework return. Nothing else changes.
  */
-export type Palette = 'mono' | 'semantic' | 'pillars'
+export type Palette = 'mono' | 'semantic' | 'pillars' | 'duo'
 
 function read(): Palette {
   try {
     const value = new URLSearchParams(window.location.search).get('palette')
-    return value === 'semantic' || value === 'pillars' ? value : 'mono'
+    return value === 'semantic' || value === 'pillars' || value === 'duo' ? value : 'mono'
   } catch {
     return 'mono'
   }
