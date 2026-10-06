@@ -59,7 +59,7 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
       // The evolution of AI as a row, like the maturity levels. Agents is the core and holds the Issue.
       // Skills, Guardrails and Harnesses are the context bank, the wall and the Harness.
       const row: [LiveId, number, Partial<Pose>][] = [
-        ['era.model', 1.0, {}], ['era.prompt', 0.9, {}], ['context', 0.48, {}], ['core', 0.52, { fluid: 1 }], ['wall', 0.42, {}],
+        ['era.model', 1.05, {}], ['era.prompt', 0.9, {}], ['context', 0.48, {}], ['core', 0.52, { fluid: 1 }], ['wall', 0.42, {}],
         ['harness', 0.54, {}], ['era.loop', 0.92, {}], ['era.loops', 0.78, {}], ['era.future', 0.95, { assemble: 0.32, opacity: 0.7 }],
       ]
       row.forEach(([id, scale, extra], i) => hero(id, -40 + i * 10, -1, scale, { turn: 0.04 * i, ...extra }))

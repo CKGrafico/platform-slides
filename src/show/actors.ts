@@ -205,7 +205,7 @@ const factories: Record<WorkId, () => Points> = {
   'level.3': () => level(54, 3),
   'level.4': () => level(55, 4),
   // The steps of the evolution of AI without an element of their own. Agents, Skills, Guardrails and Harnesses reuse theirs.
-  'era.model': () => cluster(58, 0.38),
+  'era.model': () => era(58, 'model'),
   'era.prompt': () => era(59, 'prompt'),
   'era.loop': () => era(60, 'loop'),
   'era.loops': () => era(61, 'loops'),

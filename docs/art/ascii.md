@@ -39,7 +39,7 @@ Each role has its own silhouette, so the audience can tell bodies apart without 
 The units are chamfered blocks, prisms, slabs, beams, tiles, hexagonal prisms, cuboctahedra, and truncated octahedra. None is a sphere or a sharp cube.
 The reasoning core is one mass of 26 varied units. Unit 2 holds the Issue on the face that looks at the camera. Units 4 to 7 sit on the visible rim and leave when work separates.
 Banks are tight grids with a different footprint for each role. The guardrail is a tall wall one unit deep, with merlons. The merge gate has a door, a lintel, and a sill where the Issue docks.
-Owner review is an upright hollow square. Triage is a ring with four posts. The Harness is a ring of blocks around a raised ring of hexagonal prisms. Forge is a flat plate of tiles.
+Owner review is an upright hollow square. Triage is a ring with four posts. The Harness is a ring of blocks around a raised ring of hexagonal prisms, and it holds a small agent cluster on the inner ring. Forge is a flat plate of tiles.
 All channels share one bead geometry in three lanes, drawn in the accent blue. The docked Issue uses the densest mark and a larger point, and its blue never darkens below 85 percent.
 
 A form can have up to two other builds. `createForm` takes the `morph` option, with one box per unit for each build. Each mark moves onto the surface of its unit's box, so every shape becomes a clean block in another build.

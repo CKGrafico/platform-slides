@@ -448,8 +448,17 @@ export function triage(seed: number): Points {
 
 /** The Harness: the environment that contains. A ring of blocks around a raised ring of hexagonal prisms. */
 export function harness(seed: number): Points {
-  const units = [...ring(6, 1.7, 0.75), ...ring(4, 1.7, 0.8, 'hex', 0.9)]
-  return createForm(centered(units), seed, 0.22, 12, { work: units.length - 1 })
+  const rings = [...ring(6, 1.7, 0.75), ...ring(4, 1.7, 0.8, 'hex', 0.9)]
+  // The Harness holds an agent: a small loose cluster that rests on the inner ring, like a nest.
+  const shapes: UnitShape[] = ['cell', 'cubocta', 'hex', 'cell', 'block', 'cubocta', 'cell']
+  const agent: FormUnit[] = [
+    { at: [0, 2.9, 0], size: 1.25, shape: 'cell', rotation: [0.3, 0.5, 0.1] },
+    ...Array.from({ length: 6 }, (_, i) => {
+      const a = (i / 6) * Math.PI * 2 + 0.4
+      return { at: [Math.cos(a) * 1.6, 2.2 + (i % 2) * 1.0, Math.sin(a) * 1.6] as [number, number, number], size: 0.72 + (i % 3) * 0.1, shape: shapes[i + 1]!, rotation: [i * 0.7, i * 1.1, i * 0.4] as [number, number, number] }
+    }),
+  ]
+  return createForm(centered([...rings, ...agent]), seed, 0.22, 12, { work: rings.length - 1 })
 }
 
 /** Repeated blocks form a stepped assembly with a visible side profile. */
@@ -484,7 +493,7 @@ function standingRing(center: readonly number[], radius: number, count: number, 
  * a prompt is one typed line, loops and graphs are one upright ring,
  * Agentic Workflows are two linked rings, and the future is a loose handful that never settles.
  */
-export function era(seed: number, kind: 'prompt' | 'loop' | 'loops' | 'future' | 'spec' | 'plugin'): Points {
+export function era(seed: number, kind: 'model' | 'prompt' | 'loop' | 'loops' | 'future' | 'spec' | 'plugin'): Points {
   switch (kind) {
     // OpenSpec: a short stack of pages, each one a little offset, like proposal, specs and tasks.
     case 'spec': return createForm(centered([0, 1, 2].map((i) => ({ at: [i * 0.35, i * 0.95, -i * 0.35] as [number, number, number], size: 1.25, shape: 'slab' as const }))), seed, 0.24, 11, { work: 2 })
@@ -494,6 +503,8 @@ export function era(seed: number, kind: 'prompt' | 'loop' | 'loops' | 'future' |
       { at: [0, 1.75, 0.55], size: 0.42, shape: 'prism' },
       { at: [0, 1.75, -0.55], size: 0.42, shape: 'prism' },
     ]), seed, 0.24, 11, { work: 0 })
+    // A model: one large solid unit, a black box. An agent is the loose working mass of the core.
+    case 'model': return createForm([{ at: [0, 0, 0], size: 2.3, shape: 'cell', rotation: [0.2, 0.6, 0] }], seed, 0.26, 11)
     case 'prompt': {
       const units: FormUnit[] = [0, 1, 2, 3].map((i) => ({ at: [0, 1, 2].map((k) => RIGHT[k]! * (i - 2) * 1.7) as [number, number, number], size: 0.62, shape: 'slab' as const }))
       units.push({ at: [0, 1, 2].map((k) => RIGHT[k]! * 2 * 1.7 + UP[k]! * 0.35) as [number, number, number], size: 0.62, shape: 'prism' })
