@@ -440,8 +440,8 @@ function standingRing(center: readonly number[], radius: number, count: number, 
 
 /**
  * Steps in the evolution of AI that have no element of their own:
- * a prompt is one typed line, loop engineering is one upright ring,
- * autonomous loops are two linked rings, and the future is a loose handful that never settles.
+ * a prompt is one typed line, loops and graphs are one upright ring,
+ * Agentic Workflows are two linked rings, and the future is a loose handful that never settles.
  */
 export function era(seed: number, kind: 'prompt' | 'loop' | 'loops' | 'future'): Points {
   switch (kind) {

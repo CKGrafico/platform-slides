@@ -6,7 +6,7 @@ import { sections, sharedCopy } from './keynote-content.mjs'
 const copy = { ...sharedCopy }
 for (const section of sections) for (const beat of section.beats) {
   copy[`talk.${beat.key}.title`] = beat.title
-  if (beat.layout !== 'chapter') copy[`talk.${beat.key}.body`] = beat.body
+  if (beat.layout !== 'chapter' && beat.body[0]) copy[`talk.${beat.key}.body`] = beat.body
   copy[`talk.${beat.key}.command`] = beat.command
 }
 for (const [locale, index] of [['en', 0], ['es', 1]]) {
@@ -25,7 +25,7 @@ let number = 1
 const script = sections.map((section) => {
   let text = `## ${section.title}\n\nSource: [reference](${section.source}).\n\n`
   if (section.intro) text += `### ${number++}. From Issue to production with GitHub Agentic Workflows\n\nOn screen: an open laptop built from the units of the reasoning core. The blue Issue is the middle tile of its screen. On the next beat the laptop comes apart into the core. The cover introduces the speaker.\n\nSay: This talk follows one Issue from an engineer's PC to production, through the Plain Concepts Platform.\n\n`
-  text += section.beats.map((beat) => beat.layout === 'chapter' ? `### ${number++}. Chapter: ${clean(beat.title[0])}\n\nOn screen: the title over the dimmed world.\n\nSpeaker notes: ${beat.notes}\n\n` : `### ${number++}. ${clean(beat.title[0])}\n\nOn screen: ${beat.flow ? `the ${beat.flow} flow, drawn step by step over the dimmed world.` : beat.board ? `the ${beat.board} board of Project Health over the dimmed world.` : `${beat.picture}, state ${beat.step}.`} ${beat.labels.length ? `Panels name ${beat.labels.map((label) => sharedCopy[label.name]?.[0] ?? label.name).join(', ')}.` : 'The composition holds the current subject.'}\n\nSlide: ${clean(beat.body[0])}\n\nSpeaker notes: ${beat.notes}\n\n`).join('')
+  text += section.beats.map((beat) => beat.layout === 'chapter' ? `### ${number++}. Chapter: ${clean(beat.title[0])}\n\nOn screen: the title over the dimmed world.\n\nSpeaker notes: ${beat.notes}\n\n` : `### ${number++}. ${clean(beat.title[0])}\n\nOn screen: ${beat.flow ? `the ${beat.flow} flow, drawn step by step over the dimmed world.` : beat.board ? `the ${beat.board} board of Project Health over the dimmed world.` : `${beat.picture}, state ${beat.step}.`} ${beat.labels.length ? `Panels name ${beat.labels.map((label) => sharedCopy[label.name]?.[0] ?? label.name).join(', ')}.` : 'The composition holds the current subject.'}\n\n${beat.body[0] ? `Slide: ${clean(beat.body[0])}` : 'Slide: no caption. The names under the bodies carry the content.'}\n\nSpeaker notes: ${beat.notes}\n\n`).join('')
   return text
 }).join('')
 fs.writeFileSync('docs/script/script.md', (header + script).trimEnd() + '\n')
@@ -37,7 +37,7 @@ for (const section of sections) {
   const data = {
     id: section.id, scene: section.scene, title: section.title,
     beats: section.beats.map((beat) => ({
-      heading: `talk.${beat.key}.title`, ...(beat.layout === 'chapter' ? {} : { line: `talk.${beat.key}.body` }), command: `talk.${beat.key}.command`,
+      heading: `talk.${beat.key}.title`, ...(beat.layout === 'chapter' || !beat.body[0] ? {} : { line: `talk.${beat.key}.body` }), command: `talk.${beat.key}.command`,
       picture: beat.picture, step: beat.step, labels: beat.labels, layout: beat.layout === 'default' ? undefined : beat.layout,
       ...(beat.footnote ? { footnote: beat.footnote } : {}),
       ...(beat.dim ? { dim: true } : {}),

@@ -9,7 +9,6 @@ export const part: Part = {
   "beats": [
     {
       "heading": "talk.evolution.timeline.title",
-      "line": "talk.evolution.timeline.body",
       "command": "talk.evolution.timeline.command",
       "picture": "evolution",
       "step": 0,

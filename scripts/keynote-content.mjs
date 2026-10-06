@@ -29,8 +29,8 @@ export const sharedCopy = {
   'talk.era.agents': ['Agents', 'Agentes'],
   'talk.era.guardrails': ['Guardrails', 'Guardrails'],
   'talk.era.harnesses': ['Harnesses', 'Harness'],
-  'talk.era.loops': ['Loop engineering', 'Ingeniería de loops'],
-  'talk.era.autonomous': ['Autonomous loops', 'Loops autónomos'],
+  'talk.era.loops': ['Loops and graphs', 'Loops y Graphs'],
+  'talk.era.autonomous': ['Agentic Workflows', 'Agentic Workflows'],
   'talk.era.future': ['Future', 'Futuro'],
   'talk.label.skills': ['pc-* skills', 'skills pc-*'],
   'talk.label.plugins': ['plugins', 'plugins'],
@@ -76,9 +76,9 @@ export const sections = [
   ] },
   { id: '04-evolution', scene: 'layers', title: 'The evolution of AI', name: 'evolution', source: '../knowledge/talk-notes.md', beats: [
     B('evolution.timeline', ['The evolution of AI.', 'La evolución de la IA.'],
-      ['Each step adds structure around the model. The next one runs without you: a repo event starts the work.', 'Cada paso añade estructura al modelo. El siguiente corre sin ti: un evento del repo inicia el trabajo.'], 'evolution', 0,
+      ['', ''], 'evolution', 0,
       [U('era.model', 'talk.era.models'), O('era.prompt', 'talk.era.prompts'), U('context', 'talk.era.skills'), O('core', 'talk.era.agents'), U('wall', 'talk.era.guardrails'), O('harness', 'talk.era.harnesses'), U('era.loop', 'talk.era.loops', 32), O('era.loops', 'talk.era.autonomous', 30), U('era.future', 'talk.era.future')],
-      'Walk the line from left to right. Models made chat AI common. Then we wrote prompts: you ask, review the change and ask again, with the engineer always present. Skills keep a procedure, so the next session can reuse it. Agents plan, use tools and edit code. That needs guardrails, because instructions alone do not stop a bad tool call. A Harness puts the model, the tools, the skills and the repo rules in one place. Loop engineering lets the work continue after you leave the PC: a repo event starts it. This talk covers the last three steps. Nobody knows the next one yet.', ['models → prompts → skills → agents → loops', 'modelos → prompts → skills → agentes → loops']),
+      'Walk the line from left to right. Models made chat AI common. Then we wrote prompts: you ask, review the change and ask again, with the engineer always present. Skills keep a procedure, so the next session can reuse it. Agents plan, use tools and edit code. That needs guardrails, because instructions alone do not stop a bad tool call. A Harness puts the model, the tools, the skills and the repo rules in one place. Loops and graphs let the work continue after you leave the PC: a repo event starts it. Agentic Workflows run those loops on Platform. This talk covers the last three steps. Nobody knows the next one yet.', ['models → prompts → skills → agents → loops', 'modelos → prompts → skills → agentes → loops']),
   ] },
   { id: '05-platform', scene: 'method', title: 'How we built Platform', name: 'platform', source: '../knowledge/website-reading.md', cloud: true, beats: [
     C('platform.chapter', ['How we built the Platform', 'Cómo construimos Plataforma'], 'evolution', 0, 'Pause. The talk moves from your PC to the Platform department and its four repositories.'),
