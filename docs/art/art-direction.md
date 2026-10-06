@@ -32,7 +32,7 @@ The system is the point. Only the core reasons. Deterministic work moves away fr
 | Backdrop | `#0A0A0B` | off-black, never pure black, with a faint dot grid |
 | Point off-white | `#E8E9EC` | the lit side of a unit |
 | Point grey | `#8A8F98` | the shadow side, and distant, cheap work |
-| Accent | `#2F69FF` Platform blue | the work we follow, and the command line cursor. Lifted to `#5C8BFF` for the smallest dots |
+| Accent | `#2F69FF` Platform blue | the work we follow, the routes and links, agent boxes, name markers, and the command line cursor. One value everywhere, also for the smallest dots and for text |
 
 Rules:
 

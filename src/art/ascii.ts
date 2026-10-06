@@ -1,4 +1,4 @@
-import { CanvasTexture, Color, LinearFilter, ShaderMaterial, Vector3 } from 'three'
+import { CanvasTexture, Color, LinearFilter, ShaderMaterial, Vector2, Vector3 } from 'three'
 
 /** Each unit moves as one body. Its marks and depth surface share this motion. */
 const UNIT_MOTION = /* glsl */ `
@@ -117,6 +117,8 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       uBend: { value: 0 },
       uWorkPart: { value: -1 },
       uWorkAccent: { value: 0 },
+      uMarkParts: { value: new Vector2(-1, -1) },
+      uMarks: { value: 0 },
       uExtract: { value: 0 },
       uDrift: { value: 0.12 },
       uStretch: { value: 1 },
@@ -144,6 +146,8 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       uniform float uAccent;
       uniform float uWorkPart;
       uniform float uWorkAccent;
+      uniform vec2 uMarkParts;
+      uniform float uMarks;
       uniform vec3 uBlue;
       uniform vec3 uKey;
       varying vec3 vColor;
@@ -165,7 +169,9 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
         vShade = 0.28 + light * 0.72;
         vGlyph = floor(clamp(light * 7.0 + aSeed * 0.9, 0.0, 7.0));
         float work = (abs(aPart - uWorkPart) < 0.1) ? uWorkAccent : 0.0;
-        float hot = max(uAccent, work);
+        // Up to two more units of the body in the same blue, without the Issue's denser mark.
+        float mark = (abs(aPart - uMarkParts.x) < 0.1 || abs(aPart - uMarkParts.y) < 0.1) ? uMarks : 0.0;
+        float hot = max(uAccent, max(work, mark));
         vColor = mix(aColor, uBlue, hot);
         // The blue stays bright on its shadow side, so it never darkens to navy.
         vShade = mix(vShade, max(vShade, 0.85), hot);

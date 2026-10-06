@@ -1,8 +1,8 @@
-import { cluster, createForm, era, gate, harness, laptopLayout, lattice, level, plate, steps, triage, upright, wall, type FormUnit } from '@/art/forms'
+import { cluster, createForm, era, gate, harness, laptopLayout, laptopScreen, lattice, level, plate, spreadUnits, steps, triage, upright, wall, type FormUnit } from '@/art/forms'
 import { spreadLayout } from './layout'
 import { createAsciiMaterial } from '@/art/ascii'
 import { defineActor } from '@/world/actors'
-import { Points, type BufferGeometry, type Color, type ShaderMaterial } from 'three'
+import { Points, type BufferGeometry, type ShaderMaterial } from 'three'
 
 /**
  * A channel between two bodies. By default it runs between the Issue ports of the two bodies.
@@ -106,6 +106,8 @@ export interface Pose {
   morph: number
   /** The same for the form's second other build. */
   morph2: number
+  /** 1 paints the body's mark units in the accent blue as well. See userData.markParts. */
+  marks: number
 }
 
 export function poseOf(object: Points): Pose { return object.userData.pose as Pose }
@@ -152,8 +154,6 @@ function stream(kind: StreamKind = 'wide'): Points {
   owner.users++
   const material = object.material as ShaderMaterial
   material.uniforms.uStream!.value = 1
-  // The lifted blue the art direction allows for the smallest marks.
-  ;(material.uniforms.uBlue!.value as Color).set('#5C8BFF')
   object.userData.dispose = () => {
     material.dispose()
     owner.users--
@@ -167,7 +167,15 @@ function stream(kind: StreamKind = 'wide'): Points {
 
 const factories: Record<WorkId, () => Points> = {
   // Two other builds: the laptop of the cover, and the core taken apart over the five maturity assemblies.
-  core: () => cluster(7, 1, (units) => [laptopLayout(units), spreadLayout(units)]),
+  core: () => {
+    const object = cluster(7, 1, (units) => [laptopLayout(units), spreadLayout(units)])
+    // While the core stands as the laptop, the blue moves over the screen tiles. See AsciiRuntime.
+    object.userData.screenParts = laptopScreen(object.userData.units as FormUnit[])
+    // Two units on the front of the mass that can join the Issue in blue, far from it and from each other.
+    // Units 4 to 7 leave later, so they are skipped.
+    object.userData.markParts = spreadUnits(object.userData.units as FormUnit[], 2, 2, [4, 5, 6, 7])
+    return object
+  },
   packet: () => createForm([{ at: [0, 0, 0], size: 1.25, shape: 'block' }], 91, 0.2, 13),
   context: () => lattice(30, 5, 2, 1),
   intake: () => lattice(31, 2, 2, 4),
@@ -214,7 +222,7 @@ export const actors = LIVE_IDS.map((id) => defineActor({
     if (id === 'packet') {
       object.userData.transfer = { from: 'core', to: 'core', progress: 1 } satisfies Transfer
     }
-    object.userData.pose = { x: 18, y: 0, scale: 1, opacity: 0, assemble: 1, accent: 0, fluid: 0, turn: 0, phase: 0, focus: 0, work: 0, cut: 0, morph: 0, morph2: 0 } satisfies Pose
+    object.userData.pose = { x: 18, y: 0, scale: 1, opacity: 0, assemble: 1, accent: 0, fluid: 0, turn: 0, phase: 0, focus: 0, work: 0, cut: 0, morph: 0, morph2: 0, marks: 0 } satisfies Pose
     return object
   },
 }))

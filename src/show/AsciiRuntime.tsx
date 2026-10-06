@@ -135,9 +135,15 @@ export function AsciiRuntime() {
       material.uniforms.uFluidity!.value = reducedMotion ? 0 : pose.fluid
       material.uniforms.uTime!.value = time
       material.uniforms.uIdle!.value = reducedMotion ? 0 : 1
-      material.uniforms.uWorkPart!.value = object.userData.workPart
+      // Idle on the cover: while the core stands as the laptop, the blue steps over the screen tiles.
+      // It is a function of the clock, like the other idle motion, so reduced motion keeps it on the middle tile.
+      const screen = object.userData.screenParts as number[] | undefined
+      material.uniforms.uWorkPart!.value = screen && pose.morph > 0.98 ? screen[Math.floor(time / 3) % screen.length]! : object.userData.workPart
       material.uniforms.uWorkAccent!.value = pose.work
       material.uniforms.uExtract!.value = pose.cut
+      const marks = object.userData.markParts as number[] | undefined
+      material.uniforms.uMarks!.value = marks ? pose.marks : 0
+      if (marks) material.uniforms.uMarkParts!.value.set(marks[0] ?? -1, marks[1] ?? -1)
       material.uniforms.uMorph!.value = pose.morph
       material.uniforms.uMorph2!.value = pose.morph2
     }

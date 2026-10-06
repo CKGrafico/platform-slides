@@ -133,6 +133,28 @@ export function frontIndex(units: FormUnit[]): number {
   return best
 }
 
+/**
+ * Units on the camera side of a body, spread apart on screen: each pick is the visible unit farthest
+ * from the ones already chosen, starting from `from`. `skip` units are never picked.
+ */
+export function spreadUnits(units: FormUnit[], count: number, from: number, skip: number[] = []): number[] {
+  const depth = (unit: FormUnit) => unit.at[0] * CAMERA[0] + unit.at[1] * CAMERA[1] + unit.at[2] * CAMERA[2]
+  const screen = (unit: FormUnit) => [RIGHT, UP].map((axis) => axis[0] * unit.at[0] + axis[1] * unit.at[1] + axis[2] * unit.at[2])
+  const depths = units.map(depth).sort((a, b) => a - b)
+  const median = depths[Math.floor(depths.length / 2)]!
+  const visible = units.map((_, i) => i).filter((i) => i !== from && !skip.includes(i) && depth(units[i]!) >= median)
+  const chosen = [from]
+  const gap = (i: number) => Math.min(...chosen.map((j) => {
+    const [a, b] = [screen(units[i]!), screen(units[j]!)]
+    return Math.hypot(a[0]! - b[0]!, a[1]! - b[1]!)
+  }))
+  while (chosen.length <= count && visible.length) {
+    visible.sort((a, b) => gap(b) - gap(a))
+    chosen.push(visible.shift()!)
+  }
+  return chosen.slice(1)
+}
+
 /** Moves the units so the middle of their extent sits at the origin. Pictures place forms by their middle. */
 function centered(units: FormUnit[]): FormUnit[] {
   const lo = [Infinity, Infinity, Infinity]
@@ -309,6 +331,25 @@ export function cluster(seed: number, size = 1, builds?: (units: FormUnit[]) => 
  * The base is a deck of nine wide keys, and two hinges join the two halves.
  * Larger units take the larger parts, so the marks stay close together.
  */
+/** The units in the order they take the laptop slots: largest first, the Issue unit (2) aside. */
+function laptopOrder(units: FormUnit[]): number[] {
+  return units.map((_, i) => i).filter((i) => i !== 2).sort((a, b) => units[b]!.size - units[a]!.size)
+}
+
+/** The order in which the blue moves over the fifteen screen tiles, by tile (rows of five, top left first). It starts in the middle. */
+const SCREEN_WALK = [7, 3, 11, 1, 13, 5, 9, 0, 12, 6, 2, 14, 8, 4, 10]
+
+/**
+ * The units that form the laptop screen, in the order the blue visits them.
+ * The first is the Issue unit in the middle tile, so a still screen shows the Issue where it always is.
+ */
+export function laptopScreen(units: FormUnit[]): number[] {
+  const order = laptopOrder(units)
+  // Screen tiles follow the nine deck tiles in slot order. Tile 7 is the Issue unit.
+  const tiles = Array.from({ length: 15 }, (_, tile) => (tile === 7 ? 2 : order[9 + (tile < 7 ? tile : tile - 1)]!))
+  return SCREEN_WALK.map((tile) => tiles[tile]!)
+}
+
 export function laptopLayout(units: FormUnit[], size = 1): MorphBox[] {
   // The laptop faces the camera: r runs left to right, u runs up, f comes toward the viewer.
   const r = new Vector3(0.707, 0, -0.707)
@@ -337,7 +378,7 @@ export function laptopLayout(units: FormUnit[], size = 1): MorphBox[] {
   const issue = screen.splice(7, 1)[0]!
   const hinges: MorphBox[] = [-3, 3].map((x) => ({ at: at(hinge.clone().addScaledVector(r, x)), half: half(2.2, 0.26, 0.26), basis: flat }))
   const slots = [...deck, ...screen, ...hinges]
-  const order = units.map((_, i) => i).filter((i) => i !== 2).sort((a, b) => units[b]!.size - units[a]!.size)
+  const order = laptopOrder(units)
   const boxes: MorphBox[] = []
   boxes[2] = issue
   order.forEach((index, n) => { boxes[index] = slots[n] ?? issue })
