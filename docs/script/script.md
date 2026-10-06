@@ -58,7 +58,7 @@ Speaker notes: Walk the line from left to right. Models made chat AI common. The
 
 Source: [reference](../knowledge/website-reading.md).
 
-### 5. Chapter: How we built Platform
+### 5. Chapter: How we have built the Platform
 
 On screen: the title over the dimmed world.
 

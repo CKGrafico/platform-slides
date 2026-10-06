@@ -341,7 +341,7 @@ const board = {
   'board.ledger.repo': ['your-org/ledger', 'your-org/ledger'],
   'board.ledger.na': ['Not available', 'No disponible'],
   'board.ledger.na.sub': ['nothing to measure yet', 'nada que medir aún'],
-  'board.agents.period': ['Platform data, 1 Aug to 22 Sep 2026', 'Datos de Platform, 1 ago a 22 sep 2026'],
+  'board.agents.period': ['Platform data from 1 Aug to 22 Sep 2026', 'Datos de la Plataforma, 1 ago a 22 sep 2026'],
   'board.agents.runs': ['723', '723'],
   'board.agents.runs.label': ['agent runs, 4 repos', 'runs de agente, 4 repos'],
   'board.agents.success': ['70%', '70%'],
