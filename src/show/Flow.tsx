@@ -1,7 +1,7 @@
 /**
  * A worker flow drawn in stage units over the dimmed world.
  * Nodes and edges appear in order as `--flow-reveal` goes from 0 to 1, so the picture comes from progress.
- * Six columns and up to four rows fit between the heading and the caption of a wide frame.
+ * Six columns and rows 0 to 3.6 fit between the heading and the caption of a wide frame.
  */
 import { useT } from '@/i18n'
 import { FLOWS, type FlowDef, type FlowEdge, type FlowId, type FlowNode } from './flows'
@@ -33,10 +33,15 @@ interface Route { d: string; label: [number, number]; anchor: 'middle' | 'start'
 
 /**
  * Orthogonal routing. A forward edge elbows between columns, and its label sits in the row gap
- * above the target, one line per label that lands on the same target. A backward edge loops
- * over the top when both ends sit in the first row, and under the rows otherwise.
+ * above the target, one line per label that lands on the same target. A backward edge in the same
+ * row is a straight line with its label above. Other backward edges loop over the top when both ends
+ * sit in the first row, and under the rows otherwise. Rows can be fractional, for denser columns.
  */
 function route(from: Box, to: Box, loopIndex: number, slot: number, highest: number, lowest: number): Route {
+  if (to.x < from.x && Math.abs(to.cy - from.cy) < 0.01) {
+    // The gap between neighbours is narrow, so the label sits just above the two boxes.
+    return { d: `M ${from.x} ${from.cy} H ${to.right}`, label: [(from.x + to.right) / 2, Math.min(from.y, to.y) - 0.8], anchor: 'middle' }
+  }
   if (to.x > from.x) {
     const midX = from.right + (to.x - from.right) / 2
     const label: [number, number] = [to.x + 1.0, to.y - 0.8 - slot * LABEL_LINE]

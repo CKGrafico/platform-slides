@@ -21,6 +21,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('feedback', 0, true),
+  before: picture('workflow', 5),
 }
 export const health = makePart(part)

@@ -33,7 +33,7 @@ const edge = {
   'flow.edge.highRadius': ['high radius', 'radio alto'],
   'flow.edge.ciRed': ['CI red', 'CI roja'],
   'flow.edge.attempt6': ['attempt 6', 'intento 6'],
-  'flow.edge.noBasis': ['no basis', 'sin base'],
+  'flow.edge.noBasis': ['cannot ground', 'sin fundamento'],
   'flow.edge.ambiguous': ['ambiguous', 'ambiguo'],
   'flow.edge.allAddressed': ['all addressed', 'todo resuelto'],
   'flow.edge.keepsSome': ['keeps some', 'quedan'],
@@ -44,6 +44,8 @@ const edge = {
   'flow.edge.invalid': ['invalid', 'inválido'],
   'flow.edge.replies': ['author replies', 'autor responde'],
   'flow.edge.splits': ['splits', 'divide'],
+  'flow.edge.yesSplits': ['yes, splits', 'sí, divide'],
+  'flow.edge.noWrite': ['no, write+', 'no, con write'],
 }
 
 const router = {
@@ -68,31 +70,6 @@ const router = {
   'flow.router.release': ['agent-release', 'agent-release'],
 }
 
-const chain = {
-  'flow.chain.issue': ['Issue opened', 'Issue abierta'],
-  'flow.chain.writer': ['Write+ user', 'Usuario write+'],
-  'flow.chain.writer.sub': ['self-labels', 'se etiqueta'],
-  'flow.chain.split': ['Split', 'Split'],
-  'flow.chain.split.sub': ['2 to 6 children', '2 a 6 hijos'],
-  'flow.chain.audit': ['Audit', 'Audit'],
-  'flow.chain.audit.sub': ['weekly', 'semanal'],
-  'flow.chain.triage': ['Triage', 'Triage'],
-  'flow.chain.triage.sub': ['outside collaborator', 'colaborador externo'],
-  'flow.chain.refine': ['Refine', 'Refine'],
-  'flow.chain.refine.sub': ['estimate in points', 'estima en puntos'],
-  'flow.chain.closed': ['Closed', 'Cerrada'],
-  'flow.chain.implement': ['Implement', 'Implement'],
-  'flow.chain.implement.sub': ['branch, PR, closes #N', 'rama, PR, cierra #N'],
-  'flow.chain.author': ['Author replies', 'Autor responde'],
-  'flow.chain.someone': ['Someone reviews', 'Alguien revisa'],
-  'flow.chain.ci': ['CI', 'CI'],
-  'flow.chain.review': ['Apply Review', 'Apply Review'],
-  'flow.chain.gate': ['Merge Gate', 'Merge Gate'],
-  'flow.chain.fix': ['Fix, push', 'Arregla, sube'],
-  'flow.chain.fix.sub': ['CI again', 'CI otra vez'],
-  'flow.chain.merged': ['Merged', 'Fusionado'],
-  'flow.chain.human': ['Human review', 'Revisión humana'],
-}
 
 const triage = {
   'flow.triage.route': ['Router · triage', 'Router · triage'],
@@ -105,6 +82,8 @@ const triage = {
   'flow.triage.facts.sub': ['rung 3 · the issue', 'peldaño 3 · la issue'],
   'flow.triage.agent': ['Agent', 'Agente'],
   'flow.triage.agent.sub': ['rung 5 · 10 checks', 'peldaño 5 · 10 checks'],
+  'flow.triage.round': ['Round N of 3', 'Ronda N de 3'],
+  'flow.triage.valid': ['Outcome valid?', '¿Resultado válido?'],
   'flow.triage.passed': ['Passed', 'Pasa'],
   'flow.triage.passed.sub': ['refine added', 'añade refine'],
   'flow.triage.info': ['Needs info', 'Falta info'],
@@ -130,6 +109,11 @@ const refine = {
   'flow.refine.plan.sub': ['no Gherkin', 'sin Gherkin'],
   'flow.refine.story': ['Story', 'Historia'],
   'flow.refine.story.sub': ['Given / When / Then', 'Given / When / Then'],
+  'flow.refine.wrap': ['Wrap', 'Envolver'],
+  'flow.refine.wrap.sub': ['into issue form', 'en el formulario'],
+  'flow.refine.prose': ['Prose', 'Prosa'],
+  'flow.refine.prose.sub': ['@humanizer', '@humanizer'],
+  'flow.refine.eight': ['8 or more?', '¿8 o más?'],
   'flow.refine.incomplete': ['Incomplete', 'Incompleto'],
   'flow.refine.incomplete.sub': ['retry', 'reintento'],
   'flow.refine.estimate': ['Estimate', 'Estimar'],
@@ -202,99 +186,10 @@ const gate = {
   'flow.gate.blocked.sub': ['belt does not retry', 'no se reintenta'],
 }
 
-const review = {
-  'flow.review.route': ['Router · review', 'Router · review'],
-  'flow.review.route.sub': ['review on a bot PR', 'review en PR del bot'],
-  'flow.review.subject': ['Subject', 'Sujeto'],
-  'flow.review.subject.sub': ['rung 4 · can write?', 'peldaño 4 · ¿write?'],
-  'flow.review.idle': ['Idle', 'Inactivo'],
-  'flow.review.facts': ['Facts', 'Hechos'],
-  'flow.review.facts.sub': ['rung 3 · threads, diff', 'peldaño 3 · hilos, diff'],
-  'flow.review.actionable': ['Actionable?', '¿Accionable?'],
-  'flow.review.actionable.sub': ['every thread id', 'cada id de hilo'],
-  'flow.review.satisfied': ['Already satisfied', 'Ya estaba resuelto'],
-  'flow.review.satisfied.sub': ['nothing pushed', 'nada que subir'],
-  'flow.review.apply': ['Apply', 'Aplicar'],
-  'flow.review.apply.sub': ['only what is asked', 'solo lo que se pide'],
-  'flow.review.verify': ['Verify', 'Verificar'],
-  'flow.review.verify.sub': ['changed files only', 'solo archivos tocados'],
-  'flow.review.implemented': ['Implemented', 'Aplicado'],
-  'flow.review.implemented.sub': ['pushed, CI, gate again', 'sube, CI, gate otra vez'],
-  'flow.review.human': ['Needs a human', 'Necesita persona'],
-  'flow.review.human.sub': ['review added', 'añade review'],
-}
 
-const audit = {
-  'flow.audit.route': ['Router · audit', 'Router · audit'],
-  'flow.audit.route.sub': ['weekly cron, or manual', 'cron semanal, o manual'],
-  'flow.audit.backpressure': ['Backpressure', 'Contrapresión'],
-  'flow.audit.backpressure.sub': ['rung 1 · under 3 open?', 'peldaño 1 · ¿hay hueco?'],
-  'flow.audit.idle': ['Idle', 'Inactivo'],
-  'flow.audit.idle.sub': ['backlog already full', 'backlog ya lleno'],
-  'flow.audit.facts': ['Facts', 'Hechos'],
-  'flow.audit.facts.sub': ['rung 3 · open issues', 'peldaño 3 · issues'],
-  'flow.audit.audit': ['Audit', 'Auditar'],
-  'flow.audit.audit.sub': ['rung 5 · read-only', 'peldaño 5 · lectura'],
-  'flow.audit.filter': ['Filter', 'Filtrar'],
-  'flow.audit.filter.sub': ['specific, repeatable?', '¿concreto y repetible?'],
-  'flow.audit.score': ['Score 1 to 10', 'Puntuar 1 a 10'],
-  'flow.audit.score.sub': ['severity, likelihood', 'gravedad, probabilidad'],
-  'flow.audit.dedupe': ['Dedupe', 'Deduplicar'],
-  'flow.audit.dedupe.sub': ['tracked or rejected?', '¿seguido o rechazado?'],
-  'flow.audit.file': ['File one issue', 'Abrir un Issue'],
-  'flow.audit.file.sub': ['top 3 as stories', 'las 3 mejores'],
-  'flow.audit.filed': ['Filed', 'Abierto'],
-  'flow.audit.filed.sub': ['bug + refine', 'bug + refine'],
-  'flow.audit.nothing': ['Nothing to file', 'Nada que abrir'],
-  'flow.audit.nothing.sub': ['clean codebase', 'código limpio'],
-}
 
-const release = {
-  'flow.release.route': ['Router · release', 'Router · release'],
-  'flow.release.route.sub': ['manual dispatch', 'lanzamiento manual'],
-  'flow.release.facts': ['Facts', 'Hechos'],
-  'flow.release.facts.sub': ['rung 3 · log since tag', 'peldaño 3 · desde tag'],
-  'flow.release.agent': ['Agent', 'Agente'],
-  'flow.release.agent.sub': ['rung 5 · release notes', 'peldaño 5 · las notas'],
-  'flow.release.conclude': ['Conclude', 'Concluir'],
-  'flow.release.conclude.sub': ['rung 6 · version bump', 'peldaño 6 · versión'],
-  'flow.release.commit': ['Commit, tag, push', 'Commit, tag, push'],
-  'flow.release.commit.sub': ['create GitHub Release', 'crea la GitHub Release'],
-  'flow.release.released': ['Released', 'Publicada'],
-  'flow.release.released.sub': ['tag and Release live', 'tag y Release fuera'],
-  'flow.release.failed': ['Failed', 'Fallida'],
-  'flow.release.failed.sub': ['no tag, no half work', 'sin tag, nada a medias'],
-}
 
 // How measurement changed the system. The cases come from docs/knowledge/platform.md, "Lessons with numbers".
-const improve = {
-  'flow.improve.numbers': ['The numbers', 'Los números'],
-  'flow.improve.numbers.sub': ['Health, gate, cost', 'Health, gate, coste'],
-  'flow.improve.tokens': ['Tokens per run', 'Tokens por run'],
-  'flow.improve.tokens.sub': ['one Issue: 2.4M, twice', 'un Issue: 2.4M, 2 veces'],
-  'flow.improve.verdicts': ['Merge Gate verdicts', 'Veredictos del gate'],
-  'flow.improve.verdicts.sub': ['31% auto, 0 defects', '31% auto, 0 defectos'],
-  'flow.improve.vm': ['Runner VM time', 'Tiempo de VM'],
-  'flow.improve.vm.sub': ['78% spent booting', '78% arrancando'],
-  'flow.improve.findings': ['Audit', 'Audit'],
-  'flow.improve.findings.sub': ['weekly, read-only', 'semanal, lectura'],
-  'flow.improve.sizeGate': ['Size gate in Refine', 'Size gate en Refine'],
-  'flow.improve.sizeGate.sub': ['refused in 10 s', 'rechazo en 10 s'],
-  'flow.improve.ownerRule': ['Owner-path rule', 'Regla de owner'],
-  'flow.improve.ownerRule.sub': ['3 of 18, exactly', '3 de 18, exactos'],
-  'flow.improve.hostReuse': ['Host reuse', 'Reusar el host'],
-  'flow.improve.hostReuse.sub': ['pre-baked image, 80 s', 'imagen previa, 80 s'],
-  'flow.improve.issue': ['One Issue', 'Un Issue'],
-  'flow.improve.issue.sub': ['into Refine', 'entra en Refine'],
-  'flow.improve.workers': ['agentic-workflows', 'agentic-workflows'],
-  'flow.improve.workers.sub': ['the worker logic', 'lógica del worker'],
-  'flow.improve.runners': ['Runners', 'Runners'],
-  'flow.improve.runners.sub': ['VM Scale Set', 'VM Scale Set'],
-  'flow.improve.route': ['The route', 'La ruta'],
-  'flow.improve.route.sub': ['sized and split', 'se dimensiona'],
-  'flow.improve.measured': ['Next collection', 'Siguiente lectura'],
-  'flow.improve.measured.sub': ['measured again', 'se mide otra vez'],
-}
 
 // The Project Health boards. The portfolio values are the template's example data, labelled as such on screen.
 const board = {
@@ -362,4 +257,4 @@ const board = {
   'board.agents.legend.success': ['succeeded, where known', 'con éxito, si se sabe'],
 }
 
-export const flowCopy = { ...edge, ...router, ...chain, ...triage, ...refine, ...implement, ...gate, ...review, ...audit, ...release, ...improve, ...board }
+export const flowCopy = { ...edge, ...router, ...triage, ...refine, ...implement, ...gate, ...board }

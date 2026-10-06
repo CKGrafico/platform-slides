@@ -115,6 +115,13 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
         hero('split', 8, -11, 0.75)
         path('path.split', 0.85)
         back('path.author', 0.5)
+      } else if (step === 5) {
+        // The four workers we only name: Apply Review, Audit, Release and Visual Verify, one row, no route between them.
+        hero('review', -33, -1, 1.0)
+        hero('audit', -11, -1, 1.35)
+        hero('release', 11, -1, 1.15)
+        hero('deployment', 33, -1, 0.95)
+        owner = 'review'
       } else if (step === 0) {
         // agentic-workflows in one row: a repo event, the workflow run, the agent through Forge, and the validated writes.
         hero('intake', -34, -2, 1.25)

@@ -27,7 +27,7 @@ Main paths, repair, review, manual release, and the Audit return use channels in
 For reduced motion, the engine cuts to each stop and the runtime freezes surface movement. The atlas size follows the actual renderer DPR. The geometry stays constant while the presenter moves through the show.
 
 The content ledger is `scripts/keynote-content.mjs`. `scripts/rebuild-show.mjs` writes the English script, both locale files, and the scene contracts.
-It keeps 21 stops across nine chapters, with one chapter card, nine worker flows, and one Project Health board. Foundations, agent-harness, and agentic-workflows each have one slide that feeds their parts from the pillar with thin links. Only Agentic Workflows has many slides, because the talk is about it. The first chapter contains the cover and the PC introduction.
+It keeps 18 stops across nine chapters, with one chapter card, five worker flows (the router, Triage, Refine, Implement, and Merge Gate), and one Project Health board. One slide names the other four workers. Foundations, agent-harness, and agentic-workflows each have one slide that feeds their parts from the pillar with thin links. Only Agentic Workflows has many slides, because the talk is about it. The first chapter contains the cover and the PC introduction.
 The five maturity assemblies retain their meanings in the final world.
 Precomputed facts, reasoning, validation, and Safe Outputs occupy distinct positions in the worker close views.
 
@@ -51,7 +51,7 @@ A new body comes out of the core only while the core stays on screen. Otherwise 
 
 ## Worker flows
 
-`src/show/flows.ts` holds the nine worker flows as nodes and edges on a grid of six columns and four rows. The text keys live in `scripts/flow-copy.mjs`.
+`src/show/flows.ts` holds the five worker flows as nodes and edges on a grid of six columns and rows 0 to 3.6. Rows can be fractional, and a backward edge in one row is a straight line, so the flows follow the Agentic Workflows diagrams without crossing lines. The text keys live in `scripts/flow-copy.mjs`.
 `src/show/Flow.tsx` draws a flow as an SVG in stage units over the dimmed world. Shell jobs are outlined boxes, the agent is a filled box, a decision is a pill, the place where the work lands has a blue outline, a person is a dashed box, and a run that stops is grey.
 The main path is blue. Branches are grey. Returns are dashed and loop under the rows, or over the top when both ends sit in the first row.
 Nodes and edges appear in column order as `--flow-reveal` runs from 0 to 1, so the drawing comes from progress. The facts come from the Agentic Workflows diagrams listed in `docs/knowledge/workflow-routes.md`.

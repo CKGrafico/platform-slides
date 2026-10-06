@@ -90,18 +90,6 @@ export const part: Part = {
       "cloud": true
     },
     {
-      "heading": "talk.workflows.chain.title",
-      "line": "talk.workflows.chain.body",
-      "command": "talk.workflows.chain.command",
-      "picture": "workflow",
-      "step": 1,
-      "labels": [],
-      "layout": "wide",
-      "dim": true,
-      "flow": "chain",
-      "cloud": true
-    },
-    {
       "heading": "talk.workflows.triage.title",
       "line": "talk.workflows.triage.body",
       "command": "talk.workflows.triage.command",
@@ -150,39 +138,38 @@ export const part: Part = {
       "cloud": true
     },
     {
-      "heading": "talk.workflows.review.title",
-      "line": "talk.workflows.review.body",
-      "command": "talk.workflows.review.command",
+      "heading": "talk.workflows.others.title",
+      "line": "talk.workflows.others.body",
+      "command": "talk.workflows.others.command",
       "picture": "workflow",
-      "step": 1,
-      "labels": [],
+      "step": 5,
+      "labels": [
+        {
+          "target": "review",
+          "name": "talk.label.applyReview",
+          "width": 28,
+          "under": true
+        },
+        {
+          "target": "audit",
+          "name": "talk.label.audit",
+          "width": 28,
+          "under": true
+        },
+        {
+          "target": "release",
+          "name": "talk.label.release",
+          "width": 28,
+          "under": true
+        },
+        {
+          "target": "deployment",
+          "name": "talk.label.visualVerify",
+          "width": 28,
+          "under": true
+        }
+      ],
       "layout": "wide",
-      "dim": true,
-      "flow": "review",
-      "cloud": true
-    },
-    {
-      "heading": "talk.workflows.release.title",
-      "line": "talk.workflows.release.body",
-      "command": "talk.workflows.release.command",
-      "picture": "workflow",
-      "step": 1,
-      "labels": [],
-      "layout": "wide",
-      "dim": true,
-      "flow": "release",
-      "cloud": true
-    },
-    {
-      "heading": "talk.workflows.audit.title",
-      "line": "talk.workflows.audit.body",
-      "command": "talk.workflows.audit.command",
-      "picture": "feedback",
-      "step": 0,
-      "labels": [],
-      "layout": "wide",
-      "dim": true,
-      "flow": "audit",
       "cloud": true
     }
   ]
