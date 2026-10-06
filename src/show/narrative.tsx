@@ -227,9 +227,11 @@ export function makeMoves(part: Part) {
           tl.fromTo(pose, startPose, { ...endPose, immediateRender: false, duration, ease: entering ? 'power3.out' : 'power3.inOut' }, at(delay))
           // The turn trails the move a little, and the cut of a body takes half the beat.
           tl.fromTo(pose, { turn: origin.turn }, { turn: toTurn, immediateRender: false, duration: duration * 1.15, ease: 'power3.inOut' }, at(delay))
-          if (fromCut !== toCut) tl.fromTo(pose, { cut: fromCut }, { cut: toCut, immediateRender: false, duration: window.duration * 0.5, ease: 'none' }, at(TIMING.heroStart))
+          // A hidden body arrives already in its new build. Its last build may still be set from the beat it left.
+          if (entering) tl.set(pose, { cut: toCut, morph: toMorph, morph2: toMorph2 }, window.start)
+          else if (fromCut !== toCut) tl.fromTo(pose, { cut: fromCut }, { cut: toCut, immediateRender: false, duration: window.duration * 0.5, ease: 'none' }, at(TIMING.heroStart))
           // A body that changes its build takes most of the beat, so each unit can be seen leaving and arriving.
-          if (fromMorph !== toMorph || fromMorph2 !== toMorph2) tl.fromTo(pose, { morph: fromMorph, morph2: fromMorph2 }, { morph: toMorph, morph2: toMorph2, immediateRender: false, duration: window.duration * 0.7, ease: 'none' }, at(TIMING.heroStart))
+          if (!entering && (fromMorph !== toMorph || fromMorph2 !== toMorph2)) tl.fromTo(pose, { morph: fromMorph, morph2: fromMorph2 }, { morph: toMorph, morph2: toMorph2, immediateRender: false, duration: window.duration * 0.7, ease: 'none' }, at(TIMING.heroStart))
         }
       }
       from = to

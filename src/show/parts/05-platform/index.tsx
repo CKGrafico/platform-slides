@@ -11,7 +11,7 @@ export const part: Part = {
       "heading": "talk.platform.chapter.title",
       "command": "talk.platform.chapter.command",
       "picture": "evolution",
-      "step": 1,
+      "step": 0,
       "labels": [],
       "layout": "chapter",
       "dim": true,
@@ -77,6 +77,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('evolution', 1),
+  before: picture('evolution', 0),
 }
 export const platform = makePart(part)

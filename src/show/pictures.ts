@@ -54,24 +54,16 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
         for (let i = 0; i < 4; i++) hero(`parcel.${i}` as LiveId, -30 + i * 20, i % 2 ? -3 : 1, 1.9)
       }
       break
-    case 'evolution':
-      if (step === 0) {
-        hero('context', -34, -1, 1.7)
-        hero('automation', -12, -2, 1.6)
-        hero('harness', 11, -2, 2.0)
-        hero('core', 34, -2, 1.5, { fluid: 1 })
-        path('path.skills')
-        back('path.environment', 0.6)
-        back('path.local', 0.6)
-      } else {
-        hero('intake', -27, -1, 1.9)
-        hero('harness', 11, -1, 2.3)
-        ghost('core', 36, -9, 0.8, { fluid: 1, opacity: 0.35 })
-        path('path.facts', 0.8)
-        back('path.local', 0.4)
-        owner = 'intake'
-      }
+    case 'evolution': {
+      // The evolution of AI as a row, like the maturity levels. Agents is the core and holds the Issue.
+      // Skills, Guardrails and Harnesses are the context bank, the wall and the Harness.
+      const row: [LiveId, number, Partial<Pose>][] = [
+        ['era.model', 1.1, {}], ['era.prompt', 0.95, {}], ['context', 0.6, {}], ['core', 0.62, { fluid: 1 }], ['wall', 0.5, {}],
+        ['harness', 0.65, {}], ['era.loop', 0.95, {}], ['era.loops', 0.75, {}], ['era.future', 1.0, { assemble: 0.32, opacity: 0.7 }],
+      ]
+      row.forEach(([id, scale, extra], i) => hero(id, -38 + i * 9.5, i % 2 ? -9 : 5, scale, { turn: 0.04 * i, ...extra }))
       break
+    }
     case 'platform':
       if (step === 0) {
         hero('wall', -31, -2, 1.8)

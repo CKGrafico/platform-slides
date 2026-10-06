@@ -35,7 +35,7 @@ A story rule sits under the three: nothing appears without a reason the beat bef
 | The name | the name of an entity | one line of mono text centred under the body, with a small square at the lowest edge of the body. No box and no leader line. It follows its entity on screen |
 | The command line | where the talk is | one line of mono text in the top left, the current beat, ending in a blue block cursor |
 | Maturity level | a set of team practices in the assessment | five assemblies with increasing structure: one unit, loose units, a frame, repeated banks, and a frame with measured banks. Their names stay fixed. They do not represent a measured Platform score |
-| Assessment area | one weighted area in the assessment | four rigid banks, named SDLC, determinism, control, and impact. These banks stay visible at the edge of the final system |
+| AI evolution step | one step in the evolution of AI, from models to autonomous loops | nine assemblies in a zigzag row, each named with its year. Agents is the core with the Issue. Skills, Guardrails, and Harnesses are the context bank, the wall, and the Harness. A model is a small rigid cluster, a prompt is one line of slabs with a cursor, loop engineering is one upright ring, autonomous loops are two linked rings, and the future is a loose handful that never assembles |
 | Safe output | a permitted write from a worker | a compact rigid bank after validation. It is separate from the merge gate |
 
 ## Rules

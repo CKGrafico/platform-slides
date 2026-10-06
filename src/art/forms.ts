@@ -427,6 +427,35 @@ export function plate(seed: number): Points {
   return createForm(units, seed, 0.24, 11)
 }
 
+/** A ring of small units standing upright and facing the camera. */
+function standingRing(center: readonly number[], radius: number, count: number, size: number, shape: UnitShape, tilt = 0): FormUnit[] {
+  return Array.from({ length: count }, (_, i) => {
+    const a = (i / count) * Math.PI * 2
+    const r = Math.cos(a) * radius
+    const u = Math.sin(a) * radius
+    const depth = Math.cos(a) * radius * tilt
+    return { at: [0, 1, 2].map((k) => center[k]! + RIGHT[k]! * r + UP[k]! * u + CAMERA[k]! * depth) as [number, number, number], size, shape, rotation: [i * 0.4, i * 0.7, 0] as [number, number, number] }
+  })
+}
+
+/**
+ * Steps in the evolution of AI that have no element of their own:
+ * a prompt is one typed line, loop engineering is one upright ring,
+ * autonomous loops are two linked rings, and the future is a loose handful that never settles.
+ */
+export function era(seed: number, kind: 'prompt' | 'loop' | 'loops' | 'future'): Points {
+  switch (kind) {
+    case 'prompt': {
+      const units: FormUnit[] = [0, 1, 2, 3].map((i) => ({ at: [0, 1, 2].map((k) => RIGHT[k]! * (i - 2) * 1.7) as [number, number, number], size: 0.62, shape: 'slab' as const }))
+      units.push({ at: [0, 1, 2].map((k) => RIGHT[k]! * 2 * 1.7 + UP[k]! * 0.35) as [number, number, number], size: 0.62, shape: 'prism' })
+      return createForm(centered(units), seed, 0.26, 10, { work: units.length - 1 })
+    }
+    case 'loop': return createForm(standingRing([0, 0, 0], 2.7, 10, 0.55, 'cubocta'), seed, 0.24, 10)
+    case 'loops': return createForm(centered([...standingRing([0, 0, 0], 2.2, 8, 0.5, 'cubocta', 0.3), ...standingRing(RIGHT.map((n) => n * 3.2), 2.2, 8, 0.5, 'cubocta', -0.3)]), seed, 0.24, 10)
+    default: return createForm(Array.from({ length: 7 }, (_, i) => ({ at: [Math.cos(i * 2.4) * 1.6, Math.sin(i * 1.7) * 1.2, Math.sin(i * 2.4) * 1.6] as [number, number, number], size: 0.6, shape: 'cell' as const })), seed, 0.24, 10)
+  }
+}
+
 /** The five maturity assemblies, each with more structure than the one before. */
 export function level(seed: number, index: number): Points {
   switch (index) {

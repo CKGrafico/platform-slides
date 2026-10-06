@@ -1,4 +1,4 @@
-import { cluster, createForm, gate, harness, laptopLayout, lattice, level, plate, steps, triage, upright, wall, type FormUnit } from '@/art/forms'
+import { cluster, createForm, era, gate, harness, laptopLayout, lattice, level, plate, steps, triage, upright, wall, type FormUnit } from '@/art/forms'
 import { spreadLayout } from './layout'
 import { createAsciiMaterial } from '@/art/ascii'
 import { defineActor } from '@/world/actors'
@@ -40,7 +40,7 @@ export const CONNECTIONS = {
   'path.health.workflows': { from: 'measure', to: 'automation', bend: 9 },
 } as const
 export type PathId = keyof typeof CONNECTIONS
-const FORM_IDS = ['core', 'packet', 'context', 'intake', 'refine', 'automation', 'harness', 'forge', 'wall', 'gate', 'measure', 'missing', 'flow', 'parcel.0', 'parcel.1', 'parcel.2', 'parcel.3', 'triage', 'split', 'review', 'audit', 'release', 'outputs', 'level.0', 'level.1', 'level.2', 'level.3', 'level.4', 'deployment'] as const
+const FORM_IDS = ['core', 'packet', 'context', 'intake', 'refine', 'automation', 'harness', 'forge', 'wall', 'gate', 'measure', 'missing', 'flow', 'parcel.0', 'parcel.1', 'parcel.2', 'parcel.3', 'triage', 'split', 'review', 'audit', 'release', 'outputs', 'level.0', 'level.1', 'level.2', 'level.3', 'level.4', 'deployment', 'era.model', 'era.prompt', 'era.loop', 'era.loops', 'era.future'] as const
 export const LIVE_IDS = [...FORM_IDS, ...Object.keys(CONNECTIONS) as PathId[]]
 export type LiveId = typeof LIVE_IDS[number]
 export type WorkId = typeof FORM_IDS[number]
@@ -142,6 +142,12 @@ const factories: Record<WorkId, () => Points> = {
   'level.2': () => level(53, 2),
   'level.3': () => level(54, 3),
   'level.4': () => level(55, 4),
+  // The steps of the evolution of AI without an element of their own. Agents, Skills, Guardrails and Harnesses reuse theirs.
+  'era.model': () => cluster(58, 0.38),
+  'era.prompt': () => era(59, 'prompt'),
+  'era.loop': () => era(60, 'loop'),
+  'era.loops': () => era(61, 'loops'),
+  'era.future': () => era(62, 'future'),
 }
 
 export const actors = LIVE_IDS.map((id) => defineActor({
