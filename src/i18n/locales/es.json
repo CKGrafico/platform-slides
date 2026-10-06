@@ -210,6 +210,11 @@
   "flow.gate.owner.sub": "CODEOWNERS",
   "flow.gate.blocked": "Bloqueada",
   "flow.gate.blocked.sub": "no se reintenta",
+  "board.quote.initials": "UB",
+  "board.quote.name": "Uncle Bob Martin",
+  "board.quote.handle": "@unclebobmartin · 5 oct 2026",
+  "board.quote.text": "«Esto requiere disciplina de ingeniería.\nNo requiere leer el código\nen detalle.»",
+  "board.quote.source": "x.com/unclebobmartin",
   "board.example": "datos de ejemplo",
   "board.deploys": "DESPLIEGUES",
   "board.lead": "LEAD TIME P50",
@@ -334,7 +339,6 @@
   "talk.system.title": "De una Issue a producción\ncon GitHub Agentic Workflows.",
   "talk.system.body": "Personas no técnicas de producto crean Issues o bugs pequeños y elegibles. Llegan a producción sin supervisión humana.",
   "talk.system.command": "Maintenance · Issue → producción → Health",
-  "talk.closing.question.title": "¿Qué debe hacer\nexactamente un\ningeniero de software?",
-  "talk.closing.question.body": "«Esto requiere disciplina de ingeniería. No requiere leer el código en detalle.»\nUncle Bob Martin",
+  "talk.closing.question.title": "¿Qué debe hacer exactamente un ingeniero de software?",
   "talk.closing.question.command": "¿qué hace un ingeniero?"
 }

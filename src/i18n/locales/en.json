@@ -210,6 +210,11 @@
   "flow.gate.owner.sub": "CODEOWNERS",
   "flow.gate.blocked": "Blocked",
   "flow.gate.blocked.sub": "belt does not retry",
+  "board.quote.initials": "UB",
+  "board.quote.name": "Uncle Bob Martin",
+  "board.quote.handle": "@unclebobmartin · 5 Oct 2026",
+  "board.quote.text": "\"This requires engineering discipline.\nIt need not require detailed\nreading of the code.\"",
+  "board.quote.source": "x.com/unclebobmartin",
   "board.example": "example data, demo",
   "board.deploys": "DEPLOYS",
   "board.lead": "LEAD TIME P50",
@@ -334,7 +339,6 @@
   "talk.system.title": "From Issue to production\nwith GitHub Agentic Workflows.",
   "talk.system.body": "Product experts who do not code file small eligible Issues or bugs. They reach production without human supervision.",
   "talk.system.command": "Maintenance · Issue → production → Health",
-  "talk.closing.question.title": "What exactly are\nsoftware engineers\nsupposed to do?",
-  "talk.closing.question.body": "\"This requires engineering discipline. It need not require detailed reading of the code.\"\nUncle Bob Martin",
+  "talk.closing.question.title": "What exactly are software engineers supposed to do?",
   "talk.closing.question.command": "what do engineers do?"
 }

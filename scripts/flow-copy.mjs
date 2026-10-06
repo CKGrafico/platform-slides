@@ -193,6 +193,11 @@ const gate = {
 
 // The Project Health boards. The portfolio values are the template's example data, labelled as such on screen.
 const board = {
+  'board.quote.initials': ['UB', 'UB'],
+  'board.quote.name': ['Uncle Bob Martin', 'Uncle Bob Martin'],
+  'board.quote.handle': ['@unclebobmartin · 5 Oct 2026', '@unclebobmartin · 5 oct 2026'],
+  'board.quote.text': ['"This requires engineering discipline.\nIt need not require detailed\nreading of the code."', '«Esto requiere disciplina de ingeniería.\nNo requiere leer el código\nen detalle.»'],
+  'board.quote.source': ['x.com/unclebobmartin', 'x.com/unclebobmartin'],
   'board.example': ['example data, demo', 'datos de ejemplo'],
   'board.deploys': ['DEPLOYS', 'DESPLIEGUES'],
   'board.lead': ['LEAD TIME P50', 'LEAD TIME P50'],

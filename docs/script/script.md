@@ -190,8 +190,8 @@ Speaker notes: Return to the person at the PC from the opening. The completed sy
 
 ### 19. What exactly are software engineers supposed to do?
 
-On screen: system, state 0. The composition holds the current subject.
+On screen: an attributed quote card over the dimmed world. The composition holds the current subject.
 
-Slide: "This requires engineering discipline. It need not require detailed reading of the code." Uncle Bob Martin
+Slide: no caption. The names under the bodies carry the content.
 
 Speaker notes: Ask the question and let it sit. If an Issue can reach production on its own, what is left for us? Answer with Uncle Bob Martin, on X on 5 October 2026: the job does not change. We still make sure the structure of the system is robust and maintainable, and that its behavior serves our users. That takes engineering discipline. It does not take reading every line of the code, just as using a compiler does not take reading the binary. That is what the whole talk built: conventions in Foundations, a Harness for the agents, workflows with gates, and Health to measure. Source: https://x.com/unclebobmartin/status/2107069060420637178

@@ -6,7 +6,7 @@
  */
 import { useT, type MessageKey } from '@/i18n'
 
-export type BoardId = 'portfolio' | 'agents'
+export type BoardId = 'portfolio' | 'agents' | 'quote'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -194,10 +194,49 @@ function Agents() {
   )
 }
 
+/** Writes one line per `\n` in the message, starting at `y`. */
+function Lines({ k, x, y, step, className }: { k: MessageKey; x: number; y: number; step: number; className: string }) {
+  const t = useT()
+  return (
+    <text x={x} y={y} className={className} data-i18n={k}>
+      {t(k).split('\n').map((line, i) => <tspan key={i} x={x} dy={i ? step : 0}>{line}</tspan>)}
+    </text>
+  )
+}
+
+/**
+ * A short attributed quote as a card: an initials avatar, the name and handle, the quoted words, and the source.
+ * It is our card, in the keynote's own style. It does not copy the look of the network the quote came from.
+ */
+function Quote() {
+  const t = useT()
+  const x = 34
+  const y = 31
+  const w = STAGE_W - x * 2
+  const h = 44
+  return (
+    <>
+      <g className="board-card" style={reveal(0, 3)}>
+        <rect x={x} y={y} width={w} height={h} rx={1.2} className="board-card-frame" />
+        <circle cx={x + 8} cy={y + 8} r={4} className="board-avatar" />
+        <text x={x + 8} y={y + 9.1} className="board-avatar-text" data-i18n="board.quote.initials">{t('board.quote.initials')}</text>
+        <text x={x + 15} y={y + 7.4} className="board-name" data-i18n="board.quote.name">{t('board.quote.name')}</text>
+        <text x={x + 15} y={y + 10.8} className="board-repo" data-i18n="board.quote.handle">{t('board.quote.handle')}</text>
+      </g>
+      <g className="board-card" style={reveal(1, 3)}>
+        <Lines k="board.quote.text" x={x + 8} y={y + 21} step={5.6} className="board-quote" />
+      </g>
+      <g className="board-card" style={reveal(2, 3)}>
+        <text x={x + 8} y={y + h - 4} className="board-tag board-tag--start" data-i18n="board.quote.source">{t('board.quote.source')}</text>
+      </g>
+    </>
+  )
+}
+
 export function Board({ id }: { id: BoardId }) {
   return (
     <svg className="flow board" viewBox={`0 0 ${STAGE_W} ${STAGE_H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      {id === 'portfolio' ? <Portfolio /> : <Agents />}
+      {id === 'quote' ? <Quote /> : id === 'portfolio' ? <Portfolio /> : <Agents />}
     </svg>
   )
 }

@@ -51,13 +51,13 @@ export const part: Part = {
     },
     {
       "heading": "talk.closing.question.title",
-      "line": "talk.closing.question.body",
       "command": "talk.closing.question.command",
       "picture": "system",
       "step": 0,
       "labels": [],
-      "layout": "statement",
+      "layout": "wide",
       "dim": true,
+      "board": "quote",
       "cloud": true
     }
   ]
