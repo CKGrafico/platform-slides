@@ -11,7 +11,10 @@ const MAX_RATIO = 0.15
 const MIN_SLACK = 4
 const LOCALES = ['en', 'es']
 /** key -> reason. Keep this list short. */
-const ALLOW = {}
+const ALLOW = {
+  'talk.closing.question.title': 'a quoted question, translated word for word on purpose',
+  'board.quote.text': 'a quoted post, translated word for word on purpose',
+}
 
 const load = (l) => JSON.parse(readFileSync(new URL(`../src/i18n/locales/${l}.json`, import.meta.url), 'utf8'))
 const messages = Object.fromEntries(LOCALES.map((l) => [l, load(l)]))

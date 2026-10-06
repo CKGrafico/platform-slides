@@ -193,11 +193,11 @@ const gate = {
 
 // The Project Health boards. The portfolio values are the template's example data, labelled as such on screen.
 const board = {
-  'board.quote.initials': ['UB', 'UB'],
   'board.quote.name': ['Uncle Bob Martin', 'Uncle Bob Martin'],
   'board.quote.handle': ['@unclebobmartin · 5 Oct 2026', '@unclebobmartin · 5 oct 2026'],
-  'board.quote.text': ['"This requires engineering discipline.\nIt need not require detailed\nreading of the code."', '«Esto requiere disciplina de ingeniería.\nNo requiere leer el código\nen detalle.»'],
-  'board.quote.source': ['x.com/unclebobmartin', 'x.com/unclebobmartin'],
+  // The presenter supplied the full post. English is verbatim; Spanish is a literal translation, marked as such.
+  'board.quote.text': ['Software engineers are supposed to do exactly what we’ve always done.\nEnsure that the composition and structure of the system is robust and\nmaintainable and that the behavior of the system properly serves the\nneeds of our users.\n\nThis requires engineering discipline. It need not require detailed\nreading of the code; just as using compilers does not require detailed\nreading of the binary.', 'Se supone que los ingenieros de software deben hacer exactamente lo que\nsiempre hemos hecho. Asegurar que la composición y la estructura del\nsistema sean robustas y mantenibles y que el comportamiento del sistema\nsirva adecuadamente a las necesidades de nuestros usuarios.\n\nEsto requiere disciplina de ingeniería. No tiene por qué requerir una\nlectura detallada del código; igual que usar compiladores no requiere\nuna lectura detallada del binario.'],
+  'board.quote.source': ['x.com/unclebobmartin · original', 'x.com/unclebobmartin · traducido'],
   'board.example': ['example data, demo', 'datos de ejemplo'],
   'board.deploys': ['DEPLOYS', 'DESPLIEGUES'],
   'board.lead': ['LEAD TIME P50', 'LEAD TIME P50'],

@@ -172,9 +172,8 @@ body { font-family: var(--font-label); }
 .board-tag { font-size: 1.5px; text-anchor: end; fill: #8a8f98 !important; letter-spacing: 0.04em; }
 .board-tag--start { text-anchor: start; }
 .board-stat { font-size: 6px; font-weight: 700; font-family: var(--font-display); }
-.board-avatar { fill: #2f69ff; }
-.board-avatar-text { font-size: 3px; font-weight: 900; font-family: var(--font-display); text-anchor: middle; fill: #f2f4ff !important; }
-.board-quote { font-size: 4.2px; font-weight: 900; font-family: var(--font-display); letter-spacing: -0.02em; fill: #e8e9ec !important; }
+.board-avatar-ring { fill: none; stroke: #2f69ff; stroke-width: 0.3; }
+.board-quote { font-size: 2.9px; font-weight: 500; font-family: var(--font-display); fill: #e8e9ec !important; }
 .board-bar { fill: #63686f; }
 .board-bar--ok { fill: #2f69ff; }
 

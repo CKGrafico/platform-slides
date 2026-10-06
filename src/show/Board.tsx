@@ -199,32 +199,37 @@ function Lines({ k, x, y, step, className }: { k: MessageKey; x: number; y: numb
   const t = useT()
   return (
     <text x={x} y={y} className={className} data-i18n={k}>
-      {t(k).split('\n').map((line, i) => <tspan key={i} x={x} dy={i ? step : 0}>{line}</tspan>)}
+      {/* An empty line keeps its height, so a blank line separates paragraphs. */}
+      {t(k).split('\n').map((line, i) => <tspan key={i} x={x} dy={i ? step : 0}>{line || ' '}</tspan>)}
     </text>
   )
 }
 
 /**
- * A short attributed quote as a card: an initials avatar, the name and handle, the quoted words, and the source.
+ * An attributed quote as a card: the author's avatar, the name and handle, the full quoted post, and the source.
  * It is our card, in the keynote's own style. It does not copy the look of the network the quote came from.
  */
+/** Saved locally from the author's public profile, so the talk works offline. */
+const QUOTE_AVATAR = '/assets/quotes/unclebobmartin.jpg'
+
 function Quote() {
   const t = useT()
-  const x = 34
-  const y = 31
+  const x = 24
+  const y = 28
   const w = STAGE_W - x * 2
-  const h = 44
+  const h = 59
   return (
     <>
       <g className="board-card" style={reveal(0, 3)}>
         <rect x={x} y={y} width={w} height={h} rx={1.2} className="board-card-frame" />
-        <circle cx={x + 8} cy={y + 8} r={4} className="board-avatar" />
-        <text x={x + 8} y={y + 9.1} className="board-avatar-text" data-i18n="board.quote.initials">{t('board.quote.initials')}</text>
+        <clipPath id="board-quote-avatar"><circle cx={x + 8} cy={y + 8} r={4} /></clipPath>
+        <image href={QUOTE_AVATAR} x={x + 4} y={y + 4} width={8} height={8} clipPath="url(#board-quote-avatar)" preserveAspectRatio="xMidYMid slice" />
+        <circle cx={x + 8} cy={y + 8} r={4} className="board-avatar-ring" />
         <text x={x + 15} y={y + 7.4} className="board-name" data-i18n="board.quote.name">{t('board.quote.name')}</text>
         <text x={x + 15} y={y + 10.8} className="board-repo" data-i18n="board.quote.handle">{t('board.quote.handle')}</text>
       </g>
       <g className="board-card" style={reveal(1, 3)}>
-        <Lines k="board.quote.text" x={x + 8} y={y + 21} step={5.6} className="board-quote" />
+        <Lines k="board.quote.text" x={x + 8} y={y + 19.5} step={3.9} className="board-quote" />
       </g>
       <g className="board-card" style={reveal(2, 3)}>
         <text x={x + 8} y={y + h - 4} className="board-tag board-tag--start" data-i18n="board.quote.source">{t('board.quote.source')}</text>
