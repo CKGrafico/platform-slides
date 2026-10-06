@@ -173,4 +173,19 @@ body { font-family: var(--font-label); }
 .board-bar { fill: #63686f; }
 .board-bar--ok { fill: #5c8bff; }
 
+/* Colour study (src/show/palette.ts). The semantic and pillars variants colour state in flows and boards only. */
+:root[data-palette='semantic'], :root[data-palette='pillars'] { --ok: #3abaaf; --stop: #f33859; --wait: #fbc740; }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-node--end rect { stroke: var(--ok); }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-node--stop rect { stroke: var(--stop); stroke-width: 0.3; }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-node--stop .flow-title { fill: var(--stop); }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-node--human rect { stroke: var(--wait); }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-edge--return path { stroke: var(--stop); opacity: calc(var(--v) * 0.85); }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-edge--return .flow-edge-label { fill: var(--stop); }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .flow-arrow--return path { fill: var(--stop); }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .board-card--production .board-chip { stroke: var(--ok); }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .board-card--production .board-chip-text { fill: var(--ok) !important; }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .board-card--preproduction .board-chip { stroke: var(--wait); }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .board-card--preproduction .board-chip-text { fill: var(--wait) !important; }
+:root:is([data-palette='semantic'], [data-palette='pillars']) .board-bar--ok { fill: var(--ok); }
+
 @media (prefers-reduced-motion: reduce) { .ascii-frame { transform: none !important; } }

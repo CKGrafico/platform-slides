@@ -4,10 +4,11 @@ import { useEnvironment } from '@/engine/environment'
 import { actorEntries, getActorObject } from '@/world/actors'
 import { debugBus } from '@/debug/bus'
 import { updateAnchors } from '@/art/anchor'
-import { Matrix4, Points, ShaderMaterial, Vector3 } from 'three'
+import { Color, Matrix4, Points, ShaderMaterial, Vector3 } from 'three'
 import type { FormUnit } from '@/art/forms'
 import { CONNECTIONS, poseOf, type Connection, type PathId, type Transfer } from './actors'
 import { screenToWorld } from './shots'
+import { TINT, tintOf } from './palette'
 
 /**
  * Ambient motion per class of body. Rates are radians per second, so the periods are 9 to 37 s.
@@ -138,6 +139,9 @@ export function AsciiRuntime() {
       material.uniforms.uWorkPart!.value = object.userData.workPart
       material.uniforms.uWorkAccent!.value = pose.work
       material.uniforms.uExtract!.value = pose.cut
+      const tint = tintOf(id)
+      if (tint) (material.uniforms.uTint!.value as Color).set(tint)
+      material.uniforms.uTintAmount!.value = tint ? TINT : 0
       material.uniforms.uMorph!.value = pose.morph
       material.uniforms.uMorph2!.value = pose.morph2
     }

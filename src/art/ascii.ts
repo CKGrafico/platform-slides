@@ -126,6 +126,8 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       uOpacity: { value: 1 },
       uAccent: { value: 0 },
       uBlue: { value: new Color('#2F69FF') },
+      uTint: { value: new Color('#8A8F98') },
+      uTintAmount: { value: 0 },
       uKey: { value: new Vector3(-0.45, 0.7, 1.0).normalize() },
     },
     vertexShader: /* glsl */ `
@@ -145,6 +147,8 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       uniform float uWorkPart;
       uniform float uWorkAccent;
       uniform vec3 uBlue;
+      uniform vec3 uTint;
+      uniform float uTintAmount;
       uniform vec3 uKey;
       varying vec3 vColor;
       varying float vGlyph;
@@ -166,7 +170,8 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
         vGlyph = floor(clamp(light * 7.0 + aSeed * 0.9, 0.0, 7.0));
         float work = (abs(aPart - uWorkPart) < 0.1) ? uWorkAccent : 0.0;
         float hot = max(uAccent, work);
-        vColor = mix(aColor, uBlue, hot);
+        // A body can carry a soft tint of its own. The Issue blue always wins over it.
+        vColor = mix(mix(aColor, uTint, uTintAmount), uBlue, hot);
         // The blue stays bright on its shadow side, so it never darkens to navy.
         vShade = mix(vShade, max(vShade, 0.85), hot);
         // The docked Issue uses the densest mark and a larger point. It reads as one solid blue unit.
