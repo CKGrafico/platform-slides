@@ -32,15 +32,18 @@ const basis = new Matrix4()
 function unitPort(object: Points, time: number, idle: boolean, out: Vector3): FormUnit {
   const part = Number(object.userData.workPart)
   const unit = (object.userData.units as FormUnit[])[part]!
+  const builds = (object.userData.morphCenters as number[][][] | undefined) ?? []
+  const weights = [poseOf(object).morph, poseOf(object).morph2]
+  const at = [0, 1, 2].map((k) => builds.reduce((sum, build, b) => sum + (build[part]![k]! - unit.at[k]!) * weights[b]!, unit.at[k]!))
   const phase = part * 2.399 + Number(object.userData.formSeed) * 0.17
   // The same drift and breathing as UNIT_MOTION in src/art/ascii.ts, so a port stays on its unit.
   const drift = idle ? poseOf(object).fluid * Number(object.userData.drift ?? 0.12) : 0
   const length = Math.hypot(unit.at[0], unit.at[1], unit.at[2]) || 1
   const radial = Math.sin(time * 0.45 + phase * 1.7) * 1.2 / length
   out.set(
-    unit.at[0] + (Math.sin(time * 0.42 + phase) + unit.at[0] * radial) * drift,
-    unit.at[1] + (Math.cos(time * 0.53 + phase) + unit.at[1] * radial) * drift,
-    unit.at[2] + (Math.sin(time * 0.37 + phase) + unit.at[2] * radial) * drift,
+    at[0]! + (Math.sin(time * 0.42 + phase) + unit.at[0] * radial) * drift,
+    at[1]! + (Math.cos(time * 0.53 + phase) + unit.at[1] * radial) * drift,
+    at[2]! + (Math.sin(time * 0.37 + phase) + unit.at[2] * radial) * drift,
   )
   object.updateWorldMatrix(true, false)
   out.applyMatrix4(object.matrixWorld)
@@ -109,6 +112,8 @@ export function AsciiRuntime() {
       material.uniforms.uWorkPart!.value = object.userData.workPart
       material.uniforms.uWorkAccent!.value = pose.work
       material.uniforms.uExtract!.value = pose.cut
+      material.uniforms.uMorph!.value = pose.morph
+      material.uniforms.uMorph2!.value = pose.morph2
     }
 
     const packet = getActorObject('packet') as Points | undefined

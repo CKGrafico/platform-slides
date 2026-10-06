@@ -1,4 +1,5 @@
-import { cluster, createForm, gate, harness, lattice, level, plate, steps, triage, upright, wall, type FormUnit } from '@/art/forms'
+import { cluster, createForm, gate, harness, laptopLayout, lattice, level, plate, steps, triage, upright, wall, type FormUnit } from '@/art/forms'
+import { spreadLayout } from './layout'
 import { createAsciiMaterial } from '@/art/ascii'
 import { defineActor } from '@/world/actors'
 import { Points, type BufferGeometry, type Color, type ShaderMaterial } from 'three'
@@ -58,6 +59,10 @@ export interface Pose {
   focus: number
   work: number
   cut: number
+  /** 0 keeps the units at home. 1 moves them into the form's first other build, if it has one. */
+  morph: number
+  /** The same for the form's second other build. */
+  morph2: number
 }
 
 export function poseOf(object: Points): Pose { return object.userData.pose as Pose }
@@ -107,7 +112,8 @@ function stream(): Points {
 }
 
 const factories: Record<WorkId, () => Points> = {
-  core: () => cluster(7),
+  // Two other builds: the laptop of the cover, and the core taken apart over the five maturity assemblies.
+  core: () => cluster(7, 1, (units) => [laptopLayout(units), spreadLayout(units)]),
   packet: () => createForm([{ at: [0, 0, 0], size: 1.25, shape: 'block' }], 91, 0.2, 13),
   context: () => lattice(30, 5, 2, 1),
   intake: () => lattice(31, 2, 2, 4),
@@ -145,7 +151,7 @@ export const actors = LIVE_IDS.map((id) => defineActor({
     if (id === 'packet') {
       object.userData.transfer = { from: 'core', to: 'core', progress: 1 } satisfies Transfer
     }
-    object.userData.pose = { x: 18, y: 0, scale: 1, opacity: 0, assemble: 1, accent: 0, fluid: 0, turn: 0, phase: 0, focus: 0, work: 0, cut: 0 } satisfies Pose
+    object.userData.pose = { x: 18, y: 0, scale: 1, opacity: 0, assemble: 1, accent: 0, fluid: 0, turn: 0, phase: 0, focus: 0, work: 0, cut: 0, morph: 0, morph2: 0 } satisfies Pose
     return object
   },
 }))

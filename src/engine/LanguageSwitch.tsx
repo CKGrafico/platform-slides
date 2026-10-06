@@ -3,13 +3,13 @@
  * at the very start, so the presenter can pick the language before the talk,
  * and they never appear on stage after that. L switches at any time.
  *
- * Each language name is written in its own language, so it is not translated.
+ * Each language shows its code, which is the same in every language, so it is not translated.
  */
 import { useEffect, useRef } from 'react'
 import { LOCALES, useI18n, type Locale } from '@/i18n'
 import { usePresentation } from './context'
 
-const NAMES: Record<Locale, string> = { en: 'English', es: 'Español' }
+const NAMES: Record<Locale, string> = { en: 'EN', es: 'ES' }
 
 export function LanguageSwitch() {
   const p = usePresentation()

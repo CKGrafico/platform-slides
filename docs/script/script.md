@@ -1,6 +1,6 @@
 # Talk script
 
-Draft 8, 2026-10-05. 28 stops, including the cover and four chapter cards. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
+Draft 8, 2026-10-05. 30 stops, including the cover and four chapter cards. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
 
 The same Issue moves through the talk. Each new layer answers a practical need and stays in the field. Foundations supplies enforceable conventions. The Harness supplies the agent environment. Workflows give events bounded runs. Health supplies evidence and returns findings to the same route.
 
@@ -18,11 +18,11 @@ Source: [reference](../knowledge/talk-notes.md).
 
 ### 1. From Issue to production with GitHub Agentic Workflows
 
-On screen: a close view of the reasoning core. The blue Issue is one of its units. The cover introduces the speaker.
+On screen: an open laptop built from the units of the reasoning core. The blue Issue is the middle tile of its screen. On the next beat the laptop comes apart into the core. The cover introduces the speaker.
 
 Say: This talk follows one Issue from an engineer's PC to production, through the Plain Concepts Platform.
 
-### 2. You work with AI on your PC.
+### 2. At the start, we worked with AI synchronously.
 
 On screen: local, state 0. Panels name OpenCode · agent.
 
@@ -34,11 +34,11 @@ Speaker notes: Start with the audience experience. The engineer asks for a chang
 
 Source: [reference](../knowledge/maturity.md).
 
-### 3. Adoption and maturity are different.
+### 3. Different levels of maturity.
 
 On screen: assessment, state 0. Panels name 1 · No AI, 2 · Exploratory, 3 · Structured, 4 · Scaled, 5 · Governed & Optimized.
 
-Slide: A new agent does not change team practices. Maturity depends on standards, control and outcomes.
+Slide: Different teams and companies are at different points in adopting AI across the software development lifecycle.
 
 Speaker notes: Use the five assessment levels, with their exact names. No AI is manual work. Exploratory is individual use. Structured adds approved tools and review guidance. Scaled makes practice consistent across teams. Governed & Optimized puts governance and improvement into the workflow. Do not equate a tool upgrade with organizational maturity.
 
@@ -224,25 +224,7 @@ Slide: Its only output is a file on disk. The version bump, the tag and the Rele
 
 Speaker notes: Release starts from a manual dispatch. Rung 3 collects the commit log since the last tag. Rung 5 is the agent, and its only output is release-notes.md on disk. Rung 6 concludes in shell: a BREAKING change bumps the major version, a feat bumps the minor. Commit, tag, push, and create the GitHub Release. If anything fails, there is no tag and nothing partial. Package release is a separate route from application deployment, which follows the project configuration.
 
-## Project Health measures and improves the system
-
-Source: [reference](../knowledge/website-reading.md).
-
-### 25. Chapter: Project Health
-
-On screen: the title over the dimmed world.
-
-Speaker notes: Pause. The last pillar measures the system and feeds the other three.
-
-### 26. Health measures what GitHub knows.
-
-On screen: feedback, state 0. Panels name project-health, p12.notCollected, waits for a person.
-
-Slide: Deployment frequency, lead time and rework. Tokens per run, as a floor. Work that waits for a person. A missing value stays empty.
-
-Speaker notes: Project Health collects GitHub facts and publishes a static site. Deployment frequency and commit-to-production lead time describe delivery. Rework needs an explicit hotfix marker. Change fail rate and recovery time need production incident evidence. A red pipeline is not that evidence, so those values stay absent with a reason. Agent usage comes from run artifacts and from the actual agent step. A declared agent job that was skipped is not an agent run. Token totals can be incomplete when artifacts are absent, so show measured N of M. Costs stay in tokens. Human attention is its own measure: pending review and blocked Issues for each project, with bot pull requests counted apart. More PRs do not establish less work for people. This view shows where the automated route repeatedly stops.
-
-### 27. Audit: read-only, files one Issue.
+### 25. Audit: read-only, files one Issue.
 
 On screen: the audit flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -250,11 +232,45 @@ Slide: The only worker that creates work. It reads the repo, scores each finding
 
 Speaker notes: Audit runs weekly or on dispatch. Rung 1 applies backpressure: fewer than three open audit reports, or the run is idle because the backlog is full. Rung 3 collects the open Issues, titles, and labels. The agent audits the repository read-only against its guardrails with /repo-audit. It filters for findings that are specific, reproducible, and have impact. It scores them from one to ten on severity, likelihood, and blast radius, and drops anything already tracked or rejected. It records dispositions and reads them next time. It files one Issue with the top three findings refined as stories. That Issue enters Refine, gets sized and split, and follows the ordinary route. Repeated findings and attention patterns lead to changes in Foundations, the Harness, or the workers. Measurement follows the revised system. This is the improvement loop.
 
+## Project Health measures and improves the system
+
+Source: [reference](../knowledge/platform.md).
+
+### 26. Chapter: Project Health
+
+On screen: the title over the dimmed world.
+
+Speaker notes: Pause. The last pillar measures every project and feeds the other three.
+
+### 27. One dashboard for every project.
+
+On screen: the portfolio board of Project Health over the dimmed world. The composition holds the current subject.
+
+Slide: Three of five DORA metrics, from GitHub alone. Change fail rate and recovery time need incident data GitHub lacks, so they stay empty.
+
+Speaker notes: Project Health is a template repository. It collects delivery and agent facts from the GitHub API, stores them as JSON, and publishes a static site. There is no database and no service to run. Each project gets a card: its status, production, pre-production or planned, then deployment frequency, change lead time at P50, and deployment rework rate, marked by a hotfix or bug label. If the project runs agents, the card adds runs, tokens and the OpenCode step time. The detail page adds P75 and P90, issue to staging, a monthly trend, who opened the work and who released it, and notes that change how a number should be read. Change fail rate and recovery time need to know that a release caused a production problem, which GitHub does not record, so they are not shown rather than estimated. The team profile places a project among the DORA 2025 profiles using throughput and stability only. Well-being needs a survey, so it stays unknown, and the result is a set of candidate profiles. The numbers on this slide are the template demo data, not our projects. Our private instance measures ten projects. Show the demo; never show real project names or the people columns.
+
+### 28. What every agent run costs.
+
+On screen: the agents board of Project Health over the dimmed world. The composition holds the current subject.
+
+Slide: Tokens and OpenCode time for each run, by worker. Totals are a floor: a run counts only if it reached the model and uploaded its usage.
+
+Speaker notes: These are the real Platform aggregates from the snapshot of 23 September 2026, for 1 August to 22 September, across the four repositories where the router really ran agents. 723 agent runs, about 70 percent succeeded. About 2.09 billion tokens, almost all input, and that is a floor: only 500 runs reported usage. About 107 hours of agent execution, measured as the wall clock of the OpenCode step, which also covers tool calls and file work. Implement is the expensive worker: 280 runs, 1.54 billion tokens, about 61 hours. Merge Gate ran 237 times, 191 succeeded. Refine ran 125 times for 176 million tokens. Triage ran 36 times and always succeeded. Costs stay in tokens, not in currency. A declared agent job that was skipped is not an agent run: 140 such runs were removed from the count. Refresh these numbers before the talk.
+
+### 29. Measure, then change the system.
+
+On screen: the improve flow, drawn step by step over the dimmed world. The composition holds the current subject.
+
+Slide: The numbers show where the route wastes or fails. People change a worker, a rule or the runners. The next collection shows if it worked.
+
+Speaker notes: Three real changes came from measurement. Tokens per run: one Issue of 13,398 characters and 92 work units burned 17 minutes and 2.4 million tokens, twice, with no result. A size gate in Refine now refuses it in 10 seconds. Gate verdicts: the first Merge Gate auto-merged 31 percent of its verdicts while it found zero defects, so it was redesigned to decide on evidence, and the new owner-path rule, replayed on 18 gated pull requests, caught exactly the 3 that needed an owner. Runner time: before host reuse, about 78 percent of billed VM time went to booting, and a pre-baked image cut create-to-ready from about 2.5 minutes to about 80 seconds. Audit is the automated part of the loop: weekly and read-only, it files one Issue that enters Refine. Then the next collection measures the revised system. That is the improvement loop of the maturity assessment, working in practice. Refresh these numbers before the talk.
+
 ## The whole Platform system
 
 Source: [reference](../knowledge/maturity.md).
 
-### 28. From Issue to production with GitHub Agentic Workflows.
+### 30. From Issue to production with GitHub Agentic Workflows.
 
 On screen: system, state 0. Panels name Triage, Refine · Implement, CI, Merge Gate, Production.
 

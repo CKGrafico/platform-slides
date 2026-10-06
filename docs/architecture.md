@@ -24,7 +24,7 @@ The playhead is the only source of truth. A picture is a function of the playhea
 
 The show uses one fixed orthographic camera. `src/show/AsciiRuntime.tsx` maps stage coordinates into its isometric view. It also scales character marks for the viewport and the current renderer DPR. Letterboxing preserves the same composition.
 
-`src/show/flows.ts` defines the nine worker flows, and `src/show/Flow.tsx` draws one over the dimmed world. `src/show/pictures.ts` defines complete visual states. Each part owns its moves through `choreography.ts`. `src/show/narrative.tsx` joins those states with GSAP and shows only the active beat. The scene definitions hold the translated message keys. `scripts/rebuild-show.mjs` authors the scene contracts and script together.
+`src/show/flows.ts` defines the ten worker flows, and `src/show/Flow.tsx` draws one over the dimmed world. `src/show/Board.tsx` draws the two Project Health boards the same way. `src/show/layout.ts` holds the stage places that pictures and the core's other builds share. `src/show/pictures.ts` defines complete visual states. Each part owns its moves through `choreography.ts`. `src/show/narrative.tsx` joins those states with GSAP and shows only the active beat. The scene definitions hold the translated message keys. `scripts/rebuild-show.mjs` authors the scene contracts and script together.
 
 ## Global timeline
 

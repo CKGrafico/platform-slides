@@ -1,4 +1,5 @@
 import { LIVE_IDS, type LiveId, type PathId, type Pose, type WorkId } from './actors'
+import { CORE_LOCAL, LEVELS } from './layout'
 
 export type Picture = 'cover' | 'local' | 'assessment' | 'evolution' | 'platform' | 'baseline' | 'environment' | 'workflow' | 'feedback' | 'system'
 export type PictureState = Record<LiveId, Pose>
@@ -9,7 +10,7 @@ export type PictureState = Record<LiveId, Pose>
  * With `dim`, the whole picture fades to a trace behind a chapter title, and the Issue stays where it is.
  */
 export function picture(kind: Picture, step: number, dim = false): PictureState {
-  const state = Object.fromEntries(LIVE_IDS.map((id) => [id, { x: 20, y: 0, scale: 0.001, opacity: 0, assemble: 0, accent: 0, fluid: 0, turn: 0, phase: step, focus: 0, work: 0, cut: 0 }])) as PictureState
+  const state = Object.fromEntries(LIVE_IDS.map((id) => [id, { x: 20, y: 0, scale: 0.001, opacity: 0, assemble: 0, accent: 0, fluid: 0, turn: 0, phase: step, focus: 0, work: 0, cut: 0, morph: 0, morph2: 0 }])) as PictureState
   let owner: WorkId = 'core'
   const put = (id: LiveId, x: number, y: number, scale = 1, extra: Partial<Pose> = {}) => {
     Object.assign(state[id], { x, y, scale, opacity: 1, assemble: 1 }, extra)
@@ -18,6 +19,8 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
   const hero = (id: LiveId, x: number, y: number, scale: number, extra: Partial<Pose> = {}) => put(id, x, y, scale, { focus: 1, ...extra })
   /** A trace of an earlier beat: small and faint, never labelled. */
   const ghost = (id: LiveId, x: number, y: number, scale: number, extra: Partial<Pose> = {}) => put(id, x, y, scale, { opacity: 0.22, ...extra })
+  /** A body that leaves by gliding into the place of another, which then forms there. It ends hidden. */
+  const into = (id: LiveId, x: number, y: number, scale: number) => Object.assign(state[id], { x, y, scale, opacity: 0, assemble: 1 })
   const path = (id: PathId, opacity = 0.95, accent = 1) => put(id, 0, 0, 1, { opacity, accent, focus: 0.45 })
   /** A return or a supporting link: grey and quieter than the route. */
   const back = (id: PathId, opacity = 0.5) => path(id, opacity, 0)
@@ -36,11 +39,17 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
   switch (kind) {
     case 'cover':
     case 'local':
-      hero('core', kind === 'cover' ? 29 : 23, 0, kind === 'cover' ? 2.0 : 2.15, { fluid: 1, turn: 0.16 })
+      // On the cover the core units stand as an open laptop. On the next beat they come apart into the core.
+      if (kind === 'cover') hero('core', 26, 1, 2.0, { turn: -0.55, morph: 1 })
+      else hero('core', CORE_LOCAL.x, CORE_LOCAL.y, CORE_LOCAL.scale, { fluid: 1, turn: 0.16 })
       break
     case 'assessment':
       if (step === 0) {
-        for (let i = 0; i < 5; i++) hero(`level.${i}` as LiveId, -36 + i * 18, i % 2 ? -3 : 1, [1.5, 1.6, 1.0, 1.1, 1.0][i]!, { turn: 0.05 * i })
+        LEVELS.forEach((level, i) => hero(`level.${i}` as LiveId, level.x, level.y, level.scale, { turn: 0.05 * i }))
+        // The core comes apart where it is. Its units fly to the five assemblies, which then form around them.
+        // The Issue unit lands on level 2, Exploratory: work with an agent on a PC.
+        into('core', CORE_LOCAL.x, CORE_LOCAL.y, CORE_LOCAL.scale)
+        state.core.morph2 = 1
       } else {
         for (let i = 0; i < 4; i++) hero(`parcel.${i}` as LiveId, -30 + i * 20, i % 2 ? -3 : 1, 1.9)
       }

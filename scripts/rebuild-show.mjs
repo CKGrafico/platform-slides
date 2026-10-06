@@ -24,8 +24,8 @@ const header = `# Talk script\n\nDraft 8, 2026-10-05. ${count} stops, including 
 let number = 1
 const script = sections.map((section) => {
   let text = `## ${section.title}\n\nSource: [reference](${section.source}).\n\n`
-  if (section.intro) text += `### ${number++}. From Issue to production with GitHub Agentic Workflows\n\nOn screen: a close view of the reasoning core. The blue Issue is one of its units. The cover introduces the speaker.\n\nSay: This talk follows one Issue from an engineer's PC to production, through the Plain Concepts Platform.\n\n`
-  text += section.beats.map((beat) => beat.layout === 'chapter' ? `### ${number++}. Chapter: ${clean(beat.title[0])}\n\nOn screen: the title over the dimmed world.\n\nSpeaker notes: ${beat.notes}\n\n` : `### ${number++}. ${clean(beat.title[0])}\n\nOn screen: ${beat.flow ? `the ${beat.flow} flow, drawn step by step over the dimmed world.` : `${beat.picture}, state ${beat.step}.`} ${beat.labels.length ? `Panels name ${beat.labels.map((label) => sharedCopy[label.name]?.[0] ?? label.name).join(', ')}.` : 'The composition holds the current subject.'}\n\nSlide: ${clean(beat.body[0])}\n\nSpeaker notes: ${beat.notes}\n\n`).join('')
+  if (section.intro) text += `### ${number++}. From Issue to production with GitHub Agentic Workflows\n\nOn screen: an open laptop built from the units of the reasoning core. The blue Issue is the middle tile of its screen. On the next beat the laptop comes apart into the core. The cover introduces the speaker.\n\nSay: This talk follows one Issue from an engineer's PC to production, through the Plain Concepts Platform.\n\n`
+  text += section.beats.map((beat) => beat.layout === 'chapter' ? `### ${number++}. Chapter: ${clean(beat.title[0])}\n\nOn screen: the title over the dimmed world.\n\nSpeaker notes: ${beat.notes}\n\n` : `### ${number++}. ${clean(beat.title[0])}\n\nOn screen: ${beat.flow ? `the ${beat.flow} flow, drawn step by step over the dimmed world.` : beat.board ? `the ${beat.board} board of Project Health over the dimmed world.` : `${beat.picture}, state ${beat.step}.`} ${beat.labels.length ? `Panels name ${beat.labels.map((label) => sharedCopy[label.name]?.[0] ?? label.name).join(', ')}.` : 'The composition holds the current subject.'}\n\nSlide: ${clean(beat.body[0])}\n\nSpeaker notes: ${beat.notes}\n\n`).join('')
   return text
 }).join('')
 fs.writeFileSync('docs/script/script.md', (header + script).trimEnd() + '\n')
@@ -42,6 +42,7 @@ for (const section of sections) {
       ...(beat.footnote ? { footnote: beat.footnote } : {}),
       ...(beat.dim ? { dim: true } : {}),
       ...(beat.flow ? { flow: beat.flow } : {}),
+      ...(beat.board ? { board: beat.board } : {}),
       ...(section.cloud ? { cloud: true } : {}),
     })),
     ...(section.intro ? { intro: section.intro } : {}),

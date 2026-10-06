@@ -20,12 +20,12 @@ export const part: Part = {
           "width": 28,
           "under": true
         }
-      ]
+      ],
+      "layout": "statement"
     }
   ],
   "intro": {
     "heading": "show.cover",
-    "line": "show.subtitle",
     "command": "show.subtitle",
     "picture": "cover",
     "step": 0,

@@ -66,8 +66,8 @@ const RADIUS: Record<UnitShape, number> = { cell: 1.0, block: 1.23, prism: 1.41,
 
 /** The fixed camera looks along CAMERA. RIGHT and UP span the screen. See src/show/shots.ts. */
 const CAMERA = [0.593, 0.548, 0.593] as const
-const RIGHT = [0.707, 0, -0.707] as const
-const UP = [-0.387, 0.839, -0.387] as const
+export const RIGHT = [0.707, 0, -0.707] as const
+export const UP = [-0.387, 0.839, -0.387] as const
 
 export interface FormUnit {
   at: readonly [number, number, number]
@@ -83,6 +83,43 @@ export interface FormOptions {
   depth?: boolean
   /** How far fluid units drift, in world units. */
   drift?: number
+  /** Up to two other builds, each with one box per unit. The poses `morph` and `morph2` move each unit from `at` into its box. */
+  morph?: MorphBox[][]
+}
+
+/** A box with half sizes `half`, centred at `at`, along the axes of `basis`. */
+export interface MorphBox {
+  at: readonly [number, number, number]
+  half: readonly [number, number, number]
+  basis: Matrix4
+}
+
+const halves = new Map<UnitShape, Vector3>()
+
+function ownHalf(shape: UnitShape = 'cell'): Vector3 {
+  let own = halves.get(shape)
+  if (!own) {
+    const geometry = unitGeometry(shape)
+    geometry.computeBoundingBox()
+    own = geometry.boundingBox!.getSize(new Vector3()).multiplyScalar(0.5)
+    geometry.dispose()
+    halves.set(shape, own)
+  }
+  return own
+}
+
+/**
+ * Moves a point of a unit, in the unit's own space, onto the surface of a box.
+ * Every shape becomes a clean flat-faced block, so the second build reads as plates and keys.
+ * With `normal`, it also writes the outward normal of the face the point lands on.
+ */
+function toBox(point: Vector3, shape: UnitShape | undefined, box: MorphBox, normal?: Vector3): Vector3 {
+  const own = ownHalf(shape)
+  const q = [point.x / own.x, point.y / own.y, point.z / own.z]
+  const reach = Math.max(Math.abs(q[0]!), Math.abs(q[1]!), Math.abs(q[2]!), 1e-6)
+  const axis = q.findIndex((n) => Math.abs(n) === reach)
+  if (normal) normal.set(0, 0, 0).setComponent(axis, Math.sign(q[axis]!)).transformDirection(box.basis)
+  return point.set(q[0]! / reach * box.half[0], q[1]! / reach * box.half[1], q[2]! / reach * box.half[2]).applyMatrix4(box.basis).add(new Vector3(...box.at))
 }
 
 /** The unit whose center faces the camera most. */
@@ -152,6 +189,27 @@ export function createForm(units: FormUnit[], seed: number, spacing = 0.34, glyp
     edges[i] = span > 1e-6 ? (radius[i]! - nearest.get(owner)!) / span : 0
   }
   object.geometry.setAttribute('aEdge', new BufferAttribute(edges, 1))
+  const builds = (options.morph ?? []).slice(0, 2)
+  // Each mark keeps its place on its own unit: back to unit space, then out into the unit's box in each build.
+  const inverse = parts.map((part) => part.matrix!.clone().invert())
+  builds.forEach((build, b) => {
+    const name = b === 0 ? 'aMorph' : 'aMorph2'
+    const normal = new Vector3()
+    const morphPositions = new Float32Array(positions.count * 3)
+    const morphNormals = new Float32Array(positions.count * 3)
+    const morphCenters = new Float32Array(positions.count * 3)
+    const point = new Vector3()
+    for (let i = 0; i < positions.count; i++) {
+      const owner = owners.getX(i)
+      toBox(point.fromBufferAttribute(positions, i).applyMatrix4(inverse[owner]!), units[owner]!.shape, build[owner]!, normal).toArray(morphPositions, i * 3)
+      normal.toArray(morphNormals, i * 3)
+      morphCenters.set(build[owner]!.at, i * 3)
+    }
+    object.geometry.setAttribute(name + 'Position', new BufferAttribute(morphPositions, 3))
+    object.geometry.setAttribute(name + 'Normal', new BufferAttribute(morphNormals, 3))
+    object.geometry.setAttribute(name + 'Center', new BufferAttribute(morphCenters, 3))
+  })
+  object.userData.morphCenters = builds.map((build) => build.map((box) => [...box.at]))
   if (options.depth === false) return object
   const faces = parts.map((part, owner) => {
     const geometry = part.geometry.clone().applyMatrix4(part.matrix!)
@@ -166,6 +224,19 @@ export function createForm(units: FormUnit[], seed: number, spacing = 0.34, glyp
     geometry.setAttribute('aCenter', new BufferAttribute(unitCenters, 3))
     geometry.setAttribute('aUnitPhase', new BufferAttribute(unitPhases, 1))
     geometry.setAttribute('aPart', new BufferAttribute(unitOwners, 1))
+    builds.forEach((build, b) => {
+      const name = b === 0 ? 'aMorph' : 'aMorph2'
+      const source = part.geometry.getAttribute('position')
+      const morphPositions = new Float32Array(count * 3)
+      const morphCenters = new Float32Array(count * 3)
+      const point = new Vector3()
+      for (let i = 0; i < count; i++) {
+        toBox(point.fromBufferAttribute(source, i), units[owner]!.shape, build[owner]!).toArray(morphPositions, i * 3)
+        morphCenters.set(build[owner]!.at, i * 3)
+      }
+      geometry.setAttribute(name + 'Position', new BufferAttribute(morphPositions, 3))
+      geometry.setAttribute(name + 'Center', new BufferAttribute(morphCenters, 3))
+    })
     return geometry
   })
   const depthGeometry = mergeGeometries(faces)!
@@ -187,8 +258,9 @@ const distance = (a: readonly number[], b: readonly number[]) => Math.hypot(a[0]
  * The reasoning core: one living mass of 26 varied units.
  * Units 0, 1 and 3 fill the heart. Unit 2 holds the Issue, in the middle of the face that looks at the camera.
  * Units 4 to 7 sit on the visible rim. They are the four that leave when repeatable work separates.
+ * `builds` gives the units other builds, such as `laptopLayout`. The poses `morph` and `morph2` move them there.
  */
-export function cluster(seed: number, size = 1): Points {
+export function cluster(seed: number, size = 1, builds?: (units: FormUnit[]) => MorphBox[][]): Points {
   const hand: FormUnit[] = [
     { at: [-1.4, 0.7, -1.3], size: 2.6, shape: 'cell', rotation: [0.2, 0.4, 0] },
     { at: [1.8, -1.2, -1.0], size: 2.3, shape: 'block', rotation: [0.15, 0.3, 0.1] },
@@ -229,7 +301,47 @@ export function cluster(seed: number, size = 1): Points {
     if (placedUnit) { units.push(placedUnit); placed++ }
   }
   const scaled = units.map((u) => ({ ...u, at: u.at.map((n) => n * size) as [number, number, number], size: u.size * size }))
-  return createForm(scaled, seed, 0.3 * size, 14, { work: 2, drift: 0.25 })
+  return createForm(scaled, seed, 0.3 * size, 14, { work: 2, drift: 0.25, morph: builds?.(scaled) })
+}
+
+/**
+ * The same units built as an open laptop. The lid is a screen of fifteen tiles, and the Issue unit is the middle tile.
+ * The base is a deck of nine wide keys, and two hinges join the two halves.
+ * Larger units take the larger parts, so the marks stay close together.
+ */
+export function laptopLayout(units: FormUnit[], size = 1): MorphBox[] {
+  // The laptop faces the camera: r runs left to right, u runs up, f comes toward the viewer.
+  const r = new Vector3(0.707, 0, -0.707)
+  const u = new Vector3(0, 1, 0)
+  const f = new Vector3(0.707, 0, 0.707)
+  // The lid leans back a little from upright.
+  const tilt = 0.34
+  const lidUp = u.clone().multiplyScalar(Math.cos(tilt)).addScaledVector(f, -Math.sin(tilt))
+  const lidFront = u.clone().multiplyScalar(Math.sin(tilt)).addScaledVector(f, Math.cos(tilt))
+  const flat = new Matrix4().makeBasis(r, u, f)
+  const lid = new Matrix4().makeBasis(r, lidUp, lidFront)
+  const hinge = u.clone().multiplyScalar(0.2).addScaledVector(f, -3.95)
+  // Moves the laptop so the middle of its extent sits at the origin.
+  const middle = u.clone().multiplyScalar(3.4).addScaledVector(f, -0.8)
+  const at = (point: Vector3) => point.clone().sub(middle).multiplyScalar(size).toArray() as [number, number, number]
+  const half = (x: number, y: number, z: number) => [x * size, y * size, z * size] as [number, number, number]
+  const deck: MorphBox[] = []
+  for (const row of [-1, 0, 1]) for (const col of [-1, 0, 1]) {
+    deck.push({ at: at(r.clone().multiplyScalar(col * 4.25).addScaledVector(f, row * 2.55)), half: half(2.08, 0.2, 1.24), basis: flat })
+  }
+  const screen: MorphBox[] = []
+  for (const row of [1, 0, -1]) for (const col of [-2, -1, 0, 1, 2]) {
+    const point = hinge.clone().addScaledVector(lidUp, 3.75 + row * 2.4).addScaledVector(r, col * 2.5).addScaledVector(lidFront, 0.3)
+    screen.push({ at: at(point), half: half(1.22, 1.17, 0.3), basis: lid })
+  }
+  const issue = screen.splice(7, 1)[0]!
+  const hinges: MorphBox[] = [-3, 3].map((x) => ({ at: at(hinge.clone().addScaledVector(r, x)), half: half(2.2, 0.26, 0.26), basis: flat }))
+  const slots = [...deck, ...screen, ...hinges]
+  const order = units.map((_, i) => i).filter((i) => i !== 2).sort((a, b) => units[b]!.size - units[a]!.size)
+  const boxes: MorphBox[] = []
+  boxes[2] = issue
+  order.forEach((index, n) => { boxes[index] = slots[n] ?? issue })
+  return boxes
 }
 
 /** A tight orthogonal bank. Index = (x * rows + z) * layers + y. */

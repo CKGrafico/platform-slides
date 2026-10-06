@@ -18,48 +18,43 @@ export const part: Part = {
       "cloud": true
     },
     {
-      "heading": "talk.health.measure.title",
-      "line": "talk.health.measure.body",
-      "command": "talk.health.measure.command",
-      "picture": "feedback",
-      "step": 0,
-      "labels": [
-        {
-          "target": "measure",
-          "name": "talk.label.health",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "missing",
-          "name": "p12.notCollected",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "review",
-          "name": "talk.label.attention",
-          "width": 28,
-          "under": true
-        }
-      ],
-      "layout": "wide",
-      "cloud": true
-    },
-    {
-      "heading": "talk.health.audit.title",
-      "line": "talk.health.audit.body",
-      "command": "talk.health.audit.command",
+      "heading": "talk.health.portfolio.title",
+      "line": "talk.health.portfolio.body",
+      "command": "talk.health.portfolio.command",
       "picture": "feedback",
       "step": 0,
       "labels": [],
       "layout": "wide",
       "dim": true,
-      "flow": "audit",
+      "board": "portfolio",
+      "cloud": true
+    },
+    {
+      "heading": "talk.health.agents.title",
+      "line": "talk.health.agents.body",
+      "command": "talk.health.agents.command",
+      "picture": "feedback",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "board": "agents",
+      "cloud": true
+    },
+    {
+      "heading": "talk.health.improve.title",
+      "line": "talk.health.improve.body",
+      "command": "talk.health.improve.command",
+      "picture": "feedback",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "flow": "improve",
       "cloud": true
     }
   ]
 },
-  before: picture('workflow', 1, true),
+  before: picture('feedback', 0, true),
 }
 export const health = makePart(part)

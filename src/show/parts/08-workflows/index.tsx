@@ -147,6 +147,18 @@ export const part: Part = {
       "dim": true,
       "flow": "release",
       "cloud": true
+    },
+    {
+      "heading": "talk.workflows.audit.title",
+      "line": "talk.workflows.audit.body",
+      "command": "talk.workflows.audit.command",
+      "picture": "feedback",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "flow": "audit",
+      "cloud": true
     }
   ]
 },

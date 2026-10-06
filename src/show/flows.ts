@@ -5,7 +5,7 @@
  */
 import type { MessageKey } from '@/i18n'
 
-export type FlowId = 'router' | 'chain' | 'triage' | 'refine' | 'implement' | 'gate' | 'review' | 'audit' | 'release'
+export type FlowId = 'router' | 'chain' | 'triage' | 'refine' | 'implement' | 'gate' | 'review' | 'audit' | 'release' | 'improve'
 /** shell: a deterministic job. agent: the model runs. gate: a decision. end: where the work lands. human: a person. stop: nothing happens. */
 export type NodeKind = 'event' | 'shell' | 'agent' | 'gate' | 'end' | 'human' | 'stop'
 export interface FlowNode { id: string; kind: NodeKind; col: number; row: number; title: MessageKey; sub?: MessageKey }
@@ -195,6 +195,30 @@ export const FLOWS: Record<FlowId, FlowDef> = {
       e('route', 'backpressure', 'main'), e('backpressure', 'idle', 'return', 'flow.edge.no'), e('backpressure', 'facts', 'main', 'flow.edge.yes'),
       e('facts', 'audit', 'main'), e('audit', 'filter', 'main'), e('filter', 'score', 'main', 'flow.edge.keepsSome'), e('filter', 'nothing', 'return', 'flow.edge.keepsNone'),
       e('score', 'dedupe', 'main'), e('dedupe', 'file', 'main', 'flow.edge.someNew'), e('dedupe', 'nothing', 'return', 'flow.edge.allDupes'), e('file', 'filed', 'main'),
+    ],
+  },
+  improve: {
+    nodes: [
+      n('numbers', 'event', 0, 1, 'flow.improve.numbers', 'flow.improve.numbers.sub'),
+      n('tokens', 'shell', 1, 0, 'flow.improve.tokens', 'flow.improve.tokens.sub'),
+      n('verdicts', 'shell', 1, 1, 'flow.improve.verdicts', 'flow.improve.verdicts.sub'),
+      n('vm', 'shell', 1, 2, 'flow.improve.vm', 'flow.improve.vm.sub'),
+      n('findings', 'agent', 1, 3, 'flow.improve.findings', 'flow.improve.findings.sub'),
+      n('sizeGate', 'human', 2, 0, 'flow.improve.sizeGate', 'flow.improve.sizeGate.sub'),
+      n('ownerRule', 'human', 2, 1, 'flow.improve.ownerRule', 'flow.improve.ownerRule.sub'),
+      n('hostReuse', 'human', 2, 2, 'flow.improve.hostReuse', 'flow.improve.hostReuse.sub'),
+      n('issue', 'shell', 2, 3, 'flow.improve.issue', 'flow.improve.issue.sub'),
+      n('workers', 'end', 3, 0, 'flow.improve.workers', 'flow.improve.workers.sub'),
+      n('runners', 'end', 3, 2, 'flow.improve.runners', 'flow.improve.runners.sub'),
+      n('route', 'end', 3, 3, 'flow.improve.route', 'flow.improve.route.sub'),
+      n('measured', 'shell', 5, 1, 'flow.improve.measured', 'flow.improve.measured.sub'),
+    ],
+    edges: [
+      e('numbers', 'tokens', 'branch'), e('numbers', 'verdicts', 'main'), e('numbers', 'vm', 'branch'), e('numbers', 'findings', 'branch'),
+      e('tokens', 'sizeGate', 'main'), e('verdicts', 'ownerRule', 'main'), e('vm', 'hostReuse', 'main'), e('findings', 'issue', 'main'),
+      e('sizeGate', 'workers', 'main'), e('ownerRule', 'workers', 'main'), e('hostReuse', 'runners', 'main'), e('issue', 'route', 'main'),
+      e('workers', 'measured', 'main'), e('runners', 'measured', 'branch'), e('route', 'measured', 'branch'),
+      e('measured', 'numbers', 'return'),
     ],
   },
   release: {

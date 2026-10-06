@@ -8,10 +8,11 @@ import { defineChoreography, getActorObject } from '@/world/actors'
 import { useAnchor } from '@/art/anchor'
 import { Vector3, type Camera, type Points } from 'three'
 import type { FormUnit } from '@/art/forms'
-import { LIVE_IDS, poseOf, type LiveId, type Transfer } from './actors'
+import { LIVE_IDS, poseOf, type LiveId, type Pose, type Transfer } from './actors'
 import { picture, workOwner, type Picture, type PictureState } from './pictures'
 import { MAP_SHOT } from './shots'
 import { Flow } from './Flow'
+import { Board, type BoardId } from './Board'
 import type { FlowId } from './flows'
 
 /**
@@ -22,6 +23,7 @@ const TIMING = {
   exitStart: 0.05, exit: 0.35, arrive: 0.3, travel: 12, transfer: 0.8,
   heroStart: 0.03, hero: 0.55, supportStart: 0.06, support: 0.45, supportStep: 0.025,
   enterStart: 0.08, enterStep: 0.03,
+  drawStart: 0.26, drawStep: 0.04, draw: 0.36,
 }
 const REVEAL = { title: [0.6, 0.8], caption: [0.68, 0.88], label: [0.76, 0.96] } as const
 /** A chapter card shows only its title, which arrives while the world fades behind it. */
@@ -44,6 +46,8 @@ export interface Beat {
   dim?: boolean
   /** A worker flow drawn over the dimmed world. */
   flow?: FlowId
+  /** A Project Health board drawn over the dimmed world. */
+  board?: BoardId
 }
 export interface Part { id: string; scene: string; title: string; beats: Beat[]; before: PictureState; intro?: Beat }
 
@@ -116,7 +120,7 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
         return String(1 - (1 - value) ** 3)
       }
       const frame = frames[i]!
-      const windows = frame.layout === 'chapter' ? CHAPTER_REVEAL : frame.flow ? FLOW_REVEAL : REVEAL
+      const windows = frame.layout === 'chapter' ? CHAPTER_REVEAL : frame.flow || frame.board ? FLOW_REVEAL : REVEAL
       node.style.setProperty('--title-reveal', reveal(windows.title[0], windows.title[1]))
       node.style.setProperty('--caption-reveal', reveal(windows.caption[0], windows.caption[1]))
       node.style.setProperty('--label-reveal', reveal(windows.label[0], windows.label[1]))
@@ -133,6 +137,7 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
             <h1 className="ascii-heading" data-fit={beat.heading}><span className="art-burn"><T k={beat.heading} /></span></h1>
             {beat.line && beat.layout !== 'chapter' ? <p className="ascii-caption" data-fit={beat.line}><span className="art-burn"><T k={beat.line} /></span></p> : null}
             {beat.flow ? <Flow id={beat.flow} /> : null}
+            {beat.board ? <Board id={beat.board} /> : null}
             {beat.footnote ? <p className="ascii-footnote" data-fit={beat.footnote}><span className="art-burn"><T k={beat.footnote} /></span></p> : null}
             {beat.layout === 'cover' ? <div className="ascii-byline" data-fit="p01.name"><span className="art-burn"><T k="p01.name" /><span className="ascii-role"><T k="p01.role" /></span></span></div> : null}
           </Stage>
@@ -175,15 +180,25 @@ export function makeMoves(part: Part) {
         const pose = poseOf(cast.get<Points>(id))
         const entering = from[id].opacity <= 0.005 && to[id].opacity > 0.005
         const leaving = from[id].opacity > 0.005 && to[id].opacity <= 0.005
-        const origin = entering ? {
+        // A new body comes out of the core only while the core stays. Otherwise it draws itself in place, outline first.
+        const spawn = from.core.opacity > 0.005 && to.core.opacity > 0.005
+        const drawn = entering && !spawn
+        const origin = entering ? spawn ? {
           ...from[id], x: from.core.x, y: from.core.y, scale: Math.max(0.08, to[id].scale * 0.15), fluid: 1, assemble: 0.35,
-        } : { ...from[id] }
+        } : { ...to[id], scale: to[id].scale * 0.94, opacity: 0, assemble: 0 } : { ...from[id] }
+        // A leaving body with a real destination glides into it and fades as it lands. It hands over to the body that forms there.
+        const handoff = leaving && to[id].scale > 0.001
         const distance = Math.hypot(to[id].x - origin.x, to[id].y - origin.y)
         const hero = to[id].focus > 0.8
         const flight = (id === 'packet' || id.startsWith('parcel.')) && distance > 8 && to[id].opacity > 0.1
         const dissolve = !entering && !leaving && !hero && !flight && !id.startsWith('path.') && distance > TIMING.travel && to[id].opacity > 0.005
         const at = (fraction: number) => window.start + window.duration * fraction
-        if (leaving) {
+        if (handoff) {
+          const move = (p: Pose) => ({ x: p.x, y: p.y, scale: p.scale, turn: p.turn, fluid: p.fluid, focus: p.focus, morph: p.morph, morph2: p.morph2 })
+          const duration = window.duration * TIMING.hero
+          tl.fromTo(pose, move(origin), { ...move(to[id]), immediateRender: false, duration, ease: 'power3.inOut' }, at(TIMING.heroStart))
+          tl.fromTo(pose, { opacity: origin.opacity }, { opacity: 0, immediateRender: false, duration: duration * 0.4, ease: 'power2.in' }, at(TIMING.heroStart) + duration * 0.72)
+        } else if (leaving) {
           // An exit stays in place: it fades, loosens, and then waits hidden at its next pose.
           const hold = { opacity: from[id].opacity, scale: from[id].scale, assemble: from[id].assemble }
           tl.fromTo(pose, hold, { opacity: 0, scale: from[id].scale * 0.85, assemble: 0.3, immediateRender: false, duration: window.duration * TIMING.exit, ease: 'power2.in' }, at(TIMING.exitStart))
@@ -205,14 +220,16 @@ export function makeMoves(part: Part) {
           tl.fromTo(pose, origin, { ...middle, immediateRender: false, duration: window.duration * 0.3, ease: 'power2.in' }, start)
           tl.to(pose, { ...to[id], duration: window.duration * 0.3, ease: 'power3.out' }, start + window.duration * 0.3)
         } else {
-          const { cut: fromCut, ...startPose } = origin
-          const { cut: toCut, turn: toTurn, ...endPose } = to[id]
-          const delay = entering ? TIMING.enterStart + Math.min(arrivals++, 6) * TIMING.enterStep : hero ? TIMING.heroStart : TIMING.supportStart + (slot % 4) * TIMING.supportStep
-          const duration = window.duration * (hero ? TIMING.hero : TIMING.support)
+          const { cut: fromCut, morph: fromMorph, morph2: fromMorph2, ...startPose } = origin
+          const { cut: toCut, morph: toMorph, morph2: toMorph2, turn: toTurn, ...endPose } = to[id]
+          const delay = drawn ? TIMING.drawStart + Math.min(arrivals++, 6) * TIMING.drawStep : entering ? TIMING.enterStart + Math.min(arrivals++, 6) * TIMING.enterStep : hero ? TIMING.heroStart : TIMING.supportStart + (slot % 4) * TIMING.supportStep
+          const duration = window.duration * (drawn ? TIMING.draw : hero ? TIMING.hero : TIMING.support)
           tl.fromTo(pose, startPose, { ...endPose, immediateRender: false, duration, ease: entering ? 'power3.out' : 'power3.inOut' }, at(delay))
           // The turn trails the move a little, and the cut of a body takes half the beat.
           tl.fromTo(pose, { turn: origin.turn }, { turn: toTurn, immediateRender: false, duration: duration * 1.15, ease: 'power3.inOut' }, at(delay))
           if (fromCut !== toCut) tl.fromTo(pose, { cut: fromCut }, { cut: toCut, immediateRender: false, duration: window.duration * 0.5, ease: 'none' }, at(TIMING.heroStart))
+          // A body that changes its build takes most of the beat, so each unit can be seen leaving and arriving.
+          if (fromMorph !== toMorph || fromMorph2 !== toMorph2) tl.fromTo(pose, { morph: fromMorph, morph2: fromMorph2 }, { morph: toMorph, morph2: toMorph2, immediateRender: false, duration: window.duration * 0.7, ease: 'none' }, at(TIMING.heroStart))
         }
       }
       from = to

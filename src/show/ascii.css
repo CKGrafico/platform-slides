@@ -62,7 +62,7 @@ body { font-family: var(--font-label); }
 .ascii-frame--wide .ascii-heading { top: calc(var(--su) * 10); height: calc(var(--su) * 15); width: calc(var(--su) * 150); font-size: calc(var(--su) * 6.5); white-space: normal; text-wrap: balance; }
 .ascii-frame--wide .ascii-caption { bottom: calc(var(--su) * 5.5); height: calc(var(--su) * 12); width: calc(var(--su) * 130); font-size: calc(var(--su) * 2.8); }
 .ascii-frame--chapter .ascii-heading { top: calc(var(--su) * 38); width: calc(var(--su) * 162.8); height: calc(var(--su) * 24); font-size: calc(var(--su) * 12); text-align: center; white-space: normal; }
-.ascii-frame--statement .ascii-heading { font-size: calc(var(--su) * 8.5); height: calc(var(--su) * 26); width: calc(var(--su) * 110); }
+.ascii-frame--statement .ascii-heading { font-size: calc(var(--su) * 8.5); height: calc(var(--su) * 28); width: calc(var(--su) * 110); }
 .ascii-anchor { position: absolute; left: 0; top: 0; }
 .ascii-leader { position: absolute; left: calc(var(--su) * -40); top: calc(var(--su) * -24); width: calc(var(--su) * 80); height: calc(var(--su) * 48); overflow: visible; }
 .ascii-leader polyline { fill: none; stroke: #8a8f98; stroke-width: 0.25; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--label-reveal, 1)); }
@@ -98,8 +98,10 @@ body { font-family: var(--font-label); }
 /* A name under its body: centred, no box, no leader. The square marks the lowest edge of the body. */
 .ascii-label--under { transform: translate(-50%, 0); text-align: center; height: calc(var(--su) * 3); padding: 0; border: 0; background: none; color: #d4d7dc; }
 .ascii-frame--cover .ascii-label { width: calc(var(--su) * 26); }
-.language-switch { bottom: calc(var(--stage-y) + var(--stage-h) * 0.065); }
-.language-switch button { border-color: #42464e; font-family: var(--font-label); }
+/* For the presenter only: two tiny codes in the bottom right corner, almost hidden. */
+.language-switch { right: calc(var(--stage-x) + var(--su) * 1.5); bottom: calc(var(--stage-y) + var(--su) * 1.6); gap: calc(var(--su) * 0.4); opacity: 0.3; }
+.language-switch button { width: auto; padding: calc(var(--su) * 0.2) calc(var(--su) * 0.4); border: 0; font: 450 calc(var(--su) * 1.1) / 1 var(--font-label); letter-spacing: 0.06em; color: #63686f; }
+.language-switch button[aria-pressed='true'] { color: #a7abb1; }
 .stop-chip {
   position: absolute;
   right: calc(var(--su) * 7.5);
@@ -140,5 +142,35 @@ body { font-family: var(--font-label); }
 .flow-edge--main .flow-edge-label { fill: #9db6ff; }
 .flow-arrow path { fill: #8a8f98; }
 .flow-arrow--main path { fill: #5c8bff; }
+
+/* Project Health boards: cards and bars in stage units, revealed in order with --flow-reveal. */
+.board-card { --v: clamp(0, calc(var(--flow-reveal, 1) * var(--n) - var(--i)), 1); opacity: var(--v); }
+.board-card-frame { fill: #0a0a0b; stroke: #63686f; stroke-width: 0.22; }
+.board-card--production .board-card-frame { stroke: #8a8f98; }
+.board-card--planned .board-card-frame { stroke-dasharray: 0.9 0.5; }
+.board text { fill: #e8e9ec; }
+.board-name { font-size: 2.4px; font-weight: 700; }
+.board-name--bar { font-size: 2px; }
+.board-repo { font-size: 1.5px; fill: #8a8f98 !important; }
+.board-chip { fill: none; stroke: #8a8f98; stroke-width: 0.2; }
+.board-card--production .board-chip { stroke: #5c8bff; }
+.board-card--planned .board-chip { stroke-dasharray: 0.6 0.4; }
+.board-chip-text { font-size: 1.45px; text-anchor: middle; fill: #c5c8ce !important; }
+.board-card--production .board-chip-text { fill: #9db6ff !important; }
+.board-label { font-size: 1.5px; letter-spacing: 0.05em; fill: #a7abb1 !important; }
+.board-label--small { font-size: 1.3px; }
+.board-value { font-size: 2.8px; font-weight: 700; text-anchor: end; }
+.board-value--small { font-size: 2.2px; text-anchor: start; }
+.board-sub { font-size: 1.45px; fill: #a7abb1 !important; }
+.board-sub--small { font-size: 1.3px; }
+.board-rule { stroke: #2a2d32; stroke-width: 0.2; }
+.board-profile { font-size: 1.45px; fill: #c5c8ce !important; }
+.board-empty { font-size: 2.2px; font-weight: 700; text-anchor: middle; fill: #8a8f98 !important; }
+.board-empty-sub { font-size: 1.45px; text-anchor: middle; fill: #63686f !important; }
+.board-tag { font-size: 1.5px; text-anchor: end; fill: #8a8f98 !important; letter-spacing: 0.04em; }
+.board-tag--start { text-anchor: start; }
+.board-stat { font-size: 6px; font-weight: 700; font-family: var(--font-display); }
+.board-bar { fill: #63686f; }
+.board-bar--ok { fill: #5c8bff; }
 
 @media (prefers-reduced-motion: reduce) { .ascii-frame { transform: none !important; } }
