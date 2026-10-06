@@ -22,7 +22,7 @@ export const part: Part = {
         },
         {
           "target": "automation",
-          "name": "talk.label.workflows",
+          "name": "talk.label.workflowsOnGhAw",
           "width": 28,
           "under": true
         },

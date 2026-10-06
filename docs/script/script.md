@@ -102,11 +102,11 @@ Source: [reference](../knowledge/workflow-routes.md).
 
 ### 9. agentic-workflows: asynchronous development in the cloud.
 
-On screen: workflow, state 0. Panels name Issue event, agentic-workflows, OpenCode · Forge, Safe Outputs · PR.
+On screen: workflow, state 0. Panels name Issue event, gh-aw + agentic-workflows, OpenCode · Forge, Safe Outputs · PR.
 
-Slide: A repo event starts the work. OpenCode reasons through Forge, our AI gateway, with read-only access. Every write goes through Safe Outputs and ends in a PR.
+Slide: Our layer on top of GitHub Agentic Workflows: one router, workers that use the agent-harness skills, OpenCode through Forge, and writes only through Safe Outputs.
 
-Speaker notes: Now the work leaves the PC. A repo event, such as a labelled Issue, starts a run in GitHub Actions. Shell jobs collect the facts. OpenCode reasons through Forge, our AI gateway, with read-only access. Every write goes through allowlisted Safe Outputs, and the result is a pull request. The next slides follow each worker.
+Speaker notes: Now the work leaves the PC. agentic-workflows is our layer on top of GitHub Agentic Workflows, gh-aw. Each worker is a gh-aw markdown file. We never call gh aw compile directly: our wrapper runs it and rewrites the lock files for our runners and for OpenCode as the engine. One command, npx @plainconceptsplatform/workflows, installs it in a repo, and update keeps it current. On top of gh-aw we add our practices: one router owns every event, OpenCode reasons through Forge, our AI gateway, with read-only access, and every write goes through allowlisted Safe Outputs. The workers call the agent-harness skills, for example pc-plan-goal in Implement, so a repo needs agent-harness first. The next slides follow each worker.
 
 ### 10. One router for every event.
 
