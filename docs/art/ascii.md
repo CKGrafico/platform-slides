@@ -27,8 +27,8 @@ Main paths, repair, review, manual release, and the Audit return use channels in
 For reduced motion, the engine cuts to each stop and the runtime freezes surface movement. The atlas size follows the actual renderer DPR. The geometry stays constant while the presenter moves through the show.
 
 The content ledger is `scripts/keynote-content.mjs`. `scripts/rebuild-show.mjs` writes the English script, both locale files, and the scene contracts.
-It keeps 30 stops across nine chapters, with four chapter cards, ten worker flows, and two Project Health boards. The first chapter contains the cover and the PC introduction.
-The five maturity assemblies and four assessment banks retain their meanings in the final world.
+It keeps 29 stops across nine chapters, with four chapter cards, ten worker flows, and two Project Health boards. The first chapter contains the cover and the PC introduction.
+The five maturity assemblies retain their meanings in the final world.
 Precomputed facts, reasoning, validation, and Safe Outputs occupy distinct positions in the worker close views.
 
 The closing view puts Triage, the reasoning core, the guardrail wall, the gate, and the deployment bank on one row. The deployment bank is a rigid lattice, and its front unit holds the Issue.

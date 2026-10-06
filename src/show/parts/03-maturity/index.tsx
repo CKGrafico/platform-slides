@@ -46,40 +46,6 @@ export const part: Part = {
         }
       ],
       "layout": "wide"
-    },
-    {
-      "heading": "talk.maturity.areas.title",
-      "line": "talk.maturity.areas.body",
-      "command": "talk.maturity.areas.command",
-      "picture": "assessment",
-      "step": 1,
-      "labels": [
-        {
-          "target": "parcel.0",
-          "name": "talk.area.sdlc",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "parcel.1",
-          "name": "talk.area.determinism",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "parcel.2",
-          "name": "talk.area.control",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "parcel.3",
-          "name": "talk.area.impact",
-          "width": 28,
-          "under": true
-        }
-      ],
-      "layout": "wide"
     }
   ]
 },

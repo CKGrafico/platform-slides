@@ -65,6 +65,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('assessment', 1),
+  before: picture('assessment', 0),
 }
 export const evolution = makePart(part)

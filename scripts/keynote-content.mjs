@@ -21,10 +21,6 @@ export const sharedCopy = {
   'talk.level.3': ['3 · Structured', '3 · Structured'],
   'talk.level.4': ['4 · Scaled', '4 · Scaled'],
   'talk.level.5': ['5 · Governed & Optimized', '5 · Governed & Optimized'],
-  'talk.area.sdlc': ['SDLC · 35%', 'SDLC · 35%'],
-  'talk.area.determinism': ['Determinism · 25%', 'Determinismo · 25%'],
-  'talk.area.control': ['Control · 20%', 'Control · 20%'],
-  'talk.area.impact': ['Impact · 20%', 'Impacto · 20%'],
   'talk.label.skills': ['pc-* skills', 'skills pc-*'],
   'talk.label.plugins': ['plugins', 'plugins'],
   'talk.label.specs': ['OpenSpec', 'OpenSpec'],
@@ -54,7 +50,6 @@ export const sharedCopy = {
 }
 
 const levels = Array.from({ length: 5 }, (_, i) => U(`level.${i}`, `talk.level.${i + 1}`))
-const areas = ['sdlc', 'determinism', 'control', 'impact'].map((name, i) => U(`parcel.${i}`, `talk.area.${name}`))
 const pipeline = [U('intake', 'talk.label.facts'), U('core', 'talk.label.agent'), U('wall', 'talk.label.validate'), U('outputs', 'talk.label.outputs')]
 
 export const sections = [
@@ -67,9 +62,6 @@ export const sections = [
     B('maturity.levels', ['Different levels\nof maturity.', 'Diferentes niveles\nde madurez.'],
       ['Different teams and companies are at different points in adopting AI across the software development lifecycle.', 'Diferentes equipos y empresas presentan diferentes momentos en la adopción de la IA en el ciclo de vida de software.'], 'assessment', 0, levels,
       'Use the five assessment levels, with their exact names. No AI is manual work. Exploratory is individual use. Structured adds approved tools and review guidance. Scaled makes practice consistent across teams. Governed & Optimized puts governance and improvement into the workflow. Do not equate a tool upgrade with organizational maturity.', ['AI SDLC assessment', 'assessment AI SDLC']),
-    B('maturity.areas', ['We assess four areas.', 'Evaluamos cuatro áreas.'],
-      ['SDLC 35% · determinism 25% · control 20% · impact 20%. We assess team practices.', 'SDLC 35% · determinismo 25% · control 20% · impacto 20%. Evaluamos prácticas.'], 'assessment', 1, areas,
-      'The framework rates 21 dimensions from one to five. The four areas cover lifecycle reach, reusable and validated workflows, risk controls, and measured impact. A team can use agents heavily and still lack control or evidence. We have not computed a Platform assessment score.', ['coverage · determinism · control · impact', 'cobertura · determinismo · control · impacto']),
   ] },
   { id: '04-evolution', scene: 'layers', title: 'Prompts to asynchronous work', name: 'evolution', source: '../knowledge/talk-notes.md', beats: [
     B('evolution.path', ['From prompts\nto a Harness.', 'De prompts\na un Harness.'],
