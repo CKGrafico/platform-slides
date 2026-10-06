@@ -17,7 +17,8 @@ import { CameraRig } from './camera/CameraRig'
 import { WorldSceneHost } from './WorldSceneHost'
 
 const DPR_STEP = 0.25
-const DPR_MIN = 0.75
+/** Under load the monitor may give up supersampling, but never drops below one render pixel per screen pixel. */
+const DPR_MIN = 1
 
 export function World({
   actors,
@@ -30,7 +31,8 @@ export function World({
   extras?: ReactNode
 }) {
   const { tier, viewport } = useEnvironment()
-  const cap = Math.min(DPR_CAP[tier], viewport.dpr)
+  // Supersample: render at the tier ratio even on a 1x display, and never below the display's own ratio.
+  const cap = Math.max(DPR_CAP[tier], Math.min(viewport.dpr, 2))
   const [dpr, setDpr] = useState(cap)
   const [generation, setGeneration] = useState(0)
   const [lost, setLost] = useState(false)
