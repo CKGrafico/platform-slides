@@ -78,7 +78,7 @@ export const sections = [
   { id: '01-cover', scene: 'local', title: 'Cover and work on your PC', name: 'opening', source: '../knowledge/talk-notes.md',
     intro: { heading: 'show.cover', command: 'show.subtitle', picture: 'cover', step: 0, labels: [], layout: 'cover' },
     beats: [Object.assign(B('sponsors', ['Thank you to our sponsors.', 'Gracias a los patrocinadores.'], ['', ''], 'cover', 1, [],
-      'Required by the event. Thank the sponsors by name if time allows. The logos follow the agreed order and sizes in src/show/sponsors.ts.', ['sponsors', 'sponsors']), { board: 'sponsors', dim: true }),
+      'Required by the event, NetCoreConf Madrid 2026. Thank the sponsors. Platinum: Inkoova, Intelequia, NTT DATA, Tokiota and V-Valley. Gold: Axazure by Avvale and Plain Concepts. Supported by Sessionize. Positions and sizes copy the official sponsor slide, because each tier pays for its place.', ['sponsors', 'sponsors']), { board: 'sponsors', dim: true }),
       B('local', ['At the start,\nwe worked with AI\nsynchronously.', 'Al inicio\ntrabajábamos con IA\nde forma síncrona.'],
       ['You supply context, review the change and give the next instruction.', 'Das contexto, revisas el cambio y das la siguiente instrucción.'], 'local', 0, [U('core', 'talk.label.agent')],
       'Start with the audience experience. The engineer asks for a change, supplies files, inspects the patch, and redirects the agent. The feedback loop depends on the person being present.', ['interactive work', 'trabajo interactivo'], 'statement')] },

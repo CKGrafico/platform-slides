@@ -5,7 +5,7 @@
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useT, type MessageKey } from '@/i18n'
-import { SPONSOR_TIERS } from './sponsors'
+import { SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
 export type BoardId = 'portfolio' | 'agents' | 'quote' | 'sponsors'
 
@@ -240,45 +240,27 @@ function Quote() {
 }
 
 /**
- * The sponsor logos, tier by tier from the top, each tier centred on its own row.
- * Order and sizes come from src/show/sponsors.ts. Logos appear in that order.
+ * The sponsor slide, at the positions and sizes of the event's official slide (src/show/sponsors.ts).
+ * Both slides are 16:9, so one scale maps the original to the stage. Logos appear in the official order.
  */
 function Sponsors() {
   const t = useT()
-  const gapX = 6
-  const gapY = 6
-  const total = SPONSOR_TIERS.reduce((sum, tier) => sum + tier.logos.length, 0)
-  const height = SPONSOR_TIERS.reduce((sum, tier) => sum + tier.logoHeight, 0) + gapY * (SPONSOR_TIERS.length - 1)
-  // The tiers sit in the band between the title and the bottom of the stage.
-  let y = 30 + (52 - height) / 2
-  let index = 0
+  const k = STAGE_W / SPONSOR_SLIDE.width
+  const total = SPONSOR_LOGOS.length + 1
   return (
     <>
-      {SPONSOR_TIERS.map((tier, row) => {
-        const h = tier.logoHeight
-        const w = h * (tier.aspect ?? 2.6)
-        const width = tier.logos.length * w + (tier.logos.length - 1) * gapX
-        const left = (STAGE_W - width) / 2
-        const top = y
-        y += h + gapY
-        return (
-          <g key={row}>
-            {tier.logos.map((logo, i) => {
-              const x = left + i * (w + gapX)
-              return (
-                <g key={i} className="board-card" style={reveal(index++, total)}>
-                  {logo.file
-                    ? <image href={logo.file} x={x} y={top} width={w} height={h} preserveAspectRatio="xMidYMid meet" />
-                    : <>
-                        <rect x={x} y={top} width={w} height={h} rx={0.8} className="board-slot" />
-                        <text x={x + w / 2} y={top + h / 2 + 0.6} className="board-empty-sub" data-i18n="board.sponsors.slot">{t('board.sponsors.slot')}</text>
-                      </>}
-                </g>
-              )
-            })}
-          </g>
-        )
-      })}
+      <g className="board-card" style={reveal(0, total)}>
+        {SPONSOR_LINES.map((line, i) => <line key={i} x1={line.x * k} x2={(line.x + line.w) * k} y1={line.y * k} y2={line.y * k} className="board-rule board-rule--sponsors" />)}
+        {SPONSOR_LABELS.map((label) => (
+          <text key={label.key} x={label.x * k} y={(label.y + label.h * 0.62) * k} className="board-tier" data-i18n={label.key}>{t(label.key)}</text>
+        ))}
+      </g>
+      {SPONSOR_LOGOS.map((logo, i) => (
+        <g key={logo.name} className="board-card" style={reveal(i + 1, total)}>
+          {/* Stretched to fill its box, as the original slide does (a:stretch, no crop). */}
+          <image href={logo.file} x={logo.x * k} y={logo.y * k} width={logo.w * k} height={logo.h * k} preserveAspectRatio="none" />
+        </g>
+      ))}
     </>
   )
 }

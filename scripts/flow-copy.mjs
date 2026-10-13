@@ -193,7 +193,9 @@ const gate = {
 
 // The Project Health boards. The portfolio values are the template's example data, labelled as such on screen.
 const board = {
-  'board.sponsors.slot': ['Logo', 'Logo'],
+  'board.sponsors.platinum': ['Platinum sponsors', 'Platinum sponsors'],
+  'board.sponsors.gold': ['Gold sponsors', 'Gold sponsors'],
+  'board.sponsors.collab': ['Supported by', 'Colabora'],
   'board.quote.name': ['Uncle Bob Martin', 'Uncle Bob Martin'],
   'board.quote.handle': ['@unclebobmartin · 5 Oct 2026', '@unclebobmartin · 5 oct 2026'],
   // The presenter supplied the full post. English is verbatim; Spanish is a literal translation, marked as such.

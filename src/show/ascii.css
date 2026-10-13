@@ -174,7 +174,8 @@ body { font-family: var(--font-label); }
 .board-stat { font-size: 6px; font-weight: 700; font-family: var(--font-display); }
 .board-avatar-ring { fill: none; stroke: #2f69ff; stroke-width: 0.3; }
 .board-quote { font-size: 2.9px; font-weight: 500; font-family: var(--font-display); fill: #e8e9ec !important; }
-.board-slot { fill: none; stroke: #42464e; stroke-width: 0.22; stroke-dasharray: 0.9 0.5; }
+.board-rule--sponsors { stroke: #42464e; stroke-width: 0.15; }
+.board-tier { font-size: 2.7px; font-family: var(--font-label); fill: #c5c8ce !important; }
 .board-bar { fill: #63686f; }
 .board-bar--ok { fill: #2f69ff; }
 

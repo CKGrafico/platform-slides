@@ -28,7 +28,7 @@ On screen: the sponsor logos, in the agreed order and sizes, over the dimmed wor
 
 Slide: no caption. The names under the bodies carry the content.
 
-Speaker notes: Required by the event. Thank the sponsors by name if time allows. The logos follow the agreed order and sizes in src/show/sponsors.ts.
+Speaker notes: Required by the event, NetCoreConf Madrid 2026. Thank the sponsors. Platinum: Inkoova, Intelequia, NTT DATA, Tokiota and V-Valley. Gold: Axazure by Avvale and Plain Concepts. Supported by Sessionize. Positions and sizes copy the official sponsor slide, because each tier pays for its place.
 
 ### 3. At the start, we worked with AI synchronously.
 
