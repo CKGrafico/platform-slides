@@ -5,8 +5,9 @@
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useT, type MessageKey } from '@/i18n'
+import { SPONSOR_TIERS } from './sponsors'
 
-export type BoardId = 'portfolio' | 'agents' | 'quote'
+export type BoardId = 'portfolio' | 'agents' | 'quote' | 'sponsors'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -238,10 +239,54 @@ function Quote() {
   )
 }
 
+/**
+ * The sponsor logos, tier by tier from the top, each tier centred on its own row.
+ * Order and sizes come from src/show/sponsors.ts. Logos appear in that order.
+ */
+function Sponsors() {
+  const t = useT()
+  const gapX = 6
+  const gapY = 6
+  const total = SPONSOR_TIERS.reduce((sum, tier) => sum + tier.logos.length, 0)
+  const height = SPONSOR_TIERS.reduce((sum, tier) => sum + tier.logoHeight, 0) + gapY * (SPONSOR_TIERS.length - 1)
+  // The tiers sit in the band between the title and the bottom of the stage.
+  let y = 30 + (52 - height) / 2
+  let index = 0
+  return (
+    <>
+      {SPONSOR_TIERS.map((tier, row) => {
+        const h = tier.logoHeight
+        const w = h * (tier.aspect ?? 2.6)
+        const width = tier.logos.length * w + (tier.logos.length - 1) * gapX
+        const left = (STAGE_W - width) / 2
+        const top = y
+        y += h + gapY
+        return (
+          <g key={row}>
+            {tier.logos.map((logo, i) => {
+              const x = left + i * (w + gapX)
+              return (
+                <g key={i} className="board-card" style={reveal(index++, total)}>
+                  {logo.file
+                    ? <image href={logo.file} x={x} y={top} width={w} height={h} preserveAspectRatio="xMidYMid meet" />
+                    : <>
+                        <rect x={x} y={top} width={w} height={h} rx={0.8} className="board-slot" />
+                        <text x={x + w / 2} y={top + h / 2 + 0.6} className="board-empty-sub" data-i18n="board.sponsors.slot">{t('board.sponsors.slot')}</text>
+                      </>}
+                </g>
+              )
+            })}
+          </g>
+        )
+      })}
+    </>
+  )
+}
+
 export function Board({ id }: { id: BoardId }) {
   return (
     <svg className="flow board" viewBox={`0 0 ${STAGE_W} ${STAGE_H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      {id === 'quote' ? <Quote /> : id === 'portfolio' ? <Portfolio /> : <Agents />}
+      {id === 'sponsors' ? <Sponsors /> : id === 'quote' ? <Quote /> : id === 'portfolio' ? <Portfolio /> : <Agents />}
     </svg>
   )
 }

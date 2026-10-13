@@ -39,7 +39,8 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
     case 'local':
       // On the cover the core units stand as an open laptop. On the next beat they come apart into the core.
       // The laptop shows only its moving screen tile in blue, so its mark units stay grey.
-      if (kind === 'cover') hero('core', 26, 1, 2.0, { turn: -0.55, morph: 1, marks: 0 })
+      // Step 1 is the sponsor slide: the laptop moves to the right edge, smaller, so the logos sit on a clean field.
+      if (kind === 'cover') hero('core', step === 1 ? 44 : 26, 1, step === 1 ? 1.5 : 2.0, { turn: -0.55, morph: 1, marks: 0 })
       // At work on the PC, three units of the core are blue: the Issue and two more.
       else hero('core', CORE_LOCAL.x, CORE_LOCAL.y, CORE_LOCAL.scale, { fluid: 1, turn: 0.16 })
       break

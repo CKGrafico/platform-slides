@@ -1,6 +1,6 @@
 # Talk script
 
-Draft 9, 2026-10-06. 19 stops, including the cover and 1 chapter card. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
+Draft 9, 2026-10-06. 20 stops, including the cover and 1 chapter card. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
 
 The same Issue moves through the talk. Each new layer answers a practical need and stays in the field. Foundations supplies enforceable conventions. The Harness supplies the agent environment. Workflows give events bounded runs. Health supplies evidence and returns findings to the same route.
 
@@ -22,7 +22,15 @@ On screen: an open laptop built from the units of the reasoning core. The blue I
 
 Say: This talk follows one Issue from an engineer's PC to production, through the Plain Concepts Platform.
 
-### 2. At the start, we worked with AI synchronously.
+### 2. Thank you to our sponsors.
+
+On screen: the sponsor logos, in the agreed order and sizes, over the dimmed world. The composition holds the current subject.
+
+Slide: no caption. The names under the bodies carry the content.
+
+Speaker notes: Required by the event. Thank the sponsors by name if time allows. The logos follow the agreed order and sizes in src/show/sponsors.ts.
+
+### 3. At the start, we worked with AI synchronously.
 
 On screen: local, state 0. Panels name OpenCode · agent.
 
@@ -34,7 +42,7 @@ Speaker notes: Start with the audience experience. The engineer asks for a chang
 
 Source: [reference](../knowledge/maturity.md).
 
-### 3. Different levels of maturity.
+### 4. Different levels of maturity.
 
 On screen: assessment, state 0. Panels name 1 · No AI, 2 · Exploratory, 3 · Structured, 4 · Scaled, 5 · Governed & Optimized.
 
@@ -46,7 +54,7 @@ Speaker notes: Use the five assessment levels, with their exact names. No AI is 
 
 Source: [reference](../knowledge/talk-notes.md).
 
-### 4. The evolution of AI.
+### 5. The evolution of AI.
 
 On screen: evolution, state 0. Panels name Models, Prompts, Skills, Agents, Guardrails, Harnesses, Loops and graphs, Agentic Workflows, Future.
 
@@ -58,13 +66,13 @@ Speaker notes: Walk the line from left to right. Models made chat AI common. The
 
 Source: [reference](../knowledge/website-reading.md).
 
-### 5. Chapter: How we built the Platform
+### 6. Chapter: How we built the Platform
 
 On screen: the title over the dimmed world.
 
 Speaker notes: Pause. The talk moves from your PC to the Platform department and its four repositories.
 
-### 6. The 4 pillars of Platform.
+### 7. The 4 pillars of Platform.
 
 On screen: platform, state 0. Panels name Foundations, agent-harness, agentic-workflows, project-health.
 
@@ -76,7 +84,7 @@ Speaker notes: Platform is a Plain Concepts department that builds and maintains
 
 Source: [reference](../knowledge/platform.md).
 
-### 7. Foundations: technology conventions.
+### 8. Foundations: technology conventions.
 
 On screen: baseline, state 0. Panels name Foundations, Backend · .NET, Frontend · Next.js, Branding · ui-theme.
 
@@ -88,7 +96,7 @@ Speaker notes: Foundations is the thin shared layer that keeps many Platform app
 
 Source: [reference](../knowledge/platform.md).
 
-### 8. agent-harness: agentic conventions.
+### 9. agent-harness: agentic conventions.
 
 On screen: environment, state 0. Panels name agent-harness, OpenSpec, plugins, Skills per project, Guardrails.
 
@@ -100,7 +108,7 @@ Speaker notes: One npx command runs a wizard and installs the harness in a repo.
 
 Source: [reference](../knowledge/workflow-routes.md).
 
-### 9. agentic-workflows: asynchronous development in the cloud.
+### 10. agentic-workflows: asynchronous development in the cloud.
 
 On screen: workflow, state 0. Panels name Issue event, gh-aw + agentic-workflows, OpenCode · Forge, Safe Outputs · PR.
 
@@ -108,7 +116,7 @@ Slide: Our layer on top of GitHub Agentic Workflows: one router, workers that us
 
 Speaker notes: Now the work leaves the PC. agentic-workflows is our layer on top of GitHub Agentic Workflows, gh-aw. Each worker is a gh-aw markdown file. We never call gh aw compile directly: our wrapper runs it and rewrites the lock files for our runners and for OpenCode as the engine. One command, npx @plainconceptsplatform/workflows, installs it in a repo, and update keeps it current. On top of gh-aw we add our practices: one router owns every event, OpenCode reasons through Forge, our AI gateway, with read-only access, and every write goes through allowlisted Safe Outputs. The workers call the agent-harness skills, for example pc-plan-goal in Implement, so a repo needs agent-harness first. The next slides follow each worker.
 
-### 10. One router for every event.
+### 11. One router for every event.
 
 On screen: the router flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -116,7 +124,7 @@ Slide: One event, one run, at most one worker. Classification is pure shell with
 
 Speaker notes: A Markdown file compiles to a GitHub Actions workflow with gh aw compile. GitHub Agentic Workflows supplies the compiler and the runtime. Platform supplies the router, the worker catalog, the installer, shared defaults, and the repository Harness. The router owns every trigger. Rung 1 classifies the event in pure shell, with no network call and no model. Then it authorizes: write access and organization membership, or the bot-working label for bots. Then it dispatches one worker through workflow_call, or none. Requests from people without write access enter through Triage. Cron and manual dispatch go to deterministic jobs that never run a model. Router concurrency prevents two workers on one Issue. Labels describe state for people. They are not the lock. An idle run still appears for every matching event and costs about ten seconds with every job skipped.
 
-### 11. Jobs → agent → jobs → Safe Outputs
+### 12. Jobs → agent → jobs → Safe Outputs
 
 On screen: workflow, state 1. Panels name facts · jobs, OpenCode · agent, validate · jobs, safe-outputs.
 
@@ -124,7 +132,7 @@ Slide: Jobs collect facts. OpenCode decides through Forge, our AI gateway, with 
 
 Speaker notes: Every worker climbs the same ladder. Rung 1 classifies in shell. Rung 3 collects facts. Rung 4 reserves the Issue and checks eligibility. Rung 5 is the agent. Rung 6 concludes in shell. The agent is OpenCode, and it never talks to a model provider itself. It talks to Forge, the Plain Concepts AI gateway. Forge chooses the provider and the model, and each project has its own key, so we control cost and access for each project. The model, the provider, and the runtime can change. The architecture around them stays. Deterministic validators enforce the result contract. Fixed jobs apply allowed writes. Safe Outputs defines the permitted verbs. The agent itself has read-only repository permissions. Neither a label check nor a fixed comment needs a model.
 
-### 12. Triage: the front door.
+### 13. Triage: the front door.
 
 On screen: the triage flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -132,7 +140,7 @@ Slide: Four outcomes: pass, needs info, needs a maintainer, block. Three rounds 
 
 Speaker notes: Triage runs only for outside collaborators. A user with write access skips it. The worker reserves the Issue with the bot-working label, collects the Issue and its comments, and the agent runs ten checks. Four valid outcomes. Pass adds the refine label with no human in the loop. Needs info posts questions, and an author reply re-runs the worker. Needs maintainer keeps the Issue open with a review label. Block closes it only on a genuine rejection. The round counter comes from markers already on the Issue. In round three, needs info is no longer allowed, so the loop ends. An invalid outcome is retried.
 
-### 13. Refine: size and split the work.
+### 14. Refine: size and split the work.
 
 On screen: the refine flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -140,7 +148,7 @@ Slide: Explore the code one unit at a time. Write the story as Given, When, Then
 
 Speaker notes: Reserve, collect facts, then the agent explores the real codebase one unit at a time. A trivial change gets a plan without Gherkin. Everything else becomes a story in Given, When, Then, wrapped into the Issue form and passed through the humanizer. The estimate is Fibonacci against the estimate bands. Eight or more splits into two to six children of five or less, and each child walks the pipeline alone. Open questions go to the author in one batched comment. When nothing is open, the Issue is refined and the implement label is added. If the agent cannot ground the story in the code, the run is incomplete and retried.
 
-### 14. Implement: one PR, then stop.
+### 15. Implement: one PR, then stop.
 
 On screen: the implement flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -148,7 +156,7 @@ Slide: Eligible? Reserve, collect facts. Trivial marker takes the direct path, t
 
 Speaker notes: Rung 4 checks eligibility: the Issue is open and not marked future. Reserve it. Rung 3 collects facts. A trivial marker takes the direct path, one todo per item. Everything else runs the plan-goal pipeline from the Harness. Verify checks the scoped files, and a failure goes back to the agent. Create PR is the one safe output. Then the worker hands off: the merge decision belongs to the gate. If the run died in under six minutes, that is an outage, and the worker retries up to five times. If it died later, something is wrong, and the Issue is parked with a review label.
 
-### 15. Merge Gate: the only one that merges.
+### 16. Merge Gate: the only one that merges.
 
 On screen: the gate flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -156,7 +164,7 @@ Slide: CI red? Repair, push, CI again. CI green? Measure the blast radius, the a
 
 Speaker notes: CI reports its conclusion to the router, or the reconciler finds a pull request that was missed. Rung 4 checks the subject: our open pull request. Checkout is fast-forward only. Rung 3 collects the diff, the pull request shape, and the CI logs. If CI failed, the agent repairs and verifies, pushes, and CI runs again. If CI passed, rung 4b measures the protected paths and the blast radius. The agent finds and verifies defects and reports them. The disposition is computed in shell from that report and the blast radius: auto-merge with squash and the Issue closed, human review when the change is fragile or the radius is high, owner review from CODEOWNERS for protected paths, or blocked when CI stays red at attempt six. Only this worker merges.
 
-### 16. And four more workers.
+### 17. And four more workers.
 
 On screen: workflow, state 5. Panels name Apply Review, Audit · read-only, Release · manual, Visual Verify.
 
@@ -168,7 +176,7 @@ Speaker notes: The other four workers follow the same pattern, so we only name t
 
 Source: [reference](../knowledge/platform.md).
 
-### 17. One dashboard for every project.
+### 18. One dashboard for every project.
 
 On screen: the portfolio board of Project Health over the dimmed world. The composition holds the current subject.
 
@@ -180,7 +188,7 @@ Speaker notes: Project Health is a template repository. It collects delivery and
 
 Source: [reference](../knowledge/maturity.md).
 
-### 18. From Issue to production with GitHub Agentic Workflows.
+### 19. From Issue to production with GitHub Agentic Workflows.
 
 On screen: system, state 0. Panels name Triage, Refine · Implement, CI, Merge Gate, Production.
 
@@ -188,7 +196,7 @@ Slide: Product experts who do not code file small eligible Issues or bugs. They 
 
 Speaker notes: Return to the person at the PC from the opening. The completed system now lets someone close to the product create a small eligible Issue or bug. That person does not need to code or supervise the agent. Trace their Issue through Triage, Refine, Implement, CI, Merge Gate, the application deployment, and Health. They define the intended behavior and answer product questions when needed. The system owns execution and its checks. This autonomy depends on the technical and agent base established in Foundations, with the Harness and workflow controls in place. Protected technical changes still need their owner. People with write access label an Issue straight into the route. Everyone else enters through Triage. Application deployment follows the project configuration. The manually dispatched package Release worker is a separate route. The five maturity forms remain in the field without claiming an assessment score. Health feeds evidence into the three earlier pillars. End on the product change in production and the measured improvement loop.
 
-### 19. What exactly are software engineers supposed to do?
+### 20. What exactly are software engineers supposed to do?
 
 On screen: an attributed quote card over the dimmed world. The composition holds the current subject.
 
