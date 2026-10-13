@@ -210,6 +210,8 @@
   "flow.gate.owner.sub": "CODEOWNERS",
   "flow.gate.blocked": "Blocked",
   "flow.gate.blocked.sub": "belt does not retry",
+  "board.sponsors.event": "<NetCoreConf/>",
+  "board.sponsors.city": "Madrid ‘26",
   "board.sponsors.platinum": "Platinum sponsors",
   "board.sponsors.gold": "Gold sponsors",
   "board.sponsors.collab": "Supported by",

@@ -175,6 +175,8 @@ body { font-family: var(--font-label); }
 .board-avatar-ring { fill: none; stroke: #2f69ff; stroke-width: 0.3; }
 .board-quote { font-size: 2.9px; font-weight: 500; font-family: var(--font-display); fill: #e8e9ec !important; }
 .board-rule--sponsors { stroke: #42464e; stroke-width: 0.15; }
+.board-event { font-family: var(--font-display); font-weight: 700; fill: #f2f4ff !important; }
+.board-event--city { font-weight: 500; fill: #c5c8ce !important; }
 .board-tier { font-size: 2.7px; font-family: var(--font-label); fill: #c5c8ce !important; }
 .board-bar { fill: #63686f; }
 .board-bar--ok { fill: #2f69ff; }

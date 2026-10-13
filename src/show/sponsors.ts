@@ -34,6 +34,22 @@ export const SPONSOR_LABELS: SponsorLabel[] = [
   { key: 'board.sponsors.collab', x: 10009993, y: 7915477, h: 686100 },
 ]
 
+/**
+ * The event header, top right: the mascot and two lines of text. Boxes are the original ones.
+ * The original sets the text in Poppins at 21.4 and 17.5 points. Outfit is narrower, so the sizes here are raised
+ * until each line takes the same width as in the original slide (29 and 15 stage units).
+ */
+export const SPONSOR_EVENT = {
+  mascot: { file: '/assets/sponsors/netcoreconf-robot.png', x: 16353168, y: 762000, w: 1234220, h: 1420720 },
+  /** Centred in its box. */
+  name: { key: 'board.sponsors.event' as MessageKey, x: 13166764, y: 1203639, w: 2978413, h: 489684, pt: 30.7 },
+  /** Right-aligned in its box. */
+  city: { key: 'board.sponsors.city' as MessageKey, x: 12986370, y: 1785716, w: 2978325, h: 359100, pt: 25.4 },
+} as const
+
+/** One point in EMU. */
+export const EMU_PER_PT = 12700
+
 /** The rules under the tier names. */
 export const SPONSOR_LINES: SponsorLine[] = [
   { x: 700612, y: 2913366, w: 16705493 },

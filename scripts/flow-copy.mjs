@@ -193,6 +193,8 @@ const gate = {
 
 // The Project Health boards. The portfolio values are the template's example data, labelled as such on screen.
 const board = {
+  'board.sponsors.event': ['<NetCoreConf/>', '<NetCoreConf/>'],
+  'board.sponsors.city': ['Madrid ‘26', 'Madrid ‘26'],
   'board.sponsors.platinum': ['Platinum sponsors', 'Platinum sponsors'],
   'board.sponsors.gold': ['Gold sponsors', 'Gold sponsors'],
   'board.sponsors.collab': ['Supported by', 'Colabora'],

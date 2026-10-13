@@ -5,7 +5,7 @@
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useT, type MessageKey } from '@/i18n'
-import { SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
+import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
 export type BoardId = 'portfolio' | 'agents' | 'quote' | 'sponsors'
 
@@ -247,9 +247,13 @@ function Sponsors() {
   const t = useT()
   const k = STAGE_W / SPONSOR_SLIDE.width
   const total = SPONSOR_LOGOS.length + 1
+  const { mascot, name, city } = SPONSOR_EVENT
   return (
     <>
       <g className="board-card" style={reveal(0, total)}>
+        <image href={mascot.file} x={mascot.x * k} y={mascot.y * k} width={mascot.w * k} height={mascot.h * k} preserveAspectRatio="none" />
+        <text x={(name.x + name.w / 2) * k} y={(name.y + name.h * 0.8) * k} className="board-event" style={{ fontSize: name.pt * EMU_PER_PT * k, textAnchor: 'middle' }} data-i18n={name.key}>{t(name.key)}</text>
+        <text x={(city.x + city.w) * k} y={(city.y + city.h * 0.85) * k} className="board-event board-event--city" style={{ fontSize: city.pt * EMU_PER_PT * k, textAnchor: 'end' }} data-i18n={city.key}>{t(city.key)}</text>
         {SPONSOR_LINES.map((line, i) => <line key={i} x1={line.x * k} x2={(line.x + line.w) * k} y1={line.y * k} y2={line.y * k} className="board-rule board-rule--sponsors" />)}
         {SPONSOR_LABELS.map((label) => (
           <text key={label.key} x={label.x * k} y={(label.y + label.h * 0.62) * k} className="board-tier" data-i18n={label.key}>{t(label.key)}</text>
