@@ -18,6 +18,28 @@ export const part: Part = {
       "board": "sponsors"
     },
     {
+      "heading": "talk.ghaw.markdown.title",
+      "line": "talk.ghaw.markdown.body",
+      "command": "talk.ghaw.markdown.command",
+      "picture": "cover",
+      "step": 1,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "board": "markdown"
+    },
+    {
+      "heading": "talk.ghaw.flow.title",
+      "line": "talk.ghaw.flow.body",
+      "command": "talk.ghaw.flow.command",
+      "picture": "cover",
+      "step": 1,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "flow": "ghaw"
+    },
+    {
       "heading": "talk.local.title",
       "line": "talk.local.body",
       "command": "talk.local.command",

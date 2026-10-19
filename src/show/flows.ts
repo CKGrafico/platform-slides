@@ -5,7 +5,7 @@
  */
 import type { MessageKey } from '@/i18n'
 
-export type FlowId = 'router' | 'triage' | 'refine' | 'implement' | 'gate'
+export type FlowId = 'ghaw' | 'router' | 'triage' | 'refine' | 'implement' | 'gate'
 /** shell: a deterministic job. agent: the model runs. gate: a decision. end: where the work lands. human: a person. stop: nothing happens. */
 export type NodeKind = 'event' | 'shell' | 'agent' | 'gate' | 'end' | 'human' | 'stop'
 export interface FlowNode { id: string; kind: NodeKind; col: number; row: number; title: MessageKey; sub?: MessageKey }
@@ -21,6 +21,22 @@ const W = [0, 0.72, 1.44, 2.16, 2.88, 3.6]
 const R = [0, 0.85, 1.7, 2.55, 3.4]
 
 export const FLOWS: Record<FlowId, FlowDef> = {
+  // GitHub Agentic Workflows in one line: what any repo gets from gh-aw, before our own layer.
+  ghaw: {
+    nodes: [
+      n('issue', 'event', 0, 1, 'flow.ghaw.issue', 'flow.ghaw.issue.sub'),
+      n('md', 'shell', 1, 1, 'flow.ghaw.md', 'flow.ghaw.md.sub'),
+      n('compile', 'shell', 2, 1, 'flow.ghaw.compile', 'flow.ghaw.compile.sub'),
+      n('actions', 'shell', 3, 1, 'flow.ghaw.actions', 'flow.ghaw.actions.sub'),
+      n('agent', 'agent', 4, 1, 'flow.ghaw.agent', 'flow.ghaw.agent.sub'),
+      n('safe', 'gate', 5, 1, 'flow.ghaw.safe', 'flow.ghaw.safe.sub'),
+      n('pr', 'end', 5, 2.5, 'flow.ghaw.pr', 'flow.ghaw.pr.sub'),
+    ],
+    edges: [
+      e('issue', 'md', 'main'), e('md', 'compile', 'main'), e('compile', 'actions', 'main'), e('actions', 'agent', 'main'),
+      e('agent', 'safe', 'main', 'flow.edge.proposes'), e('safe', 'pr', 'main', 'flow.edge.opens'),
+    ],
+  },
   router: {
     nodes: [
       n('event', 'event', 0, W[2]!, 'flow.router.event', 'flow.router.event.sub'),

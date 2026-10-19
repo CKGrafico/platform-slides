@@ -177,6 +177,11 @@ body { font-family: var(--font-label); }
 .board-rule--sponsors { stroke: #42464e; stroke-width: 0.15; }
 .board-event { font-family: var(--font-display); font-weight: 700; fill: #f2f4ff !important; }
 .board-event--city { font-weight: 500; fill: #c5c8ce !important; }
+.board-code { font-family: var(--font-label); font-size: 2.2px; fill: #e8e9ec !important; white-space: pre; }
+.board-code--fence { fill: #63686f !important; }
+.board-code--key { fill: #a7abb1 !important; }
+.board-code--act { fill: #2f69ff !important; font-weight: 600; }
+.board-code--title { font-weight: 700; }
 .board-tier { font-size: 2.7px; font-family: var(--font-label); fill: #c5c8ce !important; }
 .board-bar { fill: #63686f; }
 .board-bar--ok { fill: #2f69ff; }

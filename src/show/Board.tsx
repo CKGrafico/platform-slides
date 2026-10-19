@@ -7,7 +7,7 @@
 import { useT, type MessageKey } from '@/i18n'
 import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
-export type BoardId = 'portfolio' | 'agents' | 'quote' | 'sponsors'
+export type BoardId = 'portfolio' | 'agents' | 'quote' | 'sponsors' | 'markdown'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -269,10 +269,47 @@ function Sponsors() {
   )
 }
 
+/** Picks a style per code line: the fence, a settings line, the line that acts, a heading, or prompt text. */
+function codeClass(line: string, inSettings: boolean) {
+  if (line === '---') return 'board-code board-code--fence'
+  if (inSettings) return line.includes('create-pull-request') ? 'board-code board-code--act' : 'board-code board-code--key'
+  if (line.startsWith('#')) return 'board-code board-code--title'
+  return 'board-code'
+}
+
+/**
+ * A gh-aw workflow as a source card: the file path on top, then the Markdown, line by line.
+ * Settings (the frontmatter) are quieter than the prompt. The one line that lets the agent act is blue.
+ */
+function Markdown() {
+  const t = useT()
+  const lines = t('board.markdown.code').split('\n')
+  const x = 40
+  const y = 26
+  const w = STAGE_W - x * 2
+  const step = 2.9
+  const h = 9 + lines.length * step + 3
+  let fences = 0
+  return (
+    <g className="board-card" style={reveal(0, 1)}>
+      <rect x={x} y={y} width={w} height={h} rx={1.2} className="board-card-frame" />
+      <line x1={x} x2={x + w} y1={y + 6} y2={y + 6} className="board-rule" />
+      <text x={x + 4} y={y + 4} className="board-repo" data-i18n="board.markdown.file">{t('board.markdown.file')}</text>
+      <text data-i18n="board.markdown.code">
+        {lines.map((line, i) => {
+          const className = codeClass(line, fences === 1 && line !== '---')
+          if (line === '---') fences++
+          return <tspan key={i} x={x + 4} y={y + 11 + i * step} className={className}>{line || '\u00a0'}</tspan>
+        })}
+      </text>
+    </g>
+  )
+}
+
 export function Board({ id }: { id: BoardId }) {
   return (
     <svg className="flow board" viewBox={`0 0 ${STAGE_W} ${STAGE_H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      {id === 'sponsors' ? <Sponsors /> : id === 'quote' ? <Quote /> : id === 'portfolio' ? <Portfolio /> : <Agents />}
+      {id === 'markdown' ? <Markdown /> : id === 'sponsors' ? <Sponsors /> : id === 'quote' ? <Quote /> : id === 'portfolio' ? <Portfolio /> : <Agents />}
     </svg>
   )
 }

@@ -192,6 +192,28 @@ const gate = {
 // How measurement changed the system. The cases come from docs/knowledge/platform.md, "Lessons with numbers".
 
 // The Project Health boards. The portfolio values are the template's example data, labelled as such on screen.
+// A minimal gh-aw workflow, as code. It is the same in both decks, like any source file.
+const ghaw = {
+  'board.markdown.file': ['.github/workflows/implement-issue.md', '.github/workflows/implement-issue.md'],
+  'board.markdown.code': ['---\non:\n  issues:\n    types: [labeled]\npermissions: read-all\nengine: claude\nsafe-outputs:\n  create-pull-request:\n---\n\n# Implement the issue\n\nRead issue #${{ github.event.issue.number }}.\nChange the code so it does what the issue asks.\nRun the tests, then open one pull request.', '---\non:\n  issues:\n    types: [labeled]\npermissions: read-all\nengine: claude\nsafe-outputs:\n  create-pull-request:\n---\n\n# Implement the issue\n\nRead issue #${{ github.event.issue.number }}.\nChange the code so it does what the issue asks.\nRun the tests, then open one pull request.'],
+  'flow.ghaw.issue': ['Issue', 'Issue'],
+  'flow.ghaw.issue.sub': ['label added', 'se etiqueta'],
+  'flow.ghaw.md': ['workflow.md', 'workflow.md'],
+  'flow.ghaw.md.sub': ['settings + prompt', 'config + prompt'],
+  'flow.ghaw.compile': ['gh aw compile', 'gh aw compile'],
+  'flow.ghaw.compile.sub': ['Markdown to YAML', 'Markdown a YAML'],
+  'flow.ghaw.actions': ['GitHub Actions', 'GitHub Actions'],
+  'flow.ghaw.actions.sub': ['runs the lock file', 'ejecuta el lock'],
+  'flow.ghaw.agent': ['Agent', 'Agente'],
+  'flow.ghaw.agent.sub': ['API key · read-only', 'API key · lectura'],
+  'flow.ghaw.safe': ['Safe Output', 'Safe Output'],
+  'flow.ghaw.safe.sub': ['checked by gh-aw', 'lo valida gh-aw'],
+  'flow.ghaw.pr': ['Pull request', 'Pull request'],
+  'flow.ghaw.pr.sub': ['one per run', 'uno por run'],
+  'flow.edge.proposes': ['proposes', 'propone'],
+  'flow.edge.opens': ['opens', 'abre'],
+}
+
 const board = {
   'board.sponsors.event': ['<NetCoreConf/>', '<NetCoreConf/>'],
   'board.sponsors.city': ['Madrid ‘26', 'Madrid ‘26'],
@@ -267,4 +289,4 @@ const board = {
   'board.agents.legend.success': ['succeeded, where known', 'con éxito, si se sabe'],
 }
 
-export const flowCopy = { ...edge, ...router, ...triage, ...refine, ...implement, ...gate, ...board }
+export const flowCopy = { ...edge, ...router, ...triage, ...refine, ...implement, ...gate, ...board, ...ghaw }
