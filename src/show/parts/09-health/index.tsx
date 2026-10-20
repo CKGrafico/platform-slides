@@ -15,6 +15,10 @@ export const part: Part = {
       "step": 0,
       "labels": [],
       "layout": "wide",
+      "link": {
+        "href": "https://probable-fiesta-2y6w5gw.pages.github.io/projects/numa/#roadmap/750",
+        "label": "talk.link.health750"
+      },
       "dim": true,
       "board": "portfolio",
       "cloud": true

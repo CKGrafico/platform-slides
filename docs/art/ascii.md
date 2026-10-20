@@ -58,7 +58,7 @@ Nodes and edges appear in column order as `--flow-reveal` runs from 0 to 1, so t
 
 The text in the diagrams stays in English in both languages, because the names match the code and the labels on GitHub. `scripts/flow-copy.mjs` copies the English text of every `flow.*` key into Spanish. Titles and captions are still translated.
 
-The Triage, Refine, Implement, and Merge Gate slides have a link at the top right to one real Issue that went through all four workers. The presenter opens it during the talk. The repository is private, so the label does not name the project.
+The Triage, Refine, Implement, and Merge Gate slides have a link at the top right to one real Issue that went through all four workers. The presenter opens it during the talk. The repository is private, so the label does not name the project. The Project Health slide links to the same Issue on the roadmap.
 
 ## Sponsor slide
 

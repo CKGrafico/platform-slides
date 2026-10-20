@@ -31,6 +31,7 @@ export const sharedCopy = {
   'talk.label.issueEvent': ['Issue event', 'Evento: Issue'],
   'talk.label.agentForge': ['OpenCode · Forge', 'OpenCode · Forge'],
   'talk.link.example750': ['↗ Real example: Issue #750', '↗ Ejemplo real: Issue #750'],
+  'talk.link.health750': ['↗ Issue #750 on the roadmap', '↗ Issue #750 en el roadmap'],
   'talk.label.applyReview': ['Apply Review', 'Apply Review'],
   'talk.label.visualVerify': ['Visual Verify', 'Visual Verify'],
   'talk.label.workflowsOnGhAw': ['gh-aw + agentic-workflows', 'gh-aw + agentic-workflows'],
@@ -182,4 +183,6 @@ export const sections = [
 const EXAMPLE_750 = { href: 'https://github.com/PlainConceptsPlatform/Numa/issues/750', label: 'talk.link.example750' }
 for (const section of sections) for (const beat of section.beats) {
   if (['workflows.triage', 'workflows.refine', 'workflows.implement', 'workflows.gate'].includes(beat.key)) beat.link = EXAMPLE_750
+  // The same Issue on the Project Health roadmap.
+  if (beat.key === 'health.portfolio') beat.link = { href: 'https://probable-fiesta-2y6w5gw.pages.github.io/projects/numa/#roadmap/750', label: 'talk.link.health750' }
 }

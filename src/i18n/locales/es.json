@@ -305,6 +305,7 @@
   "show.cloudPrompt": "pc@studio:~/cloud$",
   "show.active.label": "el Issue activo",
   "talk.link.example750": "↗ Ejemplo real: Issue #750",
+  "talk.link.health750": "↗ Issue #750 en el roadmap",
   "talk.label.skills": "skills pc-*",
   "talk.label.docs": "ARCHITECTURE + DESIGN",
   "talk.label.refine": "Refine",
