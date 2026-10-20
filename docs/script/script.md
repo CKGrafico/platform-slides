@@ -88,11 +88,11 @@ Source: [reference](../knowledge/platform.md).
 
 ### 8. Foundations: technology conventions.
 
-On screen: baseline, state 0. Panels name Foundations, Backend · .NET, Frontend · Next.js, Branding · ui-theme.
+On screen: the site tab of one real Project Health dashboard, without the project name, over the dimmed world. Panels name Foundations, Backend · .NET, Frontend · Next.js, Branding · ui-theme.
 
 Slide: A thin base for many apps: a .NET backend, a Next.js frontend and one shared brand. People and agents follow the same rules.
 
-Speaker notes: Foundations is the thin shared layer that keeps many Platform apps consistent for people and agents. It is not a framework: two packages, not eight. The backend reference is .NET with Clean Architecture, vertical slices and EF Core, composed by Aspire. The frontend reference is Next.js with strict TypeScript, shadcn/ui and Tailwind. Branding is the ui-theme package: one brand blue, one typeface, tokens only.
+Speaker notes: Foundations is the thin shared layer that keeps many Platform apps consistent for people and agents. It is not a framework: two packages, not eight. The backend reference is .NET with Clean Architecture, vertical slices and EF Core, composed by Aspire. The frontend reference is Next.js with strict TypeScript, shadcn/ui and Tailwind. Branding is the ui-theme package: one brand blue, one typeface, tokens only. On the right is the site itself, platform.plainconcepts.com: the method written down, for people and for agents. Open the link to show it live.
 
 ## agent-harness: agentic conventions
 

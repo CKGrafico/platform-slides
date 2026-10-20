@@ -250,6 +250,7 @@ const board = {
   'board.quote.text': ['Software engineers are supposed to do exactly what we’ve always done.\nEnsure that the composition and structure of the system is robust and\nmaintainable and that the behavior of the system properly serves the\nneeds of our users.\n\nThis requires engineering discipline. It need not require detailed\nreading of the code; just as using compilers does not require detailed\nreading of the binary.', 'Se supone que los ingenieros de software deben hacer exactamente lo que\nsiempre hemos hecho. Asegurar que la composición y la estructura del\nsistema sean robustas y mantenibles y que el comportamiento del sistema\nsirva adecuadamente a las necesidades de nuestros usuarios.\n\nEsto requiere disciplina de ingeniería. No tiene por qué requerir una\nlectura detallada del código; igual que usar compiladores no requiere\nuna lectura detallada del binario.'],
   // What agent-harness installs in a repo, checked against the harness/ and skills/ folders of the agent-harness repo.
   // One line per entry: the path, a tab, then a short note. A technical listing, so Spanish shows the English text.
+  'board.site.url': ['platform.plainconcepts.com', 'platform.plainconcepts.com'],
   'board.tree.file': ['your-repo/ · after the install', 'your-repo/ · after the install'],
   'board.tree.code': [TREE, TREE],
   'board.quote.source':['x.com/unclebobmartin · original', 'x.com/unclebobmartin · traducido'],

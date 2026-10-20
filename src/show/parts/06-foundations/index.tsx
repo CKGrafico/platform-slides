@@ -40,6 +40,11 @@ export const part: Part = {
         }
       ],
       "layout": "wide",
+      "link": {
+        "href": "https://platform.plainconcepts.com",
+        "label": "talk.link.site"
+      },
+      "board": "site",
       "cloud": true
     }
   ]

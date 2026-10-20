@@ -92,10 +92,11 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
       break
     case 'baseline':
       // Foundations holds three convention sets: backend, frontend and branding, in a column fed by thin links.
-      hero('wall', -20, -2, 1.45)
-      hero('parcel.0', 16, 9, 1.15)
-      hero('parcel.1', 16, -2.5, 0.95)
-      hero('parcel.2', 16, -13.5, 1.15)
+      // They sit in the left half. The right half shows the Foundations site (Board `site`).
+      hero('wall', -36, -2, 1.3)
+      hero('parcel.0', -10, 9, 1.0)
+      hero('parcel.1', -10, -2.5, 0.85)
+      hero('parcel.2', -10, -13.5, 1.0)
       for (let i = 0; i < 3; i++) path(`path.found.${i}` as PathId, 0.9)
       owner = 'wall'
       break

@@ -1,15 +1,16 @@
 /**
  * The boards, drawn in stage units over the dimmed world.
  * `engineering`, `delivery`, `agentic` and `roadmap` copy the four tabs of one real Project Health dashboard.
- * `quote`, `sponsors`, `ghaw` and `tree` are single cards.
+ * `quote`, `sponsors`, `ghaw`, `tree` and `site` are single cards.
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
+import { useEnvironment } from '@/engine/environment'
 import { useT, type MessageKey } from '@/i18n'
 import { FlowLegend } from './Flow'
 import { FLOWS } from './flows'
 import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
-export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'ghaw' | 'tree'
+export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'ghaw' | 'tree' | 'site'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -460,6 +461,45 @@ function Ghaw() {
   )
 }
 
+/**
+ * The Foundations site, in a browser window at the right of the stage. Captured from platform.plainconcepts.com
+ * on 2026-10-20: the top of the home page (above its demo dashboard, whose numbers are illustrative), then the
+ * Frontend and Backend pages. Each page scrolls down slowly and hands over to the next. The motion is a CSS loop,
+ * a pure function of the clock, and reduced motion holds the home page still.
+ */
+const SITE_PAGES = [
+  { file: '/assets/foundations/home.jpg', height: 1840 },
+  { file: '/assets/foundations/frontend.jpg', height: 2400 },
+  { file: '/assets/foundations/backend.jpg', height: 2400 },
+]
+const SITE_CAPTURE_W = 1280
+
+function Site() {
+  const { reducedMotion } = useEnvironment()
+  const x = 97
+  const y = 27
+  const w = RIGHT - x
+  const bar = 4.2
+  const h = BOTTOM - 4 - y
+  const viewH = h - bar
+  return (
+    <g className="board-card" style={reveal(0, 1)}>
+      <rect x={x} y={y} width={w} height={h} rx={1} className="board-card-frame" />
+      <clipPath id="board-site-view"><rect x={x} y={y + bar} width={w} height={viewH} /></clipPath>
+      <g clipPath="url(#board-site-view)" className={reducedMotion ? 'board-site board-site--still' : 'board-site'}>
+        {SITE_PAGES.map((page, i) => {
+          const pageH = (page.height / SITE_CAPTURE_W) * w
+          const style = { '--page': i, '--scroll': Math.max(0, pageH - viewH) } as React.CSSProperties
+          return <image key={page.file} href={page.file} x={x} y={y + bar} width={w} height={pageH} preserveAspectRatio="none" className="board-site-page" style={style} />
+        })}
+      </g>
+      <line x1={x} x2={x + w} y1={y + bar} y2={y + bar} className="board-rule" />
+      {[0, 1, 2].map((i) => <circle key={i} cx={x + 2.2 + i * 1.8} cy={y + bar / 2} r={0.5} className="board-site-dot" />)}
+      <Txt k="board.site.url" x={x + w / 2} y={y + bar / 2 + 0.55} className="board-site-url" />
+    </g>
+  )
+}
+
 /** A tree line is blue when it is one of the guardrails: the guardrail skills, the plugins that block calls, and the diff check. */
 const GUARD = /guardrails|plugins\/|check-diff/
 
@@ -493,7 +533,7 @@ function Tree() {
   )
 }
 
-const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, ghaw: Ghaw, tree: Tree }
+const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, ghaw: Ghaw, tree: Tree, site: Site }
 
 export function Board({ id }: { id: BoardId }) {
   const View = BOARDS[id]

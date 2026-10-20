@@ -30,6 +30,7 @@ export const sharedCopy = {
   'talk.label.agentForge': ['OpenCode · Forge', 'OpenCode · Forge'],
   'talk.link.example750': ['↗ Real example: Issue #750', '↗ Ejemplo real: Issue #750'],
   'talk.link.health750': ['↗ Issue #750 on the roadmap', '↗ Issue #750 en el roadmap'],
+  'talk.link.site': ['↗ platform.plainconcepts.com', '↗ platform.plainconcepts.com'],
   'talk.link.healthLive': ['↗ Live dashboard', '↗ Panel en vivo'],
   'talk.health.dora': ['DORA: DevOps Research and Assessment, a Google Cloud program.', 'DORA: DevOps Research and Assessment, un programa de Google Cloud.'],
   'talk.closing.talk': ['Questions? Let\'s talk.', '¿Preguntas? Hablemos.'],
@@ -105,10 +106,10 @@ export const sections = [
       'Platform is a Plain Concepts department that builds and maintains applications. Foundations defines conventions. agent-harness installs the agent environment. agentic-workflows runs workers on events. project-health measures delivery and agent work. Each repository supplies an input the next one needs.', ['Plain Concepts Platform', 'Plain Concepts Platform']),
   ] },
   { id: '06-foundations', scene: 'constraints', title: 'Foundations: technology conventions', name: 'foundations', source: '../knowledge/platform.md', cloud: true, beats: [
-    B('foundations.conventions', ['Foundations:\ntechnology conventions.', 'Foundations:\nconvenciones tecnológicas.'],
+    Object.assign(B('foundations.conventions', ['Foundations:\ntechnology conventions.', 'Foundations:\nconvenciones tecnológicas.'],
       ['A thin base for many apps: a .NET backend, a Next.js frontend and one shared brand. People and agents follow the same rules.', 'Una base fina para muchas apps: backend .NET, frontend Next.js y una marca común. Personas y agentes siguen las mismas reglas.'], 'baseline', 0,
       [U('wall', 'talk.label.foundations'), U('parcel.0', 'talk.label.backend'), U('parcel.1', 'talk.label.frontend'), U('parcel.2', 'talk.label.branding')],
-      'Foundations is the thin shared layer that keeps many Platform apps consistent for people and agents. It is not a framework: two packages, not eight. The backend reference is .NET with Clean Architecture, vertical slices and EF Core, composed by Aspire. The frontend reference is Next.js with strict TypeScript, shadcn/ui and Tailwind. Branding is the ui-theme package: one brand blue, one typeface, tokens only.', ['Foundations · backend · frontend · branding', 'Foundations · backend · frontend · branding']),
+      'Foundations is the thin shared layer that keeps many Platform apps consistent for people and agents. It is not a framework: two packages, not eight. The backend reference is .NET with Clean Architecture, vertical slices and EF Core, composed by Aspire. The frontend reference is Next.js with strict TypeScript, shadcn/ui and Tailwind. Branding is the ui-theme package: one brand blue, one typeface, tokens only. On the right is the site itself, platform.plainconcepts.com: the method written down, for people and for agents. Open the link to show it live.', ['Foundations · backend · frontend · branding', 'Foundations · backend · frontend · branding']), { board: 'site', link: { href: 'https://platform.plainconcepts.com', label: 'talk.link.site' } }),
   ] },
   { id: '07-harness', scene: 'environment', title: 'agent-harness: agentic conventions', name: 'harness', source: '../knowledge/platform.md', cloud: true, beats: [
     Object.assign(B('harness.conventions', ['agent-harness:\nagentic conventions.', 'agent-harness:\nconvenciones agénticas.'],

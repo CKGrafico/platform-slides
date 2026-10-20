@@ -205,6 +205,27 @@ body { font-family: var(--font-label); }
 .board-state--pr { fill: #8a8f98; }
 .board-state--hand { fill: #42464e; }
 .board-track { fill: none; stroke: #8a8f98; stroke-width: 0.18; }
+/* The Foundations site: three pages, nine seconds each. A page scrolls to its end, then the next fades in.
+   Each page runs the same loop, offset by its index. Reduced motion holds the first page at its top. */
+.board-site-page { opacity: 0; animation: board-site-page 27s linear infinite both; animation-delay: calc(var(--page) * 9s - 27s); }
+.board-site--still .board-site-page { animation: none; opacity: 0; }
+.board-site--still .board-site-page:first-child { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .board-site-page { animation: none; opacity: 0; }
+  .board-site-page:first-child { opacity: 1; }
+}
+@keyframes board-site-page {
+  0% { opacity: 1; transform: translateY(0); }
+  4% { transform: translateY(0); }
+  31% { transform: translateY(calc(var(--scroll) * -1px)); }
+  33.3% { opacity: 1; transform: translateY(calc(var(--scroll) * -1px)); }
+  36.5% { opacity: 0; transform: translateY(calc(var(--scroll) * -1px)); }
+  37% { opacity: 0; transform: translateY(0); }
+  97% { opacity: 0; }
+  100% { opacity: 1; transform: translateY(0); }
+}
+.board-site-dot { fill: #42464e; }
+.board-site-url { font-size: 1.5px; text-anchor: middle; fill: #8a8f98 !important; }
 .board-avatar-ring { fill: none; stroke: #2f69ff; stroke-width: 0.3; }
 .board-quote { font-size: 2.9px; font-weight: 500; font-family: var(--font-display); fill: #e8e9ec !important; }
 .board-rule--sponsors { stroke: #42464e; stroke-width: 0.15; }
