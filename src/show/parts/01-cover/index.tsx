@@ -40,6 +40,15 @@ export const part: Part = {
       "flow": "ghaw"
     },
     {
+      "heading": "talk.ghaw.months.title",
+      "line": "talk.ghaw.months.body",
+      "command": "talk.ghaw.months.command",
+      "picture": "cover",
+      "step": 1,
+      "labels": [],
+      "layout": "wide"
+    },
+    {
       "heading": "talk.local.title",
       "line": "talk.local.body",
       "command": "talk.local.command",
