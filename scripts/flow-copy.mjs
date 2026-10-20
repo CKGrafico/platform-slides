@@ -289,4 +289,9 @@ const board = {
   'board.agents.legend.success': ['succeeded, where known', 'con éxito, si se sabe'],
 }
 
-export const flowCopy = { ...edge, ...router, ...triage, ...refine, ...implement, ...gate, ...board, ...ghaw }
+const all = { ...edge, ...router, ...triage, ...refine, ...implement, ...gate, ...board, ...ghaw }
+
+// Technical diagrams stay in English in both decks: they use the tool's own words, and a translation reads worse.
+// Every flow.* key (node titles, node lines, edge labels) shows its English text in Spanish too.
+// Titles and captions around the diagrams are still translated.
+export const flowCopy = Object.fromEntries(Object.entries(all).map(([key, [en, es]]) => [key, key.startsWith('flow.') ? [en, en] : [en, es]]))

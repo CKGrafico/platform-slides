@@ -304,6 +304,7 @@
   "show.prompt": "pc@studio:~/local$",
   "show.cloudPrompt": "pc@studio:~/cloud$",
   "show.active.label": "the active Issue",
+  "talk.link.example750": "↗ Real example: Issue #750",
   "talk.label.skills": "pc-* skills",
   "talk.label.docs": "ARCHITECTURE + DESIGN",
   "talk.label.refine": "Refine",

@@ -41,6 +41,7 @@ for (const section of sections) {
       heading: `talk.${beat.key}.title`, ...(beat.layout === 'chapter' || !beat.body[0] ? {} : { line: `talk.${beat.key}.body` }), command: `talk.${beat.key}.command`,
       picture: beat.picture, step: beat.step, labels: beat.labels, layout: beat.layout === 'default' ? undefined : beat.layout,
       ...(beat.footnote ? { footnote: beat.footnote } : {}),
+      ...(beat.link ? { link: beat.link } : {}),
       ...(beat.dim ? { dim: true } : {}),
       ...(beat.flow ? { flow: beat.flow } : {}),
       ...(beat.board ? { board: beat.board } : {}),

@@ -41,6 +41,8 @@ export interface Beat {
   labels?: Annotation[]
   layout?: 'cover' | 'wide' | 'statement' | 'chapter'
   footnote?: MessageKey
+  /** A link the presenter can click during the talk, top right. It opens in a new tab. */
+  link?: { href: string; label: MessageKey }
   cloud?: boolean
   /** The picture fades to a trace. Chapter cards and flow beats use it. */
   dim?: boolean
@@ -141,6 +143,7 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
             {beat.flow ? <Flow id={beat.flow} /> : null}
             {beat.board ? <Board id={beat.board} /> : null}
             {beat.footnote ? <p className="ascii-footnote" data-fit={beat.footnote}><span className="art-burn"><T k={beat.footnote} /></span></p> : null}
+            {beat.link ? <a className="ascii-link" href={beat.link.href} target="_blank" rel="noreferrer" data-fit={beat.link.label} onClick={(e) => e.currentTarget.blur()}><T k={beat.link.label} /></a> : null}
             {beat.layout === 'cover' ? <div className="ascii-byline" data-fit="p01.name"><span className="art-burn"><T k="p01.name" /><span className="ascii-role"><T k="p01.role" /></span></span></div> : null}
           </Stage>
           {beat.labels?.map((item) => <Annotation key={item.target} item={item} />)}

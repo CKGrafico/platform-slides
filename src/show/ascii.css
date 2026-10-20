@@ -64,6 +64,22 @@ body { font-family: var(--font-label); }
 .ascii-frame--wide .ascii-caption { bottom: calc(var(--su) * 5.5); height: calc(var(--su) * 12); width: calc(var(--su) * 130); font-size: calc(var(--su) * 2.8); }
 .ascii-frame--chapter .ascii-heading { top: calc(var(--su) * 38); width: calc(var(--su) * 162.8); height: calc(var(--su) * 24); font-size: calc(var(--su) * 12); text-align: center; white-space: normal; }
 .ascii-frame--statement .ascii-heading { font-size: calc(var(--su) * 8.5); height: calc(var(--su) * 28); width: calc(var(--su) * 110); }
+/* A live example the presenter opens during the talk: top right, on the command line's row. */
+.ascii-link {
+  opacity: var(--title-reveal, 1);
+  position: absolute;
+  top: calc(var(--su) * 4.5);
+  right: calc(var(--su) * 7.5);
+  width: calc(var(--su) * 40);
+  height: calc(var(--su) * 4);
+  font: 500 calc(var(--su) * 1.8) / 1.4 var(--font-label);
+  text-align: right;
+  color: #2f69ff;
+  text-decoration: underline;
+  text-underline-offset: 0.25em;
+  white-space: nowrap;
+  pointer-events: auto;
+}
 .ascii-anchor { position: absolute; left: 0; top: 0; }
 .ascii-leader { position: absolute; left: calc(var(--su) * -40); top: calc(var(--su) * -24); width: calc(var(--su) * 80); height: calc(var(--su) * 48); overflow: visible; }
 .ascii-leader polyline { fill: none; stroke: #8a8f98; stroke-width: 0.25; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--label-reveal, 1)); }

@@ -30,6 +30,7 @@ export const sharedCopy = {
   'talk.label.guardrails': ['Guardrails', 'Guardrails'],
   'talk.label.issueEvent': ['Issue event', 'Evento: Issue'],
   'talk.label.agentForge': ['OpenCode · Forge', 'OpenCode · Forge'],
+  'talk.link.example750': ['↗ Real example: Issue #750', '↗ Ejemplo real: Issue #750'],
   'talk.label.applyReview': ['Apply Review', 'Apply Review'],
   'talk.label.visualVerify': ['Visual Verify', 'Visual Verify'],
   'talk.label.workflowsOnGhAw': ['gh-aw + agentic-workflows', 'gh-aw + agentic-workflows'],
@@ -175,3 +176,10 @@ export const sections = [
       'Ask the question and let it sit. If an Issue can reach production on its own, what is left for us? Answer with Uncle Bob Martin, on X on 5 October 2026: the job does not change. We still make sure the structure of the system is robust and maintainable, and that its behavior serves our users. That takes engineering discipline. It does not take reading every line of the code, just as using a compiler does not take reading the binary. That is what the whole talk built: conventions in Foundations, a Harness for the agents, workflows with gates, and Health to measure. Source: https://x.com/unclebobmartin/status/2107069060420637178', ['what do engineers do?', '¿qué hace un ingeniero?']), { board: 'quote', dim: true }),
   ] },
 ]
+
+// One real Issue went through Triage, Refine, Implement and Merge Gate. The presenter opens it live from those slides.
+// The repository is private, so the audience cannot open it. The visible label names no client project.
+const EXAMPLE_750 = { href: 'https://github.com/PlainConceptsPlatform/Numa/issues/750', label: 'talk.link.example750' }
+for (const section of sections) for (const beat of section.beats) {
+  if (['workflows.triage', 'workflows.refine', 'workflows.implement', 'workflows.gate'].includes(beat.key)) beat.link = EXAMPLE_750
+}

@@ -56,6 +56,10 @@ A new body comes out of the core only while the core stays on screen. Otherwise 
 The main path is blue. Branches are grey. Returns are dashed and loop under the rows, or over the top when both ends sit in the first row.
 Nodes and edges appear in column order as `--flow-reveal` runs from 0 to 1, so the drawing comes from progress. The facts come from the Agentic Workflows diagrams listed in `docs/knowledge/workflow-routes.md`.
 
+The text in the diagrams stays in English in both languages, because the names match the code and the labels on GitHub. `scripts/flow-copy.mjs` copies the English text of every `flow.*` key into Spanish. Titles and captions are still translated.
+
+The Triage, Refine, Implement, and Merge Gate slides have a link at the top right to one real Issue that went through all four workers. The presenter opens it during the talk. The repository is private, so the label does not name the project.
+
 ## Sponsor slide
 
 The event, NetCoreConf Madrid 2026, requires a sponsor slide right after the cover. Sponsors pay for their tier, so the slide copies the official sponsor slide exactly: `src/show/sponsors.ts` holds every logo box, tier name and rule in the original slide units (EMU, from netcoreconfMadrid2026.pptx, slide 2), and the board scales them to the stage, which is also 16:9. Each logo is stretched to fill its box, as in the original. The logo files are the white versions from that deck, in `public/assets/sponsors/`. The event header, top right, keeps its mascot and its two lines, <NetCoreConf/> and Madrid '26, at their original boxes; Outfit replaces Poppins, sized so each line takes the original width. Our heading replaces the event's "Sponsors" title and the background. On this slide the cover laptop waits off stage to the right; the next beat brings it in and takes it apart into the core.

@@ -97,6 +97,10 @@ export const part: Part = {
       "step": 1,
       "labels": [],
       "layout": "wide",
+      "link": {
+        "href": "https://github.com/PlainConceptsPlatform/Numa/issues/750",
+        "label": "talk.link.example750"
+      },
       "dim": true,
       "flow": "triage",
       "cloud": true
@@ -109,6 +113,10 @@ export const part: Part = {
       "step": 1,
       "labels": [],
       "layout": "wide",
+      "link": {
+        "href": "https://github.com/PlainConceptsPlatform/Numa/issues/750",
+        "label": "talk.link.example750"
+      },
       "dim": true,
       "flow": "refine",
       "cloud": true
@@ -121,6 +129,10 @@ export const part: Part = {
       "step": 1,
       "labels": [],
       "layout": "wide",
+      "link": {
+        "href": "https://github.com/PlainConceptsPlatform/Numa/issues/750",
+        "label": "talk.link.example750"
+      },
       "dim": true,
       "flow": "implement",
       "cloud": true
@@ -133,6 +145,10 @@ export const part: Part = {
       "step": 1,
       "labels": [],
       "layout": "wide",
+      "link": {
+        "href": "https://github.com/PlainConceptsPlatform/Numa/issues/750",
+        "label": "talk.link.example750"
+      },
       "dim": true,
       "flow": "gate",
       "cloud": true
