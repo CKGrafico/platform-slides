@@ -1,6 +1,6 @@
 # Talk script
 
-Draft 9, 2026-10-06. 23 stops, including the cover and 1 chapter card. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
+Draft 9, 2026-10-06. 26 stops, including the cover and 1 chapter card. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
 
 The same Issue moves through the talk. Each new layer answers a practical need and stays in the field. Foundations supplies enforceable conventions. The Harness supplies the agent environment. Workflows give events bounded runs. Health supplies evidence and returns findings to the same route.
 
@@ -200,19 +200,43 @@ Speaker notes: The other four workers follow the same pattern, so we only name t
 
 Source: [reference](../knowledge/platform.md).
 
-### 21. One dashboard for every project.
+### 21. Engineering: would anything stop a bad change?
 
-On screen: the portfolio board of Project Health over the dimmed world. The composition holds the current subject.
+On screen: the engineering tab of one real Project Health dashboard, without the project name, over the dimmed world. The composition holds the current subject.
 
-Slide: Three of five DORA metrics, from GitHub alone. Change fail rate and recovery time need incident data GitHub lacks, so they stay empty.
+Slide: Health starts with the gates, not with speed. Agents write most of the code, so this question comes first. A lot of AI and few gates raise an alert.
 
-Speaker notes: Project Health is a template repository. It collects delivery and agent facts from the GitHub API, stores them as JSON, and publishes a static site. There is no database and no service to run. Each project gets a card: its status, production, pre-production or planned, then deployment frequency, change lead time at P50, and deployment rework rate, marked by a hotfix or bug label. If the project runs agents, the card adds runs, tokens and the OpenCode step time. The detail page adds P75 and P90, issue to staging, a monthly trend, who opened the work and who released it, and notes that change how a number should be read. Change fail rate and recovery time need to know that a release caused a production problem, which GitHub does not record, so they are not shown rather than estimated. The team profile places a project among the DORA 2025 profiles using throughput and stability only. Well-being needs a survey, so it stays unknown, and the result is a set of candidate profiles. The numbers on this slide are the template demo data, not our projects. Our private instance measures ten projects. Show the demo; never show real project names or the people columns.
+Speaker notes: Project Health is the fourth pillar. It reads GitHub every night and changes nothing in the repos. A project has four tabs, and each tab answers one question. The overview opens on Engineering, not on Delivery. When agents write most of the code, the first question is whether anything would stop a bad change. This is one real project, without its name, as of 19 October. Level L3, the top one. Score 100. All ten gates that apply are present and passed: Gherkin specs, tests and coverage, mutation, secrets, vulnerabilities, SAST, SBOM, complexity, and code hygiene on every build, then DAST after the deploy to test. Performance does not apply to this project. AI usage is 4 of 5: 82 of 147 commits this month came from an assistant or an agent. The two numbers only mean something together. If AI usage is 4 or more and the level is L1 or less, Health raises the alert "High AI usage, low engineering". The same tab scans comments and tests every day: comment lines stay under the 10% the harness sets, here 5.8%.
+
+### 22. Delivery: three DORA metrics, two refused.
+
+On screen: the delivery tab of one real Project Health dashboard, without the project name, over the dimmed world. The composition holds the current subject.
+
+Slide: Change fail rate and recovery time need production incidents, and GitHub does not have them. So Health shows no number, not a guess.
+
+Speaker notes: Delivery comes second on purpose. When agents open most pull requests, throughput says less than it used to. Health keeps the real DORA metrics only. Deployment frequency, change lead time and rework rate come from GitHub deployments and releases. Change fail rate and failed deployment recovery time need to know that a release caused a problem in production. A repository cannot know that. A red pipeline is not the same thing: no production deployment collected so far is recorded as failed, so that number would read zero forever. Two lead times stay apart. Change lead time runs from the commit to production. Issue to staging starts earlier and ends earlier, so it looks better. They are never mixed. For this project: 2.31 releases a week, change lead time p50 6.2 hours, Issue to staging p50 2 days, rework 0% by the bug label.
+
+### 23. Agentic: how much merges on its own?
+
+On screen: the agentic tab of one real Project Health dashboard, without the project name, over the dimmed world. The composition holds the current subject.
+
+Slide: This month the gate merged 5 of 9 bot PRs with no person. Cost is in tokens, and the totals are a floor: not every run reports its usage.
+
+Speaker notes: First: is the machinery installed and current? Health reads the harness and workflow versions from the default branch and compares them with npm. This project runs the current releases and all seven workers. A repo two minors behind runs failure modes that are already fixed. Second: how much merges on its own? Every PR from Implement has a bot title, so Health splits them into three groups. The gate merged 5 of 9 with no person. 1 was parked and a person merged it. 3 were merged by hand. Merged by the gate is the closest number to the autonomy we promise. Those PRs added 547 lines of code, 69 of comments and 2,402 of tests. Cost is in tokens, not money: 202.69 million tokens and 10 hours 27 minutes of agent time in 76 runs. Only 69 runs reported usage, so the totals are a floor and the page says so. Per measured run, Triage needs about 94 thousand tokens and Implement about 8.5 million.
+
+### 24. Roadmap: where did the time go?
+
+On screen: the roadmap tab of one real Project Health dashboard, without the project name, over the dimmed world. The composition holds the current subject.
+
+Slide: An agent worked 4% of the time the Issues were open. The rest was waiting: for a person, for a merge, or for nobody.
+
+Speaker notes: The Roadmap tab plans nothing. It reads the labels the workflows write, and it splits the open time of every Issue into five states: agent working, waiting on a person, a PR waiting to merge, queued with nobody on it, and work by hand. This month the Issues of this project were open 36 days and 6 hours in total. An agent worked 4% of that time. A third waited on a person, and almost another third waited for nobody. The agent is not the bottleneck. We are. Open the link: Issue 750 was estimated at sp-3, about three human days. It was open 34 hours, the agent worked 2 hours 32 minutes, and the gate merged it. The same Issue went through Triage, Refine, Implement and Merge Gate in the previous slides.
 
 ## The whole Platform system
 
 Source: [reference](../knowledge/maturity.md).
 
-### 22. From Issue to production with GitHub Agentic Workflows.
+### 25. From Issue to production with GitHub Agentic Workflows.
 
 On screen: system, state 0. Panels name Triage, Refine · Implement, CI, Merge Gate, Production.
 
@@ -220,7 +244,7 @@ Slide: Product experts who do not code file small eligible Issues or bugs. They 
 
 Speaker notes: Return to the person at the PC from the opening. The completed system now lets someone close to the product create a small eligible Issue or bug. That person does not need to code or supervise the agent. Trace their Issue through Triage, Refine, Implement, CI, Merge Gate, the application deployment, and Health. They define the intended behavior and answer product questions when needed. The system owns execution and its checks. This autonomy depends on the technical and agent base established in Foundations, with the Harness and workflow controls in place. Protected technical changes still need their owner. People with write access label an Issue straight into the route. Everyone else enters through Triage. Application deployment follows the project configuration. The manually dispatched package Release worker is a separate route. The five maturity forms remain in the field without claiming an assessment score. Health feeds evidence into the three earlier pillars. End on the product change in production and the measured improvement loop.
 
-### 23. What exactly are software engineers supposed to do?
+### 26. What exactly are software engineers supposed to do?
 
 On screen: an attributed quote card over the dimmed world. The composition holds the current subject.
 

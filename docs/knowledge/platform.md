@@ -151,6 +151,47 @@ Delivery examples:
 - Numa, September (22 days): 10 releases, 3.16 per week. Issue to staging, median 6.6 hours.
 - Atlas, July: 52 releases, 11.74 per week, lead time median 6.6 hours.
 
+### Project Health in October 2026
+
+Source: the Health docs on the site (`/docs/health`, `/docs/health/engineering`, `/docs/health/delivery`, `/docs/health/agentic`, `/docs/health/roadmap`), read on 2026-10-20.
+
+- Health is the fourth pillar. It reads GitHub and changes nothing in the repos it measures. A project page has four tabs, and each answers one question:
+  - **Engineering.** Are the gates that make autonomy safe in place, and do they pass?
+  - **Delivery.** How often does it ship, how long does a change take, and how much is rework?
+  - **Agentic.** Does the repo run agents the Platform way, on current versions, and how much of their work merges without a person?
+  - **Roadmap.** Who had each Issue at each moment, and what waits on a person?
+- The overview opens on Engineering, not on Delivery. When agents write most of the code, the first question is whether anything would stop a bad change.
+- **Engineering scorecard.** Level L0 to L3, cumulative, and only green practices count. Score 0 to 100: green plus half of yellow, over the practices that apply. Gates: present over applicable. AI usage 1 to 5: the share of the month's default-branch commits made with an assistant or by an agent, in buckets at 10, 25, 50 and 75%.
+- **Alert "High AI usage, low engineering".** It fires when AI usage is 4 or more and the level is L1 or below.
+- **Comments and tests scan.** It runs daily on the default branch. Comment lines per code line have a ceiling of 10%, the one the harness sets. It also counts slop shapes and suspicious tests, such as a test with no assertion. These are the same shapes the harness `check-diff` gate refuses on a pull request.
+- **Delivery.** It collects three of the five DORA metrics: deployment frequency, change lead time, and deployment rework rate. It refuses change fail rate and failed deployment recovery time. Change lead time (commit to production) and Issue to staging are shown apart and never mixed. The DORA team profiles panel was removed in October 2026.
+- **Agentic.** It reads harness and workflow versions against npm, and which workers are installed. Bot PRs are split into three groups: merged by the gate, parked then merged by a person, and merged by a person. "Merged by the gate" is the closest single number to the autonomy that maintenance mode promises. Cost is in tokens, not money. Totals are a floor ("measured N of M").
+- **Roadmap.** It splits each Issue's open time into five states, read from labels: agent working, waiting on a person, PR waiting to merge, queued with nobody on it, and by hand. In the docs' first real month, an agent was working 17% of the time Issues were open.
+- **Site address.** The private site is on GitHub Pages at `probable-fiesta-2y6w5gw.pages.github.io`. IT will move it to a Plain Concepts domain, something like `pulse.plainconcepts.com`. The keynote keeps the address in one constant, `HEALTH_SITE`, in `scripts/keynote-content.mjs`.
+
+### One project, October 2026
+
+From the Health dashboard of one consumer project, updated 2026-10-19 04:05 UTC, month to date. On slides, say "one project". Never show its name, or the People section with logins.
+
+| Area | Figure | Value |
+|---|---|---|
+| Engineering | Level, score, gates | L3, 100, 10 of 10 applicable (Performance does not apply) |
+| Engineering | AI usage | 4 of 5, 82 of 147 commits |
+| Engineering | Comments per code line | 5.8%, 1,460 of 25,153 lines, 0 slop shapes |
+| Engineering | Coverage, mutation | 81.2% lines, 82.2% mutation score |
+| Delivery | Deployment frequency | 2.31 per week, 6 releases, median gap 28.1 h |
+| Delivery | Change lead time | p50 6.2 h, p75 2 d, p90 5 d, 70 commits |
+| Delivery | Issue to staging | p50 2 d, p75 3 d, p90 4 d, 8 Issues |
+| Delivery | Rework rate | 0% of 6, marked by the bug label |
+| Agentic | Tooling | Standard, up to date: agent-harness 3.4.0, agentic-workflows 1.6.23, 7 workers |
+| Agentic | Bot PRs merged | 9 this month: 5 by the gate (55.6%), 1 parked for a person, 3 by hand |
+| Agentic | What those PRs added | +547 code, +69 comment (12.6%), +2,402 test |
+| Agentic | Agent runs | 76, 69 measured, 202.69M tokens, 10 h 27 m agent time |
+| Agentic | Tokens per measured run | triage 93.7K, apply-review 1.14M, refine 1.66M, merge-gate 1.94M, audit 2.38M, implement 8.49M |
+| Roadmap | Issues closed | 26, opened to merged median 22 h 3 m |
+| Roadmap | Where the open time went (36 d 6 h) | agent working 4% (30 h 33 m), waiting on a person 32%, queued with nobody 31%, PR waiting to merge 17%, by hand 16% |
+| Roadmap | Issue #750 | sp-3 (about 3 human days), open 34 h 20 m, agent 2 h 32 m, auto-merged by the gate |
+
 The site `platform.plainconcepts.com/docs/analytics` also reports that one project's month went from 23 to 52 measured runs after a fix in how runs are found, and agent time from 4h 20m to 7h 31m.
 
 ## The site: platform.plainconcepts.com
@@ -185,4 +226,5 @@ These points were unclear or contradictory on 2026-09-29. Check each one with th
 2. **Consumer names in public places.** The agentic-workflows code comments name consumer repos. Decide which project names may appear on public slides.
 3. **Visual checks and staged mode.** The older visual evidence step was removed from the agent path on 2026-08-26. The `visual-verify` route is a separate, later worker (added around 2026-09-17). Foundations still has a stale `visual-evidence.yml`. The site also still lists "staged approval", and staged mode was removed. Confirm what is current.
 4. **Deploy target of the docs site.** `Foundations/ai/ARCHITECTURE.md` says Azure App Service with Entra ID login. `deploy.yml` deploys to GitHub Pages, and the site is public.
-5. **Numbers age fast.** Agent and delivery figures come from snapshots of late September 2026. Refresh them before the talk.
+5. **Numbers age fast.** Agent and delivery figures come from snapshots of late September 2026. The Health slides use one project's dashboard of 2026-10-19. Refresh them before the talk.
+6. **Health address.** The Health links point to `probable-fiesta-2y6w5gw.pages.github.io`. When IT publishes the new domain (something like `pulse.plainconcepts.com`), change `HEALTH_SITE` in `scripts/keynote-content.mjs` and run `node scripts/rebuild-show.mjs`.

@@ -27,7 +27,7 @@ Main paths, repair, review, manual release, and the Audit return use channels in
 For reduced motion, the engine cuts to each stop and the runtime freezes surface movement. The atlas size follows the actual renderer DPR. The geometry stays constant while the presenter moves through the show.
 
 The content ledger is `scripts/keynote-content.mjs`. `scripts/rebuild-show.mjs` writes the English script, both locale files, and the scene contracts.
-It keeps 23 stops across nine chapters, with one chapter card, six flows (GitHub Agentic Workflows in one line, then the router, Triage, Refine, Implement, and Merge Gate), and one Project Health board. One slide names the other four workers. The talk closes on a question, what software engineers are supposed to do, answered with a quote card over the dimmed system: an initials avatar, name, handle and date, and a short attributed excerpt from Uncle Bob Martin (`src/show/Board.tsx`, board `quote`). It is our card in the keynote style, not a copy of the network's interface. Foundations, agent-harness, and agentic-workflows each have one slide that feeds their parts from the pillar with thin links. Only Agentic Workflows has many slides, because the talk is about it. The first chapter contains the cover and the PC introduction.
+It keeps 26 stops across nine chapters, with one chapter card, six flows (GitHub Agentic Workflows in one line, then the router, Triage, Refine, Implement, and Merge Gate), and four Project Health boards, one for each tab of the dashboard. One slide names the other four workers. The talk closes on a question, what software engineers are supposed to do, answered with a quote card over the dimmed system: an initials avatar, name, handle and date, and a short attributed excerpt from Uncle Bob Martin (`src/show/Board.tsx`, board `quote`). It is our card in the keynote style, not a copy of the network's interface. Foundations, agent-harness, and agentic-workflows each have one slide that feeds their parts from the pillar with thin links. Only Agentic Workflows has many slides, because the talk is about it. The first chapter contains the cover and the PC introduction.
 The five maturity assemblies retain their meanings in the final world.
 Precomputed facts, reasoning, validation, and Safe Outputs occupy distinct positions in the worker close views.
 
@@ -59,6 +59,17 @@ Nodes and edges appear in column order as `--flow-reveal` runs from 0 to 1, so t
 The text in the diagrams stays in English in both languages, because the names match the code and the labels on GitHub. `scripts/flow-copy.mjs` copies the English text of every `flow.*` key into Spanish. Titles and captions are still translated.
 
 The Triage, Refine, Implement, and Merge Gate slides have a link at the top right to one real Issue that went through all four workers. The presenter opens it during the talk. The repository is private, so the label does not name the project. The Project Health slide links to the same Issue on the roadmap.
+
+## Project Health boards
+
+Project Health has four slides, one for each tab of its dashboard: Engineering, Delivery, Agentic, and Roadmap. Each one copies the tab of one real project, as of 19 October 2026, without the project name and without the People section. `src/show/Board.tsx` draws them as the boards `engineering`, `delivery`, `agentic`, and `roadmap`. The numbers and their source are in `docs/knowledge/platform.md`.
+
+- Engineering: the level, score, gates, and AI usage, the alert that reads AI usage against the level, and the practices one by one.
+- Delivery: the five DORA metrics, three collected and two refused, and the two lead times side by side.
+- Agentic: the installed tooling, the bot pull requests the gate merged with no person, and tokens per measured run by kind of work.
+- Roadmap: four numbers, where the open time of the Issues went, and Issue #750 as a bar.
+
+The text in the boards stays in English in both languages, like the diagrams and like the dashboard the presenter opens live. The first three link to the live dashboard and Roadmap links to Issue #750 on it. The site address is `HEALTH_SITE` in `scripts/keynote-content.mjs`.
 
 ## Sponsor slide
 

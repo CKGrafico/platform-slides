@@ -1,195 +1,309 @@
 /**
- * The Project Health boards, drawn in stage units over the dimmed world.
- * `portfolio` recreates the template's project cards with its example data, labelled on screen.
- * `agents` shows the real agent aggregates of Platform for one period, by worker.
+ * The boards, drawn in stage units over the dimmed world.
+ * `engineering`, `delivery`, `agentic` and `roadmap` copy the four tabs of one real Project Health dashboard.
+ * `quote`, `sponsors` and `markdown` are single cards.
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useT, type MessageKey } from '@/i18n'
 import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
-export type BoardId = 'portfolio' | 'agents' | 'quote' | 'sponsors' | 'markdown'
+export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'markdown'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
 
-type Status = 'production' | 'preproduction' | 'planned'
-interface Metric { label: MessageKey; value: MessageKey; sub?: MessageKey }
-interface Card {
-  name: MessageKey
-  repo: MessageKey
-  status: Status
-  metrics?: Metric[]
-  agents?: Metric[]
-  /** Text shown in the agent area when the project runs no agents. */
-  noAgents?: boolean
-  profile?: MessageKey[]
-  empty?: [MessageKey, MessageKey]
-}
-
-const CARDS: Card[] = [
-  {
-    name: 'board.billing', repo: 'board.billing.repo', status: 'production',
-    metrics: [
-      { label: 'board.deploys', value: 'board.billing.deploys', sub: 'board.billing.deploys.sub' },
-      { label: 'board.lead', value: 'board.billing.lead', sub: 'board.commitToProd' },
-      { label: 'board.rework', value: 'board.billing.rework', sub: 'board.billing.rework.sub' },
-    ],
-    noAgents: true,
-    profile: ['board.profile.harmonious', 'board.profile.pragmatic'],
-  },
-  {
-    name: 'board.checkout', repo: 'board.checkout.repo', status: 'production',
-    metrics: [
-      { label: 'board.deploys', value: 'board.checkout.deploys', sub: 'board.checkout.deploys.sub' },
-      { label: 'board.lead', value: 'board.checkout.lead', sub: 'board.commitToProd' },
-      { label: 'board.rework', value: 'board.checkout.rework', sub: 'board.checkout.rework.sub' },
-    ],
-    agents: [
-      { label: 'board.runs', value: 'board.checkout.runs' },
-      { label: 'board.tokens', value: 'board.checkout.tokens', sub: 'board.checkout.tokens.sub' },
-      { label: 'board.time', value: 'board.checkout.time', sub: 'board.checkout.time.sub' },
-    ],
-  },
-  {
-    name: 'board.mobile', repo: 'board.mobile.repo', status: 'preproduction',
-    metrics: [
-      { label: 'board.deploys', value: 'board.na', sub: 'board.mobile.noProd' },
-      { label: 'board.lead', value: 'board.na', sub: 'board.mobile.noProd' },
-      { label: 'board.rework', value: 'board.mobile.unmarked' },
-    ],
-    noAgents: true,
-  },
-  { name: 'board.ledger', repo: 'board.ledger.repo', status: 'planned', empty: ['board.ledger.na', 'board.ledger.na.sub'] },
-]
-
-const STATUS_LABEL: Record<Status, MessageKey> = { production: 'board.production', preproduction: 'board.preproduction', planned: 'board.planned' }
-
-const CARD_W = 38.5
-const CARD_H = 51
-const GAP = 3
-const LEFT = (STAGE_W - (CARD_W * 4 + GAP * 3)) / 2
+/** The area the Health boards use, under the title and above the caption. */
+const LEFT = 7
+const RIGHT = STAGE_W - 7
+const WIDTH = RIGHT - LEFT
 const TOP = 27
+const BOTTOM = 78
 
 function reveal(index: number, total: number) {
   return { '--i': index, '--n': total } as React.CSSProperties
 }
 
-function CardView({ card, index }: { card: Card; index: number }) {
+/** One message as SVG text. Keys are often built from a row id, so they come in as strings. */
+function Txt({ k, x, y, className }: { k: string; x: number; y: number; className: string }) {
   const t = useT()
-  const x = LEFT + index * (CARD_W + GAP)
-  const y = TOP
-  const pad = 2
-  return (
-    <g className={`board-card board-card--${card.status}`} style={reveal(index + 1, CARDS.length + 1)}>
-      <rect x={x} y={y} width={CARD_W} height={CARD_H} rx={0.8} className="board-card-frame" />
-      <text x={x + pad} y={y + 5} className="board-name" data-i18n={card.name}>{t(card.name)}</text>
-      <text x={x + pad} y={y + 8.2} className="board-repo" data-i18n={card.repo}>{t(card.repo)}</text>
-      <rect x={x + CARD_W - pad - 13.5} y={y + 2.4} width={13.5} height={3.4} rx={1.7} className="board-chip" />
-      <text x={x + CARD_W - pad - 6.75} y={y + 4.75} className="board-chip-text" data-i18n={STATUS_LABEL[card.status]}>{t(STATUS_LABEL[card.status])}</text>
-      {card.empty ? (
-        <>
-          <text x={x + CARD_W / 2} y={y + 28} className="board-empty" data-i18n={card.empty[0]}>{t(card.empty[0])}</text>
-          <text x={x + CARD_W / 2} y={y + 31.5} className="board-empty-sub" data-i18n={card.empty[1]}>{t(card.empty[1])}</text>
-        </>
-      ) : null}
-      {card.metrics?.map((metric, row) => {
-        const my = y + 13 + row * 7.6
-        return (
-          <g key={metric.label}>
-            <text x={x + pad} y={my} className="board-label" data-i18n={metric.label}>{t(metric.label)}</text>
-            {metric.sub ? <text x={x + pad} y={my + 2.6} className="board-sub" data-i18n={metric.sub}>{t(metric.sub)}</text> : null}
-            <text x={x + CARD_W - pad} y={my + 1.6} className="board-value" data-i18n={metric.value}>{t(metric.value)}</text>
-          </g>
-        )
-      })}
-      {card.metrics ? <line x1={x + pad} x2={x + CARD_W - pad} y1={y + 35} y2={y + 35} className="board-rule" /> : null}
-      {card.agents?.map((metric, col) => {
-        const ax = x + pad + col * ((CARD_W - pad * 2) / 3)
-        return (
-          <g key={metric.label}>
-            <text x={ax} y={y + 39} className="board-label board-label--small" data-i18n={metric.label}>{t(metric.label)}</text>
-            <text x={ax} y={y + 43} className="board-value board-value--small" data-i18n={metric.value}>{t(metric.value)}</text>
-            {metric.sub ? <text x={ax} y={y + 46} className="board-sub board-sub--small" data-i18n={metric.sub}>{t(metric.sub)}</text> : null}
-          </g>
-        )
-      })}
-      {card.noAgents ? <text x={x + pad} y={y + 39} className="board-sub" data-i18n="board.noAgents">{t('board.noAgents')}</text> : null}
-      {card.profile ? (
-        <>
-          <text x={x + pad} y={y + 42.5} className="board-label board-label--small" data-i18n="board.profile">{t('board.profile')}</text>
-          {card.profile.map((name, i) => (
-            <text key={name} x={x + pad} y={y + 45.5 + i * 2.6} className="board-profile" data-i18n={name}>{t(name)}</text>
-          ))}
-        </>
-      ) : null}
-    </g>
-  )
+  return <text x={x} y={y} className={className} data-i18n={k}>{t(k as MessageKey)}</text>
 }
 
-function Portfolio() {
-  const t = useT()
+/** A number with its label above and a short note below. */
+function Tile({ x, y, w, h, k, accent }: { x: number; y: number; w: number; h: number; k: string; accent?: boolean }) {
+  const key = (suffix: string) => `${k}${suffix}` as MessageKey
   return (
     <>
-      <text x={STAGE_W - LEFT} y={TOP - 1.6} className="board-tag" data-i18n="board.example">{t('board.example')}</text>
-      {CARDS.map((card, i) => <CardView key={card.name} card={card} index={i} />)}
+      <rect x={x} y={y} width={w} height={h} rx={0.8} className="board-card-frame" />
+      <Txt k={key('')} x={x + 2} y={y + 3.6} className="board-label" />
+      <Txt k={key('.value')} x={x + 2} y={y + h - 4.2} className={`board-stat${accent ? ' board-stat--accent' : ''}`} />
+      <Txt k={key('.sub')} x={x + 2} y={y + h - 1.5} className="board-sub" />
     </>
   )
 }
 
-interface Stat { value: MessageKey; label: MessageKey }
-const STATS: Stat[] = [
-  { value: 'board.agents.runs', label: 'board.agents.runs.label' },
-  { value: 'board.agents.success', label: 'board.agents.success.label' },
-  { value: 'board.agents.tokens', label: 'board.agents.tokens.label' },
-  { value: 'board.agents.time', label: 'board.agents.time.label' },
-]
-interface Bar { name: MessageKey; sub: MessageKey; runs: number; ok?: number }
-const BARS: Bar[] = [
-  { name: 'board.agents.implement', sub: 'board.agents.implement.sub', runs: 280 },
-  { name: 'board.agents.gate', sub: 'board.agents.gate.sub', runs: 237, ok: 191 },
-  { name: 'board.agents.refine', sub: 'board.agents.refine.sub', runs: 125 },
-  { name: 'board.agents.triage', sub: 'board.agents.triage.sub', runs: 36, ok: 36 },
+/** The tag over every Health board: whose data, and how fresh. */
+function HealthTag() {
+  return <Txt k="board.health.tag" x={RIGHT} y={TOP - 1.6} className="board-tag" />
+}
+
+type Practice = { k: string; applies: boolean } | { group: MessageKey }
+const PRACTICES: Practice[] = [
+  { group: 'board.health.everyBuild' },
+  { k: 'spec', applies: true }, { k: 'tests', applies: true }, { k: 'mutation', applies: true },
+  { k: 'secrets', applies: true }, { k: 'vulns', applies: true }, { k: 'sast', applies: true },
+  { k: 'sbom', applies: true }, { k: 'complexity', applies: true }, { k: 'hygiene', applies: true },
+  { group: 'board.health.afterDeploy' },
+  { k: 'dast', applies: true }, { k: 'perf', applies: false },
 ]
 
-function Agents() {
-  const t = useT()
-  const total = STATS.length + BARS.length + 1
-  const statX = 8
-  const statW = 27
-  const barX = 72
-  const barMax = 62
-  const maxRuns = Math.max(...BARS.map((bar) => bar.runs))
+/** Engineering: the scorecard, the alert that reads AI usage against the level, and the gates one by one. */
+function Engineering() {
+  const tileW = 31
+  const tileH = 15
+  const listX = LEFT + tileW * 2 + 3 + 5
+  const listW = RIGHT - listX
+  const total = 4
   return (
     <>
-      <text x={8} y={TOP - 1.6} className="board-tag board-tag--start" data-i18n="board.agents.period">{t('board.agents.period')}</text>
-      {STATS.map((stat, i) => {
-        const sx = statX + (i % 2) * (statW + 3)
-        const sy = TOP + 2 + Math.floor(i / 2) * 22
+      <HealthTag />
+      <g className="board-card" style={reveal(0, total)}>
+        <Tile x={LEFT} y={TOP} w={tileW} h={tileH} k="board.health.level" />
+        <Tile x={LEFT + tileW + 3} y={TOP} w={tileW} h={tileH} k="board.health.score" />
+        <Tile x={LEFT} y={TOP + tileH + 3} w={tileW} h={tileH} k="board.health.gates" />
+        <Tile x={LEFT + tileW + 3} y={TOP + tileH + 3} w={tileW} h={tileH} k="board.health.ai" accent />
+      </g>
+      <g className="board-card" style={reveal(1, total)}>
+        <rect x={LEFT} y={TOP + tileH * 2 + 6} width={tileW * 2 + 3} height={BOTTOM - TOP - tileH * 2 - 6} rx={0.8} className="board-card-frame board-card-frame--dashed" />
+        <Txt k="board.health.alert" x={LEFT + 2} y={TOP + tileH * 2 + 9.6} className="board-label" />
+        <Txt k="board.health.alert.name" x={LEFT + 2} y={TOP + tileH * 2 + 13.2} className="board-name board-name--bar" />
+        <Txt k="board.health.alert.rule" x={LEFT + 2} y={TOP + tileH * 2 + 16} className="board-sub" />
+        <Txt k="board.health.alert.now" x={LEFT + 2} y={TOP + tileH * 2 + 18.6} className="board-sub board-sub--dim" />
+      </g>
+      <g className="board-card" style={reveal(2, total)}>
+        <rect x={listX} y={TOP} width={listW} height={BOTTOM - TOP} rx={0.8} className="board-card-frame" />
+        <Txt k="board.health.practices" x={listX + 2.5} y={TOP + 3.6} className="board-label" />
+        <Txt k="board.health.practices.mode" x={listX + listW - 2.5} y={TOP + 3.6} className="board-label board-label--end" />
+      </g>
+      <g className="board-card" style={reveal(3, total)}>
+        {PRACTICES.map((row, i) => {
+          const y = TOP + 8.6 + i * 3.3
+          if ('group' in row) return <Txt key={row.group} k={row.group} x={listX + 2.5} y={y} className="board-label board-label--small" />
+          const name = `board.health.p.${row.k}` as MessageKey
+          return (
+            <g key={row.k}>
+              <rect x={listX + 2.5} y={y - 1.3} width={1.4} height={1.4} className={row.applies ? 'board-mark' : 'board-mark board-mark--off'} />
+              <Txt k={name} x={listX + 5.4} y={y} className={row.applies ? 'board-row' : 'board-row board-row--off'} />
+              <Txt k={`${name}.tool` as MessageKey} x={listX + listW - 2.5} y={y} className="board-sub board-sub--end" />
+            </g>
+          )
+        })}
+      </g>
+    </>
+  )
+}
+
+interface Dora { k: string; group: 'throughput' | 'instability'; collected: boolean }
+const DORA: Dora[] = [
+  { k: 'freq', group: 'throughput', collected: true },
+  { k: 'lead', group: 'throughput', collected: true },
+  { k: 'rework', group: 'instability', collected: true },
+  { k: 'cfr', group: 'instability', collected: false },
+  { k: 'mttr', group: 'throughput', collected: false },
+]
+
+/** Delivery: the five DORA metrics, three collected and two refused, then the two lead times side by side. */
+function Delivery() {
+  const tableH = 34
+  const cols = [LEFT + 2.5, LEFT + 62, LEFT + 88] as const
+  const total = DORA.length + 2
+  const cardY = TOP + tableH + 6
+  const cardW = (WIDTH - 3) / 2
+  return (
+    <>
+      <HealthTag />
+      <g className="board-card" style={reveal(0, total)}>
+        <rect x={LEFT} y={TOP} width={WIDTH} height={tableH} rx={0.8} className="board-card-frame" />
+        <Txt k="board.health.metric" x={cols[0]} y={TOP + 4} className="board-label" />
+        <Txt k="board.health.group" x={cols[1]} y={TOP + 4} className="board-label" />
+        <Txt k="board.health.status" x={cols[2]} y={TOP + 4} className="board-label" />
+        <Txt k="board.health.month" x={RIGHT - 2.5} y={TOP + 4} className="board-label board-label--end" />
+      </g>
+      {DORA.map((row, i) => {
+        const y = TOP + 10 + i * 5.6
+        const name = `board.health.d.${row.k}` as MessageKey
         return (
-          <g key={stat.value} className="board-card" style={reveal(i + 1, total)}>
-            <rect x={sx} y={sy} width={statW} height={19} rx={0.8} className="board-card-frame" />
-            <text x={sx + 2} y={sy + 10} className="board-stat" data-i18n={stat.value}>{t(stat.value)}</text>
-            <text x={sx + 2} y={sy + 15} className="board-sub" data-i18n={stat.label}>{t(stat.label)}</text>
-          </g>
-        )
-      })}
-      {BARS.map((bar, i) => {
-        const by = TOP + 3 + i * 11
-        const width = (bar.runs / maxRuns) * barMax
-        return (
-          <g key={bar.name} className="board-card" style={reveal(STATS.length + i + 1, total)}>
-            <text x={barX} y={by} className="board-name board-name--bar" data-i18n={bar.name}>{t(bar.name)}</text>
-            <rect x={barX} y={by + 1.6} width={width} height={3} className="board-bar" />
-            {bar.ok ? <rect x={barX} y={by + 1.6} width={(bar.ok / maxRuns) * barMax} height={3} className="board-bar board-bar--ok" /> : null}
-            <text x={barX} y={by + 7.6} className="board-sub" data-i18n={bar.sub}>{t(bar.sub)}</text>
+          <g key={row.k} className={`board-card${row.collected ? '' : ' board-card--refused'}`} style={reveal(i + 1, total)}>
+            <line x1={LEFT + 2.5} x2={RIGHT - 2.5} y1={y - 3.6} y2={y - 3.6} className="board-rule" />
+            <Txt k={name} x={cols[0]} y={y} className="board-row board-row--strong" />
+            <Txt k={`board.health.${row.group}`} x={cols[1]} y={y} className="board-sub" />
+            <rect x={cols[2]} y={y - 2.3} width={13} height={3.2} rx={1.6} className={row.collected ? 'board-chip board-chip--on' : 'board-chip board-chip--off'} />
+            <Txt k={row.collected ? 'board.health.collected' : 'board.health.refused'} x={cols[2] + 6.5} y={y - 0.1} className="board-chip-text" />
+            <Txt k={row.collected ? `${name}.value` as MessageKey : 'board.health.d.refused'} x={RIGHT - 2.5} y={y} className={row.collected ? 'board-row board-row--end' : 'board-sub board-sub--end'} />
           </g>
         )
       })}
       <g className="board-card" style={reveal(total - 1, total)}>
-        <rect x={barX} y={TOP + 46} width={3} height={2} className="board-bar" />
-        <text x={barX + 4} y={TOP + 47.6} className="board-sub" data-i18n="board.agents.legend.runs">{t('board.agents.legend.runs')}</text>
-        <rect x={barX + 14} y={TOP + 46} width={3} height={2} className="board-bar board-bar--ok" />
-        <text x={barX + 18} y={TOP + 47.6} className="board-sub" data-i18n="board.agents.legend.success">{t('board.agents.legend.success')}</text>
+        <Txt k="board.health.leads" x={LEFT} y={cardY - 1.4} className="board-label" />
+        {(['leadCommit', 'leadIssue'] as const).map((k, i) => {
+          const x = LEFT + i * (cardW + 3)
+          return (
+            <g key={k}>
+              <rect x={x} y={cardY} width={cardW} height={BOTTOM - cardY} rx={0.8} className="board-card-frame" />
+              <Txt k={`board.health.${k}`} x={x + 2.5} y={cardY + 4.4} className="board-label" />
+              <Txt k={`board.health.${k}.sub`} x={x + 2.5} y={cardY + 7.6} className="board-sub" />
+              <Txt k={`board.health.${k}.value`} x={x + cardW - 2.5} y={cardY + 7.2} className="board-value" />
+            </g>
+          )
+        })}
+      </g>
+    </>
+  )
+}
+
+const TOOLING: [string, MessageKey][] = [
+  ['harness', 'board.health.t.harness.value'],
+  ['workflows', 'board.health.t.workflows.value'],
+  ['router', 'board.health.t.installed'],
+  ['evidence', 'board.health.t.installed'],
+  ['workers', 'board.health.t.workers.value'],
+]
+/** Bot pull requests of the month, one block each: the gate merged 5, 1 was parked for a person, 3 were merged by hand. */
+const BOT_PRS = ['gate', 'gate', 'gate', 'gate', 'gate', 'parked', 'hand', 'hand', 'hand'] as const
+const ADDED = [{ lines: 547, kind: 'code' }, { lines: 69, kind: 'comment' }, { lines: 2402, kind: 'test' }] as const
+/** Tokens per measured run, in thousands, by kind of work. */
+const KINDS = [
+  { k: 'triage', tokens: 93.7 }, { k: 'review', tokens: 1140 }, { k: 'refine', tokens: 1660 },
+  { k: 'gate', tokens: 1940 }, { k: 'audit', tokens: 2380 }, { k: 'implement', tokens: 8490 },
+]
+
+/** Agentic: is the machinery installed, how much merges on its own, and what each kind of run costs. */
+function Agentic() {
+  const colW = (WIDTH - 8) / 3
+  const xs = [LEFT, LEFT + colW + 4, LEFT + (colW + 4) * 2] as const
+  const h = BOTTOM - TOP
+  const blockW = (colW - 4 - 0.9 * 8) / 9
+  const addedTotal = ADDED.reduce((sum, item) => sum + item.lines, 0)
+  const maxTokens = Math.max(...KINDS.map((kind) => kind.tokens))
+  let addedX = xs[1] + 2
+  return (
+    <>
+      <HealthTag />
+      <g className="board-card" style={reveal(0, 3)}>
+        <rect x={xs[0]} y={TOP} width={colW} height={h} rx={0.8} className="board-card-frame" />
+        <Txt k="board.health.tooling" x={xs[0] + 2} y={TOP + 3.6} className="board-label" />
+        <rect x={xs[0] + 2} y={TOP + 6} width={colW - 4} height={3.6} rx={1.8} className="board-chip board-chip--on" />
+        <Txt k="board.health.tooling.verdict" x={xs[0] + colW / 2} y={TOP + 8.4} className="board-chip-text" />
+        {TOOLING.map(([k, value], i) => {
+          const y = TOP + 15 + i * 4.6
+          return (
+            <g key={k}>
+              <Txt k={`board.health.t.${k}` as MessageKey} x={xs[0] + 2} y={y} className="board-row" />
+              <Txt k={value} x={xs[0] + colW - 2} y={y} className="board-row board-row--end" />
+            </g>
+          )
+        })}
+        <line x1={xs[0] + 2} x2={xs[0] + colW - 2} y1={TOP + h - 6} y2={TOP + h - 6} className="board-rule" />
+        <Txt k="board.health.tooling.npm" x={xs[0] + 2} y={TOP + h - 2.5} className="board-sub" />
+      </g>
+      <g className="board-card" style={reveal(1, 3)}>
+        <rect x={xs[1]} y={TOP} width={colW} height={h} rx={0.8} className="board-card-frame" />
+        <Txt k="board.health.bot" x={xs[1] + 2} y={TOP + 3.6} className="board-label" />
+        <Txt k="board.health.bot.value" x={xs[1] + 2} y={TOP + 11.5} className="board-stat board-stat--accent" />
+        <Txt k="board.health.bot.sub" x={xs[1] + 2} y={TOP + 14.8} className="board-sub" />
+        {BOT_PRS.map((kind, i) => <rect key={i} x={xs[1] + 2 + i * (blockW + 0.9)} y={TOP + 17.5} width={blockW} height={blockW} className={`board-block board-block--${kind}`} />)}
+        {(['gate', 'parked', 'hand'] as const).map((kind, i) => (
+          <g key={kind}>
+            <rect x={xs[1] + 2} y={TOP + 26.6 + i * 3.2} width={1.6} height={1.6} className={`board-block board-block--${kind}`} />
+            <Txt k={`board.health.bot.${kind}`} x={xs[1] + 4.6} y={TOP + 28 + i * 3.2} className="board-sub" />
+          </g>
+        ))}
+        <line x1={xs[1] + 2} x2={xs[1] + colW - 2} y1={TOP + 37.5} y2={TOP + 37.5} className="board-rule" />
+        <Txt k="board.health.added" x={xs[1] + 2} y={TOP + 41.2} className="board-label" />
+        {ADDED.map((item) => {
+          const w = (item.lines / addedTotal) * (colW - 4)
+          const rect = <rect key={item.kind} x={addedX} y={TOP + 42.8} width={w} height={1.8} className={`board-added board-added--${item.kind}`} />
+          addedX += w
+          return rect
+        })}
+        <Txt k="board.health.added.value" x={xs[1] + 2} y={TOP + 47.8} className="board-sub" />
+      </g>
+      <g className="board-card" style={reveal(2, 3)}>
+        <rect x={xs[2]} y={TOP} width={colW} height={h} rx={0.8} className="board-card-frame" />
+        <Txt k="board.health.tokens" x={xs[2] + 2} y={TOP + 3.6} className="board-label" />
+        {KINDS.map((kind, i) => {
+          const y = TOP + 8.6 + i * 5.4
+          return (
+            <g key={kind.k}>
+              <Txt k={`board.health.k.${kind.k}` as MessageKey} x={xs[2] + 2} y={y} className="board-row" />
+              <Txt k={`board.health.k.${kind.k}.value` as MessageKey} x={xs[2] + colW - 2} y={y} className="board-row board-row--end" />
+              <rect x={xs[2] + 2} y={y + 0.9} width={Math.max(0.3, (kind.tokens / maxTokens) * (colW - 4))} height={1.6} className="board-bar" />
+            </g>
+          )
+        })}
+        <line x1={xs[2] + 2} x2={xs[2] + colW - 2} y1={TOP + h - 9} y2={TOP + h - 9} className="board-rule" />
+        <Txt k="board.health.tokens.total" x={xs[2] + 2} y={TOP + h - 5.4} className="board-sub board-sub--light" />
+        <Txt k="board.health.tokens.floor" x={xs[2] + 2} y={TOP + h - 2.5} className="board-sub" />
+      </g>
+    </>
+  )
+}
+
+/** Where the open time of the month's Issues went, in the five states Roadmap reads from labels. */
+const STATES = [
+  { k: 'agent', share: 4 }, { k: 'person', share: 32 }, { k: 'queued', share: 31 }, { k: 'pr', share: 17 }, { k: 'hand', share: 16 },
+] as const
+/** Issue #750, in minutes: open from the first label to the merge, and the time an agent worked on it. */
+const ISSUE_OPEN = 34 * 60 + 20
+const ISSUE_AGENT = 2 * 60 + 32
+
+/** Roadmap: four numbers, where the time went, and one Issue as a bar. */
+function Roadmap() {
+  const tileW = (WIDTH - 9) / 4
+  const tileH = 14
+  const barY = TOP + tileH + 7
+  const issueY = barY + 14.5
+  const issueH = BOTTOM - issueY
+  const trackX = LEFT + 11
+  const trackW = WIDTH - 11 - 16
+  const colW = WIDTH / STATES.length
+  let segX = LEFT
+  return (
+    <>
+      <HealthTag />
+      <g className="board-card" style={reveal(0, 3)}>
+        {(['closed', 'merged', 'share', 'waiting'] as const).map((k, i) => (
+          <Tile key={k} x={LEFT + i * (tileW + 3)} y={TOP} w={tileW} h={tileH} k={`board.health.${k}`} accent={k === 'share'} />
+        ))}
+      </g>
+      <g className="board-card" style={reveal(1, 3)}>
+        <Txt k="board.health.went" x={LEFT} y={barY - 1.4} className="board-label" />
+        {STATES.map((state) => {
+          const w = (state.share / 100) * WIDTH
+          const rect = <rect key={state.k} x={segX} y={barY} width={w} height={4.4} className={`board-state board-state--${state.k}`} />
+          segX += w
+          return rect
+        })}
+        {STATES.map((state, i) => (
+          <g key={state.k}>
+            <rect x={LEFT + i * colW} y={barY + 6.4} width={1.6} height={1.6} className={`board-state board-state--${state.k}`} />
+            <Txt k={`board.health.s.${state.k}`} x={LEFT + i * colW + 2.6} y={barY + 7.9} className="board-row" />
+            <Txt k={`board.health.s.${state.k}.time`} x={LEFT + i * colW + 2.6} y={barY + 10.6} className="board-sub" />
+          </g>
+        ))}
+      </g>
+      <g className="board-card" style={reveal(2, 3)}>
+        <rect x={LEFT} y={issueY} width={WIDTH} height={issueH} rx={0.8} className="board-card-frame" />
+        <Txt k="board.health.i750" x={LEFT + 2.5} y={issueY + 4} className="board-name board-name--bar" />
+        <Txt k="board.health.i750.sub" x={LEFT + 2.5} y={issueY + 6.9} className="board-sub" />
+        <rect x={RIGHT - 2.5 - 24} y={issueY + 1.6} width={24} height={3.4} rx={1.7} className="board-chip board-chip--on" />
+        <Txt k="board.health.i750.outcome" x={RIGHT - 2.5 - 12} y={issueY + 3.95} className="board-chip-text" />
+        <Txt k="board.health.i750.open" x={LEFT + 2.5} y={issueY + 10.4} className="board-label board-label--small" />
+        <rect x={trackX} y={issueY + 9.1} width={trackW} height={1.6} className="board-track" />
+        <Txt k="board.health.i750.open.value" x={RIGHT - 2.5} y={issueY + 10.4} className="board-sub board-sub--end" />
+        <Txt k="board.health.i750.agent" x={LEFT + 2.5} y={issueY + 13.4} className="board-label board-label--small" />
+        <rect x={trackX} y={issueY + 12.1} width={(ISSUE_AGENT / ISSUE_OPEN) * trackW} height={1.6} className="board-state board-state--agent" />
+        <Txt k="board.health.i750.agent.value" x={RIGHT - 2.5} y={issueY + 13.4} className="board-sub board-sub--end" />
       </g>
     </>
   )
@@ -201,7 +315,7 @@ function Lines({ k, x, y, step, className }: { k: MessageKey; x: number; y: numb
   return (
     <text x={x} y={y} className={className} data-i18n={k}>
       {/* An empty line keeps its height, so a blank line separates paragraphs. */}
-      {t(k).split('\n').map((line, i) => <tspan key={i} x={x} dy={i ? step : 0}>{line || ' '}</tspan>)}
+      {t(k).split('\n').map((line, i) => <tspan key={i} x={x} dy={i ? step : 0}>{line || ' '}</tspan>)}
     </text>
   )
 }
@@ -299,17 +413,20 @@ function Markdown() {
         {lines.map((line, i) => {
           const className = codeClass(line, fences === 1 && line !== '---')
           if (line === '---') fences++
-          return <tspan key={i} x={x + 4} y={y + 11 + i * step} className={className}>{line || '\u00a0'}</tspan>
+          return <tspan key={i} x={x + 4} y={y + 11 + i * step} className={className}>{line || ' '}</tspan>
         })}
       </text>
     </g>
   )
 }
 
+const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, markdown: Markdown }
+
 export function Board({ id }: { id: BoardId }) {
+  const View = BOARDS[id]
   return (
     <svg className="flow board" viewBox={`0 0 ${STAGE_W} ${STAGE_H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      {id === 'markdown' ? <Markdown /> : id === 'sponsors' ? <Sponsors /> : id === 'quote' ? <Quote /> : id === 'portfolio' ? <Portfolio /> : <Agents />}
+      <View />
     </svg>
   )
 }

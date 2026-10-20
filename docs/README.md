@@ -2,7 +2,7 @@
 
 This repository holds a web keynote. The keynote runs in a browser, full screen, and the presenter controls it from the keyboard. It has no sound.
 
-The show uses abstract geometric entities with ASCII surfaces ([art/art-direction.md](art/art-direction.md), [art/elements.md](art/elements.md)). Its 23 stops, one of them a chapter card, six of them flows, and one of them a Project Health board, follow work from a personal PC to the Plain Concepts Platform. The cover also introduces the speaker. The maturity assessment precedes the capability path. Foundations and the local Harness come before cloud workflows.
+The show uses abstract geometric entities with ASCII surfaces ([art/art-direction.md](art/art-direction.md), [art/elements.md](art/elements.md)). Its 26 stops, one of them a chapter card, six of them flows, and four of them Project Health boards, follow work from a personal PC to the Plain Concepts Platform. The cover also introduces the speaker. The maturity assessment precedes the capability path. Foundations and the local Harness come before cloud workflows.
 
 The cast has 29 form actors and 33 route channels. Bounded idle motion keeps the field alive between stops.
 The town, orbit visuals, and visibility veil are removed. Git preserves their source history. The previous script stays in `docs/script/script-orbits-archive.md`.

@@ -8,9 +8,57 @@ export const part: Part = {
   "title": "Project Health measures and improves the system",
   "beats": [
     {
-      "heading": "talk.health.portfolio.title",
-      "line": "talk.health.portfolio.body",
-      "command": "talk.health.portfolio.command",
+      "heading": "talk.health.engineering.title",
+      "line": "talk.health.engineering.body",
+      "command": "talk.health.engineering.command",
+      "picture": "feedback",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "link": {
+        "href": "https://probable-fiesta-2y6w5gw.pages.github.io/projects/numa/",
+        "label": "talk.link.healthLive"
+      },
+      "dim": true,
+      "board": "engineering",
+      "cloud": true
+    },
+    {
+      "heading": "talk.health.delivery.title",
+      "line": "talk.health.delivery.body",
+      "command": "talk.health.delivery.command",
+      "picture": "feedback",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "link": {
+        "href": "https://probable-fiesta-2y6w5gw.pages.github.io/projects/numa/#delivery",
+        "label": "talk.link.healthLive"
+      },
+      "dim": true,
+      "board": "delivery",
+      "cloud": true
+    },
+    {
+      "heading": "talk.health.agentic.title",
+      "line": "talk.health.agentic.body",
+      "command": "talk.health.agentic.command",
+      "picture": "feedback",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "link": {
+        "href": "https://probable-fiesta-2y6w5gw.pages.github.io/projects/numa/#agentic",
+        "label": "talk.link.healthLive"
+      },
+      "dim": true,
+      "board": "agentic",
+      "cloud": true
+    },
+    {
+      "heading": "talk.health.roadmap.title",
+      "line": "talk.health.roadmap.body",
+      "command": "talk.health.roadmap.command",
       "picture": "feedback",
       "step": 0,
       "labels": [],
@@ -20,7 +68,7 @@ export const part: Part = {
         "label": "talk.link.health750"
       },
       "dim": true,
-      "board": "portfolio",
+      "board": "roadmap",
       "cloud": true
     }
   ]

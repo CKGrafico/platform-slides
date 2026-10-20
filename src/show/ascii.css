@@ -161,33 +161,52 @@ body { font-family: var(--font-label); }
 .flow-arrow path { fill: #8a8f98; }
 .flow-arrow--main path { fill: #2f69ff; }
 
-/* Project Health boards: cards and bars in stage units, revealed in order with --flow-reveal. */
+/* Boards: cards, rows and bars in stage units, revealed in order with --flow-reveal. */
 .board-card { --v: clamp(0, calc(var(--flow-reveal, 1) * var(--n) - var(--i)), 1); opacity: var(--v); }
 .board-card-frame { fill: #0a0a0b; stroke: #63686f; stroke-width: 0.22; }
-.board-card--production .board-card-frame { stroke: #8a8f98; }
-.board-card--planned .board-card-frame { stroke-dasharray: 0.9 0.5; }
+.board-card-frame--dashed { stroke-dasharray: 0.9 0.5; }
 .board text { fill: #e8e9ec; }
 .board-name { font-size: 2.4px; font-weight: 700; }
 .board-name--bar { font-size: 2px; }
 .board-repo { font-size: 1.5px; fill: #8a8f98 !important; }
 .board-chip { fill: none; stroke: #8a8f98; stroke-width: 0.2; }
-.board-card--production .board-chip { stroke: #2f69ff; }
-.board-card--planned .board-chip { stroke-dasharray: 0.6 0.4; }
+.board-chip--on { stroke: #2f69ff; }
+.board-chip--off { stroke-dasharray: 0.6 0.4; }
 .board-chip-text { font-size: 1.45px; text-anchor: middle; fill: #c5c8ce !important; }
-.board-card--production .board-chip-text { fill: #2f69ff !important; }
+.board-chip--on + .board-chip-text { fill: #2f69ff !important; }
+.board-chip--off + .board-chip-text { fill: #8a8f98 !important; }
 .board-label { font-size: 1.5px; letter-spacing: 0.05em; fill: #a7abb1 !important; }
 .board-label--small { font-size: 1.3px; }
+.board-label--end { text-anchor: end; }
 .board-value { font-size: 2.8px; font-weight: 700; text-anchor: end; }
-.board-value--small { font-size: 2.2px; text-anchor: start; }
 .board-sub { font-size: 1.45px; fill: #a7abb1 !important; }
-.board-sub--small { font-size: 1.3px; }
+.board-sub--end { text-anchor: end; }
+.board-sub--dim { fill: #63686f !important; }
+.board-sub--light { fill: #c5c8ce !important; }
+.board-row { font-size: 1.65px; fill: #e8e9ec !important; }
+.board-row--strong { font-weight: 700; }
+.board-row--end { text-anchor: end; }
+.board-row--off { fill: #63686f !important; }
+.board-card--refused .board-row { fill: #8a8f98 !important; }
 .board-rule { stroke: #2a2d32; stroke-width: 0.2; }
-.board-profile { font-size: 1.45px; fill: #c5c8ce !important; }
-.board-empty { font-size: 2.2px; font-weight: 700; text-anchor: middle; fill: #8a8f98 !important; }
-.board-empty-sub { font-size: 1.45px; text-anchor: middle; fill: #63686f !important; }
 .board-tag { font-size: 1.5px; text-anchor: end; fill: #8a8f98 !important; letter-spacing: 0.04em; }
 .board-tag--start { text-anchor: start; }
 .board-stat { font-size: 6px; font-weight: 700; font-family: var(--font-display); }
+.board-stat--accent { fill: #2f69ff !important; }
+.board-mark { fill: #2f69ff; }
+.board-mark--off { fill: none; stroke: #63686f; stroke-width: 0.18; }
+.board-block--gate { fill: #2f69ff; }
+.board-block--parked { fill: #c5c8ce; }
+.board-block--hand { fill: #42464e; }
+.board-added--code { fill: #8a8f98; }
+.board-added--comment { fill: #e8e9ec; }
+.board-added--test { fill: #42464e; }
+.board-state--agent { fill: #2f69ff; }
+.board-state--person { fill: #c5c8ce; }
+.board-state--queued { fill: #63686f; }
+.board-state--pr { fill: #8a8f98; }
+.board-state--hand { fill: #42464e; }
+.board-track { fill: none; stroke: #8a8f98; stroke-width: 0.18; }
 .board-avatar-ring { fill: none; stroke: #2f69ff; stroke-width: 0.3; }
 .board-quote { font-size: 2.9px; font-weight: 500; font-family: var(--font-display); fill: #e8e9ec !important; }
 .board-rule--sponsors { stroke: #42464e; stroke-width: 0.15; }
@@ -200,6 +219,5 @@ body { font-family: var(--font-label); }
 .board-code--title { font-weight: 700; }
 .board-tier { font-size: 2.7px; font-family: var(--font-label); fill: #c5c8ce !important; }
 .board-bar { fill: #63686f; }
-.board-bar--ok { fill: #2f69ff; }
 
 @media (prefers-reduced-motion: reduce) { .ascii-frame { transform: none !important; } }
