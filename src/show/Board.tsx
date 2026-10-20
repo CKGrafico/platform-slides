@@ -1,13 +1,13 @@
 /**
  * The boards, drawn in stage units over the dimmed world.
  * `engineering`, `delivery`, `agentic` and `roadmap` copy the four tabs of one real Project Health dashboard.
- * `quote`, `sponsors` and `markdown` are single cards.
+ * `quote`, `sponsors`, `markdown` and `tree` are single cards.
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useT, type MessageKey } from '@/i18n'
 import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
-export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'markdown'
+export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'markdown' | 'tree'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -420,7 +420,40 @@ function Markdown() {
   )
 }
 
-const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, markdown: Markdown }
+/** A tree line is blue when it is one of the guardrails: the guardrail skills, the plugins that block calls, and the diff check. */
+const GUARD = /guardrails|plugins\/|check-diff/
+
+/**
+ * What agent-harness installs in a repo, as a file tree on a source card.
+ * Each line is a path and a note, split by a tab. Lines appear from top to bottom.
+ */
+function Tree() {
+  const t = useT()
+  const lines = t('board.tree.code').split('\n').map((line) => line.split('\t'))
+  const x = 30
+  const y = 25
+  const w = STAGE_W - x * 2
+  const step = 2.6
+  const h = 9 + lines.length * step + 2
+  const noteX = x + 46
+  return (
+    <>
+      <g className="board-card" style={reveal(0, lines.length + 1)}>
+        <rect x={x} y={y} width={w} height={h} rx={1.2} className="board-card-frame" />
+        <line x1={x} x2={x + w} y1={y + 6} y2={y + 6} className="board-rule" />
+        <Txt k="board.tree.file" x={x + 4} y={y + 4} className="board-repo" />
+      </g>
+      {lines.map(([path = '', note], i) => (
+        <g key={i} className="board-card" style={reveal(i + 1, lines.length + 1)}>
+          <text x={x + 4} y={y + 11 + i * step} className={GUARD.test(path) ? 'board-code board-code--act' : 'board-code'}>{path}</text>
+          {note ? <text x={noteX} y={y + 11 + i * step} className="board-code board-code--fence">{note}</text> : null}
+        </g>
+      ))}
+    </>
+  )
+}
+
+const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, markdown: Markdown, tree: Tree }
 
 export function Board({ id }: { id: BoardId }) {
   const View = BOARDS[id]

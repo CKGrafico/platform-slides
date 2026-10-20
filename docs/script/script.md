@@ -122,11 +122,11 @@ Source: [reference](../knowledge/platform.md).
 
 ### 12. agent-harness: agentic conventions.
 
-On screen: environment, state 0. Panels name agent-harness, OpenSpec, plugins, Skills per project, Guardrails.
+On screen: the files agent-harness installs in a repo, as a tree on a source card over the dimmed world. The guardrail lines are blue. The composition holds the current subject.
 
 Slide: One command installs it in each repo: OpenSpec for changes, plugins that block unsafe actions, the skills each project needs, and guardrails.
 
-Speaker notes: One npx command runs a wizard and installs the harness in a repo. OpenSpec manages each change as a proposal, specs and tasks. Plugins enforce rules at the tool call: pc-system-reminders denies about twelve unsafe actions, such as a forced push. Each project loads only the pc-* skills it needs. Guardrails such as linters and spec checks fail the build. The same harness runs on a PC and in CI.
+Speaker notes: This is what lands in your repo. One npx command runs a wizard once and saves the answers in .opencode/harness.json. Update replays those answers, asks nothing, and keeps the files you edited. AGENTS.md is always in context. ARCHITECTURE.md and DESIGN.md are generated from the code. OpenSpec manages each change as a proposal, specs and tasks. The pc-* skills hold the procedures: the guardrails every agent loads, your own project rules, and pc-plan-goal, which explores, proposes, applies and archives with no questions. A project gets only the skills it needs, for example the user story skill for its backlog. The blue lines are the guardrails. Plugins act at the tool call: pc-system-reminders denies about twelve unsafe actions, such as a forced push. check-diff refuses the comments and tests agents tend to add. The same harness runs on a PC and in CI.
 
 ## Agentic Workflows: jobs, reasoning, validated writes
 

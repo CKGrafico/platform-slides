@@ -13,39 +13,10 @@ export const part: Part = {
       "command": "talk.harness.conventions.command",
       "picture": "environment",
       "step": 0,
-      "labels": [
-        {
-          "target": "harness",
-          "name": "talk.label.harness",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "kit.spec",
-          "name": "talk.label.specs",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "kit.plugin",
-          "name": "talk.label.plugins",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "context",
-          "name": "talk.label.skillsProject",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "wall",
-          "name": "talk.label.guardrails",
-          "width": 28,
-          "under": true
-        }
-      ],
+      "labels": [],
       "layout": "wide",
+      "dim": true,
+      "board": "tree",
       "cloud": true
     }
   ]
