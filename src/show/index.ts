@@ -1,10 +1,10 @@
 import { defineShow } from '@/engine/define'
 import { opening } from './parts/01-cover'
 import { openingMoves } from './parts/01-cover/choreography'
-import { assessment } from './parts/03-maturity'
-import { assessmentMoves } from './parts/03-maturity/choreography'
-import { evolution } from './parts/04-evolution'
-import { evolutionMoves } from './parts/04-evolution/choreography'
+import { evolution } from './parts/03-evolution'
+import { evolutionMoves } from './parts/03-evolution/choreography'
+import { assessment } from './parts/04-maturity'
+import { assessmentMoves } from './parts/04-maturity/choreography'
 import { platform } from './parts/05-platform'
 import { platformMoves } from './parts/05-platform/choreography'
 import { foundations } from './parts/06-foundations'
@@ -18,6 +18,6 @@ import { healthMoves } from './parts/09-health/choreography'
 import { system } from './parts/10-system'
 import { systemMoves } from './parts/10-system/choreography'
 
-export const show = defineShow({ chapters: [opening, assessment, evolution, platform, foundations, harness, workflows, health, system], mountWindow: 1 })
-export const choreographies = [openingMoves, assessmentMoves, evolutionMoves, platformMoves, foundationsMoves, harnessMoves, workflowsMoves, healthMoves, systemMoves]
+export const show = defineShow({ chapters: [opening, evolution, assessment, platform, foundations, harness, workflows, health, system], mountWindow: 1 })
+export const choreographies = [openingMoves, evolutionMoves, assessmentMoves, platformMoves, foundationsMoves, harnessMoves, workflowsMoves, healthMoves, systemMoves]
 export { actors } from './actors'

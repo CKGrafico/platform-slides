@@ -8,16 +8,6 @@ export const part: Part = {
   "title": "How we built Platform",
   "beats": [
     {
-      "heading": "talk.platform.chapter.title",
-      "command": "talk.platform.chapter.command",
-      "picture": "evolution",
-      "step": 0,
-      "labels": [],
-      "layout": "chapter",
-      "dim": true,
-      "cloud": true
-    },
-    {
       "heading": "talk.platform.pillars.title",
       "command": "talk.platform.pillars.command",
       "picture": "platform",
@@ -53,6 +43,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('evolution', 0),
+  before: picture('assessment', 0),
 }
 export const platform = makePart(part)

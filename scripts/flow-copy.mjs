@@ -1,5 +1,11 @@
 // Text of the worker flows. The facts come from the Agentic Workflows diagrams, read on 2026-10-05.
 // Titles fit 21 mono characters and subtitles fit 21. Edge labels fit 12.
+const legend = {
+  'flow.legend.job': ['GitHub Actions job', 'GitHub Actions job'],
+  'flow.legend.agent': ['Agent · OpenCode', 'Agent · OpenCode'],
+  'flow.legend.post': ['Job after the agent · Safe Outputs', 'Job after the agent · Safe Outputs'],
+}
+
 const edge = {
   'flow.edge.yes': ['yes', 'sí'],
   'flow.edge.no': ['no', 'no'],
@@ -81,8 +87,7 @@ const triage = {
   'flow.triage.facts': ['Facts', 'Hechos'],
   'flow.triage.facts.sub': ['rung 3 · the issue', 'peldaño 3 · la issue'],
   'flow.triage.agent': ['Agent', 'Agente'],
-  'flow.triage.agent.sub': ['rung 5 · 10 checks', 'peldaño 5 · 10 checks'],
-  'flow.triage.round': ['Round N of 3', 'Ronda N de 3'],
+  'flow.triage.agent.sub': ['10 checks · round N of 3', '10 checks · round N of 3'],
   'flow.triage.valid': ['Outcome valid?', '¿Resultado válido?'],
   'flow.triage.passed': ['Passed', 'Pasa'],
   'flow.triage.passed.sub': ['refine added', 'añade refine'],
@@ -387,7 +392,7 @@ const health = {
   'board.health.i750.agent.value': '2 h 32 m',
 }
 
-const all = { ...edge, ...router, ...triage, ...refine, ...implement, ...gate, ...board, ...ghaw, ...Object.fromEntries(Object.entries(health).map(([key, en]) => [key, [en, en]])) }
+const all = { ...legend, ...edge, ...router, ...triage, ...refine, ...implement, ...gate, ...board, ...ghaw, ...Object.fromEntries(Object.entries(health).map(([key, en]) => [key, [en, en]])) }
 
 // Technical diagrams stay in English in both decks: they use the tool's own words, and a translation reads worse.
 // Every flow.* key (node titles, node lines, edge labels) shows its English text in Spanish too.

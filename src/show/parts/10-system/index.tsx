@@ -8,6 +8,17 @@ export const part: Part = {
   "title": "The whole Platform system",
   "beats": [
     {
+      "heading": "talk.closing.question.title",
+      "command": "talk.closing.question.command",
+      "picture": "system",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "board": "quote",
+      "cloud": true
+    },
+    {
       "heading": "talk.system.title",
       "line": "talk.system.body",
       "command": "talk.system.command",
@@ -46,18 +57,7 @@ export const part: Part = {
         }
       ],
       "layout": "wide",
-      "footnote": "talk.maturity.line",
-      "cloud": true
-    },
-    {
-      "heading": "talk.closing.question.title",
-      "command": "talk.closing.question.command",
-      "picture": "system",
-      "step": 0,
-      "labels": [],
-      "layout": "wide",
-      "dim": true,
-      "board": "quote",
+      "footnote": "talk.closing.talk",
       "cloud": true
     }
   ]

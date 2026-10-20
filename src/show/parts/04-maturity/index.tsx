@@ -3,7 +3,7 @@ import { picture } from '../../pictures'
 
 export const part: Part = {
   ...{
-  "id": "03-maturity",
+  "id": "04-maturity",
   "scene": "assessment",
   "title": "AI adoption and team maturity",
   "beats": [
@@ -49,6 +49,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('local', 0),
+  before: picture('evolution', 0),
 }
 export const assessment = makePart(part)

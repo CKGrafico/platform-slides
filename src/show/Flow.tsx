@@ -4,7 +4,7 @@
  * Six columns and rows 0 to 3.6 fit between the heading and the caption of a wide frame.
  */
 import { useT } from '@/i18n'
-import { FLOWS, type FlowDef, type FlowEdge, type FlowId, type FlowNode } from './flows'
+import { FLOWS, LEGEND, type FlowDef, type FlowEdge, type FlowId, type FlowNode } from './flows'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -15,6 +15,8 @@ const COL_PITCH = 27.2
 const ROW_Y = 28
 const ROW_PITCH = 12.6
 const LABEL_LINE = 1.9
+/** The legend sits between the heading and the first row, at the right. */
+const LEGEND_Y = 24.4
 
 interface Box { x: number; y: number; cx: number; cy: number; right: number; bottom: number }
 
@@ -82,10 +84,38 @@ function Node({ node, box, index, total }: { node: FlowNode; box: Box; index: nu
   const t = useT()
   const titleY = node.sub ? box.cy - 0.9 : box.cy + 0.7
   return (
-    <g className={`flow-node flow-node--${node.kind}`} style={style}>
-      <rect x={box.x} y={box.y} width={NODE_W} height={NODE_H} rx={0.6} />
+    <g className={`flow-node flow-node--${node.kind}${node.decision ? ' flow-node--decision' : ''}`} style={style}>
+      <rect x={box.x} y={box.y} width={NODE_W} height={NODE_H} rx={node.decision ? NODE_H / 2 : 0.6} />
       <text x={box.cx} y={titleY} className="flow-title" data-i18n={node.title}>{t(node.title)}</text>
       {node.sub ? <text x={box.cx} y={box.cy + 2.4} className="flow-sub" data-i18n={node.sub}>{t(node.sub)}</text> : null}
+    </g>
+  )
+}
+
+/**
+ * The three kinds of step, as swatches with names. Every diagram uses them the same way:
+ * a white outline is a normal job, solid blue is the agent, and a blue outline is a job after the agent.
+ * `x` and `y` are the right end of the row's baseline.
+ */
+export function FlowLegend({ x, y }: { x: number; y: number }) {
+  const t = useT()
+  const swatch = 3.2
+  const gap = 3
+  const charW = 0.99
+  const widths = LEGEND.map((item) => swatch + 1 + t(item.label).length * charW)
+  let left = x - widths.reduce((sum, w) => sum + w, 0) - gap * (LEGEND.length - 1)
+  return (
+    <g className="flow-legend">
+      {LEGEND.map((item, i) => {
+        const at = left
+        left += widths[i]! + gap
+        return (
+          <g key={item.kind} className={`flow-node flow-node--${item.kind}`}>
+            <rect x={at} y={y - 1.5} width={swatch} height={1.8} rx={0.3} />
+            <text x={at + swatch + 1} y={y} className="flow-legend-label" data-i18n={item.label}>{t(item.label)}</text>
+          </g>
+        )
+      })}
     </g>
   )
 }
@@ -119,6 +149,7 @@ export function Flow({ id }: { id: FlowId }) {
         return <Edge key={i} edge={edge} boxes={boxes} index={index} total={total} loopIndex={loopIndex} slot={slot} highest={highest} lowest={lowest} />
       })}
       {def.nodes.map((node) => <Node key={node.id} node={node} box={boxes.get(node.id)!} index={rank.get(node.id) ?? 0} total={total} />)}
+      <FlowLegend x={COL_X + 5 * COL_PITCH + NODE_W} y={LEGEND_Y} />
     </svg>
   )
 }

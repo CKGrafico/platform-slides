@@ -63,7 +63,8 @@ body { font-family: var(--font-label); }
 .ascii-frame--wide .ascii-heading { top: calc(var(--su) * 10); height: calc(var(--su) * 15); width: calc(var(--su) * 150); font-size: calc(var(--su) * 6.5); white-space: normal; text-wrap: balance; }
 .ascii-frame--wide .ascii-caption { bottom: calc(var(--su) * 5.5); height: calc(var(--su) * 12); width: calc(var(--su) * 130); font-size: calc(var(--su) * 2.8); }
 .ascii-frame--chapter .ascii-heading { top: calc(var(--su) * 38); width: calc(var(--su) * 162.8); height: calc(var(--su) * 24); font-size: calc(var(--su) * 12); text-align: center; white-space: normal; }
-.ascii-frame--statement .ascii-heading { font-size: calc(var(--su) * 8.5); height: calc(var(--su) * 28); width: calc(var(--su) * 110); }
+/* The statement is three long lines, so it is set smaller than a short title and stays clear of the body on the right. */
+.ascii-frame--statement .ascii-heading { font-size: calc(var(--su) * 6.6); line-height: 1.12; height: calc(var(--su) * 28); width: calc(var(--su) * 110); }
 /* A live example the presenter opens during the talk: top right, on the command line's row. */
 .ascii-link {
   opacity: var(--title-reveal, 1);
@@ -139,20 +140,16 @@ body { font-family: var(--font-label); }
 .flow { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; font-family: var(--font-label); }
 .flow-node, .flow-edge { --v: clamp(0, calc(var(--flow-reveal, 1) * var(--n) - var(--i)), 1); }
 .flow-node { opacity: var(--v); }
-.flow-node rect { fill: #0a0a0b; stroke: #8a8f98; stroke-width: 0.22; }
+/* Three kinds of step, the same on every diagram: a normal job, the agent, and a job after the agent. */
+.flow-node rect { fill: #0a0a0b; stroke: #e8e9ec; stroke-width: 0.22; }
 .flow-node text { text-anchor: middle; fill: #e8e9ec; }
 .flow-title { font-size: 1.9px; font-weight: 600; }
 .flow-sub { font-size: 1.7px; font-weight: 450; fill: #a7abb1 !important; }
-.flow-node--event rect { stroke: #63686f; stroke-dasharray: 0.5 0.4; }
-/* The agent is the model at work: a solid blue box with light text. */
 .flow-node--agent rect { fill: #2f69ff; stroke: #2f69ff; }
 .flow-node--agent text { fill: #f2f4ff; }
 .flow-node--agent .flow-sub { fill: #d4ddff !important; }
-.flow-node--gate rect { stroke: #c5c8ce; stroke-width: 0.3; rx: 3.6; }
-.flow-node--end rect { stroke: #2f69ff; stroke-width: 0.34; }
-.flow-node--human rect { stroke: #a7abb1; stroke-dasharray: 0.9 0.5; }
-.flow-node--stop rect { stroke: #42464e; }
-.flow-node--stop text { fill: #8a8f98; }
+.flow-node--post rect { stroke: #2f69ff; stroke-width: 0.34; }
+.flow-legend-label { font-size: 1.6px; text-anchor: start !important; fill: #a7abb1 !important; }
 .flow-edge path { fill: none; stroke-width: 0.26; stroke: #8a8f98; stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--v)); }
 .flow-edge--main path { stroke: #2f69ff; stroke-width: 0.34; }
 .flow-edge--return path { stroke-dasharray: 0.02 0.014; stroke-dashoffset: 0; opacity: var(--v); }
@@ -183,6 +180,7 @@ body { font-family: var(--font-label); }
 .board-sub--end { text-anchor: end; }
 .board-sub--dim { fill: #63686f !important; }
 .board-sub--light { fill: #c5c8ce !important; }
+.board-sub--note { font-size: 1.6px; }
 .board-row { font-size: 1.65px; fill: #e8e9ec !important; }
 .board-row--strong { font-weight: 700; }
 .board-row--end { text-anchor: end; }

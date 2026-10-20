@@ -8,6 +8,23 @@ export const part: Part = {
   "title": "Project Health measures and improves the system",
   "beats": [
     {
+      "heading": "talk.health.intro.title",
+      "line": "talk.health.intro.body",
+      "command": "talk.health.intro.command",
+      "picture": "feedback",
+      "step": 0,
+      "labels": [
+        {
+          "target": "measure",
+          "name": "talk.label.health",
+          "width": 28,
+          "under": true
+        }
+      ],
+      "layout": "wide",
+      "cloud": true
+    },
+    {
       "heading": "talk.health.engineering.title",
       "line": "talk.health.engineering.body",
       "command": "talk.health.engineering.command",
@@ -31,6 +48,7 @@ export const part: Part = {
       "step": 0,
       "labels": [],
       "layout": "wide",
+      "footnote": "talk.health.dora",
       "link": {
         "href": "https://probable-fiesta-2y6w5gw.pages.github.io/projects/numa/#delivery",
         "label": "talk.link.healthLive"

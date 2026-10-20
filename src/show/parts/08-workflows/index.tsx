@@ -55,41 +55,6 @@ export const part: Part = {
       "cloud": true
     },
     {
-      "heading": "talk.workflows.hybrid.title",
-      "line": "talk.workflows.hybrid.body",
-      "command": "talk.workflows.hybrid.command",
-      "picture": "workflow",
-      "step": 1,
-      "labels": [
-        {
-          "target": "intake",
-          "name": "talk.label.facts",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "core",
-          "name": "talk.label.agent",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "wall",
-          "name": "talk.label.validate",
-          "width": 28,
-          "under": true
-        },
-        {
-          "target": "outputs",
-          "name": "talk.label.outputs",
-          "width": 28,
-          "under": true
-        }
-      ],
-      "layout": "wide",
-      "cloud": true
-    },
-    {
       "heading": "talk.workflows.triage.title",
       "line": "talk.workflows.triage.body",
       "command": "talk.workflows.triage.command",

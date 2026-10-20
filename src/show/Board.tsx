@@ -1,13 +1,15 @@
 /**
  * The boards, drawn in stage units over the dimmed world.
  * `engineering`, `delivery`, `agentic` and `roadmap` copy the four tabs of one real Project Health dashboard.
- * `quote`, `sponsors`, `markdown` and `tree` are single cards.
+ * `quote`, `sponsors`, `ghaw` and `tree` are single cards.
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useT, type MessageKey } from '@/i18n'
+import { FlowLegend } from './Flow'
+import { FLOWS } from './flows'
 import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
-export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'markdown' | 'tree'
+export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'ghaw' | 'tree'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -114,10 +116,12 @@ const DORA: Dora[] = [
 
 /** Delivery: the five DORA metrics, three collected and two refused, then the two lead times side by side. */
 function Delivery() {
-  const tableH = 34
+  const tableH = 31
   const cols = [LEFT + 2.5, LEFT + 62, LEFT + 88] as const
   const total = DORA.length + 2
-  const cardY = TOP + tableH + 6
+  const cardY = TOP + tableH + 5
+  // The cards end above the footnote line, which explains DORA under the board.
+  const cardH = 11
   const cardW = (WIDTH - 3) / 2
   return (
     <>
@@ -130,7 +134,7 @@ function Delivery() {
         <Txt k="board.health.month" x={RIGHT - 2.5} y={TOP + 4} className="board-label board-label--end" />
       </g>
       {DORA.map((row, i) => {
-        const y = TOP + 10 + i * 5.6
+        const y = TOP + 9.5 + i * 5
         const name = `board.health.d.${row.k}` as MessageKey
         return (
           <g key={row.k} className={`board-card${row.collected ? '' : ' board-card--refused'}`} style={reveal(i + 1, total)}>
@@ -149,7 +153,7 @@ function Delivery() {
           const x = LEFT + i * (cardW + 3)
           return (
             <g key={k}>
-              <rect x={x} y={cardY} width={cardW} height={BOTTOM - cardY} rx={0.8} className="board-card-frame" />
+              <rect x={x} y={cardY} width={cardW} height={cardH} rx={0.8} className="board-card-frame" />
               <Txt k={`board.health.${k}`} x={x + 2.5} y={cardY + 4.4} className="board-label" />
               <Txt k={`board.health.${k}.sub`} x={x + 2.5} y={cardY + 7.6} className="board-sub" />
               <Txt k={`board.health.${k}.value`} x={x + cardW - 2.5} y={cardY + 7.2} className="board-value" />
@@ -392,31 +396,67 @@ function codeClass(line: string, inSettings: boolean) {
 }
 
 /**
- * A gh-aw workflow as a source card: the file path on top, then the Markdown, line by line.
- * Settings (the frontmatter) are quieter than the prompt. The one line that lets the agent act is blue.
+ * GitHub Agentic Workflows in one slide. On the left, a gh-aw workflow as a source card: the file path on top,
+ * then the Markdown, line by line. Settings (the frontmatter) are quieter than the prompt, and the one line that
+ * lets the agent act is blue. On the right, what happens when it runs, top to bottom, in the diagram legend's styles.
  */
-function Markdown() {
+function Ghaw() {
   const t = useT()
   const lines = t('board.markdown.code').split('\n')
-  const x = 40
+  const x = LEFT
   const y = 26
-  const w = STAGE_W - x * 2
-  const step = 2.9
-  const h = 9 + lines.length * step + 3
+  const w = 72
+  const step = 2.6
+  const h = 9 + lines.length * step + 2
+  const chain = FLOWS.ghaw
+  const total = chain.nodes.length + 1
+  const nodeX = x + w + 9
+  const nodeW = 36
+  const nodeH = 4.8
+  const pitch = (y + h - TOP - nodeH) / (chain.nodes.length - 1)
+  const nodeY = (i: number) => TOP + 0.5 + i * pitch
   let fences = 0
   return (
-    <g className="board-card" style={reveal(0, 1)}>
-      <rect x={x} y={y} width={w} height={h} rx={1.2} className="board-card-frame" />
-      <line x1={x} x2={x + w} y1={y + 6} y2={y + 6} className="board-rule" />
-      <text x={x + 4} y={y + 4} className="board-repo" data-i18n="board.markdown.file">{t('board.markdown.file')}</text>
-      <text data-i18n="board.markdown.code">
-        {lines.map((line, i) => {
-          const className = codeClass(line, fences === 1 && line !== '---')
-          if (line === '---') fences++
-          return <tspan key={i} x={x + 4} y={y + 11 + i * step} className={className}>{line || ' '}</tspan>
-        })}
-      </text>
-    </g>
+    <>
+      <defs>
+        <marker id="board-arrow" className="flow-arrow flow-arrow--main" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="1.6" markerHeight="1.6" markerUnits="userSpaceOnUse" orient="auto">
+          <path d="M 0 0 L 6 3 L 0 6 z" />
+        </marker>
+      </defs>
+      <g className="board-card" style={reveal(0, total)}>
+        <rect x={x} y={y} width={w} height={h} rx={1.2} className="board-card-frame" />
+        <line x1={x} x2={x + w} y1={y + 6} y2={y + 6} className="board-rule" />
+        <Txt k="board.markdown.file" x={x + 4} y={y + 4} className="board-repo" />
+        <text data-i18n="board.markdown.code">
+          {lines.map((line, i) => {
+            const className = codeClass(line, fences === 1 && line !== '---')
+            if (line === '---') fences++
+            return <tspan key={i} x={x + 4} y={y + 11 + i * step} className={className}>{line || ' '}</tspan>
+          })}
+        </text>
+      </g>
+      <FlowLegend x={RIGHT} y={TOP - 2.6} />
+      {chain.nodes.map((node, i) => {
+        const ny = nodeY(i)
+        const edge = chain.edges.find((item) => item.to === node.id)
+        const style = { '--i': i + 1, '--n': total } as React.CSSProperties
+        return (
+          <g key={node.id}>
+            {i > 0 ? (
+              <g className="flow-edge flow-edge--main" style={style}>
+                <path d={`M ${nodeX + nodeW / 2} ${nodeY(i - 1) + nodeH} V ${ny}`} pathLength={1} markerEnd="url(#board-arrow)" />
+                {edge?.label ? <Txt k={edge.label} x={nodeX + nodeW / 2 + 1.2} y={(nodeY(i - 1) + nodeH + ny) / 2 + 0.6} className="flow-edge-label" /> : null}
+              </g>
+            ) : null}
+            <g className={`flow-node flow-node--${node.kind}`} style={style}>
+              <rect x={nodeX} y={ny} width={nodeW} height={nodeH} rx={node.decision ? nodeH / 2 : 0.6} />
+              <Txt k={node.title} x={nodeX + nodeW / 2} y={ny + nodeH / 2 + 0.7} className="flow-title" />
+            </g>
+            {node.sub ? <g className="board-card" style={style}><Txt k={node.sub} x={nodeX + nodeW + 2.5} y={ny + nodeH / 2 + 0.6} className="board-sub board-sub--note" /></g> : null}
+          </g>
+        )
+      })}
+    </>
   )
 }
 
@@ -453,7 +493,7 @@ function Tree() {
   )
 }
 
-const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, markdown: Markdown, tree: Tree }
+const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, ghaw: Ghaw, tree: Tree }
 
 export function Board({ id }: { id: BoardId }) {
   const View = BOARDS[id]
