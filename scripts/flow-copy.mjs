@@ -265,7 +265,7 @@ const board = {
   'board.tiers.plan.model': ["plainconcepts/glm-5-3", "plainconcepts/glm-5-3"],
   'board.tiers.plan.role': ["orchestration and plans", "orchestration and plans"],
   'board.tiers.build': ["BUILD", "BUILD"],
-  'board.tiers.build.model': ["plainconcepts/quasar-438b", "plainconcepts/quasar-438b"],
+  'board.tiers.build.model': ["plainconcepts/glm-5-2", "plainconcepts/glm-5-2"],
   'board.tiers.build.role': ["complex code: models, APIs, auth, UI", "complex code: models, APIs, auth, UI"],
   'board.tiers.fast': ["FAST", "FAST"],
   'board.tiers.fast.model': ["plainconcepts/carina-60b", "plainconcepts/carina-60b"],
