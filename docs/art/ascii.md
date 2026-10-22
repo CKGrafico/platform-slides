@@ -60,7 +60,7 @@ Every box has one line of help that shows when the presenter hovers it (`Tip` in
 
 The text in the diagrams stays in English in both languages, because the names match the code and the labels on GitHub. `scripts/flow-copy.mjs` copies the English text of every `flow.*` key into Spanish. Titles and captions are still translated.
 
-The Triage, Refine, Implement, and Merge Gate slides have a link at the top right to one real Issue that went through all four workers. The presenter opens it during the talk. The repository is private, so the label does not name the project. The Project Health slide links to the same Issue on the roadmap.
+The Triage, Refine, Implement, and Merge Gate slides have a link at the top right to one real Issue that went through all four workers. The presenter opens it during the talk. The repository is private, so the label does not name the project. Every link opens in one shared named tab (`keynote-link`), so the presenter keeps a single tab instead of a new one per click. The link cannot have `rel="noopener"` or `"noreferrer"`, because they force a new tab each time. The Project Health slide links to the same Issue on the roadmap.
 
 ## Project Health boards
 
