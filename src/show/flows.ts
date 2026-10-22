@@ -3,8 +3,9 @@
  * The steps come from the Agentic Workflows diagrams (docs/knowledge/workflow-routes.md).
  * Each step's phase comes from the worker's own workflow file in agentic-workflows (loops/workflows/agent-*.md):
  * the jobs and steps that run before the agent, the agent's prompt, and the jobs that run after it.
- * A step with the GitHub mark in its corner is one GitHub Agentic Workflows (gh-aw) provides: its activation job,
- * the agent job, and the safe outputs. The other steps are ours, added in the workflow file.
+ * A step with the GitHub mark in its corner is one GitHub Agentic Workflows (gh-aw) provides: its activation job
+ * and its safe outputs. The other steps are ours, added in the workflow file. The blue boxes are our prompts, which
+ * gh-aw runs inside its own agent job, so they carry no mark.
  * Positions are grid cells: six columns across the stage, up to four rows.
  */
 import type { MessageKey } from '@/i18n'
@@ -39,7 +40,7 @@ export const FLOWS: Record<FlowId, FlowDef> = {
       n('md', 'job', 1, 1, 'flow.ghaw.md', 'flow.ghaw.md.sub', true),
       n('compile', 'job', 2, 1, 'flow.ghaw.compile', 'flow.ghaw.compile.sub', true),
       n('actions', 'job', 3, 1, 'flow.ghaw.actions', 'flow.ghaw.actions.sub'),
-      n('agent', 'agent', 4, 1, 'flow.ghaw.agent', 'flow.ghaw.agent.sub', true),
+      n('agent', 'agent', 4, 1, 'flow.ghaw.agent', 'flow.ghaw.agent.sub'),
       d('safe', 'post', 5, 1, 'flow.ghaw.safe', 'flow.ghaw.safe.sub', true),
       n('pr', 'post', 5, 2.5, 'flow.ghaw.pr', 'flow.ghaw.pr.sub'),
     ],
@@ -81,7 +82,7 @@ export const FLOWS: Record<FlowId, FlowDef> = {
       n('idle', 'job', 0, 0, 'flow.triage.idle', 'flow.triage.idle.sub'),
       d('open', 'job', 1, 1, 'flow.triage.open', 'flow.triage.open.sub'),
       n('activation', 'job', 2, 1, 'flow.common.activation', 'flow.common.activation.sub', true),
-      n('agent', 'agent', 3, 1, 'flow.triage.agent', 'flow.triage.agent.sub', true),
+      n('agent', 'agent', 3, 1, 'flow.triage.agent', 'flow.triage.agent.sub'),
       n('safe', 'post', 4, 0, 'flow.triage.safe', 'flow.triage.safe.sub', true),
       d('valid', 'post', 4, 1, 'flow.triage.valid', 'flow.triage.valid.sub'),
       n('incomplete', 'post', 4, 2.5, 'flow.triage.incomplete', 'flow.triage.incomplete.sub'),
@@ -105,7 +106,7 @@ export const FLOWS: Record<FlowId, FlowDef> = {
       d('guard', 'job', 0, R[0]!, 'flow.refine.guard', 'flow.refine.guard.sub'),
       n('toobig', 'post', 0, R[1]!, 'flow.refine.toobig', 'flow.refine.toobig.sub'),
       n('activation', 'job', 1, R[0]!, 'flow.common.activation', 'flow.common.activation.sub', true),
-      n('explore', 'agent', 2, R[0]!, 'flow.refine.explore', 'flow.refine.explore.sub', true),
+      n('explore', 'agent', 2, R[0]!, 'flow.refine.explore', 'flow.refine.explore.sub'),
       d('trivial', 'agent', 3, R[0]!, 'flow.refine.trivial'),
       n('plan', 'agent', 4, R[0]!, 'flow.refine.plan', 'flow.refine.plan.sub'),
       n('story', 'agent', 3, R[1]!, 'flow.refine.story', 'flow.refine.story.sub'),
@@ -139,7 +140,7 @@ export const FLOWS: Record<FlowId, FlowDef> = {
       n('idle', 'job', 1, 0, 'flow.implement.idle', 'flow.implement.idle.sub'),
       n('activation', 'job', 2, 1, 'flow.common.activation', 'flow.common.activation.sub', true),
       n('branch', 'job', 3, 1, 'flow.implement.branch', 'flow.implement.branch.sub'),
-      d('marker', 'agent', 4, 1, 'flow.implement.marker', undefined, true),
+      d('marker', 'agent', 4, 1, 'flow.implement.marker'),
       n('direct', 'agent', 4, 0, 'flow.implement.direct', 'flow.implement.direct.sub'),
       n('standard', 'agent', 5, 1, 'flow.implement.standard', 'flow.implement.standard.sub'),
       d('verify', 'agent', 5, 2, 'flow.implement.verify', 'flow.implement.verify.sub'),
@@ -167,11 +168,11 @@ export const FLOWS: Record<FlowId, FlowDef> = {
       n('checkout', 'job', 2, 1, 'flow.gate.checkout', 'flow.gate.checkout.sub'),
       n('activation', 'job', 3, 1, 'flow.common.activation', 'flow.common.activation.sub', true),
       d('ci', 'job', 4, 1, 'flow.gate.ci'),
-      n('repair', 'agent', 4, 0, 'flow.gate.repair', 'flow.gate.repair.sub', true),
+      n('repair', 'agent', 4, 0, 'flow.gate.repair', 'flow.gate.repair.sub'),
       n('pushed', 'post', 3, 0, 'flow.gate.pushed', 'flow.gate.pushed.sub'),
       d('protected', 'job', 5, 1, 'flow.gate.protected', 'flow.gate.protected.sub'),
       n('owner', 'job', 5, 0, 'flow.gate.owner', 'flow.gate.owner.sub'),
-      n('agent', 'agent', 5, 2, 'flow.gate.agent', 'flow.gate.agent.sub', true),
+      n('agent', 'agent', 5, 2, 'flow.gate.agent', 'flow.gate.agent.sub'),
       d('disposition', 'post', 4, 2, 'flow.gate.disposition', 'flow.gate.disposition.sub'),
       n('automerge', 'post', 3, 2, 'flow.gate.automerge', 'flow.gate.automerge.sub'),
       n('human', 'post', 4, 3, 'flow.gate.human'),
