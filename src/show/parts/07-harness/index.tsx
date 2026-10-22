@@ -22,6 +22,38 @@ export const part: Part = {
       "dim": true,
       "board": "tree",
       "cloud": true
+    },
+    {
+      "heading": "talk.harness.skills.title",
+      "line": "talk.harness.skills.body",
+      "command": "talk.harness.skills.command",
+      "picture": "environment",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "link": {
+        "href": "https://harness.platform.plainconcepts.dev",
+        "label": "talk.link.harness"
+      },
+      "dim": true,
+      "board": "skills",
+      "cloud": true
+    },
+    {
+      "heading": "talk.harness.tiers.title",
+      "line": "talk.harness.tiers.body",
+      "command": "talk.harness.tiers.command",
+      "picture": "environment",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "link": {
+        "href": "https://harness.platform.plainconcepts.dev",
+        "label": "talk.link.harness"
+      },
+      "dim": true,
+      "board": "tiers",
+      "cloud": true
     }
   ]
 },

@@ -89,6 +89,16 @@ The keynote may use or break from this identity. That is a design decision for l
 - **Installed in:** Numa, Odyssey, Pliny-Bot, Lyceum, Agentic-Workflow-Dogfood, and loop-task. (`*/.opencode/harness.json`)
 - **Dependency:** agentic-workflows requires it, because its workers call the `pc-*` skills. (`Agentic-Workflows/AGENTS.md`)
 
+### agent-harness inside one project (2026-10-23)
+
+From the `.opencode/harness.json`, `.opencode/agents/`, `.agents/skills/` and `skills-lock.json` of two consumer projects, which have the same setup, and from the agent-harness skills `pc-plan-propose` (with its task annotation reference) and `pc-plan-apply`.
+
+- 58 skills. 27 are installed from skills.sh with `npx skills` and pinned in `skills-lock.json` with source and hash, from 20 repositories (for example vercel-labs/agent-skills, shadcn/ui, dotnet/skills, github/awesome-copilot, wshobson/agents). 23 are `pc-*` skills from agent-harness. `plain-engineering-conventions` (from PlainConcepts/skills) and `plain-dotnet-guardrails` are company-wide conventions.
+- `pc-guardrails-generic` is global and every agent loads it first: secrets, zero comments by default, temporary files, test budget, and the engineer workflow. `pc-guardrails-project` holds the rules of one codebase, extracted from its ARCHITECTURE.md by `/make-guardrails`.
+- Agents: `backend-engineer`, `frontend-engineer`, `docs-engineer` and `fullstack-engineer` (the fallback, and the body of the `build` and `plan` primaries). Each is a Markdown file whose `## Abilities` lists the skills it loads. `pc-system-reminders` blocks editing until they are loaded. `/make-engineer` adds a specialist.
+- Model tiers in `harness.json`: plan `plainconcepts/glm-5-3`, build `plainconcepts/quasar-438b`, fast `plainconcepts/carina-60b`. The `pc-subagent-tiers` plugin writes every specialist once per tier (`frontend-engineer.build` and so on). `/make-user-model` overrides a tier for one person in `harness.user.json`.
+- `/plan-propose` gives each OpenSpec task an agent (the engineer whose description and abilities match best), a tier (build for complex code, fast for light work, plan only for orchestration), `depends_on` and `touches`. `/plan-apply` runs the tasks in waves: `depends_on` sets the order, `touches` keeps concurrent agents on separate files, `agents.maxConcurrent` caps a wave (4 in both projects), and `check-diff` runs after each wave.
+
 ## agentic-workflows
 
 - **Repo:** `PlainConceptsPlatform/agentic-workflows`. npm `@plainconceptsplatform/workflows`, 70 versions on npm in about a month. Installer: `npx @plainconceptsplatform/workflows`.

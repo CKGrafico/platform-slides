@@ -1,7 +1,7 @@
 /**
  * The boards, drawn in stage units over the dimmed world.
  * `engineering`, `delivery`, `agentic` and `roadmap` copy the four tabs of one real Project Health dashboard.
- * `quote`, `sponsors`, `ghaw`, `tree` and `site` are single cards.
+ * `quote`, `sponsors`, `ghaw`, `tree`, `site`, `skills` and `tiers` are single cards.
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useState } from 'react'
@@ -11,7 +11,7 @@ import { FlowLegend, GhMark, Tip } from './Flow'
 import { FLOWS } from './flows'
 import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
-export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'ghaw' | 'tree' | 'site'
+export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'ghaw' | 'tree' | 'site' | 'skills' | 'tiers'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -504,6 +504,113 @@ function Site() {
   )
 }
 
+/** Lines of a message, one per `\n`, each split at a tab into a name and a note. */
+function rows(t: (key: MessageKey) => string, key: string) {
+  return t(key as MessageKey).split('\n').map((line) => line.split('\t') as [string, string?])
+}
+
+/**
+ * agent-harness, skills and agents. Left: the skills of one real project, by source: skills.sh, pinned in
+ * skills-lock.json, and ours, with the guardrails in blue. Right: the real file of one agent, whose abilities are
+ * the skills it loads before it works.
+ */
+function Skills() {
+  const t = useT()
+  const step = 2.55
+  const left = { x: LEFT, w: 76 }
+  const right = { x: LEFT + 76 + 4, w: WIDTH - 80 }
+  const shList = rows(t, 'board.skills.sh.list')
+  const ours = rows(t, 'board.skills.ours.list')
+  const agent = t('board.skills.agent.code').split('\n')
+  const oursY = TOP + 9 + shList.length * step + 4
+  const agentEnd = TOP + 11 + agent.length * step
+  return (
+    <>
+      <Txt k="board.skills.tag" x={RIGHT} y={TOP - 1.6} className="board-tag" />
+      <g className="board-card" style={reveal(0, 3)}>
+        <rect x={left.x} y={TOP} width={left.w} height={BOTTOM - TOP} rx={0.8} className="board-card-frame" />
+        <Txt k="board.skills.sh" x={left.x + 2.5} y={TOP + 4} className="board-label" />
+        <text>{shList.map(([name], i) => <tspan key={i} x={left.x + 2.5} y={TOP + 8.5 + i * step} className="board-code board-code--small">{name}</tspan>)}</text>
+        <line x1={left.x + 2.5} x2={left.x + left.w - 2.5} y1={oursY - 3.6} y2={oursY - 3.6} className="board-rule" />
+        <Txt k="board.skills.ours" x={left.x + 2.5} y={oursY} className="board-label" />
+        {ours.map(([name, note], i) => (
+          <g key={i}>
+            <text x={left.x + 2.5} y={oursY + 4.5 + i * step} className={/guardrails|plain-/.test(name) ? 'board-code board-code--small board-code--act' : 'board-code board-code--small'}>{name}</text>
+            {note ? <text x={left.x + 41} y={oursY + 4.5 + i * step} className="board-code board-code--small board-code--fence">{note}</text> : null}
+          </g>
+        ))}
+      </g>
+      <g className="board-card" style={reveal(1, 3)}>
+        <rect x={right.x} y={TOP} width={right.w} height={agentEnd - TOP + 2} rx={0.8} className="board-card-frame" />
+        <line x1={right.x} x2={right.x + right.w} y1={TOP + 6} y2={TOP + 6} className="board-rule" />
+        <Txt k="board.skills.agent.file" x={right.x + 3} y={TOP + 4} className="board-repo" />
+        <text data-i18n="board.skills.agent.code">
+          {agent.map((line, i) => (
+            <tspan key={i} x={right.x + 3} y={TOP + 10.5 + i * step} className={line.startsWith('- Guardrails') ? 'board-code board-code--small board-code--act' : line.startsWith('##') ? 'board-code board-code--small board-code--title' : line === '---' || /^(description|mode| {2}shadcn)/.test(line) ? 'board-code board-code--small board-code--key' : 'board-code board-code--small'}>{line || '\u00a0'}</tspan>
+          ))}
+        </text>
+      </g>
+      <g className="board-card" style={reveal(2, 3)}>
+        <Txt k="board.skills.agents" x={right.x} y={agentEnd + 6} className="board-label" />
+        <Txt k="board.skills.agents.list" x={right.x} y={agentEnd + 9.4} className="board-row" />
+        <Txt k="board.skills.agents.make" x={right.x} y={agentEnd + 12.4} className="board-sub" />
+      </g>
+    </>
+  )
+}
+
+const TIERS = ['plan', 'build', 'fast'] as const
+
+/**
+ * agent-harness, model tiers. Three tiers with the models one project uses, then a tasks.md that /plan-propose
+ * annotated: each task gets an agent with a tier suffix, and /plan-apply runs the tasks in waves.
+ */
+function Tiers() {
+  const t = useT()
+  const cardW = (WIDTH - 6) / 3
+  const cardH = 15
+  const codeY = TOP + cardH + 9
+  const code = rows(t, 'board.tiers.code')
+  const step = 2.7
+  const codeW = 118
+  const sideX = LEFT + codeW + 4
+  return (
+    <>
+      {TIERS.map((tier, i) => {
+        const x = LEFT + i * (cardW + 3)
+        return (
+          <g key={tier} className="board-card" style={reveal(i, 5)}>
+            <rect x={x} y={TOP} width={cardW} height={cardH} rx={0.8} className="board-card-frame" />
+            <Txt k={`board.tiers.${tier}`} x={x + 2.5} y={TOP + 5} className="board-name board-name--tier" />
+            <Txt k={`board.tiers.${tier}.model`} x={x + 2.5} y={TOP + 9} className="board-code board-code--small" />
+            <Txt k={`board.tiers.${tier}.role`} x={x + 2.5} y={TOP + 12.4} className="board-sub" />
+          </g>
+        )
+      })}
+      <g className="board-card" style={reveal(3, 5)}>
+        <Txt k="board.tiers.variants" x={LEFT} y={TOP + cardH + 3.6} className="board-sub board-sub--light" />
+        <rect x={LEFT} y={codeY} width={codeW} height={BOTTOM - codeY} rx={0.8} className="board-card-frame" />
+        <line x1={LEFT} x2={LEFT + codeW} y1={codeY + 6} y2={codeY + 6} className="board-rule" />
+        <Txt k="board.tiers.file" x={LEFT + 3} y={codeY + 4} className="board-repo" />
+        {code.map(([task, note], i) => {
+          const y = codeY + 10.5 + i * step
+          const tier = /\.(build|fast|plan)\b/.exec(note ?? '')?.[1]
+          return (
+            <g key={i}>
+              <text x={LEFT + 3} y={y} className="board-code board-code--small">{'- [ ] ' + task}</text>
+              <text x={LEFT + 52} y={y} className={tier === 'fast' ? 'board-code board-code--small board-code--key' : 'board-code board-code--small board-code--act'}>{`<!-- ${note} -->`}</text>
+            </g>
+          )
+        })}
+      </g>
+      <g className="board-card" style={reveal(4, 5)}>
+        <Txt k="board.tiers.waves" x={sideX} y={codeY + 4} className="board-label" />
+        <text>{rows(t, 'board.tiers.waves.list').map(([line], i) => <tspan key={i} x={sideX} y={codeY + 9 + i * 2.9} className="board-row">{line}</tspan>)}</text>
+      </g>
+    </>
+  )
+}
+
 /** A tree line is blue when it is one of the guardrails: the guardrail skills, the plugins that block calls, and the diff check. */
 const GUARD = /guardrails|plugins\/|check-diff/
 
@@ -537,7 +644,7 @@ function Tree() {
   )
 }
 
-const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, ghaw: Ghaw, tree: Tree, site: Site }
+const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, ghaw: Ghaw, tree: Tree, site: Site, skills: Skills, tiers: Tiers }
 
 export function Board({ id }: { id: BoardId }) {
   const View = BOARDS[id]
