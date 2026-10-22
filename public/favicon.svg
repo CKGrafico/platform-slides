@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- The keynote's motif: units of the core in a grid. The blue one is the Issue that travels through the talk. -->
+  <rect width="64" height="64" rx="13" fill="#0a0a0b"/>
+  <g>
+    <rect x="9" y="9" width="14" height="14" rx="2" fill="#e8e9ec"/>
+    <rect x="25" y="9" width="14" height="14" rx="2" fill="#8a8f98"/>
+    <rect x="41" y="9" width="14" height="14" rx="2" fill="#e8e9ec"/>
+    <rect x="9" y="25" width="14" height="14" rx="2" fill="#8a8f98"/>
+    <rect x="25" y="25" width="14" height="14" rx="2" fill="#2f69ff"/>
+    <rect x="41" y="25" width="14" height="14" rx="2" fill="#63686f"/>
+    <rect x="9" y="41" width="14" height="14" rx="2" fill="#e8e9ec"/>
+    <rect x="25" y="41" width="14" height="14" rx="2" fill="#63686f"/>
+    <rect x="41" y="41" width="14" height="14" rx="2" fill="#8a8f98"/>
+  </g>
+</svg>
