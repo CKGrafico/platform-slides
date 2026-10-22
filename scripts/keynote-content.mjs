@@ -190,6 +190,6 @@ for (const section of sections) for (const beat of section.beats) {
   // The last slide closes the talk: everything shown is open source, under the organization.
   if (beat.key === 'system') beat.link = { href: 'https://github.com/plainconceptsplatform', label: 'talk.link.github' }
   const tab = { 'health.engineering': '', 'health.delivery': '#delivery', 'health.agentic': '#agentic' }[beat.key]
-  if (tab !== undefined) beat.link = { href: `https://health.platform.plainconcepts.dev/projects/numa/${tab}`, label: 'talk.link.healthLive' }
-  if (beat.key === 'health.roadmap') beat.link = { href: 'https://health.platform.plainconcepts.dev/projects/numa/#roadmap/750', label: 'talk.link.health750' }
+  if (tab !== undefined) beat.link = { href: `https://pulse.platform.plainconcepts.dev/projects/numa/${tab}`, label: 'talk.link.healthLive' }
+  if (beat.key === 'health.roadmap') beat.link = { href: 'https://pulse.platform.plainconcepts.dev/projects/numa/#roadmap/750', label: 'talk.link.health750' }
 }
