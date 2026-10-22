@@ -183,7 +183,8 @@ export const sections = [
 
 // One real Issue went through Triage, Refine, Implement and Merge Gate. The presenter opens it live from those slides.
 // The repository is private, so the audience cannot open it. The visible label names no client project.
-// The private Health site. IT will move it to a Plain Concepts domain, something like pulse.plainconcepts.com.
+// The private Health site. IT was asked for health.platform.plainconcepts.com, which did not resolve on 2026-10-22.
+// Run Resolve-DnsName on it first, then switch this address. The path after it stays the same.
 // Change it here only, then run node scripts/rebuild-show.mjs.
 const HEALTH_SITE = 'https://probable-fiesta-2y6w5gw.pages.github.io'
 const EXAMPLE_750 = { href: 'https://github.com/PlainConceptsPlatform/Numa/issues/750', label: 'talk.link.example750' }
