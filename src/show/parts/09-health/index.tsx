@@ -22,6 +22,10 @@ export const part: Part = {
         }
       ],
       "layout": "wide",
+      "link": {
+        "href": "https://health.platform.plainconcepts.dev",
+        "label": "talk.link.healthSite"
+      },
       "cloud": true
     },
     {

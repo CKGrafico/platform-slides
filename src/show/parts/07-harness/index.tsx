@@ -15,6 +15,10 @@ export const part: Part = {
       "step": 0,
       "labels": [],
       "layout": "wide",
+      "link": {
+        "href": "https://harness.platform.plainconcepts.dev",
+        "label": "talk.link.harness"
+      },
       "dim": true,
       "board": "tree",
       "cloud": true

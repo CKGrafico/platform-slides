@@ -41,6 +41,10 @@ export const part: Part = {
       ],
       "layout": "wide",
       "footnote": "talk.workflows.ladder",
+      "link": {
+        "href": "https://workflows.platform.plainconcepts.dev",
+        "label": "talk.link.workflows"
+      },
       "cloud": true
     },
     {
@@ -51,6 +55,10 @@ export const part: Part = {
       "step": 1,
       "labels": [],
       "layout": "wide",
+      "link": {
+        "href": "https://workflows.platform.plainconcepts.dev/#router",
+        "label": "talk.link.workflows"
+      },
       "dim": true,
       "flow": "router",
       "cloud": true
@@ -152,6 +160,10 @@ export const part: Part = {
         }
       ],
       "layout": "wide",
+      "link": {
+        "href": "https://workflows.platform.plainconcepts.dev/#workers",
+        "label": "talk.link.workflows"
+      },
       "cloud": true
     }
   ]

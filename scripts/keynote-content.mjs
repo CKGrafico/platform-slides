@@ -32,6 +32,9 @@ export const sharedCopy = {
   'talk.link.health750': ['↗ Issue #750 on the roadmap', '↗ Issue #750 en el roadmap'],
   'talk.link.site': ['↗ Live site', '↗ Sitio en vivo'],
   'talk.workflows.ladder': ['Rung: lower is cheaper and more repeatable. Shell is 1, agent 5.', 'Peldaño: más bajo, más barato y repetible. Shell 1, agente 5.'],
+  'talk.link.harness': ['↗ Harness docs', '↗ Docs del harness'],
+  'talk.link.workflows': ['↗ Diagrams and docs', '↗ Diagramas y docs'],
+  'talk.link.healthSite': ['↗ Project Health site', '↗ Web de Project Health'],
   'talk.link.healthLive': ['↗ Live dashboard', '↗ Panel en vivo'],
   'talk.health.dora': ['DORA: DevOps Research and Assessment, a Google Cloud program.', 'DORA: DevOps Research and Assessment, un programa de Google Cloud.'],
   'talk.closing.talk': ['Everything you saw today is open source. Questions?', 'Todo lo que has visto hoy es open source. ¿Preguntas?'],
@@ -190,6 +193,13 @@ for (const section of sections) for (const beat of section.beats) {
   // The Health slides open the same project's live dashboard, and Roadmap opens the same Issue.
   // The last slide closes the talk: everything shown is open source, under the organization.
   if (beat.key === 'system') beat.link = { href: 'https://github.com/plainconceptsplatform', label: 'talk.link.github' }
+  // The Platform sites, one for each repository. The workers slides that already open the real Issue keep that link.
+  if (beat.key === 'harness.conventions') beat.link = { href: 'https://harness.platform.plainconcepts.dev', label: 'talk.link.harness' }
+  if (beat.key === 'workflows.intro') beat.link = { href: 'https://workflows.platform.plainconcepts.dev', label: 'talk.link.workflows' }
+  if (beat.key === 'workflows.router') beat.link = { href: 'https://workflows.platform.plainconcepts.dev/#router', label: 'talk.link.workflows' }
+  if (beat.key === 'workflows.others') beat.link = { href: 'https://workflows.platform.plainconcepts.dev/#workers', label: 'talk.link.workflows' }
+  // The intro opens the public Project Health site, which has demo data. The tab slides open the private dashboard.
+  if (beat.key === 'health.intro') beat.link = { href: 'https://health.platform.plainconcepts.dev', label: 'talk.link.healthSite' }
   const tab = { 'health.engineering': '', 'health.delivery': '#delivery', 'health.agentic': '#agentic' }[beat.key]
   if (tab !== undefined) beat.link = { href: `https://pulse.platform.plainconcepts.dev/projects/numa/${tab}`, label: 'talk.link.healthLive' }
   if (beat.key === 'health.roadmap') beat.link = { href: 'https://pulse.platform.plainconcepts.dev/projects/numa/#roadmap/750', label: 'talk.link.health750' }
