@@ -30,7 +30,7 @@ export const sharedCopy = {
   'talk.label.agentForge': ['OpenCode · Forge', 'OpenCode · Forge'],
   'talk.link.example750': ['↗ Real example: Issue #750', '↗ Ejemplo real: Issue #750'],
   'talk.link.health750': ['↗ Issue #750 on the roadmap', '↗ Issue #750 en el roadmap'],
-  'talk.link.site': ['↗ platform.plainconcepts.com', '↗ platform.plainconcepts.com'],
+  'talk.link.site': ['↗ Live site', '↗ Sitio en vivo'],
   'talk.link.healthLive': ['↗ Live dashboard', '↗ Panel en vivo'],
   'talk.health.dora': ['DORA: DevOps Research and Assessment, a Google Cloud program.', 'DORA: DevOps Research and Assessment, un programa de Google Cloud.'],
   'talk.closing.talk': ['Everything you saw today is open source. Questions?', 'Todo lo que has visto hoy es open source. ¿Preguntas?'],
