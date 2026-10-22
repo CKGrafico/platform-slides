@@ -58,15 +58,17 @@ export function bindInput(p: Presentation, options: InputOptions = {}): () => vo
 
   let accumulated = 0
   let locked = false
-  let quietTimer = 0
+  let lastWheel = -Infinity
   const onWheel = (e: WheelEvent) => {
     if (isTyping(e.target) || (e.target instanceof HTMLElement && e.target.closest('[data-layer="debug"]'))) return
     e.preventDefault()
-    window.clearTimeout(quietTimer)
-    quietTimer = window.setTimeout(() => {
+    // The gap comes from the events' own timestamps, so a busy main thread cannot open the lock early.
+    const gap = e.timeStamp - lastWheel
+    lastWheel = e.timeStamp
+    if (gap >= WHEEL_QUIET_MS) {
       locked = false
       accumulated = 0
-    }, WHEEL_QUIET_MS)
+    }
     if (locked) return
     accumulated += Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX
     if (Math.abs(accumulated) < WHEEL_THRESHOLD) return
@@ -81,6 +83,5 @@ export function bindInput(p: Presentation, options: InputOptions = {}): () => vo
   return () => {
     window.removeEventListener('keydown', onKeyDown)
     window.removeEventListener('wheel', onWheel)
-    window.clearTimeout(quietTimer)
   }
 }
