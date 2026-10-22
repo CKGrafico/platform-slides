@@ -58,6 +58,10 @@ export const part: Part = {
       ],
       "layout": "wide",
       "footnote": "talk.closing.talk",
+      "link": {
+        "href": "https://github.com/plainconceptsplatform",
+        "label": "talk.link.github"
+      },
       "cloud": true
     }
   ]

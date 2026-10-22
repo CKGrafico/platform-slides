@@ -243,7 +243,7 @@ const board = {
   'board.sponsors.city': ['Madrid ‘26', 'Madrid ‘26'],
   'board.sponsors.platinum': ['Platinum sponsors', 'Platinum sponsors'],
   'board.sponsors.gold': ['Gold sponsors', 'Gold sponsors'],
-  'board.sponsors.collab': ['Supported by', 'Colabora'],
+  'board.sponsors.collab': ['Colabora', 'Colabora'],
   'board.quote.name': ['Uncle Bob Martin', 'Uncle Bob Martin'],
   'board.quote.handle': ['@unclebobmartin · 5 Oct 2026', '@unclebobmartin · 5 oct 2026'],
   // The presenter supplied the full post. English is verbatim; Spanish is a literal translation, marked as such.

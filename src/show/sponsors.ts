@@ -6,6 +6,10 @@
  * on a 16:9 slide of 18288000 by 10287000. The board scales them to the stage, which is also 16:9.
  * Each logo is stretched to fill its box, as the original does (a:stretch, no crop).
  * The files are the white versions from that deck, in public/assets/sponsors/.
+ * Three come from their owners instead, because the deck's copies are out of date or were added later:
+ * plain-concepts.png is the current logo (June 2026) from plainconcepts.com, without its tagline, centred in the
+ * original square box; lidl.png and scrm.png are the two halves of the lockup on scrm.lidl.
+ * Their boxes were measured on the updated official slide with the rules and labels as reference points.
  */
 import type { MessageKey } from '@/i18n'
 
@@ -24,6 +28,8 @@ export const SPONSOR_LOGOS: SponsorLogo[] = [
   { name: 'V-Valley', file: '/assets/sponsors/v-valley.png', x: 10567715, y: 5830225, w: 6838385, h: 1559325 },
   { name: 'Axazure by Avvale', file: '/assets/sponsors/axazure.png', x: 1765427, y: 8980626, w: 2111533, h: 629121 },
   { name: 'Plain Concepts', file: '/assets/sponsors/plain-concepts.png', x: 4264196, y: 8063619, w: 2463133, h: 2463133 },
+  { name: 'Lidl', file: '/assets/sponsors/lidl.png', x: 6734000, y: 8920000, w: 770000, h: 770000 },
+  { name: 'SCRM International Hub', file: '/assets/sponsors/scrm.png', x: 7706000, y: 8794000, w: 2092800, h: 897600 },
   { name: 'Sessionize', file: '/assets/sponsors/sessionize.png', x: 13424262, y: 8952019, w: 3590104, h: 657728 },
 ]
 
