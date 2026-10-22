@@ -183,10 +183,6 @@ export const sections = [
 
 // One real Issue went through Triage, Refine, Implement and Merge Gate. The presenter opens it live from those slides.
 // The repository is private, so the audience cannot open it. The visible label names no client project.
-// The private Health site. IT was asked for health.platform.plainconcepts.dev, which did not resolve on 2026-10-22.
-// Run Resolve-DnsName on it first, then switch this address. The path after it stays the same.
-// Change it here only, then run node scripts/rebuild-show.mjs.
-const HEALTH_SITE = 'https://probable-fiesta-2y6w5gw.pages.github.io'
 const EXAMPLE_750 = { href: 'https://github.com/PlainConceptsPlatform/Numa/issues/750', label: 'talk.link.example750' }
 for (const section of sections) for (const beat of section.beats) {
   if (['workflows.triage', 'workflows.refine', 'workflows.implement', 'workflows.gate'].includes(beat.key)) beat.link = EXAMPLE_750
@@ -194,6 +190,6 @@ for (const section of sections) for (const beat of section.beats) {
   // The last slide closes the talk: everything shown is open source, under the organization.
   if (beat.key === 'system') beat.link = { href: 'https://github.com/plainconceptsplatform', label: 'talk.link.github' }
   const tab = { 'health.engineering': '', 'health.delivery': '#delivery', 'health.agentic': '#agentic' }[beat.key]
-  if (tab !== undefined) beat.link = { href: `${HEALTH_SITE}/projects/numa/${tab}`, label: 'talk.link.healthLive' }
-  if (beat.key === 'health.roadmap') beat.link = { href: `${HEALTH_SITE}/projects/numa/#roadmap/750`, label: 'talk.link.health750' }
+  if (tab !== undefined) beat.link = { href: `https://health.platform.plainconcepts.dev/projects/numa/${tab}`, label: 'talk.link.healthLive' }
+  if (beat.key === 'health.roadmap') beat.link = { href: 'https://health.platform.plainconcepts.dev/projects/numa/#roadmap/750', label: 'talk.link.health750' }
 }

@@ -33,7 +33,7 @@ export const part: Part = {
       "labels": [],
       "layout": "wide",
       "link": {
-        "href": "https://probable-fiesta-2y6w5gw.pages.github.io/projects/numa/",
+        "href": "https://health.platform.plainconcepts.dev/projects/numa/",
         "label": "talk.link.healthLive"
       },
       "dim": true,
@@ -50,7 +50,7 @@ export const part: Part = {
       "layout": "wide",
       "footnote": "talk.health.dora",
       "link": {
-        "href": "https://probable-fiesta-2y6w5gw.pages.github.io/projects/numa/#delivery",
+        "href": "https://health.platform.plainconcepts.dev/projects/numa/#delivery",
         "label": "talk.link.healthLive"
       },
       "dim": true,
@@ -66,7 +66,7 @@ export const part: Part = {
       "labels": [],
       "layout": "wide",
       "link": {
-        "href": "https://probable-fiesta-2y6w5gw.pages.github.io/projects/numa/#agentic",
+        "href": "https://health.platform.plainconcepts.dev/projects/numa/#agentic",
         "label": "talk.link.healthLive"
       },
       "dim": true,
@@ -82,7 +82,7 @@ export const part: Part = {
       "labels": [],
       "layout": "wide",
       "link": {
-        "href": "https://probable-fiesta-2y6w5gw.pages.github.io/projects/numa/#roadmap/750",
+        "href": "https://health.platform.plainconcepts.dev/projects/numa/#roadmap/750",
         "label": "talk.link.health750"
       },
       "dim": true,

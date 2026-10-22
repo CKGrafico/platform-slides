@@ -69,7 +69,7 @@ Project Health has four slides, one for each tab of its dashboard: Engineering, 
 - Agentic: the installed tooling, the bot pull requests the gate merged with no person, and tokens per measured run by kind of work.
 - Roadmap: four numbers, where the open time of the Issues went, and Issue #750 as a bar.
 
-The text in the boards stays in English in both languages, like the diagrams and like the dashboard the presenter opens live. The first three link to the live dashboard and Roadmap links to Issue #750 on it. The site address is `HEALTH_SITE` in `scripts/keynote-content.mjs`.
+The text in the boards stays in English in both languages, like the diagrams and like the dashboard the presenter opens live. The first three link to the live dashboard and Roadmap links to Issue #750 on it. They open the dashboard at `health.platform.plainconcepts.dev`.
 
 ## Sponsor slide
 
