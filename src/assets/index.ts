@@ -6,9 +6,12 @@ import { useGLTF, useTexture } from '@react-three/drei'
 import { useEffect } from 'react'
 import { SRGBColorSpace, type Texture } from 'three'
 
-export type AssetKind = 'svg' | 'textures' | 'models' | 'fonts' | 'images' | 'video' | 'generated'
+export type AssetKind = 'svg' | 'textures' | 'models' | 'fonts' | 'images' | 'video' | 'generated' | 'sponsors' | 'foundations' | 'quotes'
 
-/** URL of a file in public/assets. asset('models', 'thing.glb') -> '/assets/models/thing.glb'. */
+/**
+ * URL of a file in public/assets. asset('models', 'thing.glb') -> '/assets/models/thing.glb'.
+ * It starts with the build's base path, so the show also works under a sub-path such as GitHub Pages' /<repo>/.
+ */
 export function asset(kind: AssetKind, file: string): string {
   return `${import.meta.env.BASE_URL}assets/${kind}/${file}`
 }

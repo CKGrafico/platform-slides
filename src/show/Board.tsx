@@ -5,6 +5,7 @@
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useState } from 'react'
+import { asset } from '@/assets'
 import { useEnvironment } from '@/engine/environment'
 import { useT, type MessageKey } from '@/i18n'
 import { FlowLegend, GhMark, Tip } from './Flow'
@@ -331,7 +332,7 @@ function Lines({ k, x, y, step, className }: { k: MessageKey; x: number; y: numb
  * It is our card, in the keynote's own style. It does not copy the look of the network the quote came from.
  */
 /** Saved locally from the author's public profile, so the talk works offline. */
-const QUOTE_AVATAR = '/assets/quotes/unclebobmartin.jpg'
+const QUOTE_AVATAR = asset('quotes', 'unclebobmartin.jpg')
 
 function Quote() {
   const t = useT()
@@ -472,9 +473,9 @@ function Ghaw() {
  * a pure function of the clock, and reduced motion holds the home page still.
  */
 const SITE_PAGES = [
-  { file: '/assets/foundations/home.jpg', height: 1840 },
-  { file: '/assets/foundations/frontend.jpg', height: 2400 },
-  { file: '/assets/foundations/backend.jpg', height: 2400 },
+  { file: asset('foundations', 'home.jpg'), height: 1840 },
+  { file: asset('foundations', 'frontend.jpg'), height: 2400 },
+  { file: asset('foundations', 'backend.jpg'), height: 2400 },
 ]
 const SITE_CAPTURE_W = 1280
 

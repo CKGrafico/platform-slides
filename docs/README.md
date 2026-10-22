@@ -39,6 +39,12 @@ npm run build
 npm run i18n:check
 ```
 
+## Publish it
+
+Every push to `main` publishes the keynote to GitHub Pages at `platform.ckgrafico.com` (`.github/workflows/deploy-pages.yml`). The repository's Pages source is "GitHub Actions", not a branch folder: the workflow builds the show and uploads `dist`. The build takes its base path from Pages, so the show also works under `/<repo>/` if the custom domain is removed. Files in `public/assets` must be referenced with `asset()` from `src/assets`, which adds that base path. The last slide gives this address to the audience.
+
+The same push also deploys to the private Azure Static Web App (`.github/workflows/deploy-azure-swa.yml`).
+
 ## Where to read
 
 | Topic | File |

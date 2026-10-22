@@ -11,6 +11,7 @@
  * original square box; lidl.png and scrm.png are the two halves of the lockup on scrm.lidl.
  * Their boxes were measured on the updated official slide with the rules and labels as reference points.
  */
+import { asset } from '@/assets'
 import type { MessageKey } from '@/i18n'
 
 export const SPONSOR_SLIDE = { width: 18288000, height: 10287000 } as const
@@ -21,16 +22,16 @@ export interface SponsorLine { x: number; y: number; w: number }
 
 /** Platinum, then Gold, then the collaborator, in the official order. */
 export const SPONSOR_LOGOS: SponsorLogo[] = [
-  { name: 'Inkoova', file: '/assets/sponsors/inkoova.png', x: 881912, y: 3428990, w: 5141475, h: 1466124 },
-  { name: 'Intelequia', file: '/assets/sponsors/intelequia.png', x: 6330506, y: 2793173, w: 5187834, h: 2511131 },
-  { name: 'NTT DATA', file: '/assets/sponsors/ntt-data.png', x: 11413379, y: 3456618, w: 7102491, h: 1769705 },
-  { name: 'Tokiota', file: '/assets/sponsors/tokiota.png', x: 1714375, y: 6351574, w: 5897282, h: 664785 },
-  { name: 'V-Valley', file: '/assets/sponsors/v-valley.png', x: 10567715, y: 5830225, w: 6838385, h: 1559325 },
-  { name: 'Axazure by Avvale', file: '/assets/sponsors/axazure.png', x: 1765427, y: 8980626, w: 2111533, h: 629121 },
-  { name: 'Plain Concepts', file: '/assets/sponsors/plain-concepts.png', x: 4264196, y: 8063619, w: 2463133, h: 2463133 },
-  { name: 'Lidl', file: '/assets/sponsors/lidl.png', x: 6734000, y: 8920000, w: 770000, h: 770000 },
-  { name: 'SCRM International Hub', file: '/assets/sponsors/scrm.png', x: 7706000, y: 8794000, w: 2092800, h: 897600 },
-  { name: 'Sessionize', file: '/assets/sponsors/sessionize.png', x: 13424262, y: 8952019, w: 3590104, h: 657728 },
+  { name: 'Inkoova', file: asset('sponsors', 'inkoova.png'), x: 881912, y: 3428990, w: 5141475, h: 1466124 },
+  { name: 'Intelequia', file: asset('sponsors', 'intelequia.png'), x: 6330506, y: 2793173, w: 5187834, h: 2511131 },
+  { name: 'NTT DATA', file: asset('sponsors', 'ntt-data.png'), x: 11413379, y: 3456618, w: 7102491, h: 1769705 },
+  { name: 'Tokiota', file: asset('sponsors', 'tokiota.png'), x: 1714375, y: 6351574, w: 5897282, h: 664785 },
+  { name: 'V-Valley', file: asset('sponsors', 'v-valley.png'), x: 10567715, y: 5830225, w: 6838385, h: 1559325 },
+  { name: 'Axazure by Avvale', file: asset('sponsors', 'axazure.png'), x: 1765427, y: 8980626, w: 2111533, h: 629121 },
+  { name: 'Plain Concepts', file: asset('sponsors', 'plain-concepts.png'), x: 4264196, y: 8063619, w: 2463133, h: 2463133 },
+  { name: 'Lidl', file: asset('sponsors', 'lidl.png'), x: 6734000, y: 8920000, w: 770000, h: 770000 },
+  { name: 'SCRM International Hub', file: asset('sponsors', 'scrm.png'), x: 7706000, y: 8794000, w: 2092800, h: 897600 },
+  { name: 'Sessionize', file: asset('sponsors', 'sessionize.png'), x: 13424262, y: 8952019, w: 3590104, h: 657728 },
 ]
 
 /** The tier names, as text boxes of the original slide. */
@@ -46,7 +47,7 @@ export const SPONSOR_LABELS: SponsorLabel[] = [
  * until each line takes the same width as in the original slide (29 and 15 stage units).
  */
 export const SPONSOR_EVENT = {
-  mascot: { file: '/assets/sponsors/netcoreconf-robot.png', x: 16353168, y: 762000, w: 1234220, h: 1420720 },
+  mascot: { file: asset('sponsors', 'netcoreconf-robot.png'), x: 16353168, y: 762000, w: 1234220, h: 1420720 },
   /** Centred in its box. */
   name: { key: 'board.sponsors.event' as MessageKey, x: 13166764, y: 1203639, w: 2978413, h: 489684, pt: 30.7 },
   /** Right-aligned in its box. */
