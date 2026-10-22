@@ -40,6 +40,7 @@ export const part: Part = {
         }
       ],
       "layout": "wide",
+      "footnote": "talk.workflows.ladder",
       "cloud": true
     },
     {

@@ -41,7 +41,7 @@ export const part: Part = {
       ],
       "layout": "wide",
       "link": {
-        "href": "https://platform.plainconcepts.com",
+        "href": "https://platform.plainconcepts.dev",
         "label": "talk.link.site"
       },
       "board": "site",

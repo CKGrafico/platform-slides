@@ -56,6 +56,8 @@ A new body comes out of the core only while the core stays on screen. Otherwise 
 The main path is blue. Branches are grey. Returns are dashed and loop under the rows, or over the top when both ends sit in the first row.
 Nodes and edges appear in column order as `--flow-reveal` runs from 0 to 1, so the drawing comes from progress. The facts come from the Agentic Workflows diagrams listed in `docs/knowledge/workflow-routes.md`.
 
+Every box has one line of help that shows when the presenter hovers it (`Tip` in `Flow.tsx`; the key is the title key plus `.tip`, in `scripts/flow-copy.mjs`). Where the workflow files confirm it, the line ends with the box's rung, a step on the determinism ladder we use to design the workers: the lower the rung, the cheaper and more repeatable the step, with shell at 1 and the agent at 5. A small line on the first workers slide explains the word. The GitHub mark in the corner of a box means gh-aw provides it; the other boxes are ours.
+
 The text in the diagrams stays in English in both languages, because the names match the code and the labels on GitHub. `scripts/flow-copy.mjs` copies the English text of every `flow.*` key into Spanish. Titles and captions are still translated.
 
 The Triage, Refine, Implement, and Merge Gate slides have a link at the top right to one real Issue that went through all four workers. The presenter opens it during the talk. The repository is private, so the label does not name the project. The Project Health slide links to the same Issue on the roadmap.
@@ -77,7 +79,7 @@ The event, NetCoreConf Madrid 2026, requires a sponsor slide right after the cov
 
 ## Foundations slide
 
-Foundations and its three convention sets sit in the left half. The right half shows the site itself in a browser window (`Board.tsx`, board `site`). The pages are captures of platform.plainconcepts.com from 2026-10-20, in `public/assets/foundations/`: the top of the home page, cut above its demo dashboard because those numbers are illustrative, then Frontend and Backend. Each page scrolls to its end in nine seconds and the next fades in. That loop is CSS and a pure function of the clock, so it is idle motion, not narrative. Reduced motion holds the home page at its top. A link at the top right opens the live site. To refresh the captures, run headless Edge at 1280 by 2400 on each page and save JPEGs under the same names.
+Foundations and its three convention sets sit in the left half. The right half shows the site itself in a browser window (`Board.tsx`, board `site`). The pages are captures of platform.plainconcepts.com from 2026-10-20, in `public/assets/foundations/`: the top of the home page, cut above its demo dashboard because those numbers are illustrative, then Frontend and Backend. Each page scrolls to its end in nine seconds and the next fades in. That loop is CSS and a pure function of the clock, so it is idle motion, not narrative. Reduced motion holds the home page at its top. A link at the top right opens the live site at `platform.plainconcepts.dev`, and the same address is in the window bar. The captures were taken from the older `platform.plainconcepts.com` address, which serves the same pages. To refresh the captures, run headless Edge at 1280 by 2400 on each page and save JPEGs under the same names.
 
 ## agent-harness slide
 

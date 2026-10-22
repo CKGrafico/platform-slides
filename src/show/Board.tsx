@@ -4,9 +4,10 @@
  * `quote`, `sponsors`, `ghaw`, `tree` and `site` are single cards.
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
+import { useState } from 'react'
 import { useEnvironment } from '@/engine/environment'
 import { useT, type MessageKey } from '@/i18n'
-import { FlowLegend } from './Flow'
+import { FlowLegend, GhMark, Tip } from './Flow'
 import { FLOWS } from './flows'
 import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
@@ -403,6 +404,7 @@ function codeClass(line: string, inSettings: boolean) {
  */
 function Ghaw() {
   const t = useT()
+  const [hover, setHover] = useState<string | null>(null)
   const lines = t('board.markdown.code').split('\n')
   const x = LEFT
   const y = 26
@@ -449,14 +451,16 @@ function Ghaw() {
                 {edge?.label ? <Txt k={edge.label} x={nodeX + nodeW / 2 + 1.2} y={(nodeY(i - 1) + nodeH + ny) / 2 + 0.6} className="flow-edge-label" /> : null}
               </g>
             ) : null}
-            <g className={`flow-node flow-node--${node.kind}`} style={style}>
+            <g className={`flow-node flow-node--${node.kind}`} style={style} onPointerEnter={() => setHover(node.id)} onPointerLeave={() => setHover(null)}>
               <rect x={nodeX} y={ny} width={nodeW} height={nodeH} rx={node.decision ? nodeH / 2 : 0.6} />
+              {node.gh ? <GhMark x={nodeX + nodeW - 3.6} y={ny + 1.2} /> : null}
               <Txt k={node.title} x={nodeX + nodeW / 2} y={ny + nodeH / 2 + 0.7} className="flow-title" />
             </g>
             {node.sub ? <g className="board-card" style={style}><Txt k={node.sub} x={nodeX + nodeW + 2.5} y={ny + nodeH / 2 + 0.6} className="board-sub board-sub--note" /></g> : null}
           </g>
         )
       })}
+      {chain.nodes.map((node, i) => node.id === hover ? <Tip key={node.id} textKey={`${node.title}.tip` as MessageKey} x={nodeX - 20} y={nodeY(i)} below={nodeY(i) + nodeH} index={i + 1} total={total} /> : null)}
     </>
   )
 }
