@@ -282,7 +282,7 @@ const board = {
   'board.gateway.forge.sub': ["our AI gateway", "our AI gateway"],
   'board.gateway.forge.url': ["forge.plainconcepts.com", "forge.plainconcepts.com"],
   'board.gateway.models': ["PROVIDERS", "PROVIDERS"],
-  'board.gateway.models.list': ["Azure Foundry\tWhisper · speech\nMultiverse\tGLM 5.2 · text\nOpenRouter\tVeo · video\nOthers…\tand more", "Azure Foundry\tWhisper · speech\nMultiverse\tGLM 5.2 · text\nOpenRouter\tVeo · video\nOthers…\tand more"],
+  'board.gateway.models.list': ["Azure Foundry\tWhisper · speech\nMultiverse\tGLM 5.2 · text\nOpenRouter\tJev · decisions\nOthers…\tand more", "Azure Foundry\tWhisper · speech\nMultiverse\tGLM 5.2 · text\nOpenRouter\tJev · decisions\nOthers…\tand more"],
   'board.gateway.caps': ["Model routing\nToken metering per project\nData masking\nSecurity\nOne key per project", "Model routing\nToken metering per project\nData masking\nSecurity\nOne key per project"],
   'board.gateway.govern': ["More governance over every agent run", "More governance over every agent run"],
   'board.tree.file': ['your-repo/ · after the install', 'your-repo/ · after the install'],
