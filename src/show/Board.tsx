@@ -514,19 +514,19 @@ const GATEWAY_LOGOS = { opencode: asset('logos', 'opencode-wordmark.svg'), atlas
 
 /**
  * Our engine and our gateway. OpenCode, with its wordmark, sends every request to Forge (Atlas), our AI gateway, which
- * routes it to one of several models. Under Forge, what a gateway gives us; under that, the reason: governance.
+ * routes it to one of several providers, each with models of every kind: text, speech, images. Under Forge, what a gateway gives us; under that, the reason: governance.
  * The OpenCode wordmark comes from the OpenCode brand assets, and the Atlas mark from atlas.plainconcepts.com.
  */
 function Gateway() {
   const t = useT()
-  const models = t('board.gateway.models.list').split('\n')
+  const models = t('board.gateway.models.list').split('\n').map((line) => line.split('\t') as [string, string?])
   const caps = t('board.gateway.caps').split('\n')
   const mid = 48
   const forge = { x: 66, y: 35, w: 50, h: 26 }
-  const modelX = 132
-  const modelW = 32
-  const modelH = 5
-  const modelY = (i: number) => mid - ((models.length - 1) * 7.2) / 2 + i * 7.2 - modelH / 2
+  const modelX = 130
+  const modelW = 38
+  const modelH = 7.4
+  const modelY = (i: number) => mid - ((models.length - 1) * 9.2) / 2 + i * 9.2 - modelH / 2
   const capH = 5.4
   const capY = forge.y + forge.h + 7
   const capWidths = caps.map((cap) => cap.length * 1.06 + 5)
@@ -561,13 +561,14 @@ function Gateway() {
       </g>
       <g className="board-card" style={reveal(2, 5)}>
         <Txt k="board.gateway.models" x={modelX} y={modelY(0) - 2} className="board-label" />
-        {models.map((name, i) => {
+        {models.map(([name, model], i) => {
           const y = modelY(i)
           return (
             <g key={name}>
               <path d={`M ${forge.x + forge.w} ${mid} C ${forge.x + forge.w + 8} ${mid}, ${modelX - 8} ${y + modelH / 2}, ${modelX - 1} ${y + modelH / 2}`} className="gateway-line" markerEnd="url(#gateway-arrow)" />
               <rect x={modelX} y={y} width={modelW} height={modelH} rx={0.6} className="board-card-frame" />
-              <text x={modelX + modelW / 2} y={y + modelH / 2 + 0.75} className="gateway-model">{name}</text>
+              <text x={modelX + modelW / 2} y={y + 3.2} className="gateway-model">{name}</text>
+              {model ? <text x={modelX + modelW / 2} y={y + 6} className="gateway-model-sub">{model}</text> : null}
             </g>
           )
         })}

@@ -193,6 +193,7 @@ body { font-family: var(--font-label); }
 .gateway-forge { stroke: #2f69ff; stroke-width: 0.34; }
 .gateway-name { font-family: var(--font-display); font-size: 3.4px; font-weight: 800; }
 .gateway-model { font-size: 1.8px; text-anchor: middle; font-weight: 600; }
+.gateway-model-sub { font-size: 1.6px; text-anchor: middle; fill: #a7abb1 !important; }
 .gateway-cap { fill: #0a0a0b; stroke: #8a8f98; stroke-width: 0.22; }
 .gateway-cap-text { font-size: 1.75px; text-anchor: middle; fill: #e8e9ec !important; }
 .gateway-govern { font-family: var(--font-display); font-size: 3px; font-weight: 800; text-anchor: middle; fill: #2f69ff !important; }

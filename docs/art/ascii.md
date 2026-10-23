@@ -88,7 +88,7 @@ Code lines turn font ligatures off, so `<!--` and `-->` show as written.
 
 ## Engine slide
 
-Right after the first agentic-workflows slide, one board shows our engine and our gateway (`Board.tsx`, board `gateway`). OpenCode, with its wordmark from the OpenCode brand assets, sends every request to Forge (Atlas), our AI gateway, with the Atlas mark from atlas.plainconcepts.com. Forge routes to several models. Under Forge, what a gateway gives: model routing, token metering per project, data masking, security, one key per project. Under that, in blue, the reason: more governance over every agent run. The logos are in `public/assets/logos/`.
+Right after the first agentic-workflows slide, one board shows our engine and our gateway (`Board.tsx`, board `gateway`). OpenCode, with its wordmark from the OpenCode brand assets, sends every request to Forge (Atlas), our AI gateway, with the Atlas mark from atlas.plainconcepts.com. Forge routes to several providers, each with one example model, and not only text: Azure Foundry with Whisper for speech, Multiverse with GLM 5.2 for text, OpenRouter with Gemini image for images, and others. Under Forge, what a gateway gives: model routing, token metering per project, data masking, security, one key per project. Under that, in blue, the reason: more governance over every agent run. The logos are in `public/assets/logos/`.
 
 ## Foundations slide
 
