@@ -526,7 +526,8 @@ function Gateway() {
   const modelX = 130
   const modelW = 38
   const modelH = 7.4
-  const modelY = (i: number) => mid - ((models.length - 1) * 9.2) / 2 + i * 9.2 - modelH / 2
+  const provMid = mid - 2.5
+  const modelY = (i: number) => provMid - ((models.length - 1) * 8.8) / 2 + i * 8.8 - modelH / 2
   const capH = 5.4
   const capY = forge.y + forge.h + 7
   const capWidths = caps.map((cap) => cap.length * 1.06 + 5)
