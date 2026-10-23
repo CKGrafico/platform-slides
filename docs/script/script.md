@@ -136,11 +136,11 @@ Speaker notes: Now the work leaves the PC. agentic-workflows is our layer on top
 
 ### 13. Our engine: OpenCode through Forge.
 
-On screen: the engine flow, drawn step by step over the dimmed world. The composition holds the current subject.
+On screen: OpenCode, with its logo, connected to Forge (Atlas), our AI gateway, which routes to the models; under Forge, what a gateway gives. The composition holds the current subject.
 
-Slide: Out of the box, gh-aw takes a provider API key and one model. We run OpenCode: it talks to Forge, our AI gateway, with one key per project and a model per tier.
+Slide: We run OpenCode, connected to Forge, our AI gateway. Forge gives what a gateway gives: model routing, token metering, masking and security. More governance.
 
-Speaker notes: This is where we leave gh-aw's defaults. Out of the box, a gh-aw workflow names an engine, such as Claude, Copilot or Codex, and one model, and it needs that provider's API key as a repository secret. We run OpenCode as the engine instead. Our workers set its base URL to Forge, the Plain Concepts AI gateway, at forge.plainconcepts.com, and the key they pass is the project's Forge key. So the agent never talks to a model provider: OpenCode talks to Forge, and Forge gives access to the models. Each project has its own key, so we can see and control the AI use of every project apart, and max-ai-credits meters the Forge models at list prices. The model field of the frontmatter only satisfies the compiler. The real models come from our variables: one for the lead, and one for each tier, plan, build and fast.
+Speaker notes: Our engine is OpenCode. It runs inside every worker, and it never talks to a model provider itself. We connect it to Forge, the Plain Concepts AI gateway, which you may know as Atlas, at forge.plainconcepts.com. Forge gives us everything a gateway gives. It routes each request to the right model: GLM, Quasar, Carina and the others. It meters the tokens of every run, per project, in more detail than gh-aw does on its own. It masks sensitive data before it leaves, and it keeps the security in one place. Each project has its own key, so we can see and limit the AI use of every project apart. The point is governance: every agent run goes through one door that we control.
 
 ### 14. One router for every event.
 

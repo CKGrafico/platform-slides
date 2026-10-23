@@ -1,7 +1,7 @@
 /**
  * The boards, drawn in stage units over the dimmed world.
  * `engineering`, `delivery`, `agentic` and `roadmap` copy the four tabs of one real Project Health dashboard.
- * `quote`, `sponsors`, `ghaw`, `tree`, `site`, `skills` and `tiers` are single cards.
+ * `quote`, `sponsors`, `ghaw`, `tree`, `site`, `skills`, `tiers` and `gateway` are single cards.
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useState } from 'react'
@@ -12,7 +12,7 @@ import { FlowLegend, GhMark, Tip } from './Flow'
 import { FLOWS } from './flows'
 import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
-export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'ghaw' | 'tree' | 'site' | 'skills' | 'tiers'
+export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'ghaw' | 'tree' | 'site' | 'skills' | 'tiers' | 'gateway'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -510,6 +510,89 @@ function rows(t: (key: MessageKey) => string, key: string) {
   return t(key as MessageKey).split('\n').map((line) => line.split('\t') as [string, string?])
 }
 
+const GATEWAY_LOGOS = { opencode: asset('logos', 'opencode-wordmark.svg'), atlas: asset('logos', 'atlas.svg') }
+
+/**
+ * Our engine and our gateway. OpenCode, with its wordmark, sends every request to Forge (Atlas), our AI gateway, which
+ * routes it to one of several models. Under Forge, what a gateway gives us; under that, the reason: governance.
+ * The OpenCode wordmark comes from the OpenCode brand assets, and the Atlas mark from atlas.plainconcepts.com.
+ */
+function Gateway() {
+  const t = useT()
+  const models = t('board.gateway.models.list').split('\n')
+  const caps = t('board.gateway.caps').split('\n')
+  const mid = 48
+  const forge = { x: 66, y: 35, w: 50, h: 26 }
+  const modelX = 132
+  const modelW = 32
+  const modelH = 5
+  const modelY = (i: number) => mid - ((models.length - 1) * 7.2) / 2 + i * 7.2 - modelH / 2
+  const capH = 5.4
+  const capY = forge.y + forge.h + 7
+  const capWidths = caps.map((cap) => cap.length * 1.06 + 5)
+  const capGap = 2.6
+  const capsW = capWidths.reduce((sum, w) => sum + w, 0) + capGap * (caps.length - 1)
+  let capX = forge.x + forge.w / 2 - capsW / 2
+  const capCentres = capWidths.map((w) => {
+    const c = capX + w / 2
+    capX += w + capGap
+    return c
+  })
+  capX = forge.x + forge.w / 2 - capsW / 2
+  return (
+    <>
+      <defs>
+        <marker id="gateway-arrow" className="flow-arrow flow-arrow--main" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="1.6" markerHeight="1.6" markerUnits="userSpaceOnUse" orient="auto">
+          <path d="M 0 0 L 6 3 L 0 6 z" />
+        </marker>
+      </defs>
+      <g className="board-card" style={reveal(0, 5)}>
+        <Txt k="board.gateway.engine" x={10} y={mid - 6.5} className="board-label" />
+        <image href={GATEWAY_LOGOS.opencode} x={10} y={mid - 3.6} width={38} height={38 * 115 / 641} />
+        <Txt k="board.gateway.engine.sub" x={10} y={mid + 7} className="board-sub" />
+      </g>
+      <g className="board-card" style={reveal(1, 5)}>
+        <path d={`M 51 ${mid} H ${forge.x - 1}`} className="gateway-line" markerEnd="url(#gateway-arrow)" />
+        <rect x={forge.x} y={forge.y} width={forge.w} height={forge.h} rx={1.2} className="board-card-frame gateway-forge" />
+        <image href={GATEWAY_LOGOS.atlas} x={forge.x + 4} y={mid - 6.5} width={13} height={13} />
+        <Txt k="board.gateway.forge" x={forge.x + 20} y={mid - 1} className="gateway-name" />
+        <Txt k="board.gateway.forge.sub" x={forge.x + 20} y={mid + 3.4} className="board-sub board-sub--light" />
+        <Txt k="board.gateway.forge.url" x={forge.x + 20} y={mid + 7} className="board-sub" />
+      </g>
+      <g className="board-card" style={reveal(2, 5)}>
+        <Txt k="board.gateway.models" x={modelX} y={modelY(0) - 2} className="board-label" />
+        {models.map((name, i) => {
+          const y = modelY(i)
+          return (
+            <g key={name}>
+              <path d={`M ${forge.x + forge.w} ${mid} C ${forge.x + forge.w + 8} ${mid}, ${modelX - 8} ${y + modelH / 2}, ${modelX - 1} ${y + modelH / 2}`} className="gateway-line" markerEnd="url(#gateway-arrow)" />
+              <rect x={modelX} y={y} width={modelW} height={modelH} rx={0.6} className="board-card-frame" />
+              <text x={modelX + modelW / 2} y={y + modelH / 2 + 0.75} className="gateway-model">{name}</text>
+            </g>
+          )
+        })}
+      </g>
+      <g className="board-card" style={reveal(3, 5)}>
+        <path d={`M ${forge.x + forge.w / 2} ${forge.y + forge.h} V ${capY - 2.4} M ${capCentres[0]} ${capY - 2.4} H ${capCentres.at(-1)}`} className="gateway-tree" />
+        {caps.map((cap, i) => {
+          const x = capX
+          capX += capWidths[i]! + capGap
+          return (
+            <g key={cap}>
+              <path d={`M ${capCentres[i]} ${capY - 2.4} V ${capY}`} className="gateway-tree" />
+              <rect x={x} y={capY} width={capWidths[i]} height={capH} rx={capH / 2} className="gateway-cap" />
+              <text x={x + capWidths[i]! / 2} y={capY + capH / 2 + 0.7} className="gateway-cap-text">{cap}</text>
+            </g>
+          )
+        })}
+      </g>
+      <g className="board-card" style={reveal(4, 5)}>
+        <Txt k="board.gateway.govern" x={forge.x + forge.w / 2} y={capY + capH + 6} className="gateway-govern" />
+      </g>
+    </>
+  )
+}
+
 /**
  * agent-harness, skills and agents. Left: the skills of one real project, by source: skills.sh, pinned in
  * skills-lock.json, and ours, with the guardrails in blue. Right: the real file of one agent, whose abilities are
@@ -646,7 +729,7 @@ function Tree() {
   )
 }
 
-const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, ghaw: Ghaw, tree: Tree, site: Site, skills: Skills, tiers: Tiers }
+const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, ghaw: Ghaw, tree: Tree, site: Site, skills: Skills, tiers: Tiers, gateway: Gateway }
 
 export function Board({ id }: { id: BoardId }) {
   const View = BOARDS[id]

@@ -59,7 +59,7 @@ export const part: Part = {
         "label": "talk.link.workflows"
       },
       "dim": true,
-      "flow": "engine",
+      "board": "gateway",
       "cloud": true
     },
     {

@@ -88,7 +88,7 @@ Code lines turn font ligatures off, so `<!--` and `-->` show as written.
 
 ## Engine slide
 
-Right after the first agentic-workflows slide, one diagram shows where we leave gh-aw's defaults (`flows.ts`, flow `engine`, with no legend). Above, gh-aw out of the box: an engine, the provider's API key, one model. Below, ours: OpenCode as the engine, Forge as our AI gateway with one key per project, and a model for each tier. Every box has its hover help.
+Right after the first agentic-workflows slide, one board shows our engine and our gateway (`Board.tsx`, board `gateway`). OpenCode, with its wordmark from the OpenCode brand assets, sends every request to Forge (Atlas), our AI gateway, with the Atlas mark from atlas.plainconcepts.com. Forge routes to several models. Under Forge, what a gateway gives: model routing, token metering per project, data masking, security, one key per project. Under that, in blue, the reason: more governance over every agent run. The logos are in `public/assets/logos/`.
 
 ## Foundations slide
 

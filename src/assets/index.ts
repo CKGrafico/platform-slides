@@ -6,7 +6,7 @@ import { useGLTF, useTexture } from '@react-three/drei'
 import { useEffect } from 'react'
 import { SRGBColorSpace, type Texture } from 'three'
 
-export type AssetKind = 'svg' | 'textures' | 'models' | 'fonts' | 'images' | 'video' | 'generated' | 'sponsors' | 'foundations' | 'quotes'
+export type AssetKind = 'svg' | 'textures' | 'models' | 'fonts' | 'images' | 'video' | 'generated' | 'sponsors' | 'foundations' | 'quotes' | 'logos'
 
 /**
  * URL of a file in public/assets. asset('models', 'thing.glb') -> '/assets/models/thing.glb'.

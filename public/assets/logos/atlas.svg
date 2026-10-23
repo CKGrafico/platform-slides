@@ -1,0 +1,10 @@
+<svg width="64" height="64" viewBox="0 0 64 64" role="img" xmlns="http://www.w3.org/2000/svg">
+  <title>Atlas</title>
+  <desc>Notched blue A-frame mark</desc>
+  <defs>
+    <clipPath id="notch"><path d="M0 0 H64 V64 H22 V46 H0 Z"/></clipPath>
+  </defs>
+  <g clip-path="url(#notch)">
+    <path fill="#2F69FF" fill-rule="evenodd" d="M32 6 L60 58 H4 Z M32 24.5 L43.3 48 H20.7 Z"/>
+  </g>
+</svg>
