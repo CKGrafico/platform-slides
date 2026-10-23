@@ -181,7 +181,7 @@ export function Flow({ id }: { id: FlowId }) {
         return <Edge key={i} edge={edge} boxes={boxes} index={index} total={total} loopIndex={loopIndex} slot={slot} highest={highest} lowest={lowest} />
       })}
       {def.nodes.map((node) => <Node key={node.id} node={node} box={boxes.get(node.id)!} index={rank.get(node.id) ?? 0} total={total} onHover={setHover} />)}
-      <FlowLegend x={COL_X + 5 * COL_PITCH + NODE_W} y={LEGEND_Y} />
+      {def.legend === false ? null : <FlowLegend x={COL_X + 5 * COL_PITCH + NODE_W} y={LEGEND_Y} />}
       {def.nodes.filter((node) => node.id === hover).map((node) => {
         const box = boxes.get(node.id)!
         return <Tip key={node.id} textKey={`${node.title}.tip` as MessageKey} x={box.x} y={box.y} below={box.bottom} index={rank.get(node.id) ?? 0} total={total} />

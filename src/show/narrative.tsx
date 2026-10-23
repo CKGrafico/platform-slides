@@ -2,7 +2,7 @@ import { useMemo, useRef } from 'react'
 import { defineChapter, defineScene } from '@/engine/define'
 import { useProgress, useScene } from '@/engine/context'
 import { Stage } from '@/engine/Stage'
-import { T, type MessageKey } from '@/i18n'
+import { T, useT, type MessageKey } from '@/i18n'
 import { BEAT } from '@/animation/beat'
 import { defineChoreography, getActorObject } from '@/world/actors'
 import { useAnchor } from '@/art/anchor'
@@ -30,6 +30,13 @@ const REVEAL = { title: [0.6, 0.8], caption: [0.68, 0.88], label: [0.76, 0.96] }
 const CHAPTER_REVEAL = { title: [0.15, 0.55], caption: [0.15, 0.55], label: [0.15, 0.55] } as const
 /** A flow beat: the title first, then the diagram grows node by node, and the caption lands last. */
 const FLOW_REVEAL = { title: [0.04, 0.24], caption: [0.74, 0.94], label: [0.1, 0.82] } as const
+
+/** A title or a caption. A word between *asterisks* shows in the accent colour, to tie slides to one idea. */
+function Marked({ k }: { k: MessageKey }) {
+  const t = useT()
+  const parts = t(k).split('*')
+  return <span data-i18n={k}>{parts.map((part: string, i: number) => (i % 2 ? <strong key={i} className="ascii-mark">{part}</strong> : part))}</span>
+}
 
 export interface Annotation { target: LiveId; name: MessageKey; dx?: number; dy?: number; width?: number; align?: 'center'; anchorY?: number; under?: boolean; over?: boolean }
 export interface Beat {
@@ -138,8 +145,8 @@ function Frame({ beats, intro }: { beats: Beat[]; intro?: Beat }) {
         <div ref={(node) => { panels.current[i] = node }} className={`scene-root ascii-frame ascii-frame--${beat.layout ?? 'default'}`} key={i} style={{ visibility: 'hidden' }}>
           <Stage>
             <div className="ascii-prompt" data-fit="show.prompt"><T k={beat.cloud ? 'show.cloudPrompt' : 'show.prompt'} /><span className="ascii-command"><T k={beat.command} /></span><span className="ascii-cursor" aria-hidden="true" /></div>
-            <h1 className="ascii-heading" data-fit={beat.heading}><span className="art-burn"><T k={beat.heading} /></span></h1>
-            {beat.line && beat.layout !== 'chapter' ? <p className="ascii-caption" data-fit={beat.line}><span className="art-burn"><T k={beat.line} /></span></p> : null}
+            <h1 className="ascii-heading" data-fit={beat.heading}><span className="art-burn"><Marked k={beat.heading} /></span></h1>
+            {beat.line && beat.layout !== 'chapter' ? <p className="ascii-caption" data-fit={beat.line}><span className="art-burn"><Marked k={beat.line} /></span></p> : null}
             {beat.flow ? <Flow id={beat.flow} /> : null}
             {beat.board ? <Board id={beat.board} /> : null}
             {beat.footnote ? <p className="ascii-footnote" data-fit={beat.footnote}><span className="art-burn"><T k={beat.footnote} /></span></p> : null}

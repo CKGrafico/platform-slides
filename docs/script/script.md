@@ -38,11 +38,11 @@ Slide: A workflow is a Markdown file that compiles to Actions. The agent runs sa
 
 Speaker notes: Start with the tool the title names, before our own story. In GitHub Agentic Workflows, gh-aw, a workflow is one Markdown file in the repo. The frontmatter on top is the wiring: when it runs, here when an Issue gets a label; the permissions, here read only; the engine, here Claude; and the safe outputs it may produce, here one pull request. The body is the prompt, in plain words. This is a minimal example, not one of ours: our workers use the same keys and run to several hundred lines. On the right is what happens. gh aw compile turns the Markdown into a GitHub Actions workflow, a lock file you commit. When the event fires, Actions runs it. The agent runs with your AI API key and read-only permissions, so it cannot push or comment by itself. It writes its result as a safe output. A job after the agent validates that output and only then performs the write, here opening one pull request. Security is the point of gh-aw, so say it here, from its own docs: compile-time validation checks the schema and pins the actions; the agent runs sandboxed, in a container by default, read-only, behind a firewall that only allows the domains you list; an API proxy holds the credentials, so the agent never sees them; content from untrusted authors is filtered before the agent reads it; then a separate threat-detection job scans the proposed output for prompt injection, leaked secrets and malicious patches, and only if it is clean do the safe-output jobs run, each with its own scoped write permission. Per-run caps on turns and AI credits bound the cost. The legend is the same on every diagram of the talk: white outline for a normal job, solid blue for the agent, blue outline for a job after the agent, and the GitHub mark in a corner for the steps that gh-aw provides. The blue box is the model running your prompt, so it carries no mark: the prompt is yours, and gh-aw only runs it in a sandbox.
 
-### 4. Understanding it takes 5 minutes. Getting the bases and the way of working right took us months.
+### 4. Getting the bases and the way of working right took us months.
 
 On screen: local, state 0. The composition holds the current subject.
 
-Slide: So let's talk about it: how we built Platform.
+Slide: Let's see how we built *Platform* around GitHub Agentic Workflows.
 
 Speaker notes: This is the turn of the talk. Anyone can make the demo work in an afternoon. Making it safe on real repositories, with real teams, is where the months went: conventions the agent can follow, an environment that holds it, routes with gates that decide, runners that cost little, and numbers that show what works. The rest of the talk is those bases, in the order we built them. First, where AI is going, and where teams are.
 
@@ -50,7 +50,7 @@ Speaker notes: This is the turn of the talk. Anyone can make the demo work in an
 
 Source: [reference](../knowledge/talk-notes.md).
 
-### 5. The evolution of AI.
+### 5. At *Platform*, we first looked at how AI evolved.
 
 On screen: evolution, state 0. Panels name Models, Prompts, Skills, Agents, Guardrails, Harnesses, Loops and graphs, Agentic Workflows, Future.
 
@@ -62,7 +62,7 @@ Speaker notes: Walk the line from left to right. Models made chat AI common. The
 
 Source: [reference](../knowledge/maturity.md).
 
-### 6. We measure different levels of maturity.
+### 6. Then we measured different levels of maturity at *Platform* and at Plain.
 
 On screen: assessment, state 0. Panels name 1 · No AI, 2 · Exploratory, 3 · Structured, 4 · Scaled, 5 · Governed & Optimized.
 
@@ -74,7 +74,7 @@ Speaker notes: Use the five assessment levels, with their exact names. No AI is 
 
 Source: [reference](../knowledge/website-reading.md).
 
-### 7. The 4 pillars of Platform.
+### 7. Until we reached the 4 pillars that defined *Platform*.
 
 On screen: platform, state 0. Panels name Foundations, agent-harness, agentic-workflows, project-health.
 
@@ -136,7 +136,7 @@ Speaker notes: Now the work leaves the PC. agentic-workflows is our layer on top
 
 ### 13. Our engine: OpenCode through Forge.
 
-On screen: two source cards: a gh-aw workflow out of the box, with one provider key and one model, and ours, with OpenCode talking to Forge. The composition holds the current subject.
+On screen: the engine flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
 Slide: Out of the box, gh-aw takes a provider API key and one model. We run OpenCode: it talks to Forge, our AI gateway, with one key per project and a model per tier.
 

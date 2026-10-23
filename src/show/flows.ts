@@ -10,7 +10,7 @@
  */
 import type { MessageKey } from '@/i18n'
 
-export type FlowId = 'ghaw' | 'router' | 'triage' | 'refine' | 'implement' | 'gate'
+export type FlowId = 'ghaw' | 'engine' | 'router' | 'triage' | 'refine' | 'implement' | 'gate'
 /**
  * job: a normal GitHub Actions job or step, before the agent or with no agent at all.
  * agent: the agent does it, inside its run.
@@ -19,7 +19,8 @@ export type FlowId = 'ghaw' | 'router' | 'triage' | 'refine' | 'implement' | 'ga
 export type NodeKind = 'job' | 'agent' | 'post'
 export interface FlowNode { id: string; kind: NodeKind; col: number; row: number; title: MessageKey; sub?: MessageKey; decision?: boolean; gh?: boolean }
 export interface FlowEdge { from: string; to: string; kind?: 'main' | 'branch' | 'return'; label?: MessageKey }
-export interface FlowDef { nodes: FlowNode[]; edges: FlowEdge[] }
+/** `legend: false` hides the legend, for a diagram that is not a worker run. */
+export interface FlowDef { nodes: FlowNode[]; edges: FlowEdge[]; legend?: boolean }
 
 /** A step. The last argument marks a step that gh-aw provides. */
 const n = (id: string, kind: NodeKind, col: number, row: number, title: MessageKey, sub?: MessageKey, gh = false): FlowNode => ({ id, kind, col, row, title, sub, gh })
@@ -47,6 +48,28 @@ export const FLOWS: Record<FlowId, FlowDef> = {
     edges: [
       e('issue', 'md', 'main'), e('md', 'compile', 'main'), e('compile', 'actions', 'main'), e('actions', 'agent', 'main'),
       e('agent', 'safe', 'main', 'flow.edge.proposes'), e('safe', 'pr', 'main', 'flow.edge.opens'),
+    ],
+  },
+  // The engine, in two rows. Above, gh-aw out of the box: an engine, the provider's key, one model.
+  // Below, ours: OpenCode as the engine, Forge as the AI gateway, and a model for each tier.
+  engine: {
+    legend: false,
+    nodes: [
+      n('default', 'job', 0, 0.3, 'flow.engine.default'),
+      n('dengine', 'agent', 1, 0.3, 'flow.engine.dengine', 'flow.engine.dengine.sub'),
+      n('key', 'job', 2, 0.3, 'flow.engine.key', 'flow.engine.key.sub'),
+      n('one', 'job', 3, 0.3, 'flow.engine.one'),
+      n('ours', 'job', 0, 2.3, 'flow.engine.ours', 'flow.engine.ours.sub'),
+      n('opencode', 'agent', 1, 2.3, 'flow.engine.opencode', 'flow.engine.opencode.sub'),
+      n('forge', 'post', 2, 2.3, 'flow.engine.forge', 'flow.engine.forge.sub'),
+      n('plan', 'job', 3, 1.5, 'flow.engine.plan', 'flow.engine.plan.sub'),
+      n('build', 'job', 3, 2.3, 'flow.engine.build', 'flow.engine.build.sub'),
+      n('fast', 'job', 3, 3.1, 'flow.engine.fast', 'flow.engine.fast.sub'),
+    ],
+    edges: [
+      e('default', 'dengine', 'branch'), e('dengine', 'key', 'branch'), e('key', 'one', 'branch'),
+      e('ours', 'opencode', 'main'), e('opencode', 'forge', 'main'),
+      e('forge', 'plan', 'main'), e('forge', 'build', 'main'), e('forge', 'fast', 'main'),
     ],
   },
   // The router is shell only. The workers it dispatches each run an agent.

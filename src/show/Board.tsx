@@ -1,7 +1,7 @@
 /**
  * The boards, drawn in stage units over the dimmed world.
  * `engineering`, `delivery`, `agentic` and `roadmap` copy the four tabs of one real Project Health dashboard.
- * `quote`, `sponsors`, `ghaw`, `tree`, `site`, `skills`, `tiers` and `engine` are single cards.
+ * `quote`, `sponsors`, `ghaw`, `tree`, `site`, `skills` and `tiers` are single cards.
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useState } from 'react'
@@ -12,7 +12,7 @@ import { FlowLegend, GhMark, Tip } from './Flow'
 import { FLOWS } from './flows'
 import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
-export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'ghaw' | 'tree' | 'site' | 'skills' | 'tiers' | 'engine'
+export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'ghaw' | 'tree' | 'site' | 'skills' | 'tiers'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -511,46 +511,6 @@ function rows(t: (key: MessageKey) => string, key: string) {
 }
 
 /**
- * The engine: two source cards. Left, a gh-aw workflow out of the box: one provider, its API key, one model.
- * Right, the engine block of our agent-triage.md: OpenCode with its base URL on Forge, the project's Forge key,
- * and our variables for the lead and the tier models. Forge lines are blue. Under them, the chain.
- */
-function Engine() {
-  const t = useT()
-  const step = 2.7
-  const top = TOP + 1
-  const left = { x: LEFT, w: 62 }
-  const right = { x: LEFT + 62 + 4, w: WIDTH - 66 }
-  const card = (side: { x: number; w: number }, title: string, codeKey: string, notesKey: string, accent: RegExp | null, i: number) => {
-    const lines = t(codeKey as MessageKey).split('\n')
-    const notes = t(notesKey as MessageKey).split('\n')
-    const h = 10 + lines.length * step + 4 + notes.length * 2.9 + 2
-    return (
-      <g className="board-card" style={reveal(i, 3)}>
-        <rect x={side.x} y={top} width={side.w} height={h} rx={0.8} className="board-card-frame" />
-        <line x1={side.x} x2={side.x + side.w} y1={top + 6} y2={top + 6} className="board-rule" />
-        <Txt k={title} x={side.x + 3} y={top + 4} className="board-label" />
-        <text data-i18n={codeKey}>
-          {lines.map((line, n) => <tspan key={n} x={side.x + 3} y={top + 10.5 + n * step} className={accent?.test(line) ? 'board-code board-code--small board-code--act' : line.startsWith('#') ? 'board-code board-code--small board-code--fence' : 'board-code board-code--small'}>{line || '\u00a0'}</tspan>)}
-        </text>
-        <text data-i18n={notesKey}>
-          {notes.map((line, n) => <tspan key={n} x={side.x + 3} y={top + 10.5 + lines.length * step + 3 + n * 2.9} className="board-row">{line}</tspan>)}
-        </text>
-      </g>
-    )
-  }
-  return (
-    <>
-      {card(left, 'board.engine.default', 'board.engine.default.code', 'board.engine.default.notes', null, 0)}
-      {card(right, 'board.engine.ours', 'board.engine.ours.code', 'board.engine.ours.notes', /forge|opencode|OPENAI_API_KEY/i, 1)}
-      <g className="board-card" style={reveal(2, 3)}>
-        <Txt k="board.engine.chain" x={left.x} y={BOTTOM - 4} className="board-name board-name--bar board-name--accent" />
-      </g>
-    </>
-  )
-}
-
-/**
  * agent-harness, skills and agents. Left: the skills of one real project, by source: skills.sh, pinned in
  * skills-lock.json, and ours, with the guardrails in blue. Right: the real file of one agent, whose abilities are
  * the skills it loads before it works.
@@ -630,6 +590,7 @@ function Tiers() {
       })}
       <g className="board-card" style={reveal(3, 5)}>
         <Txt k="board.tiers.variants" x={LEFT} y={TOP + cardH + 3.6} className="board-sub board-sub--light" />
+        <Txt k="board.tiers.openspec" x={LEFT} y={codeY - 1.6} className="board-label board-label--title" />
         <rect x={LEFT} y={codeY} width={codeW} height={BOTTOM - codeY} rx={0.8} className="board-card-frame" />
         <line x1={LEFT} x2={LEFT + codeW} y1={codeY + 6} y2={codeY + 6} className="board-rule" />
         <Txt k="board.tiers.file" x={LEFT + 3} y={codeY + 4} className="board-repo" />
@@ -685,7 +646,7 @@ function Tree() {
   )
 }
 
-const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, ghaw: Ghaw, tree: Tree, site: Site, skills: Skills, tiers: Tiers, engine: Engine }
+const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, ghaw: Ghaw, tree: Tree, site: Site, skills: Skills, tiers: Tiers }
 
 export function Board({ id }: { id: BoardId }) {
   const View = BOARDS[id]
