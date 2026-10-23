@@ -40,11 +40,26 @@ export const part: Part = {
         }
       ],
       "layout": "wide",
-      "footnote": "talk.workflows.ladder",
       "link": {
         "href": "https://workflows.platform.plainconcepts.dev",
         "label": "talk.link.workflows"
       },
+      "cloud": true
+    },
+    {
+      "heading": "talk.workflows.engine.title",
+      "line": "talk.workflows.engine.body",
+      "command": "talk.workflows.engine.command",
+      "picture": "workflow",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "link": {
+        "href": "https://workflows.platform.plainconcepts.dev",
+        "label": "talk.link.workflows"
+      },
+      "dim": true,
+      "board": "engine",
       "cloud": true
     },
     {
@@ -55,6 +70,7 @@ export const part: Part = {
       "step": 1,
       "labels": [],
       "layout": "wide",
+      "footnote": "talk.workflows.ladder",
       "link": {
         "href": "https://workflows.platform.plainconcepts.dev/#router",
         "label": "talk.link.workflows"

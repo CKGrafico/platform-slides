@@ -247,6 +247,7 @@ body { font-family: var(--font-label); }
 .board-code--act { fill: #2f69ff !important; font-weight: 600; }
 .board-code--title { font-weight: 700; }
 .board-code--small { font-size: 1.75px; }
+.board-name--accent { fill: #2f69ff !important; }
 .board-name--tier { fill: #2f69ff !important; letter-spacing: 0.08em; }
 .board-tier { font-size: 2.7px; font-family: var(--font-label); fill: #c5c8ce !important; }
 .board-bar { fill: #63686f; }

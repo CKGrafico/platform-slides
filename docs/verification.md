@@ -1,4 +1,4 @@
-The browser review on 2026-10-23 covered all 25 stops in English and Spanish. No `data-fit` box overflows, no flow text overlaps, and no text leaves its box or the stage.
+The browser review on 2026-10-23 covered all 26 stops in English and Spanish. No `data-fit` box overflows, no flow text overlaps, and no text leaves its box or the stage.
 The visible text had no overflow, viewport clipping, or overlaps. The check measured each `data-fit` box and each pair of boxes on screen.
 For the six flows, the check also measured every SVG text against its node width and every edge label against its gap.
 

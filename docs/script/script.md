@@ -1,6 +1,6 @@
 # Talk script
 
-Draft 9, 2026-10-06. 25 stops, including the cover and 0 chapter cards. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
+Draft 9, 2026-10-06. 26 stops, including the cover and 0 chapter cards. Each stop changes the picture. A chapter card shows only its title while the world fades behind it. The presenter approved ten story blocks. The order runs from local AI use through maturity, capability growth, and Platform to autonomous product changes. The cover and PC share one chapter.
 
 The same Issue moves through the talk. Each new layer answers a practical need and stays in the field. Foundations supplies enforceable conventions. The Harness supplies the agent environment. Workflows give events bounded runs. Health supplies evidence and returns findings to the same route.
 
@@ -130,11 +130,19 @@ Source: [reference](../knowledge/workflow-routes.md).
 
 On screen: workflow, state 0. Panels name Issue event, gh-aw + agentic-workflows, OpenCode · Forge, Safe Outputs · PR.
 
-Slide: Our layer on top of GitHub Agentic Workflows: one router, workers that use the agent-harness skills, OpenCode through Forge, and writes only through Safe Outputs.
+Slide: Our layer on top of GitHub Agentic Workflows: one router, workers that use the agent-harness skills, OpenCode through Forge, our AI gateway, and writes only through Safe Outputs.
 
 Speaker notes: Now the work leaves the PC. agentic-workflows is our layer on top of GitHub Agentic Workflows, gh-aw. Each worker is a gh-aw markdown file. We never call gh aw compile directly: our wrapper runs it and rewrites the lock files for our runners and for OpenCode as the engine. One command, npx @plainconceptsplatform/workflows, installs it in a repo, and update keeps it current. On top of gh-aw we add our practices: one router owns every event, OpenCode reasons through Forge, our AI gateway, with read-only access, and every write goes through allowlisted Safe Outputs. The workers call the agent-harness skills, for example pc-plan-goal in Implement, so a repo needs agent-harness first. The next slides follow each worker. Each step has a rung, from the determinism ladder we use to design the workers: the lower the rung, the cheaper and more repeatable the step. Pure shell is rung 1 and the agent is rung 5. Hover a box to see its rung and what it does.
 
-### 13. One router for every event.
+### 13. Our engine: OpenCode through Forge.
+
+On screen: two source cards: a gh-aw workflow out of the box, with one provider key and one model, and ours, with OpenCode talking to Forge. The composition holds the current subject.
+
+Slide: Out of the box, gh-aw takes a provider API key and one model. We run OpenCode: it talks to Forge, our AI gateway, with one key per project and a model per tier.
+
+Speaker notes: This is where we leave gh-aw's defaults. Out of the box, a gh-aw workflow names an engine, such as Claude, Copilot or Codex, and one model, and it needs that provider's API key as a repository secret. We run OpenCode as the engine instead. Our workers set its base URL to Forge, the Plain Concepts AI gateway, at forge.plainconcepts.com, and the key they pass is the project's Forge key. So the agent never talks to a model provider: OpenCode talks to Forge, and Forge gives access to the models. Each project has its own key, so we can see and control the AI use of every project apart, and max-ai-credits meters the Forge models at list prices. The model field of the frontmatter only satisfies the compiler. The real models come from our variables: one for the lead, and one for each tier, plan, build and fast. On a PC the three tiers use three different models. In CI they all run on GLM 5.2 for now, because the CI's Forge account is not yet granted the others.
+
+### 14. One router for every event.
 
 On screen: the router flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -142,7 +150,7 @@ Slide: One event, one run, at most one worker. Classification is pure shell with
 
 Speaker notes: A Markdown file compiles to a GitHub Actions workflow with gh aw compile. GitHub Agentic Workflows supplies the compiler and the runtime. Platform supplies the router, the worker catalog, the installer, shared defaults, and the repository Harness. The router owns every trigger. Rung 1 classifies the event in pure shell, with no network call and no model. Then it authorizes: write access and organization membership, or the bot-working label for bots. Then it dispatches one worker through workflow_call, or none. Requests from people without write access enter through Triage. Cron and manual dispatch go to deterministic jobs that never run a model. Router concurrency prevents two workers on one Issue. Labels describe state for people. They are not the lock. An idle run still appears for every matching event and costs about ten seconds with every job skipped.
 
-### 14. Triage: the front door.
+### 15. Triage: the front door.
 
 On screen: the triage flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -150,7 +158,7 @@ Slide: Four outcomes: pass, needs info, needs a maintainer, block. Three rounds 
 
 Speaker notes: Triage runs only for outside collaborators. A user with write access skips it. Look at the legend. White boxes are normal GitHub Actions jobs, solid blue is the agent, and a blue outline is a job after the agent. The GitHub mark in a corner means GitHub Agentic Workflows provides that step: its activation job and its safe outputs. The agent runs inside a gh-aw job too, but the blue boxes are our prompts, so they carry no mark. The boxes without the mark are ours, added in the workflow file: the check that the person is an outside collaborator, a check that the Issue is still open, and after the agent the validation of its verdict and the conclusion that applies it. Our safe output is staged, so it writes nothing: our conclude job does the writes. Two more pieces of ours are not drawn. Reserve is our job: it puts the bot-working label on the Issue, so the router does not start a second worker. Facts is our content in the steps block of gh-aw: gh-aw runs it inside its own agent job, before the model, and it writes the Issue and its comments to files, so the agent reads files instead of calling the API. gh-aw also has a pre-activation job that checks the permissions of whoever started the run. Then the agent runs ten checks. Four valid outcomes. Pass adds the refine label with no human in the loop. Needs info posts questions, and an author reply re-runs the worker. Needs maintainer keeps the Issue open with a review label. Block closes it only on a genuine rejection. The round counter comes from markers already on the Issue. In round three, needs info is no longer allowed, so the loop ends. An invalid outcome is retried.
 
-### 15. Refine: size and split the work.
+### 16. Refine: size and split the work.
 
 On screen: the refine flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -158,7 +166,7 @@ Slide: Explore the code one unit at a time. Write the story as Given, When, Then
 
 Speaker notes: Our size guard runs first: a body that is too long or has too many bullets is sent back to the author to split. Then gh-aw activates the run, and the agent explores the real codebase one unit at a time. A trivial change gets a plan without Gherkin. Everything else becomes a story in Given, When, Then, wrapped into the Issue form and passed through the humanizer. The estimate is Fibonacci against the estimate bands. Eight or more splits into two to six children of five or less, and each child walks the pipeline alone. Open questions go to the author in one batched comment. When nothing is open, the Issue is refined and the implement label is added. If the agent cannot ground the story in the code, the run is incomplete and retried.
 
-### 16. Implement: one PR, then stop.
+### 17. Implement: one PR, then stop.
 
 On screen: the implement flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -166,7 +174,7 @@ Slide: Eligible? Reserve, collect facts. Trivial marker takes the direct path, t
 
 Speaker notes: Our eligibility job checks that the Issue is open and not marked future. gh-aw activates the run. Our step cuts the feature branch before the agent starts. A trivial marker takes the direct path, one todo per item. Everything else runs the plan-goal pipeline from the Harness. Verify checks the scoped files, and a failure goes back to the agent. Create PR is the one safe output. Then the worker hands off: the merge decision belongs to the gate. If the run died in under six minutes, that is an outage, and the worker retries up to five times. If it died later, something is wrong, and the Issue is parked with a review label.
 
-### 17. Merge Gate: the only one that merges.
+### 18. Merge Gate: the only one that merges.
 
 On screen: the gate flow, drawn step by step over the dimmed world. The composition holds the current subject.
 
@@ -174,7 +182,7 @@ Slide: CI red? Repair, push, CI again. CI green? Measure the blast radius, the a
 
 Speaker notes: CI reports its conclusion to the router, or the reconciler finds a pull request that was missed. Our subject job checks that this is our open pull request. Checkout is fast-forward only. gh-aw activates the run, and the diff, the pull request shape and the CI logs are collected for the agent. If CI failed, the agent repairs and verifies, pushes, and CI runs again. If CI passed, rung 4b measures the protected paths and the blast radius. The agent finds and verifies defects and reports them. The disposition is computed in shell from that report and the blast radius: auto-merge with squash and the Issue closed, human review when the change is fragile or the radius is high, owner review from CODEOWNERS for protected paths, or blocked when CI stays red at attempt six. Only this worker merges.
 
-### 18. And four more workers.
+### 19. And four more workers.
 
 On screen: workflow, state 5. Panels name Apply Review, Audit · read-only, Release · manual, Visual Verify.
 
@@ -186,7 +194,7 @@ Speaker notes: The other four workers follow the same pattern, so we only name t
 
 Source: [reference](../knowledge/platform.md).
 
-### 19. project-health: measure the system.
+### 20. project-health: measure the system.
 
 On screen: feedback, state 0. Panels name project-health.
 
@@ -194,7 +202,7 @@ Slide: It reads GitHub every night and changes nothing. Each project has four ta
 
 Speaker notes: Project Health is the fourth pillar. It closes the loop: Foundations sets the conventions, the harness puts them in a repo, the workflows run the agents, and Health reads the result back from GitHub to show whether each of those really happened. It runs once a night, stores JSON, and publishes a private static site. No database and no service. Where GitHub cannot answer, it says so instead of guessing. Each project has four tabs. The next four slides show them for one real project, without its name.
 
-### 20. Engineering: the quality of our code.
+### 21. Engineering: the quality of our code.
 
 On screen: the engineering tab of one real Project Health dashboard, without the project name, over the dimmed world. The composition holds the current subject.
 
@@ -202,7 +210,7 @@ Slide: The practices Platform asks for on the default branch: tests, mutation, s
 
 Speaker notes: Engineering shows which practices guard this project on its default branch, in which mode, and whether they last passed. These are the practices we consider in Platform to judge engineering quality: the complexity of the code, its patterns, its tests and its security. The overview opens on this tab, not on Delivery: when agents write most of the code, the first question is whether anything would stop a bad change. This is one real project, without its name, as of 19 October. Level L3, the top one. Score 100. All ten gates that apply are present and passed: Gherkin specs, tests and coverage, mutation, secrets, vulnerabilities, SAST, SBOM, complexity, and code hygiene on every build, then DAST after the deploy to test. Performance does not apply to this project. AI usage is 4 of 5: 82 of 147 commits this month came from an assistant or an agent. The two numbers only mean something together. If AI usage is 4 or more and the level is L1 or less, Health raises the alert "High AI usage, low engineering". The same tab scans comments and tests every day: comment lines stay under the 10% the harness sets, here 5.8%.
 
-### 21. Delivery: DORA metrics.
+### 22. Delivery: DORA metrics.
 
 On screen: the delivery tab of one real Project Health dashboard, without the project name, over the dimmed world. The composition holds the current subject.
 
@@ -210,7 +218,7 @@ Slide: How often we ship, how long a change takes to reach production, and how m
 
 Speaker notes: DORA is DevOps Research and Assessment, a research program now part of Google Cloud. For more than ten years it has studied how teams deliver software, and its metrics are the common language for delivery: how often you ship, how long a change takes, and how often a release goes wrong. Delivery comes second on purpose. When agents open most pull requests, throughput says less than it used to. Health keeps the real DORA metrics only. Deployment frequency, change lead time and rework rate come from GitHub deployments and releases. Change fail rate and failed deployment recovery time need to know that a release caused a problem in production. A repository cannot know that. A red pipeline is not the same thing: no production deployment collected so far is recorded as failed, so that number would read zero forever. Two lead times stay apart. Change lead time runs from the commit to production. Issue to staging starts earlier and ends earlier, so it looks better. They are never mixed. For this project: 2.31 releases a week, change lead time p50 6.2 hours, Issue to staging p50 2 days, rework 0% by the bug label.
 
-### 22. Agentic: how far this project adopts our agents.
+### 23. Agentic: how far this project adopts our agents.
 
 On screen: the agentic tab of one real Project Health dashboard, without the project name, over the dimmed world. The composition holds the current subject.
 
@@ -218,7 +226,7 @@ Slide: Measured against our Platform standard: versions, installed workers, and 
 
 Speaker notes: Agentic measures how far this project runs agents the Platform way. Not every Platform project has to be equally mature here, so this tab says where each one is. First: is the machinery installed and current? Health reads the harness and workflow versions from the default branch and compares them with npm. This project runs the current releases and all seven workers. A repo two minors behind runs failure modes that are already fixed. Second: how much merges on its own? Every PR from Implement has a bot title, so Health splits them into three groups. The gate merged 5 of 9 with no person. 1 was parked and a person merged it. 3 were merged by hand. Merged by the gate is the closest number to the autonomy we promise. Those PRs added 547 lines of code, 69 of comments and 2,402 of tests. Cost is in tokens, not money: 202.69 million tokens and 10 hours 27 minutes of agent time in 76 runs. Only 69 runs reported usage, so the totals are a floor and the page says so. Per measured run, Triage needs about 94 thousand tokens and Implement about 8.5 million.
 
-### 23. Roadmap: from opened to merged.
+### 24. Roadmap: from opened to merged.
 
 On screen: the roadmap tab of one real Project Health dashboard, without the project name, over the dimmed world. The composition holds the current subject.
 
@@ -230,7 +238,7 @@ Speaker notes: The Roadmap tab shows how each Issue moved from opened to merged,
 
 Source: [reference](../knowledge/maturity.md).
 
-### 24. What exactly are software engineers supposed to do?
+### 25. What exactly are software engineers supposed to do?
 
 On screen: an attributed quote card over the dimmed world. The composition holds the current subject.
 
@@ -238,7 +246,7 @@ Slide: no caption. The names under the bodies carry the content.
 
 Speaker notes: Ask the question and let it sit. If an Issue can reach production on its own, what is left for us? Answer with Uncle Bob Martin, on X on 5 October 2026: the job does not change. We still make sure the structure of the system is robust and maintainable, and that its behavior serves our users. That takes engineering discipline. It does not take reading every line of the code, just as using a compiler does not take reading the binary. That is what the whole talk built: conventions in Foundations, a Harness for the agents, workflows with gates, and Health to measure. Source: https://x.com/unclebobmartin/status/2107069060420637178
 
-### 25. From Issue to production with GitHub Agentic Workflows.
+### 26. From Issue to production with GitHub Agentic Workflows.
 
 On screen: system, state 0. Panels name Triage, Refine · Implement, CI, Merge Gate, Production.
 

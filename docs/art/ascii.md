@@ -27,7 +27,7 @@ Main paths, repair, review, manual release, and the Audit return use channels in
 For reduced motion, the engine cuts to each stop and the runtime freezes surface movement. The atlas size follows the actual renderer DPR. The geometry stays constant while the presenter moves through the show.
 
 The content ledger is `scripts/keynote-content.mjs`. `scripts/rebuild-show.mjs` writes the English script, both locale files, and the scene contracts.
-It keeps 25 stops across nine chapters, with no chapter card, five worker flows (the router, Triage, Refine, Implement, and Merge Gate), one slide for GitHub Agentic Workflows, an intro slide for Project Health and four Project Health boards, one for each tab of the dashboard. One slide names the other four workers. The evolution of AI comes before the maturity levels. Near the end, a question, what software engineers are supposed to do, is answered with a quote card over the dimmed system: an initials avatar, name, handle and date, and a short attributed excerpt from Uncle Bob Martin (`src/show/Board.tsx`, board `quote`). It is our card in the keynote style, not a copy of the network's interface. Foundations, agent-harness, agentic-workflows and project-health each have one slide of their own. The last slide is the whole system, the summary of the talk, with a line that opens the questions. Only Agentic Workflows has many slides, because the talk is about it. The first chapter contains the cover and the PC introduction.
+It keeps 26 stops across nine chapters, with no chapter card, five worker flows (the router, Triage, Refine, Implement, and Merge Gate), one slide for GitHub Agentic Workflows, an intro slide for Project Health and four Project Health boards, one for each tab of the dashboard. One slide names the other four workers. The evolution of AI comes before the maturity levels. Near the end, a question, what software engineers are supposed to do, is answered with a quote card over the dimmed system: an initials avatar, name, handle and date, and a short attributed excerpt from Uncle Bob Martin (`src/show/Board.tsx`, board `quote`). It is our card in the keynote style, not a copy of the network's interface. Foundations, agent-harness, agentic-workflows and project-health each have one slide of their own. The last slide is the whole system, the summary of the talk, with a line that opens the questions. Only Agentic Workflows has many slides, because the talk is about it. The first chapter contains the cover and the PC introduction.
 The five maturity assemblies retain their meanings in the final world.
 Precomputed facts, reasoning, validation, and Safe Outputs occupy distinct positions in the worker close views.
 
@@ -85,6 +85,10 @@ After the file tree, two slides show how the harness works inside a project, wit
 - Tiers: the three model tiers with the models in `harness.json` (plan, build and fast). Under them, a `tasks.md` as `/plan-propose` annotates it: each task gets an agent with a tier suffix and its `depends_on`. Build tasks are blue and fast tasks are grey. On the right, how `/plan-apply` runs the tasks in waves. The example tasks are the ones in the harness reference for task annotation, not a client's.
 
 Code lines turn font ligatures off, so `<!--` and `-->` show as written.
+
+## Engine slide
+
+Right after the first agentic-workflows slide, one slide shows where we leave gh-aw's defaults (`Board.tsx`, board `engine`). Left, a gh-aw workflow out of the box: one engine, one model, and that provider's API key as a repository secret. Right, the real engine block of our `agent-triage.md`: OpenCode with its base URL on Forge, the project's Forge key, and our variables for the lead and the tier models. Forge lines are blue. Under the left card, the chain: workflow → OpenCode → Forge → models.
 
 ## Foundations slide
 

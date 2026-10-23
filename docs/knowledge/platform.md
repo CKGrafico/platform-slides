@@ -89,6 +89,14 @@ The keynote may use or break from this identity. That is a design decision for l
 - **Installed in:** Numa, Odyssey, Pliny-Bot, Lyceum, Agentic-Workflow-Dogfood, and loop-task. (`*/.opencode/harness.json`)
 - **Dependency:** agentic-workflows requires it, because its workers call the `pc-*` skills. (`Agentic-Workflows/AGENTS.md`)
 
+### The engine of the workers (2026-10-23)
+
+From the frontmatter of `loops/workflows/agent-triage.md` and `agent-implement.md` in agentic-workflows.
+
+- `engine: id: opencode` (version 1.2.14) with `OPENAI_BASE_URL: https://forge.plainconcepts.com/v1`, and the secret `OPENAI_API_KEY`, which holds the project's Forge key. OpenCode talks to Forge; the agent never talks to a model provider.
+- The `model:` field only satisfies the gh-aw compiler. The real models are `AGENT_LEAD_MODEL` (`forge/glm-5-2`) for the lead, and `AGENT_TIER_MODEL` and `AGENT_FAST_MODEL` for the harness tiers. In CI all three tiers run on `plainconcepts/glm-5-2` for now, because the CI's Forge account is not yet granted the other models; on a PC the tiers use the three models of `harness.json`.
+- `max-ai-credits` meters the Forge models at list prices.
+
 ### agent-harness inside one project (2026-10-23)
 
 From the `.opencode/harness.json`, `.opencode/agents/`, `.agents/skills/` and `skills-lock.json` of two consumer projects, which have the same setup, and from the agent-harness skills `pc-plan-propose` (with its task annotation reference) and `pc-plan-apply`.
