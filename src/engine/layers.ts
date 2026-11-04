@@ -9,7 +9,7 @@ export const LAYERS = {
   fx: 10,
   /** Scene HTML and SVG. */
   narrative: 20,
-  /** Presentation chrome: the language buttons on the start screen. */
+  /** Presentation chrome: the language and theme buttons on the start screen. */
   overlay: 30,
   /** Film grain over the whole picture. Its blend mode reaches every layer below. */
   grain: 35,

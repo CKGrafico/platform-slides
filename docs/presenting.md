@@ -12,9 +12,14 @@
 | `End` | end of the show |
 | `F` | fullscreen on and off |
 | `L` | switch between English and Spanish |
+| `T` | switch between the dark and the light theme |
 | mouse wheel, trackpad | one stop per gesture. The wheel must be quiet for 350 ms before the next step |
 
 Most presentation clickers send `PageDown` and `PageUp`, so they work with no setup.
+
+The start screen also shows the language and theme buttons in the top right corner. They hide as soon as the show moves. The browser keeps both choices for the next visit. `?lang=es` and `?theme=light` in the URL set them too.
+
+The light theme turns the brightness of every layer over and keeps the hue, so the accent stays blue. Photos turn back, so they look as they were taken. Use it in a bright room or on a screen that washes out dark slides. The rules in `src/styles/base.css` do this, under `html[data-theme='light']`.
 
 In fullscreen, the browser UI is hidden. The cursor hides after 2 seconds without movement. Text cannot be selected, and the page has no scrollbars.
 

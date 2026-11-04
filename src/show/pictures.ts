@@ -39,7 +39,7 @@ export function picture(kind: Picture, step: number, dim = false): PictureState 
     case 'local':
       // On the cover the core units stand as an open laptop. On the next beat they come apart into the core.
       // The laptop shows only its moving screen tile in blue, so its mark units stay grey.
-      // Step 1 is the sponsor slide: the logos fill the stage, so the laptop waits off stage to the right.
+      // Step 1 is the gh-aw slide: its cards fill the stage, so the laptop waits off stage to the right.
       // The next beat brings it in and takes it apart into the core.
       if (kind === 'cover') hero('core', step === 1 ? 64 : 26, 1, step === 1 ? 1.5 : 2.0, { turn: -0.55, morph: 1, marks: 0 })
       // At work on the PC, three units of the core are blue: the Issue and two more.

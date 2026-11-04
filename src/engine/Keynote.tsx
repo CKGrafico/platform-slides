@@ -13,10 +13,11 @@ import { DomSceneHost } from './DomSceneHost'
 import { useEnvironment } from './environment'
 import { autoHideCursor } from './fullscreen'
 import { bindInput } from './input'
-import { LanguageSwitch } from './LanguageSwitch'
 import { Layer } from './layers-component'
 import { Presentation } from './presentation'
+import { StartControls } from './StartControls'
 import { StopChip } from './StopChip'
+import { toggleTheme } from './theme'
 import type { ShowDef } from './types'
 
 const debugAllowed = import.meta.env.DEV || new URLSearchParams(window.location.search).has('debug')
@@ -61,6 +62,11 @@ export function Keynote({ show, actors, choreographies, world, overlay, grain }:
         // L switches the language live, in production too. The playhead does not move.
         if (e.key === 'l' || e.key === 'L') {
           toggleLocale()
+          return true
+        }
+        // T switches between the dark and the light theme, in production too.
+        if (e.key === 't' || e.key === 'T') {
+          toggleTheme()
           return true
         }
         if (!debugAllowed) return false
@@ -127,7 +133,7 @@ export function Keynote({ show, actors, choreographies, world, overlay, grain }:
         </Layer>
         <Layer name="overlay">
           {overlay}
-          <LanguageSwitch />
+          <StartControls />
           <StopChip />
         </Layer>
         {grain ? <Layer name="grain">{grain}</Layer> : null}

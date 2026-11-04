@@ -8,16 +8,6 @@ export const part: Part = {
   "title": "Cover and work on your PC",
   "beats": [
     {
-      "heading": "talk.sponsors.title",
-      "command": "talk.sponsors.command",
-      "picture": "cover",
-      "step": 1,
-      "labels": [],
-      "layout": "wide",
-      "dim": true,
-      "board": "sponsors"
-    },
-    {
       "heading": "talk.ghaw.title",
       "line": "talk.ghaw.body",
       "command": "talk.ghaw.command",

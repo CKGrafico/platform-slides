@@ -1,7 +1,7 @@
 /**
  * The boards, drawn in stage units over the dimmed world.
  * `engineering`, `delivery`, `agentic` and `roadmap` copy the four tabs of one real Project Health dashboard.
- * `quote`, `sponsors`, `ghaw`, `tree`, `site`, `skills`, `tiers` and `gateway` are single cards.
+ * `quote`, `ghaw`, `tree`, `site`, `skills`, `tiers` and `gateway` are single cards.
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { useState } from 'react'
@@ -10,9 +10,8 @@ import { useEnvironment } from '@/engine/environment'
 import { useT, type MessageKey } from '@/i18n'
 import { FlowLegend, GhMark, Tip } from './Flow'
 import { FLOWS } from './flows'
-import { EMU_PER_PT, SPONSOR_EVENT, SPONSOR_LABELS, SPONSOR_LINES, SPONSOR_LOGOS, SPONSOR_SLIDE } from './sponsors'
 
-export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'sponsors' | 'ghaw' | 'tree' | 'site' | 'skills' | 'tiers' | 'gateway'
+export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'ghaw' | 'tree' | 'site' | 'skills' | 'tiers' | 'gateway'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -360,36 +359,6 @@ function Quote() {
   )
 }
 
-/**
- * The sponsor slide, at the positions and sizes of the event's official slide (src/show/sponsors.ts).
- * Both slides are 16:9, so one scale maps the original to the stage. Logos appear in the official order.
- */
-function Sponsors() {
-  const t = useT()
-  const k = STAGE_W / SPONSOR_SLIDE.width
-  const total = SPONSOR_LOGOS.length + 1
-  const { mascot, name, city } = SPONSOR_EVENT
-  return (
-    <>
-      <g className="board-card" style={reveal(0, total)}>
-        <image href={mascot.file} x={mascot.x * k} y={mascot.y * k} width={mascot.w * k} height={mascot.h * k} preserveAspectRatio="none" />
-        <text x={(name.x + name.w / 2) * k} y={(name.y + name.h * 0.8) * k} className="board-event" style={{ fontSize: name.pt * EMU_PER_PT * k, textAnchor: 'middle' }} data-i18n={name.key}>{t(name.key)}</text>
-        <text x={(city.x + city.w) * k} y={(city.y + city.h * 0.85) * k} className="board-event board-event--city" style={{ fontSize: city.pt * EMU_PER_PT * k, textAnchor: 'end' }} data-i18n={city.key}>{t(city.key)}</text>
-        {SPONSOR_LINES.map((line, i) => <line key={i} x1={line.x * k} x2={(line.x + line.w) * k} y1={line.y * k} y2={line.y * k} className="board-rule board-rule--sponsors" />)}
-        {SPONSOR_LABELS.map((label) => (
-          <text key={label.key} x={label.x * k} y={(label.y + label.h * 0.62) * k} className="board-tier" data-i18n={label.key}>{t(label.key)}</text>
-        ))}
-      </g>
-      {SPONSOR_LOGOS.map((logo, i) => (
-        <g key={logo.name} className="board-card" style={reveal(i + 1, total)}>
-          {/* Stretched to fill its box, as the original slide does (a:stretch, no crop). */}
-          <image href={logo.file} x={logo.x * k} y={logo.y * k} width={logo.w * k} height={logo.h * k} preserveAspectRatio="none" />
-        </g>
-      ))}
-    </>
-  )
-}
-
 /** Picks a style per code line: the fence, a settings line, the line that acts, a heading, or prompt text. */
 function codeClass(line: string, inSettings: boolean) {
   if (line === '---') return 'board-code board-code--fence'
@@ -731,7 +700,7 @@ function Tree() {
   )
 }
 
-const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, sponsors: Sponsors, ghaw: Ghaw, tree: Tree, site: Site, skills: Skills, tiers: Tiers, gateway: Gateway }
+const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, ghaw: Ghaw, tree: Tree, site: Site, skills: Skills, tiers: Tiers, gateway: Gateway }
 
 export function Board({ id }: { id: BoardId }) {
   const View = BOARDS[id]
