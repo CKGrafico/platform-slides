@@ -1,4 +1,20 @@
 import { CanvasTexture, Color, LinearFilter, ShaderMaterial, Vector2, Vector3 } from 'three'
+import { lightPalette, palette } from './palette'
+
+/**
+ * The theme of the world, shared by every ASCII material, so one call recolors them all.
+ * Dark: marks are the point colour times the light on their face. Light: marks go from the paper to the ink
+ * as their face turns to the light. The blue is the same in both.
+ */
+const themeUniforms = {
+  uLight: { value: 0 },
+  uInk: { value: new Color(lightPalette.ink) },
+  uPaper: { value: new Color(lightPalette.paper) },
+}
+
+export function setWorldTheme(theme: 'dark' | 'light'): void {
+  themeUniforms.uLight.value = theme === 'light' ? 1 : 0
+}
 
 /** Each unit moves as one body. Its marks and depth surface share this motion. */
 const UNIT_MOTION = /* glsl */ `
@@ -127,7 +143,8 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       uAssemble: { value: 1 },
       uOpacity: { value: 1 },
       uAccent: { value: 0 },
-      uBlue: { value: new Color('#2F69FF') },
+      uBlue: { value: new Color(palette.accent) },
+      ...themeUniforms,
       uKey: { value: new Vector3(-0.45, 0.7, 1.0).normalize() },
     },
     vertexShader: /* glsl */ `
@@ -155,6 +172,7 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       varying float vShade;
       varying float vFacing;
       varying float vUnitScale;
+      varying float vHot;
       void main() {
         mat3 spin = unitSpin();
         vec3 p = unitPosition(position + normal * 0.015, aMorphPosition + aMorphNormal * 0.015, aMorph2Position + aMorph2Normal * 0.015, spin);
@@ -173,6 +191,7 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
         float mark = (abs(aPart - uMarkParts.x) < 0.1 || abs(aPart - uMarkParts.y) < 0.1) ? uMarks : 0.0;
         float hot = max(uAccent, max(work, mark));
         vColor = mix(aColor, uBlue, hot);
+        vHot = hot;
         // The blue stays bright on its shadow side, so it never darkens to navy.
         vShade = mix(vShade, max(vShade, 0.85), hot);
         // The docked Issue uses the densest mark and a larger point. It reads as one solid blue unit.
@@ -184,16 +203,26 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
     fragmentShader: /* glsl */ `
       uniform sampler2D uAtlas;
       uniform float uOpacity;
+      uniform float uLight;
+      uniform vec3 uInk;
+      uniform vec3 uPaper;
+      uniform vec3 uBlue;
       varying vec3 vColor;
       varying float vGlyph;
       varying float vShade;
       varying float vFacing;
       varying float vUnitScale;
+      varying float vHot;
       void main() {
         vec2 uv = vec2((vGlyph + gl_PointCoord.x) / 8.0, 1.0 - gl_PointCoord.y);
         float ink = texture2D(uAtlas, uv).a;
         if (ink < 0.2 || uOpacity < 0.01 || vFacing < 0.0 || vUnitScale < 0.01) discard;
-        gl_FragColor = vec4(vColor * vShade, ink * uOpacity);
+        vec3 dark = vColor * vShade;
+        // On paper the blue keeps its exact value, so it matches the corporate blue of the text.
+        // The ramp from paper to ink runs in display space, so the middle tones look like the dark theme's, turned over.
+        vec3 ramp = pow(mix(pow(uPaper, vec3(1.0 / 2.2)), pow(uInk, vec3(1.0 / 2.2)), vShade), vec3(2.2));
+        vec3 light = mix(ramp, uBlue, vHot);
+        gl_FragColor = vec4(mix(dark, light, uLight), ink * uOpacity);
         #include <colorspace_fragment>
       }
     `,

@@ -27,6 +27,17 @@ export const palette = {
 
 export type PaletteColor = keyof typeof palette
 
+/**
+ * The light theme of the world. The accent does not change: it is the corporate blue.
+ * Lit faces take the ink, shadow faces fade toward the paper. The DOM greys are in src/show/ascii.css.
+ */
+export const lightPalette = {
+  /** The light backdrop, a warm off-white. */
+  paper: '#F1F1EE',
+  /** The darkest mark, softer than black. */
+  ink: '#383B42',
+} as const
+
 /** Writes the palette as CSS variables on the root, for example --c-accent. */
 export function applyPaletteCssVars(root: HTMLElement = document.documentElement): void {
   const toKebab = (s: string) => s.replace(/[A-Z]/g, (m) => `-${m.toLowerCase()}`)

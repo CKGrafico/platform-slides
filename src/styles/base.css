@@ -129,17 +129,11 @@ html.cursor-hidden * {
   stroke-linejoin: round;
 }
 
-/*
- * The light theme: every layer but the debug panel turns its brightness over and keeps its hue.
- * Photos turn back, so they look as they were taken. See src/engine/theme.ts.
- */
+/* The light theme. Its colors are in src/show/ascii.css. See src/engine/theme.ts. */
 html[data-theme='light'] {
+  --bg: #f1f1ee;
+  --fg: #383b42;
   color-scheme: light;
-}
-
-html[data-theme='light'] .layer:not([data-layer='debug']),
-html[data-theme='light'] .layer :is(img, image[href$='.jpg'], image[href$='.png'], video) {
-  filter: invert(0.96) hue-rotate(180deg);
 }
 
 @media (prefers-reduced-motion: reduce) {

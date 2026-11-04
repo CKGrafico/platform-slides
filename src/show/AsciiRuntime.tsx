@@ -1,6 +1,8 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
 import { useEnvironment } from '@/engine/environment'
+import { useTheme } from '@/engine/theme'
+import { setWorldTheme } from '@/art/ascii'
 import { actorEntries, getActorObject } from '@/world/actors'
 import { debugBus } from '@/debug/bus'
 import { updateAnchors } from '@/art/anchor'
@@ -84,6 +86,8 @@ function smooth(a: number, b: number, value: number) {
 /** Keep marks legible as the projector size or renderer DPR changes. */
 export function AsciiRuntime() {
   const { reducedMotion, viewport } = useEnvironment()
+  const theme = useTheme()
+  useEffect(() => setWorldTheme(theme), [theme])
   const gl = useThree((s) => s.gl)
   const scene = useThree((s) => s.scene)
   const camera = useThree((s) => s.camera)

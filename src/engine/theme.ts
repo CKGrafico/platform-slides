@@ -1,8 +1,7 @@
 /**
- * Two themes, dark and light. Dark is the designed look of the show.
- * Light is the same picture with its brightness turned over, for bright rooms and screens:
- * base.css inverts every layer but the debug panel and keeps the hue, so the accent stays blue.
- * Photos turn back, so they look as they were taken.
+ * Two themes, dark and light. Dark is the designed look of the show. Light is for bright rooms and screens.
+ * Both use the same corporate blue. The DOM colors are tokens in src/show/ascii.css, and the world reads
+ * the theme through setWorldTheme (src/art/ascii.ts).
  *
  * Theme comes from ?theme=dark|light, then the last choice, then dark.
  * The presenter switches it on the start screen or with the T key. The playhead does not move.
