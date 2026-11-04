@@ -8,12 +8,18 @@ import { lightPalette, palette } from './palette'
  */
 const themeUniforms = {
   uLight: { value: 0 },
+  /** 0: ASCII marks. 1: calm mode, where each unit draws as a solid matte facet and streams as round beads. */
+  uSolid: { value: 0 },
   uInk: { value: new Color(lightPalette.ink) },
   uPaper: { value: new Color(lightPalette.paper) },
 }
 
 export function setWorldTheme(theme: 'dark' | 'light'): void {
   themeUniforms.uLight.value = theme === 'light' ? 1 : 0
+}
+
+export function setWorldSolid(on: boolean): void {
+  themeUniforms.uSolid.value = on ? 1 : 0
 }
 
 /** Each unit moves as one body. Its marks and depth surface share this motion. */
@@ -72,10 +78,14 @@ const UNIT_MOTION = /* glsl */ `
   }
 `
 
-/** Hide marks behind a nearer face without drawing a visible mesh. */
+/**
+ * The faces of the units. With ASCII marks it only writes depth, so marks behind a nearer face are hidden.
+ * With uSolid (calm mode) it draws the faces as flat matte facets, lit by the same key light as the marks.
+ * It draws before the marks (renderOrder -1), so its depth is in place first.
+ */
 export function createAsciiDepthMaterial(surface: ShaderMaterial): ShaderMaterial {
   return new ShaderMaterial({
-    colorWrite: false,
+    transparent: true,
     depthWrite: true,
     uniforms: {
       uTime: surface.uniforms.uTime!,
@@ -88,16 +98,56 @@ export function createAsciiDepthMaterial(surface: ShaderMaterial): ShaderMateria
       uStretch: surface.uniforms.uStretch!,
       uMorph: surface.uniforms.uMorph!,
       uMorph2: surface.uniforms.uMorph2!,
+      uOpacity: surface.uniforms.uOpacity!,
+      uAccent: surface.uniforms.uAccent!,
+      uWorkPart: surface.uniforms.uWorkPart!,
+      uWorkAccent: surface.uniforms.uWorkAccent!,
+      uMarkParts: surface.uniforms.uMarkParts!,
+      uMarks: surface.uniforms.uMarks!,
+      uBlue: surface.uniforms.uBlue!,
+      uKey: surface.uniforms.uKey!,
+      ...themeUniforms,
     },
     vertexShader: /* glsl */ `
       attribute vec3 aMorphPosition;
       attribute vec3 aMorph2Position;
       ${UNIT_MOTION}
+      uniform float uAccent;
+      uniform float uWorkPart;
+      uniform float uWorkAccent;
+      uniform vec2 uMarkParts;
+      uniform float uMarks;
+      uniform vec3 uKey;
+      varying float vShade;
+      varying float vHot;
       void main() {
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(unitPosition(position, aMorphPosition, aMorph2Position, unitSpin()), 1.0);
+        mat3 spin = unitSpin();
+        vec3 n = normalize(normalMatrix * spin * normal);
+        vShade = 0.38 + max(0.0, dot(n, uKey)) * 0.62;
+        float work = (abs(aPart - uWorkPart) < 0.1) ? uWorkAccent : 0.0;
+        float mark = (abs(aPart - uMarkParts.x) < 0.1 || abs(aPart - uMarkParts.y) < 0.1) ? uMarks : 0.0;
+        vHot = max(uAccent, max(work, mark));
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(unitPosition(position, aMorphPosition, aMorph2Position, spin), 1.0);
       }
     `,
-    fragmentShader: /* glsl */ `void main() { gl_FragColor = vec4(0.0); }`,
+    fragmentShader: /* glsl */ `
+      uniform float uSolid;
+      uniform float uLight;
+      uniform float uOpacity;
+      uniform vec3 uInk;
+      uniform vec3 uPaper;
+      uniform vec3 uBlue;
+      varying float vShade;
+      varying float vHot;
+      void main() {
+        if (uSolid < 0.5) { gl_FragColor = vec4(0.0); return; }
+        vec3 dark = mix(vec3(0.035), vec3(0.62, 0.63, 0.66), vShade);
+        vec3 light = pow(mix(pow(uPaper, vec3(1.0 / 2.2)), pow(uInk, vec3(1.0 / 2.2)), vShade * 0.55), vec3(2.2));
+        vec3 color = mix(mix(dark, light, uLight), uBlue * mix(0.75, 1.0, vShade), vHot);
+        gl_FragColor = vec4(color, uOpacity);
+        #include <colorspace_fragment>
+      }
+    `,
   })
 }
 
@@ -143,6 +193,8 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       uAssemble: { value: 1 },
       uOpacity: { value: 1 },
       uAccent: { value: 0 },
+      /** 1 when the form has a face surface (src/art/forms.ts). In calm mode its faces draw the form, not its marks. */
+      uFaces: { value: 0 },
       uBlue: { value: new Color(palette.accent) },
       ...themeUniforms,
       uKey: { value: new Vector3(-0.45, 0.7, 1.0).normalize() },
@@ -207,6 +259,8 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       uniform vec3 uInk;
       uniform vec3 uPaper;
       uniform vec3 uBlue;
+      uniform float uSolid;
+      uniform float uFaces;
       varying vec3 vColor;
       varying float vGlyph;
       varying float vShade;
@@ -216,6 +270,11 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       void main() {
         vec2 uv = vec2((vGlyph + gl_PointCoord.x) / 8.0, 1.0 - gl_PointCoord.y);
         float ink = texture2D(uAtlas, uv).a;
+        if (uSolid > 0.5) {
+          // Calm: a form with faces shows its faces only. A stream shows clean round beads instead of characters.
+          if (uFaces > 0.5) discard;
+          ink = 1.0 - smoothstep(0.3, 0.38, length(gl_PointCoord - 0.5));
+        }
         if (ink < 0.2 || uOpacity < 0.01 || vFacing < 0.0 || vUnitScale < 0.01) discard;
         vec3 dark = vColor * vShade;
         // On paper the blue keeps its exact value, so it matches the corporate blue of the text.

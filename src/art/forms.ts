@@ -264,8 +264,11 @@ export function createForm(units: FormUnit[], seed: number, spacing = 0.34, glyp
   const depthGeometry = mergeGeometries(faces)!
   for (const face of faces) face.dispose()
   const depthMaterial = createAsciiDepthMaterial(object.material as ShaderMaterial)
+  const surface = object.material as ShaderMaterial
+  surface.uniforms.uFaces!.value = 1
   const depthSurface = new Mesh(depthGeometry, depthMaterial)
   depthSurface.frustumCulled = false
+  depthSurface.renderOrder = -1
   object.add(depthSurface)
   object.userData.depthSurface = depthSurface
   const dispose = object.userData.dispose as () => void

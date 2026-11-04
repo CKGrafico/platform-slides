@@ -1,9 +1,10 @@
 /**
  * Two modes, live and calm. Live is the keynote as designed for the stage.
- * Calm is the same deck for reading at your own pace, for example when it is shared with a client:
- * the world holds still, a press cuts to the next stop and fades it in, diagrams show whole,
- * the command line becomes a quiet section label, and the footer shows "02 / 25".
- * The content, the order, the forms and the blue do not change.
+ * Calm is the same deck with less noise, for example when it is shared with a client:
+ * each unit draws as a solid matte facet instead of ASCII marks, units do not drift or breathe,
+ * bodies float slowly as a whole, routes flow at half speed, the command line becomes a quiet
+ * section label, titles drop to Bold, and the footer shows "02 / 25".
+ * The moves, the diagrams, the content, the order and the blue do not change.
  *
  * Mode comes from ?mode=live|calm, then the last choice, then live.
  * The presenter switches it on the start screen or with the M key. The playhead does not move.

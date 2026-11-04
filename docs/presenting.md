@@ -22,7 +22,7 @@ The start screen also shows the language, theme and mode buttons in the top righ
 
 The light theme puts the show on a warm off-white. Text is dark grey, not black, and the blue is the same corporate blue as in the dark theme. Photos do not change. Use it in a bright room or on a screen that washes out dark slides. The DOM colors are tokens at the top of `src/show/ascii.css`. The world takes its light colors from `lightPalette` in `src/art/palette.ts`.
 
-Calm mode is for a deck that people read at their own pace, for example a link sent to a client. The world holds still, each press cuts to the next stop and fades it in, diagrams show whole, and the footer shows "02 / 25" instead of the clock. To share it, send a link that sets everything, for example `https://platform.ckgrafico.com/?mode=calm&theme=light&lang=es`. [art/art-direction.md](art/art-direction.md#themes-and-modes) lists every change.
+Calm mode is the same deck with less noise, for example for a link sent to a client. The forms draw as solid matte facets instead of ASCII marks, the motion is quieter, and the footer shows "02 / 25" instead of the clock. The moves and the diagrams play as in Live. To share it, send a link that sets everything, for example `https://platform.ckgrafico.com/?mode=calm&theme=light&lang=es`. [art/art-direction.md](art/art-direction.md#themes-and-modes) lists every change.
 
 In fullscreen, the browser UI is hidden. The cursor hides after 2 seconds without movement. Text cannot be selected, and the page has no scrollbars.
 

@@ -105,8 +105,6 @@ The engine does not ship transitions. It keeps these open:
 - The camera track makes moves between compositions continuous.
 - DOM, SVG, and WebGL share one frame and one progress value, so a DOM element can hand over to a 3D object on the same frame.
 
-One shell transition exists: calm mode (`src/engine/mode.ts`). With `presentation.cutMoves` on, a press puts the playhead on its stop at once, as reduced motion does, and `onCut` listeners run. The shell then fades the world, fx and narrative layers in from 0 to 1 opacity. The fade always ends at full opacity, so it never changes what a stop shows. Reduced motion cuts with no fade.
-
 ## The ASCII show
 
 Each part lists its translated beat keys in `index.tsx` and exports its moves from `choreography.ts`. `makeMoves` joins complete states from `src/show/pictures.ts`. A new state keeps the layers introduced before it. Each move starts from the preceding state.

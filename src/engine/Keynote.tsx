@@ -2,7 +2,7 @@
  * The app shell: one presentation, one world, and the layer stack.
  * Scenes never import this file.
  */
-import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useState, type ReactNode } from 'react'
 import { gsap } from '@/animation/gsap'
 import { debugBus } from '@/debug/bus'
 import { useI18n } from '@/i18n'
@@ -14,7 +14,7 @@ import { useEnvironment } from './environment'
 import { autoHideCursor } from './fullscreen'
 import { bindInput } from './input'
 import { Layer } from './layers-component'
-import { toggleMode, useMode } from './mode'
+import { toggleMode } from './mode'
 import { Presentation } from './presentation'
 import { StartControls } from './StartControls'
 import { StopChip } from './StopChip'
@@ -48,30 +48,11 @@ export function Keynote({ show, actors, choreographies, world, overlay, grain }:
     return p
   })
   const [debugOpen, setDebugOpen] = useState(false)
-  const mode = useMode()
-  const root = useRef<HTMLElement>(null)
 
   useEffect(() => {
     presentation.reducedMotion = env.reducedMotion
   }, [presentation, env.reducedMotion])
 
-  // Calm mode: a press cuts to its stop, and the picture fades in from the backdrop.
-  // The fade is chrome, like the stop chip: it ends at full opacity and never changes what a stop shows.
-  useEffect(() => {
-    presentation.cutMoves = mode === 'calm'
-    const node = root.current
-    if (mode !== 'calm' || !node) return
-    const off = presentation.onCut(() => {
-      const layers = node.querySelectorAll(".layer[data-layer='world'], .layer[data-layer='fx'], .layer[data-layer='narrative']")
-      if (layers.length) gsap.fromTo(layers, { opacity: 0 }, { opacity: 1, duration: 0.45, ease: 'power2.out', overwrite: true })
-    })
-    return () => {
-      off()
-      const layers = node.querySelectorAll('.layer')
-      gsap.killTweensOf(layers)
-      if (layers.length) gsap.set(layers, { clearProps: 'opacity' })
-    }
-  }, [presentation, mode])
 
   useEffect(() => {
     // Dev-only handle for inspection from the console or a test browser.
@@ -147,7 +128,7 @@ export function Keynote({ show, actors, choreographies, world, overlay, grain }:
 
   return (
     <PresentationProvider value={presentation}>
-      <main ref={root} className="keynote">
+      <main className="keynote">
         <Layer name="world">
           <World actors={actors} choreographies={choreographies} extras={world} />
         </Layer>

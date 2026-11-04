@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { useEnvironment } from '@/engine/environment'
 import { useTheme } from '@/engine/theme'
 import { useMode } from '@/engine/mode'
-import { setWorldTheme } from '@/art/ascii'
+import { setWorldSolid, setWorldTheme } from '@/art/ascii'
 import { actorEntries, getActorObject } from '@/world/actors'
 import { debugBus } from '@/debug/bus'
 import { updateAnchors } from '@/art/anchor'
@@ -23,6 +23,9 @@ const CALM = {
   rigid: { dx: 0.15, dy: 0.45, dxRate: 0.39, dyRate: 0.5, pitch: 0.03, yaw: 0.05, roll: 0.02, pitchRate: 0.25, yawRate: 0.2, rollRate: 0.33, breath: 0 },
   heavy: { dx: 0.1, dy: 0.3, dxRate: 0.33, dyRate: 0.42, pitch: 0.02, yaw: 0.035, roll: 0, pitchRate: 0.22, yawRate: 0.17, rollRate: 0, breath: 0 },
 }
+
+/** Calm mode: every body floats the same slow way, a little up and down and a slight turn. No breathing. */
+const QUIET = { dx: 0.1, dy: 0.35, dxRate: 0.3, dyRate: 0.4, pitch: 0.015, yaw: 0.04, roll: 0, pitchRate: 0.2, yawRate: 0.16, rollRate: 0, breath: 0 }
 
 const start = new Vector3()
 const end = new Vector3()
@@ -87,11 +90,13 @@ function smooth(a: number, b: number, value: number) {
 /** Keep marks legible as the projector size or renderer DPR changes. */
 export function AsciiRuntime() {
   const { reducedMotion, viewport } = useEnvironment()
-  // Calm mode holds the world still, like reduced motion: no drift, no breathing, no flowing routes.
+  // Calm mode draws each unit as a solid facet and quiets the motion: bodies float slowly as a whole,
+  // units do not drift or breathe inside a body, and routes flow at half speed. Reduced motion stills it all.
   const calm = useMode() === 'calm'
-  const still = reducedMotion || calm
+  const still = reducedMotion
   const theme = useTheme()
   useEffect(() => setWorldTheme(theme), [theme])
+  useEffect(() => setWorldSolid(calm), [calm])
   const gl = useThree((s) => s.gl)
   const scene = useThree((s) => s.scene)
   const camera = useThree((s) => s.camera)
@@ -116,7 +121,7 @@ export function AsciiRuntime() {
       const weight = 0.7 + pose.focus * 0.5
       const fluid = pose.fluid > 0.5
       const heavy = id === 'wall' || id === 'gate' || id === 'review'
-      const motion = still ? CALM_OFF : fluid ? CALM.fluid : heavy ? CALM.heavy : CALM.rigid
+      const motion = still ? CALM_OFF : calm ? QUIET : fluid ? CALM.fluid : heavy ? CALM.heavy : CALM.rigid
       const t = time * jitter
       const dx = Math.sin(t * motion.dxRate + phase) * motion.dx * weight
       const dy = Math.sin(t * motion.dyRate + phase) * motion.dy * weight
@@ -131,7 +136,7 @@ export function AsciiRuntime() {
       object.visible = pose.opacity > 0.005 && pose.scale > 0.001
       if (!object.visible && id !== 'packet') continue
       const depthSurface = object.userData.depthSurface as { visible: boolean } | undefined
-      if (depthSurface) depthSurface.visible = pose.assemble > 0.98 && pose.opacity > 0.2
+      if (depthSurface) depthSurface.visible = calm ? pose.opacity > 0.005 : pose.assemble > 0.98 && pose.opacity > 0.2
       const material = object.material
       material.uniforms.uPixelRatio!.value = gl.getPixelRatio()
       // Large bodies get larger marks, so they read as surfaces. Small bodies read as fine dust.
@@ -140,9 +145,9 @@ export function AsciiRuntime() {
       material.uniforms.uOpacity!.value = pose.opacity
       material.uniforms.uAssemble!.value = pose.assemble
       material.uniforms.uAccent!.value = pose.accent
-      material.uniforms.uFluidity!.value = still ? 0 : pose.fluid
+      material.uniforms.uFluidity!.value = still || calm ? 0 : pose.fluid
       material.uniforms.uTime!.value = time
-      material.uniforms.uIdle!.value = still ? 0 : 1
+      material.uniforms.uIdle!.value = still ? 0 : calm ? 0.5 : 1
       // Idle on the cover: while the core stands as the laptop, the blue steps over the screen tiles.
       // It is a function of the clock, like the other idle motion, so reduced motion keeps it on the middle tile.
       const screen = object.userData.screenParts as number[] | undefined

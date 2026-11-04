@@ -7,7 +7,6 @@
 import { useState } from 'react'
 import { asset } from '@/assets'
 import { useEnvironment } from '@/engine/environment'
-import { useMode } from '@/engine/mode'
 import { useT, type MessageKey } from '@/i18n'
 import { FlowLegend, GhMark, Tip } from './Flow'
 import { FLOWS } from './flows'
@@ -451,9 +450,7 @@ const SITE_CAPTURE_W = 1280
 
 function Site() {
   const { reducedMotion } = useEnvironment()
-  // Calm mode shows the first page still, like reduced motion.
-  const calm = useMode() === 'calm'
-  const still = reducedMotion || calm
+  const still = reducedMotion
   const x = 97
   const y = 27
   const w = RIGHT - x
