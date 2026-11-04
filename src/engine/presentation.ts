@@ -101,12 +101,18 @@ export class Presentation {
   target = 0
   direction: Direction = 0
   reducedMotion = false
+  /**
+   * When true, a press cuts to its stop instead of playing the move, and onCut listeners run, so the shell can
+   * fade the new stop in. Calm mode (src/engine/mode.ts) sets it. Reduced motion cuts with no fade.
+   */
+  cutMoves = false
 
   private tween: gsap.core.Tween | null = null
   private lastPosition = Number.NaN
   private snapshot: Snapshot
   private listeners = new Set<() => void>()
   private frameListeners = new Set<(position: number) => void>()
+  private cutListeners = new Set<() => void>()
   private started = false
 
   constructor(show: ShowDef) {
@@ -161,6 +167,12 @@ export class Presentation {
   onFrame(fn: (position: number) => void): () => void {
     this.frameListeners.add(fn)
     return () => this.frameListeners.delete(fn)
+  }
+
+  /** Runs after a press cut to a new stop (see cutMoves). */
+  onCut(fn: () => void): () => void {
+    this.cutListeners.add(fn)
+    return () => this.cutListeners.delete(fn)
   }
 
   // ---- commands ------------------------------------------------------------
@@ -241,11 +253,13 @@ export class Presentation {
     this.direction = p > this.playhead.position ? 1 : p < this.playhead.position ? -1 : this.direction
     this.target = p
     this.tween?.kill()
-    const d = this.reducedMotion ? 0 : duration
+    const cut = this.cutMoves && !this.reducedMotion && duration > 0
+    const d = this.reducedMotion || cut ? 0 : duration
     if (d === 0) {
       this.tween = null
       this.playhead.position = p
       this.writeHash()
+      if (cut) this.cutListeners.forEach((l) => l())
       return
     }
     // Retargeting starts a new tween from the current playhead, so rapid

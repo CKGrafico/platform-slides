@@ -2,6 +2,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect } from 'react'
 import { useEnvironment } from '@/engine/environment'
 import { useTheme } from '@/engine/theme'
+import { useMode } from '@/engine/mode'
 import { setWorldTheme } from '@/art/ascii'
 import { actorEntries, getActorObject } from '@/world/actors'
 import { debugBus } from '@/debug/bus'
@@ -86,6 +87,9 @@ function smooth(a: number, b: number, value: number) {
 /** Keep marks legible as the projector size or renderer DPR changes. */
 export function AsciiRuntime() {
   const { reducedMotion, viewport } = useEnvironment()
+  // Calm mode holds the world still, like reduced motion: no drift, no breathing, no flowing routes.
+  const calm = useMode() === 'calm'
+  const still = reducedMotion || calm
   const theme = useTheme()
   useEffect(() => setWorldTheme(theme), [theme])
   const gl = useThree((s) => s.gl)
@@ -101,7 +105,7 @@ export function AsciiRuntime() {
   }, [gl, scene, camera])
   useFrame(({ camera: cam, size, clock }) => {
     const ratio = viewport.stage.height / viewport.height
-    const time = reducedMotion ? 0 : clock.elapsedTime
+    const time = still ? 0 : clock.elapsedTime
     let index = 0
     for (const [id, object] of actorEntries()) {
       if (!(object instanceof Points) || !(object.material instanceof ShaderMaterial)) continue
@@ -112,7 +116,7 @@ export function AsciiRuntime() {
       const weight = 0.7 + pose.focus * 0.5
       const fluid = pose.fluid > 0.5
       const heavy = id === 'wall' || id === 'gate' || id === 'review'
-      const motion = reducedMotion ? CALM_OFF : fluid ? CALM.fluid : heavy ? CALM.heavy : CALM.rigid
+      const motion = still ? CALM_OFF : fluid ? CALM.fluid : heavy ? CALM.heavy : CALM.rigid
       const t = time * jitter
       const dx = Math.sin(t * motion.dxRate + phase) * motion.dx * weight
       const dy = Math.sin(t * motion.dyRate + phase) * motion.dy * weight
@@ -136,9 +140,9 @@ export function AsciiRuntime() {
       material.uniforms.uOpacity!.value = pose.opacity
       material.uniforms.uAssemble!.value = pose.assemble
       material.uniforms.uAccent!.value = pose.accent
-      material.uniforms.uFluidity!.value = reducedMotion ? 0 : pose.fluid
+      material.uniforms.uFluidity!.value = still ? 0 : pose.fluid
       material.uniforms.uTime!.value = time
-      material.uniforms.uIdle!.value = reducedMotion ? 0 : 1
+      material.uniforms.uIdle!.value = still ? 0 : 1
       // Idle on the cover: while the core stands as the laptop, the blue steps over the screen tiles.
       // It is a function of the clock, like the other idle motion, so reduced motion keeps it on the middle tile.
       const screen = object.userData.screenParts as number[] | undefined
@@ -159,8 +163,8 @@ export function AsciiRuntime() {
       const target = getActorObject(transfer.to) as Points | undefined
       if (source && target) {
         const p = Math.max(0, Math.min(1, transfer.progress))
-        const origin = unitPort(source, time, !reducedMotion, start)
-        const destination = unitPort(target, time, !reducedMotion, end)
+        const origin = unitPort(source, time, !still, start)
+        const destination = unitPort(target, time, !still, end)
         const same = source === target
         ;(source.material as ShaderMaterial).uniforms.uWorkAccent!.value = same ? 1 : 1 - smooth(0, 0.22, p)
         ;(target.material as ShaderMaterial).uniforms.uWorkAccent!.value = same ? 1 : smooth(0.78, 1, p)
@@ -210,8 +214,8 @@ export function AsciiRuntime() {
         along.negate()
         end.addScaledVector(direction, -(bodyReach(target, end, along) + gap) / slope)
       } else {
-        unitPort(source, time, !reducedMotion, start)
-        unitPort(target, time, !reducedMotion, end)
+        unitPort(source, time, !still, start)
+        unitPort(target, time, !still, end)
       }
       const distance = start.distanceTo(end)
       if (distance < 2) { channel.visible = false; continue }

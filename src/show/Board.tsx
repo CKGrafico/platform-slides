@@ -7,6 +7,7 @@
 import { useState } from 'react'
 import { asset } from '@/assets'
 import { useEnvironment } from '@/engine/environment'
+import { useMode } from '@/engine/mode'
 import { useT, type MessageKey } from '@/i18n'
 import { FlowLegend, GhMark, Tip } from './Flow'
 import { FLOWS } from './flows'
@@ -450,6 +451,9 @@ const SITE_CAPTURE_W = 1280
 
 function Site() {
   const { reducedMotion } = useEnvironment()
+  // Calm mode shows the first page still, like reduced motion.
+  const calm = useMode() === 'calm'
+  const still = reducedMotion || calm
   const x = 97
   const y = 27
   const w = RIGHT - x
@@ -460,7 +464,7 @@ function Site() {
     <g className="board-card" style={reveal(0, 1)}>
       <rect x={x} y={y} width={w} height={h} rx={1} className="board-card-frame" />
       <clipPath id="board-site-view"><rect x={x} y={y + bar} width={w} height={viewH} /></clipPath>
-      <g clipPath="url(#board-site-view)" className={reducedMotion ? 'board-site board-site--still' : 'board-site'}>
+      <g clipPath="url(#board-site-view)" className={still ? 'board-site board-site--still' : 'board-site'}>
         {SITE_PAGES.map((page, i) => {
           const pageH = (page.height / SITE_CAPTURE_W) * w
           const style = { '--page': i, '--scroll': Math.max(0, pageH - viewH) } as React.CSSProperties

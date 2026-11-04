@@ -24,6 +24,7 @@ import type { Object3D } from 'three'
 import { gsap, type Timeline } from '@/animation/gsap'
 import { usePresentation } from '@/engine/context'
 import { useEnvironment } from '@/engine/environment'
+import { useMode } from '@/engine/mode'
 import { positionOf, type ShowModel } from '@/engine/show-model'
 import { disposeObject } from '@/assets/dispose'
 
@@ -199,7 +200,9 @@ export function ActorsHost({
   }, [actors, choreographies, objects, p])
 
   const { reducedMotion } = useEnvironment()
-  const frozen = reducedMotion
+  // Calm mode (src/engine/mode.ts) holds ambient motion still, like reduced motion.
+  const calm = useMode() === 'calm'
+  const frozen = reducedMotion || calm
   useFrame(({ clock }) => {
     for (const def of actors) def.ambient?.(objects.get(def.id)!, frozen ? 0 : clock.elapsedTime, p.framePosition)
   })

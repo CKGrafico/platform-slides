@@ -83,6 +83,19 @@ The command arrives first, followed by the heading, caption, and leader lines.
 - Numbers are not panels. They are units in a bank, or a word in the command line, with a short engraved source.
 - Icons, when needed, come from Phosphor, drawn in the same line weight. No hand-made icons.
 
+## Themes and modes
+
+Decided with the user on 2026-11-04. The viewer picks them on the start screen. They change how the deck looks, never what it says.
+
+- **Dark and light themes.** Dark is the designed look. Light sets the greys from a warm off-white (`#F1F1EE`), with dark grey text (`#383B42`) instead of black, so the contrast stays soft. The accent is `#2F69FF` in both themes, because it is the corporate blue. The light colors are tokens at the top of `src/show/ascii.css` and `lightPalette` in `src/art/palette.ts`.
+- **Live and Calm modes.** Live is the keynote for the stage. Calm is the same deck for reading at your own pace, for example when it is shared with a client. The forms, the blue, the order and the text stay. These things change:
+  - The world holds still: no drift, no breathing, and the routes do not flow.
+  - A press cuts to the next stop, and the picture fades in from the backdrop in 0.45 s. The forms do not scatter or fly.
+  - Diagrams and boards show whole, and the Foundations site shows its first page still.
+  - The command line becomes a section label after a short blue rule, with no prompt and no cursor.
+  - Titles drop from Black to Bold.
+  - The footer shows the page, "02 / 25", in place of the presenter's clock and bar. This is the one place a page number is allowed.
+
 ## Exclusions
 
 1. **No neon, no glow, no bloom, no emissive light, no halo, no rim light.** Matte, unlit, ink on paper. This is a hard rule.

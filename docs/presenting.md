@@ -13,13 +13,16 @@
 | `F` | fullscreen on and off |
 | `L` | switch between English and Spanish |
 | `T` | switch between the dark and the light theme |
+| `M` | switch between the live and the calm mode |
 | mouse wheel, trackpad | one stop per gesture. The wheel must be quiet for 350 ms before the next step |
 
 Most presentation clickers send `PageDown` and `PageUp`, so they work with no setup.
 
-The start screen also shows the language and theme buttons in the top right corner. They hide as soon as the show moves. The browser keeps both choices for the next visit. `?lang=es` and `?theme=light` in the URL set them too.
+The start screen also shows the language, theme and mode buttons in the top right corner. They hide as soon as the show moves. The browser keeps each choice for the next visit. `?lang=es`, `?theme=light` and `?mode=calm` in the URL set them too.
 
 The light theme puts the show on a warm off-white. Text is dark grey, not black, and the blue is the same corporate blue as in the dark theme. Photos do not change. Use it in a bright room or on a screen that washes out dark slides. The DOM colors are tokens at the top of `src/show/ascii.css`. The world takes its light colors from `lightPalette` in `src/art/palette.ts`.
+
+Calm mode is for a deck that people read at their own pace, for example a link sent to a client. The world holds still, each press cuts to the next stop and fades it in, diagrams show whole, and the footer shows "02 / 25" instead of the clock. To share it, send a link that sets everything, for example `https://platform.ckgrafico.com/?mode=calm&theme=light&lang=es`. [art/art-direction.md](art/art-direction.md#themes-and-modes) lists every change.
 
 In fullscreen, the browser UI is hidden. The cursor hides after 2 seconds without movement. Text cannot be selected, and the page has no scrollbars.
 

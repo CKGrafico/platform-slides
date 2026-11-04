@@ -26,6 +26,8 @@ export function StopChip() {
   const fill = useRef<HTMLDivElement>(null)
   const last = useRef({ position: -1, forward: true, text: '' })
   const clock = useRef<HTMLSpanElement>(null)
+  /** "02 / 25": the page number calm mode shows instead of the number, clock and bar. */
+  const page = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     // The first stop writes no hash, so an empty hash means the page loaded on the first stop.
@@ -69,6 +71,7 @@ export function StopChip() {
     const text = String(target + 1)
     if (number.current && state.text !== text) {
       number.current.textContent = text
+      if (page.current) page.current.textContent = `${pad(target + 1)} / ${pad(stops.length)}`
       state.text = text
     }
     if (root.current) root.current.dataset.moving = between ? 'true' : 'false'
@@ -80,6 +83,7 @@ export function StopChip() {
       <div ref={root} className="stop-chip" aria-hidden="true" data-moving="false">
         <span ref={clock} className="stop-chip-clock" />
         <span ref={number} className="stop-chip-number" />
+        <span ref={page} className="stop-chip-page" />
         <div className="stop-chip-bar" style={{ background: palette.outline }}>
           <div ref={fill} className="stop-chip-fill" style={{ background: palette.accent }} />
         </div>
