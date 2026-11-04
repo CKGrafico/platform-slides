@@ -90,7 +90,7 @@ Decided with the user on 2026-11-04. The viewer picks them on the start screen. 
 - **Dark and light themes.** Dark is the designed look. Light sets the greys from a warm off-white (`#F1F1EE`), with dark grey text (`#383B42`) instead of black, so the contrast stays soft. The accent is `#2F69FF` in both themes, because it is the corporate blue. The light colors are tokens at the top of `src/show/ascii.css` and `lightPalette` in `src/art/palette.ts`.
 - **Live and Calm modes.** Live is the keynote for the stage. Calm is the same deck with less noise, for example when it is shared with a client. It keeps the motion, because the moves carry the story, and it simplifies the surface:
   - Each unit draws as a solid, matte, flat-faced facet, lit by the same key light, instead of ASCII marks. The Issue and the marked units are solid blue. The geometry is the same, so every form keeps its shape.
-  - Routes stay as streams of round beads, not characters, and flow at half speed.
+  - Routes are solid lines, blue for a route and grey for a return, with no beads. A new route draws itself from start to end instead of scattering in.
   - Units do not drift or breathe inside a body. Each body floats slowly as a whole.
   - The moves between stops stay as in Live: bodies travel, the laptop comes apart into the core, and diagrams draw box by box. Solids do not scatter to dust; they fade.
   - The command line becomes a section label after a short blue rule, with no prompt and no cursor.

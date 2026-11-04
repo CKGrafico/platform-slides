@@ -1,4 +1,4 @@
-import { CanvasTexture, Color, LinearFilter, ShaderMaterial, Vector2, Vector3 } from 'three'
+import { CanvasTexture, Color, LinearFilter, Mesh, PlaneGeometry, ShaderMaterial, Vector2, Vector3 } from 'three'
 import { lightPalette, palette } from './palette'
 
 /**
@@ -8,7 +8,7 @@ import { lightPalette, palette } from './palette'
  */
 const themeUniforms = {
   uLight: { value: 0 },
-  /** 0: ASCII marks. 1: calm mode, where each unit draws as a solid matte facet and streams as round beads. */
+  /** 0: ASCII marks. 1: calm mode, where each unit draws as a solid matte facet and each stream as a solid line. */
   uSolid: { value: 0 },
   uInk: { value: new Color(lightPalette.ink) },
   uPaper: { value: new Color(lightPalette.paper) },
@@ -151,6 +151,61 @@ export function createAsciiDepthMaterial(surface: ShaderMaterial): ShaderMateria
   })
 }
 
+/**
+ * The solid line of a stream, for calm mode: one flat ribbon along the channel instead of beads.
+ * It lives in the stream's own space, x from -11 to 11, and bends like the beads do (uBend).
+ * It draws itself from start to end as the stream assembles, so it never scatters.
+ * Blue when the stream is a route, grey when it is a return. Hidden unless uSolid is on.
+ */
+export function createStreamLine(surface: ShaderMaterial, halfWidth = 0.22): Mesh {
+  const geometry = new PlaneGeometry(22, halfWidth * 2, 64, 1)
+  const material = new ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    uniforms: {
+      uBend: surface.uniforms.uBend!,
+      uOpacity: surface.uniforms.uOpacity!,
+      uAssemble: surface.uniforms.uAssemble!,
+      uAccent: surface.uniforms.uAccent!,
+      uBlue: surface.uniforms.uBlue!,
+      uDust: { value: new Color(palette.dust) },
+      ...themeUniforms,
+    },
+    vertexShader: /* glsl */ `
+      uniform float uBend;
+      varying float vAlong;
+      void main() {
+        vAlong = (position.x + 11.0) / 22.0;
+        vec3 p = position;
+        p.y += sin(vAlong * 3.14159265) * uBend;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+      }
+    `,
+    fragmentShader: /* glsl */ `
+      uniform float uSolid;
+      uniform float uLight;
+      uniform float uOpacity;
+      uniform float uAssemble;
+      uniform float uAccent;
+      uniform vec3 uBlue;
+      uniform vec3 uDust;
+      uniform vec3 uInk;
+      uniform vec3 uPaper;
+      varying float vAlong;
+      void main() {
+        if (uSolid < 0.5 || vAlong > uAssemble || uOpacity < 0.01) discard;
+        vec3 grey = mix(uDust, pow(mix(pow(uPaper, vec3(1.0 / 2.2)), pow(uInk, vec3(1.0 / 2.2)), 0.55), vec3(2.2)), uLight);
+        gl_FragColor = vec4(mix(grey, uBlue, uAccent), uOpacity);
+        #include <colorspace_fragment>
+      }
+    `,
+  })
+  const line = new Mesh(geometry, material)
+  line.frustumCulled = false
+  line.userData.dispose = () => { geometry.dispose(); material.dispose() }
+  return line
+}
+
 /** Screen-facing character marks. Geometry and progress supply the volume. */
 export function createAsciiMaterial(size = 6.2): ShaderMaterial {
   const canvas = document.createElement('canvas')
@@ -193,8 +248,6 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       uAssemble: { value: 1 },
       uOpacity: { value: 1 },
       uAccent: { value: 0 },
-      /** 1 when the form has a face surface (src/art/forms.ts). In calm mode its faces draw the form, not its marks. */
-      uFaces: { value: 0 },
       uBlue: { value: new Color(palette.accent) },
       ...themeUniforms,
       uKey: { value: new Vector3(-0.45, 0.7, 1.0).normalize() },
@@ -260,7 +313,6 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       uniform vec3 uPaper;
       uniform vec3 uBlue;
       uniform float uSolid;
-      uniform float uFaces;
       varying vec3 vColor;
       varying float vGlyph;
       varying float vShade;
@@ -270,11 +322,8 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
       void main() {
         vec2 uv = vec2((vGlyph + gl_PointCoord.x) / 8.0, 1.0 - gl_PointCoord.y);
         float ink = texture2D(uAtlas, uv).a;
-        if (uSolid > 0.5) {
-          // Calm: a form with faces shows its faces only. A stream shows clean round beads instead of characters.
-          if (uFaces > 0.5) discard;
-          ink = 1.0 - smoothstep(0.3, 0.38, length(gl_PointCoord - 0.5));
-        }
+        // Calm: forms show their faces (createAsciiDepthMaterial) and streams their solid line (createStreamLine).
+        if (uSolid > 0.5) discard;
         if (ink < 0.2 || uOpacity < 0.01 || vFacing < 0.0 || vUnitScale < 0.01) discard;
         vec3 dark = vColor * vShade;
         // On paper the blue keeps its exact value, so it matches the corporate blue of the text.

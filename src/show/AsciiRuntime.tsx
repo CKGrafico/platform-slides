@@ -91,7 +91,7 @@ function smooth(a: number, b: number, value: number) {
 export function AsciiRuntime() {
   const { reducedMotion, viewport } = useEnvironment()
   // Calm mode draws each unit as a solid facet and quiets the motion: bodies float slowly as a whole,
-  // units do not drift or breathe inside a body, and routes flow at half speed. Reduced motion stills it all.
+  // units do not drift or breathe inside a body, and routes draw as solid lines. Reduced motion stills it all.
   const calm = useMode() === 'calm'
   const still = reducedMotion
   const theme = useTheme()
@@ -147,7 +147,7 @@ export function AsciiRuntime() {
       material.uniforms.uAccent!.value = pose.accent
       material.uniforms.uFluidity!.value = still || calm ? 0 : pose.fluid
       material.uniforms.uTime!.value = time
-      material.uniforms.uIdle!.value = still ? 0 : calm ? 0.5 : 1
+      material.uniforms.uIdle!.value = still ? 0 : 1
       // Idle on the cover: while the core stands as the laptop, the blue steps over the screen tiles.
       // It is a function of the clock, like the other idle motion, so reduced motion keeps it on the middle tile.
       const screen = object.userData.screenParts as number[] | undefined

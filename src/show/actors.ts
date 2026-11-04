@@ -1,6 +1,6 @@
 import { cluster, createForm, era, gate, harness, laptopLayout, laptopScreen, lattice, level, plate, spreadUnits, steps, triage, upright, wall, type FormUnit } from '@/art/forms'
 import { spreadLayout } from './layout'
-import { createAsciiMaterial } from '@/art/ascii'
+import { createAsciiMaterial, createStreamLine } from '@/art/ascii'
 import { defineActor } from '@/world/actors'
 import { Points, type BufferGeometry, type ShaderMaterial } from 'three'
 
@@ -154,7 +154,11 @@ function stream(kind: StreamKind = 'wide'): Points {
   owner.users++
   const material = object.material as ShaderMaterial
   material.uniforms.uStream!.value = 1
+  // In calm mode the channel draws as one solid line instead of beads. A thin link gets a thinner line.
+  const line = createStreamLine(material, kind === 'thin' ? 0.3 : 0.16)
+  object.add(line)
   object.userData.dispose = () => {
+    line.userData.dispose()
     material.dispose()
     owner.users--
     if (owner.users === 0) {
