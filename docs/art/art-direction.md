@@ -93,7 +93,7 @@ Decided with the user on 2026-11-04. The viewer picks them on the start screen. 
   - Routes are solid lines, blue for a route and grey for a return, with no beads. A new route draws itself from start to end instead of scattering in.
   - Units do not drift or breathe inside a body. Each body floats slowly as a whole.
   - The moves between stops stay as in Live: bodies travel, the laptop comes apart into the core, and diagrams draw box by box. Solids do not scatter to dust; they fade.
-  - The command line becomes a section label after a short blue rule, with no prompt and no cursor.
+  - The command line goes quiet after a short blue rule, with no cursor. It keeps its prompt, because the path from local to cloud is part of the story.
   - Titles drop from Black to Bold.
   - The footer shows the page, "02 / 25", in place of the presenter's clock and bar. This is the one place a page number is allowed.
 

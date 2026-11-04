@@ -282,14 +282,13 @@ body { font-family: var(--font-label); }
 
 /*
  * Calm mode (src/engine/mode.ts): the same deck, quieter, for reading at your own pace.
- * The command line becomes a section label after a short blue rule, titles drop to Bold,
+ * The command line goes quiet after a short blue rule and keeps its local or cloud path. Titles drop to Bold,
  * and the footer shows the page number instead of the presenter's clock and bar.
  */
 html[data-mode='calm'] .ascii-prompt { display: flex; align-items: center; color: var(--soft); letter-spacing: 0.04em; }
 html[data-mode='calm'] .ascii-prompt::before { content: ''; flex: none; width: calc(var(--su) * 3.2); height: calc(var(--su) * 0.25); margin-right: calc(var(--su) * 1.4); background: var(--accent); }
-html[data-mode='calm'] .ascii-prompt > span:first-child,
 html[data-mode='calm'] .ascii-cursor { display: none; }
-html[data-mode='calm'] .ascii-command { margin-left: 0; color: var(--soft); }
+html[data-mode='calm'] .ascii-command { color: var(--soft); }
 html[data-mode='calm'] .ascii-heading { font-weight: 700; letter-spacing: -0.03em; }
 html[data-mode='calm'] .stop-chip { opacity: 0.8; color: var(--soft); }
 html[data-mode='calm'] :is(.stop-chip-clock, .stop-chip-number, .stop-chip-bar) { display: none; }

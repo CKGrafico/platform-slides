@@ -1,4 +1,4 @@
-import { CanvasTexture, Color, LinearFilter, Mesh, PlaneGeometry, ShaderMaterial, Vector2, Vector3 } from 'three'
+import { CanvasTexture, Color, DoubleSide, LinearFilter, Mesh, PlaneGeometry, ShaderMaterial, Vector2, Vector3 } from 'three'
 import { lightPalette, palette } from './palette'
 
 /**
@@ -156,12 +156,16 @@ export function createAsciiDepthMaterial(surface: ShaderMaterial): ShaderMateria
  * It lives in the stream's own space, x from -11 to 11, and bends like the beads do (uBend).
  * It draws itself from start to end as the stream assembles, so it never scatters.
  * Blue when the stream is a route, grey when it is a return. Hidden unless uSolid is on.
+ * The ribbon always faces the camera: its center follows the beads' arc, and its width opens on the screen,
+ * across the line. A route that runs up or down the screen would otherwise show the ribbon on its edge.
+ * Both sides draw, because a route that runs right to left flips the winding.
  */
 export function createStreamLine(surface: ShaderMaterial, halfWidth = 0.22): Mesh {
   const geometry = new PlaneGeometry(22, halfWidth * 2, 64, 1)
   const material = new ShaderMaterial({
     transparent: true,
     depthWrite: false,
+    side: DoubleSide,
     uniforms: {
       uBend: surface.uniforms.uBend!,
       uOpacity: surface.uniforms.uOpacity!,
@@ -174,11 +178,17 @@ export function createStreamLine(surface: ShaderMaterial, halfWidth = 0.22): Mes
     vertexShader: /* glsl */ `
       uniform float uBend;
       varying float vAlong;
+      vec4 centerAt(float along) {
+        return modelViewMatrix * vec4(along * 22.0 - 11.0, sin(along * 3.14159265) * uBend, 0.0, 1.0);
+      }
       void main() {
         vAlong = (position.x + 11.0) / 22.0;
-        vec3 p = position;
-        p.y += sin(vAlong * 3.14159265) * uBend;
-        gl_Position = projectionMatrix * modelViewMatrix * vec4(p, 1.0);
+        vec4 center = centerAt(vAlong);
+        vec2 tangent = centerAt(vAlong + 0.01).xy - centerAt(vAlong - 0.01).xy;
+        vec2 across = length(tangent) > 1e-6 ? normalize(vec2(-tangent.y, tangent.x)) : vec2(0.0, 1.0);
+        // The width in view units: the stream is scaled across by its thickness (modelViewMatrix column 1).
+        center.xy += across * position.y * length(modelViewMatrix[1].xyz);
+        gl_Position = projectionMatrix * center;
       }
     `,
     fragmentShader: /* glsl */ `
