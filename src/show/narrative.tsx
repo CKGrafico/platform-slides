@@ -24,6 +24,8 @@ const TIMING = {
   heroStart: 0.03, hero: 0.55, supportStart: 0.06, support: 0.45, supportStep: 0.025,
   enterStart: 0.08, enterStep: 0.03,
   drawStart: 0.26, drawStep: 0.04, draw: 0.36,
+  /** Before a flow or a board draws, a body that goes fades out in one piece by this point. */
+  quietExit: 0.12,
 }
 const REVEAL = { title: [0.6, 0.8], caption: [0.68, 0.88], label: [0.76, 0.96] } as const
 /** A chapter card shows only its title, which arrives while the world fades behind it. */
@@ -188,6 +190,9 @@ export function makeMoves(part: Part) {
       tl.set(transfer, { from: workOwner(from), to: workOwner(to), immediateRender: false }, window.start)
       tl.fromTo(transfer, { progress: 0 }, { progress: 1, immediateRender: false, duration: window.duration * TIMING.transfer, ease: 'power3.inOut' }, window.start + window.duration * 0.06)
       let arrivals = 0
+      // Over a flow or a board the world steps back first. A body that goes fades fast and in one piece,
+      // so it never scatters behind the diagram while the diagram draws.
+      const quiet = Boolean(beat.dim)
       for (const [slot, id] of LIVE_IDS.entries()) {
         const pose = poseOf(cast.get<Points>(id))
         const entering = from[id].opacity <= 0.005 && to[id].opacity > 0.005
@@ -210,11 +215,20 @@ export function makeMoves(part: Part) {
           const duration = window.duration * TIMING.hero
           tl.fromTo(pose, move(origin), { ...move(to[id]), immediateRender: false, duration, ease: 'power3.inOut' }, at(TIMING.heroStart))
           tl.fromTo(pose, { opacity: origin.opacity }, { opacity: 0, immediateRender: false, duration: duration * 0.4, ease: 'power2.in' }, at(TIMING.heroStart) + duration * 0.72)
+        } else if (leaving && quiet) {
+          tl.fromTo(pose, { opacity: from[id].opacity }, { opacity: 0, immediateRender: false, duration: window.duration * TIMING.quietExit, ease: 'power2.out' }, window.start)
+          tl.set(pose, { ...to[id] }, at(TIMING.quietExit))
         } else if (leaving) {
           // An exit stays in place: it fades, loosens, and then waits hidden at its next pose.
           const hold = { opacity: from[id].opacity, scale: from[id].scale, assemble: from[id].assemble }
           tl.fromTo(pose, hold, { opacity: 0, scale: from[id].scale * 0.85, assemble: 0.3, immediateRender: false, duration: window.duration * TIMING.exit, ease: 'power2.in' }, at(TIMING.exitStart))
           tl.set(pose, { ...to[id] }, at(TIMING.exitStart + TIMING.exit))
+        } else if (dissolve && quiet) {
+          // It fades out where it is, then fades in as a trace at its next place, already built.
+          tl.fromTo(pose, { opacity: from[id].opacity }, { opacity: 0, immediateRender: false, duration: window.duration * TIMING.quietExit, ease: 'power2.out' }, window.start)
+          const rise = at(TIMING.quietExit)
+          tl.set(pose, { ...to[id], opacity: 0 }, rise)
+          tl.fromTo(pose, { opacity: 0 }, { opacity: to[id].opacity, immediateRender: false, duration: window.duration * TIMING.arrive, ease: 'power3.out' }, rise)
         } else if (dissolve) {
           // A quiet body far from its next place dissolves where it is and re-forms there.
           const hold = { opacity: from[id].opacity, assemble: from[id].assemble }
