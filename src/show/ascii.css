@@ -168,7 +168,8 @@ body { font-family: var(--font-label); }
 .flow-title { font-size: 1.9px; font-weight: 600; }
 .flow-sub { font-size: 1.7px; font-weight: 450; fill: var(--soft) !important; }
 .flow-node--agent rect { fill: var(--accent); stroke: var(--accent); }
-.flow-node--agent text { fill: #f2f4ff; }
+/* Scoped to .flow so it beats .board text, which comes later in this file. */
+.flow .flow-node--agent text { fill: #f2f4ff; }
 .flow-node--agent .flow-sub { fill: #d4ddff !important; }
 .flow-node--post rect { stroke: var(--accent); stroke-width: 0.34; }
 /* Hover help: the frame ignores the pointer, so a box asks for it. The tip fades in with its box. */
@@ -179,7 +180,7 @@ body { font-family: var(--font-label); }
 .flow-tip rect { fill: var(--raised); stroke: var(--grey); stroke-width: 0.2; }
 .flow-tip text { font-size: 1.7px; text-anchor: start; fill: var(--text); }
 .flow-gh { fill: var(--text); }
-.flow-node--agent .flow-gh { fill: #f2f4ff; }
+.flow .flow-node--agent .flow-gh { fill: #f2f4ff; }
 .flow-legend-label { font-size: 1.6px; text-anchor: start !important; fill: var(--soft) !important; }
 .flow-edge path { fill: none; stroke-width: 0.26; stroke: var(--grey); stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--v)); }
 .flow-edge--main path { stroke: var(--accent); stroke-width: 0.34; }
