@@ -34,8 +34,8 @@ export type PaletteColor = keyof typeof palette
 export const lightPalette = {
   /** The light backdrop, a warm off-white. */
   paper: '#F1F1EE',
-  /** The darkest mark, softer than black. */
-  ink: '#383B42',
+  /** The darkest mark, softer than black. The same as --text in light (src/show/ascii.css). */
+  ink: '#282B31',
 } as const
 
 /** Writes the palette as CSS variables on the root, for example --c-accent. */

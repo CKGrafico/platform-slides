@@ -87,7 +87,7 @@ The command arrives first, followed by the heading, caption, and leader lines.
 
 Decided with the user on 2026-11-04. The viewer picks them on the start screen. They change how the deck looks, never what it says.
 
-- **Dark and light themes.** Dark is the designed look. Light sets the greys from a warm off-white (`#F1F1EE`), with dark grey text (`#383B42`) instead of black, so the contrast stays soft. The accent is `#2F69FF` in both themes, because it is the corporate blue. The light colors are tokens at the top of `src/show/ascii.css` and `lightPalette` in `src/art/palette.ts`.
+- **Dark and light themes.** Dark is the designed look. Light sets the greys from a warm off-white (`#F1F1EE`), with dark grey text (`#282B31`) instead of black. Every grey that carries words passes 4.5:1 on the backdrop, and ASCII marks in shadow stay a clear mid grey. The accent is `#2F69FF` in both themes, because it is the corporate blue. The light colors are tokens at the top of `src/show/ascii.css` and `lightPalette` in `src/art/palette.ts`.
 - **Live and Calm modes.** Live is the keynote for the stage. Calm is the same deck with less noise, for example when it is shared with a client. It keeps the motion, because the moves carry the story, and it simplifies the surface:
   - Each unit draws as a solid, matte, flat-faced facet, lit by the same key light, instead of ASCII marks. The Issue and the marked units are solid blue. The geometry is the same, so every form keeps its shape.
   - Routes are solid lines, blue for a route and grey for a return, with no beads. A new route draws itself from start to end instead of scattering in.

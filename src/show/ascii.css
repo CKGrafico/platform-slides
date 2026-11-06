@@ -1,16 +1,16 @@
 /* Projected 16:9 compositions. Marks and labels share the stage scale. */
 /*
  * Colors. Dark is the designed look (docs/art/art-direction.md). Light keeps the same accent, the corporate blue,
- * and sets the greys from a warm off-white, with softer text than pure black. The world reads the same choice
- * through src/engine/theme.ts. Text on a blue box keeps its own light values in both themes.
+ * and sets the greys from a warm off-white. Text is dark grey, not black, and every grey that carries words passes
+ * 4.5:1 on the backdrop. The world reads the same choice through src/engine/theme.ts. Text on a blue box keeps its own light values in both themes.
  */
 :root {
   --backdrop: #0a0a0b; --raised: #17171a; --rule: #2a2d32; --line: #42464e; --dim: #63686f; --grey: #8a8f98;
   --soft: #a7abb1; --mid: #b7bbc3; --light: #c5c8ce; --bright: #d4d7dc; --text: #e8e9ec; --accent: #2f69ff;
 }
 html[data-theme='light'] {
-  --backdrop: #f1f1ee; --raised: #e7e7e4; --rule: #dcdde0; --line: #c9cbcf; --dim: #9ea2a9; --grey: #777c85;
-  --soft: #5a5e66; --mid: #50545b; --light: #474b52; --bright: #3f434a; --text: #383b42;
+  --backdrop: #f1f1ee; --raised: #e7e7e4; --rule: #d6d7da; --line: #bfc1c6; --dim: #868b93; --grey: #61666f;
+  --soft: #4a4e56; --mid: #41454c; --light: #383b42; --bright: #30333a; --text: #282b31;
 }
 :root { --font-label: 'JetBrains Mono Variable', ui-monospace, monospace; --font-display: 'Outfit Variable', sans-serif; --radius: calc(var(--su) * 0.35); }
 body { font-family: var(--font-label); }
@@ -168,7 +168,8 @@ body { font-family: var(--font-label); }
 .flow-title { font-size: 1.9px; font-weight: 600; }
 .flow-sub { font-size: 1.7px; font-weight: 450; fill: var(--soft) !important; }
 .flow-node--agent rect { fill: var(--accent); stroke: var(--accent); }
-.flow-node--agent text { fill: #f2f4ff; }
+/* Scoped to .flow so it beats .board text, which comes later in this file. */
+.flow .flow-node--agent text { fill: #f2f4ff; }
 .flow-node--agent .flow-sub { fill: #d4ddff !important; }
 .flow-node--post rect { stroke: var(--accent); stroke-width: 0.34; }
 /* Hover help: the frame ignores the pointer, so a box asks for it. The tip fades in with its box. */
@@ -179,7 +180,7 @@ body { font-family: var(--font-label); }
 .flow-tip rect { fill: var(--raised); stroke: var(--grey); stroke-width: 0.2; }
 .flow-tip text { font-size: 1.7px; text-anchor: start; fill: var(--text); }
 .flow-gh { fill: var(--text); }
-.flow-node--agent .flow-gh { fill: #f2f4ff; }
+.flow .flow-node--agent .flow-gh { fill: #f2f4ff; }
 .flow-legend-label { font-size: 1.6px; text-anchor: start !important; fill: var(--soft) !important; }
 .flow-edge path { fill: none; stroke-width: 0.26; stroke: var(--grey); stroke-dasharray: 1; stroke-dashoffset: calc(1 - var(--v)); }
 .flow-edge--main path { stroke: var(--accent); stroke-width: 0.34; }

@@ -7,6 +7,7 @@
 import { useState } from 'react'
 import { asset } from '@/assets'
 import { useEnvironment } from '@/engine/environment'
+import { useTheme } from '@/engine/theme'
 import { useT, type MessageKey } from '@/i18n'
 import { FlowLegend, GhMark, Tip } from './Flow'
 import { FLOWS } from './flows'
@@ -480,15 +481,20 @@ function rows(t: (key: MessageKey) => string, key: string) {
   return t(key as MessageKey).split('\n').map((line) => line.split('\t') as [string, string?])
 }
 
-const GATEWAY_LOGOS = { opencode: asset('logos', 'opencode-wordmark.svg'), atlas: asset('logos', 'atlas.svg') }
+const GATEWAY_LOGOS = {
+  opencode: { dark: asset('logos', 'opencode-wordmark.svg'), light: asset('logos', 'opencode-wordmark-light.svg') },
+  atlas: asset('logos', 'atlas.svg'),
+}
 
 /**
  * Our engine and our gateway. OpenCode, with its wordmark, sends every request to Forge (Atlas), our AI gateway, which
  * routes it to one of several providers, each with models of every kind: text, speech, images. Under Forge, what a gateway gives us; under that, the reason: governance.
  * The OpenCode wordmark comes from the OpenCode brand assets, and the Atlas mark from atlas.plainconcepts.com.
+ * The light theme uses a copy of the wordmark with the greys turned over, because the original is made for a dark page.
  */
 function Gateway() {
   const t = useT()
+  const theme = useTheme()
   const models = t('board.gateway.models.list').split('\n').map((line) => line.split('\t') as [string, string?])
   const caps = t('board.gateway.caps').split('\n')
   const mid = 48
@@ -519,7 +525,7 @@ function Gateway() {
       </defs>
       <g className="board-card" style={reveal(0, 5)}>
         <Txt k="board.gateway.engine" x={10} y={mid - 6.5} className="board-label" />
-        <image href={GATEWAY_LOGOS.opencode} x={10} y={mid - 3.6} width={38} height={38 * 115 / 641} />
+        <image href={GATEWAY_LOGOS.opencode[theme]} x={10} y={mid - 3.6} width={38} height={38 * 115 / 641} />
         <Txt k="board.gateway.engine.sub" x={10} y={mid + 7} className="board-sub" />
       </g>
       <g className="board-card" style={reveal(1, 5)}>
