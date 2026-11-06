@@ -132,7 +132,7 @@ html.cursor-hidden * {
 /* The light theme. Its colors are in src/show/ascii.css. See src/engine/theme.ts. */
 html[data-theme='light'] {
   --bg: #f1f1ee;
-  --fg: #383b42;
+  --fg: #282b31;
   color-scheme: light;
 }
 

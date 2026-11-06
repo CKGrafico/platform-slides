@@ -337,8 +337,9 @@ export function createAsciiMaterial(size = 6.2): ShaderMaterial {
         if (ink < 0.2 || uOpacity < 0.01 || vFacing < 0.0 || vUnitScale < 0.01) discard;
         vec3 dark = vColor * vShade;
         // On paper the blue keeps its exact value, so it matches the corporate blue of the text.
-        // The ramp from paper to ink runs in display space, so the middle tones look like the dark theme's, turned over.
-        vec3 ramp = pow(mix(pow(uPaper, vec3(1.0 / 2.2)), pow(uInk, vec3(1.0 / 2.2)), vShade), vec3(2.2));
+        // The ramp from paper to ink runs in display space. Thin dark marks on paper read weaker than light marks on black,
+        // so the ramp starts at half way: a mark in shadow is still a clear mid grey.
+        vec3 ramp = pow(mix(pow(uPaper, vec3(1.0 / 2.2)), pow(uInk, vec3(1.0 / 2.2)), 0.35 + 0.65 * vShade), vec3(2.2));
         vec3 light = mix(ramp, uBlue, vHot);
         gl_FragColor = vec4(mix(dark, light, uLight), ink * uOpacity);
         #include <colorspace_fragment>
