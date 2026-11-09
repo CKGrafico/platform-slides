@@ -24,12 +24,12 @@ Most presentation clickers send `PageDown` and `PageUp`, so they work with no se
 Press `P` in the show to open the presenter window. Put the show on the projector and the presenter window on the laptop screen. It shows:
 
 - the stop number and the talk clock, the same as the stop chip
-- the title of the current stop and its speaker notes
+- the title of the current stop and the speaker's bullets: its core messages, in the show's language
 - the title of the next stop
 
 The keys of the table above work in the presenter window too, and so do its two buttons. Each one moves the show. The show window owns the playhead: the presenter window only mirrors it, so either window can drive the talk. The two windows talk over a `BroadcastChannel`, so they must be in the same browser, on the same address. If you reload the show, the presenter window finds it again. You can also open it by hand with `?presenter` in the URL.
 
-The presenter window follows the language of the show. The speaker notes are in English only. They come from `scripts/keynote-content.mjs`: `node scripts/rebuild-show.mjs` writes them to `src/show/notes.ts`, one per stop, with the script. Only the presenter window downloads them. The code is in `src/engine/PresenterView.tsx` and `src/engine/presenter-sync.ts`.
+The presenter window follows the language of the show. The bullets live in `scripts/speaker-points.mjs`, in English and Spanish, three to five per stop. `node scripts/rebuild-show.mjs` writes them to the locales as `notes.*` and fails if a stop has none. The full speaker notes stay in [the script](script/script.md). The code is in `src/engine/PresenterView.tsx` and `src/engine/presenter-sync.ts`.
 
 The start screen also shows the language, theme and mode buttons in the top right corner. They hide as soon as the show moves. The browser keeps each choice for the next visit. `?lang=es`, `?theme=light` and `?mode=calm` in the URL set them too.
 

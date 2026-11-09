@@ -1,7 +1,7 @@
 /**
  * The presenter window: what the speaker sees on the laptop while the show runs on the projector.
  * Press P in the show to open it. It shows the stop number, the talk clock, the current title with its
- * speaker notes, and the next title. It has no world and no WebGL, so it costs almost nothing.
+ * speaker's bullets, in the show's language, and the next title. It has no world and no WebGL, so it costs almost nothing.
  *
  * It never owns a playhead. The show window sends its place over the presenter channel, and the keys and
  * buttons here send commands back (src/engine/presenter-sync.ts). The window follows the show's language.
@@ -11,10 +11,10 @@ import { useI18n, type MessageKey } from '@/i18n'
 import { openChannel, type PresenterCommand, type PresenterMessage } from './presenter-sync'
 import { CLOCK_KEY } from './StopChip'
 
-/** One stop of the show, in show order: the message key of its title, and what the speaker says. */
+/** One stop of the show, in show order: the message keys of its title and of the speaker's bullets, one per line. */
 export interface StopNote {
   heading: string
-  notes: string
+  points: string
 }
 
 type ShowState = Extract<PresenterMessage, { kind: 'state' }>
@@ -95,6 +95,7 @@ export function PresenterView({ notes }: { notes: StopNote[] }) {
   const current = notes[state.stop]
   const next = notes[state.stop + 1]
   const heading = (note: StopNote | undefined) => (note ? plain(t(note.heading as MessageKey)) : '')
+  const points = current ? t(current.points as MessageKey).split('\n').filter(Boolean) : []
 
   return (
     <main className="presenter">
@@ -107,7 +108,11 @@ export function PresenterView({ notes }: { notes: StopNote[] }) {
         <p className="presenter-label">{t('presenter.now')}</p>
         <h1 className="presenter-heading">{heading(current)}</h1>
         <p className="presenter-label">{t('presenter.notes')}</p>
-        <p className="presenter-notes">{current?.notes || t('presenter.empty')}</p>
+        {points.length ? (
+          <ul className="presenter-notes">{points.map((point) => <li key={point}>{point}</li>)}</ul>
+        ) : (
+          <p className="presenter-notes">{t('presenter.empty')}</p>
+        )}
       </section>
       <aside className="presenter-side">
         <p className="presenter-label">{t('presenter.next')}</p>
