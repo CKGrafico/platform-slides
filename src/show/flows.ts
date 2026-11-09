@@ -10,7 +10,7 @@
  */
 import type { MessageKey } from '@/i18n'
 
-export type FlowId = 'ghaw' | 'router' | 'triage' | 'refine' | 'implement' | 'gate'
+export type FlowId = 'router' | 'triage' | 'refine' | 'implement' | 'gate'
 /**
  * job: a normal GitHub Actions job or step, before the agent or with no agent at all.
  * agent: the agent does it, inside its run.
@@ -34,22 +34,6 @@ const W = [0, 0.72, 1.44, 2.16, 2.88, 3.6]
 const R = [0, 0.85, 1.7, 2.55, 3.4]
 
 export const FLOWS: Record<FlowId, FlowDef> = {
-  // GitHub Agentic Workflows in one line: what any repo gets from gh-aw, before our own layer.
-  ghaw: {
-    nodes: [
-      n('issue', 'job', 0, 1, 'flow.ghaw.issue', 'flow.ghaw.issue.sub'),
-      n('md', 'job', 1, 1, 'flow.ghaw.md', 'flow.ghaw.md.sub', true),
-      n('compile', 'job', 2, 1, 'flow.ghaw.compile', 'flow.ghaw.compile.sub', true),
-      n('actions', 'job', 3, 1, 'flow.ghaw.actions', 'flow.ghaw.actions.sub'),
-      n('agent', 'agent', 4, 1, 'flow.ghaw.agent', 'flow.ghaw.agent.sub'),
-      d('safe', 'post', 5, 1, 'flow.ghaw.safe', 'flow.ghaw.safe.sub', true),
-      n('pr', 'post', 5, 2.5, 'flow.ghaw.pr', 'flow.ghaw.pr.sub'),
-    ],
-    edges: [
-      e('issue', 'md', 'main'), e('md', 'compile', 'main'), e('compile', 'actions', 'main'), e('actions', 'agent', 'main'),
-      e('agent', 'safe', 'main', 'flow.edge.proposes'), e('safe', 'pr', 'main', 'flow.edge.opens'),
-    ],
-  },
   // The router is shell only. The workers it dispatches each run an agent.
   router: {
     nodes: [

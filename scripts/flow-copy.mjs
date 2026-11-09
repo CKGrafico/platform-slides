@@ -23,6 +23,8 @@ const legend = {
 }
 
 const edge = {
+  'flow.edge.proposes': ['proposes', 'propone'],
+  'flow.edge.opens': ['opens', 'abre'],
   'flow.edge.yes': ['yes', 'sí'],
   'flow.edge.no': ['no', 'no'],
   'flow.edge.pass': ['pass', 'pasa'],
@@ -197,27 +199,6 @@ const gate = {
 // How measurement changed the system. The cases come from docs/knowledge/platform.md, "Lessons with numbers".
 
 // The Project Health boards. The portfolio values are the template's example data, labelled as such on screen.
-// A minimal gh-aw workflow, as code. It is the same in both decks, like any source file.
-const ghaw = {
-  'board.markdown.file': ['.github/workflows/implement-issue.md', '.github/workflows/implement-issue.md'],
-  'board.markdown.code': ['---\non:\n  issues:\n    types: [labeled]\npermissions: read-all\nengine: claude\nsafe-outputs:\n  create-pull-request:\n---\n\n# Implement the issue\n\nRead issue #${{ github.event.issue.number }}.\nChange the code so it does what the issue asks.\nRun the tests, then open one pull request.', '---\non:\n  issues:\n    types: [labeled]\npermissions: read-all\nengine: claude\nsafe-outputs:\n  create-pull-request:\n---\n\n# Implement the issue\n\nRead issue #${{ github.event.issue.number }}.\nChange the code so it does what the issue asks.\nRun the tests, then open one pull request.'],
-  'flow.ghaw.issue': ['Issue', 'Issue'],
-  'flow.ghaw.issue.sub': ['label added', 'se etiqueta'],
-  'flow.ghaw.md': ['workflow.md', 'workflow.md'],
-  'flow.ghaw.md.sub': ['settings + prompt', 'config + prompt'],
-  'flow.ghaw.compile': ['gh aw compile', 'gh aw compile'],
-  'flow.ghaw.compile.sub': ['validated, pinned YAML', 'validated, pinned YAML'],
-  'flow.ghaw.actions': ['GitHub Actions', 'GitHub Actions'],
-  'flow.ghaw.actions.sub': ['runs the lock file', 'ejecuta el lock'],
-  'flow.ghaw.agent': ['Agent', 'Agente'],
-  'flow.ghaw.agent.sub': ['sandboxed · read-only', 'sandboxed · read-only'],
-  'flow.ghaw.safe': ['Safe Output', 'Safe Output'],
-  'flow.ghaw.safe.sub': ['threat scan, scoped writes', 'threat scan, scoped writes'],
-  'flow.ghaw.pr': ['Pull request', 'Pull request'],
-  'flow.ghaw.pr.sub': ['one per run', 'uno por run'],
-  'flow.edge.proposes': ['proposes', 'propone'],
-  'flow.edge.opens': ['opens', 'abre'],
-}
 
 const TREE = [
   '├─ AGENTS.md\talways in context',
@@ -424,13 +405,6 @@ const health = {
 
 const tips = {
   'flow.common.activation.tip': ['gh-aw job: renders the prompt, sanitizes event text, applies the credit guardrail. Rung 2.', 'gh-aw job: renders the prompt, sanitizes event text, applies the credit guardrail. Rung 2.'],
-  'flow.ghaw.issue.tip': ['The trigger. Any GitHub event can start a workflow; here, a label on an Issue.', 'The trigger. Any GitHub event can start a workflow; here, a label on an Issue.'],
-  'flow.ghaw.md.tip': ['The whole workflow in one file: settings on top, the prompt in plain words below.', 'The whole workflow in one file: settings on top, the prompt in plain words below.'],
-  'flow.ghaw.compile.tip': ['Checks the schema, pins the actions and writes the lock file you commit.', 'Checks the schema, pins the actions and writes the lock file you commit.'],
-  'flow.ghaw.actions.tip': ['A normal GitHub Actions run of that lock file. Nothing special yet.', 'A normal GitHub Actions run of that lock file. Nothing special yet.'],
-  'flow.ghaw.agent.tip': ['The model runs your prompt inside gh-aw: sandboxed, read-only, behind a firewall, no credentials.', 'The model runs your prompt inside gh-aw: sandboxed, read-only, behind a firewall, no credentials.'],
-  'flow.ghaw.safe.tip': ['A separate job scans the proposal and applies only the writes you declared.', 'A separate job scans the proposal and applies only the writes you declared.'],
-  'flow.ghaw.pr.tip': ['The only write this workflow can make: one pull request per run.', 'The only write this workflow can make: one pull request per run.'],
   'flow.router.event.tip': ['Every trigger the repository has arrives here, as one GitHub event.', 'Every trigger the repository has arrives here, as one GitHub event.'],
   'flow.router.classify.tip': ['Pure shell: turns one event into one route. No network, no model. Rung 1.', 'Pure shell: turns one event into one route. No network, no model. Rung 1.'],
   'flow.router.authorize.tip': ['Checks the sender: write access and org membership, or the bot-working label. Rung 1.', 'Checks the sender: write access and org membership, or the bot-working label. Rung 1.'],
@@ -499,7 +473,7 @@ const tips = {
   'flow.gate.blocked.tip': ['CI is still red at the sixth attempt: the gate stops.', 'CI is still red at the sixth attempt: the gate stops.'],
 }
 
-const all = { ...tips, ...legend, ...edge, ...router, ...triage, ...refine, ...implement, ...gate, ...board, ...ghaw, ...Object.fromEntries(Object.entries(health).map(([key, en]) => [key, [en, en]])) }
+const all = { ...tips, ...legend, ...edge, ...router, ...triage, ...refine, ...implement, ...gate, ...board, ...Object.fromEntries(Object.entries(health).map(([key, en]) => [key, [en, en]])) }
 
 // Technical diagrams stay in English in both decks: they use the tool's own words, and a translation reads worse.
 // Every flow.* key (node titles, node lines, edge labels) shows its English text in Spanish too.

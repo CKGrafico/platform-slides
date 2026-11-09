@@ -222,7 +222,6 @@ body { font-family: var(--font-label); }
 .board-sub--end { text-anchor: end; }
 .board-sub--dim { fill: var(--dim) !important; }
 .board-sub--light { fill: var(--light) !important; }
-.board-sub--note { font-size: 1.6px; }
 .board-row { font-size: 1.65px; fill: var(--text) !important; }
 .board-row--strong { font-weight: 700; }
 .board-row--end { text-anchor: end; }
