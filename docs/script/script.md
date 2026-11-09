@@ -16,7 +16,7 @@ The old script is in [the source archive](script-orbits-archive.md). Its visual 
 
 Source: [reference](../knowledge/talk-notes.md).
 
-### 1. From Issue to production with GitHub Agentic Workflows
+### 1. From an Issue to production with autonomous agents
 
 On screen: an open laptop built from the units of the reasoning core. The blue Issue is the middle tile of its screen. On the next beat the laptop comes apart into the core. The cover introduces the speaker.
 
@@ -230,7 +230,7 @@ Slide: no caption. The names under the bodies carry the content.
 
 Speaker notes: Ask the question and let it sit. If an Issue can reach production on its own, what is left for us? Answer with Uncle Bob Martin, on X on 5 October 2026: the job does not change. We still make sure the structure of the system is robust and maintainable, and that its behavior serves our users. That takes engineering discipline. It does not take reading every line of the code, just as using a compiler does not take reading the binary. That is what the whole talk built: conventions in Foundations, a Harness for the agents, workflows with gates, and Health to measure. Source: https://x.com/unclebobmartin/status/2107069060420637178
 
-### 24. From Issue to production with GitHub Agentic Workflows.
+### 24. From an Issue to production with autonomous agents.
 
 On screen: system, state 0. Panels name Triage, Refine · Implement, CI, Merge Gate, Production.
 

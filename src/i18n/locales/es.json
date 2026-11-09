@@ -446,8 +446,8 @@
   "board.health.i750.open.value": "34 h 20 m",
   "board.health.i750.agent": "AGENT",
   "board.health.i750.agent.value": "2 h 32 m",
-  "show.cover": "De una Issue\na producción con\nGitHub Agentic Workflows.",
-  "show.subtitle": "La Plataforma de Plain Concepts",
+  "show.cover": "De una Issue\na producción\ncon agentes autónomos.",
+  "show.subtitle": "Plain Concepts Platform",
   "show.prompt": "pc@studio:~/local$",
   "show.controls.language": "Idioma",
   "show.controls.theme": "Tema",
@@ -549,7 +549,7 @@
   "talk.health.roadmap.command": "project-health · Roadmap",
   "talk.closing.question.title": "¿Qué se supone exactamente que deben hacer los ingenieros de software?",
   "talk.closing.question.command": "¿qué hace un ingeniero?",
-  "talk.system.title": "De una Issue a producción\ncon GitHub Agentic Workflows.",
+  "talk.system.title": "De una Issue a producción\ncon agentes autónomos.",
   "talk.system.body": "Personas no técnicas de producto crean Issues o bugs pequeños y elegibles. Llegan a producción sin supervisión humana.",
   "talk.system.command": "Maintenance · Issue → producción → Health"
 }

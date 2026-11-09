@@ -446,8 +446,8 @@
   "board.health.i750.open.value": "34 h 20 m",
   "board.health.i750.agent": "AGENT",
   "board.health.i750.agent.value": "2 h 32 m",
-  "show.cover": "From Issue\nto production with\nGitHub Agentic Workflows.",
-  "show.subtitle": "The Plain Concepts Platform",
+  "show.cover": "From an Issue\nto production\nwith autonomous agents.",
+  "show.subtitle": "Plain Concepts Platform",
   "show.prompt": "pc@studio:~/local$",
   "show.controls.language": "Language",
   "show.controls.theme": "Theme",
@@ -549,7 +549,7 @@
   "talk.health.roadmap.command": "project-health · Roadmap",
   "talk.closing.question.title": "What exactly are software engineers supposed to do?",
   "talk.closing.question.command": "what do engineers do?",
-  "talk.system.title": "From Issue to production\nwith GitHub Agentic Workflows.",
+  "talk.system.title": "From an Issue to production\nwith autonomous agents.",
   "talk.system.body": "Product experts who do not code file small eligible Issues or bugs. They reach production without human supervision.",
   "talk.system.command": "Maintenance · Issue → production → Health"
 }
