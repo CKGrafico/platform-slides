@@ -15,6 +15,7 @@ import { autoHideCursor } from './fullscreen'
 import { bindInput } from './input'
 import { Layer } from './layers-component'
 import { toggleMode } from './mode'
+import { bindPresenterSync, openPresenterWindow } from './presenter-sync'
 import { Presentation } from './presentation'
 import { StartControls } from './StartControls'
 import { StopChip } from './StopChip'
@@ -40,7 +41,7 @@ export interface KeynoteProps {
 
 export function Keynote({ show, actors, choreographies, world, overlay, grain }: KeynoteProps) {
   const env = useEnvironment()
-  const { toggleLocale } = useI18n()
+  const { locale, toggleLocale } = useI18n()
   const [presentation] = useState(() => {
     const p = new Presentation(show)
     p.restoreFromHash(window.location.hash)
@@ -52,6 +53,9 @@ export function Keynote({ show, actors, choreographies, world, overlay, grain }:
   useEffect(() => {
     presentation.reducedMotion = env.reducedMotion
   }, [presentation, env.reducedMotion])
+
+  // The presenter window mirrors this window and sends it commands. It also follows the language.
+  useEffect(() => bindPresenterSync(presentation, () => locale), [presentation, locale])
 
 
   useEffect(() => {
@@ -74,6 +78,11 @@ export function Keynote({ show, actors, choreographies, world, overlay, grain }:
         // M switches between the live and the calm mode, in production too.
         if (e.key === 'm' || e.key === 'M') {
           toggleMode()
+          return true
+        }
+        // P opens the presenter window: notes, the next stop and the clock, in sync with this one.
+        if (e.key === 'p' || e.key === 'P') {
+          openPresenterWindow()
           return true
         }
         if (!debugAllowed) return false

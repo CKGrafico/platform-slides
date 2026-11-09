@@ -133,6 +133,7 @@ html.cursor-hidden * {
 html[data-theme='light'] {
   --bg: #f1f1ee;
   --fg: #282b31;
+  --muted: #61666f;
   color-scheme: light;
 }
 
@@ -143,6 +144,86 @@ html[data-theme='light'] {
     transition-duration: 0s !important;
     animation-duration: 0s !important;
   }
+}
+
+/* ---- presenter window (P in the show, src/engine/PresenterView.tsx) ---- */
+/* A plain page for the laptop screen, not the stage: it uses the viewport, and the notes scroll. */
+.presenter {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(16rem, 30%);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 1.5rem 2.5rem;
+  padding: 1.5rem 2rem 2rem;
+  background: var(--bg);
+  color: var(--fg);
+  font: 400 1rem/1.5 var(--font-mono);
+  user-select: text;
+  -webkit-user-select: text;
+}
+.presenter--waiting { display: flex; align-items: center; justify-content: center; }
+.presenter-bar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+  font-size: 1.1rem;
+  font-variant-numeric: tabular-nums;
+}
+.presenter-moving { color: var(--c-accent); }
+.presenter-clock { margin-left: auto; font-size: 1.6rem; font-weight: 600; }
+.presenter-now { display: flex; flex-direction: column; min-height: 0; }
+.presenter-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.presenter-heading {
+  margin: 0 0 1.5rem;
+  max-width: 40ch;
+  font: 800 clamp(1.6rem, 3.2vw, 2.6rem) / 1.1 'Outfit Variable', var(--font-sans);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.presenter-notes {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding-right: 1rem;
+  overflow-y: auto;
+  max-width: 72ch;
+  font-size: clamp(1rem, 1.35vw, 1.2rem);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+ul.presenter-notes { padding-left: 1.4em; font-size: clamp(1.15rem, 1.8vw, 1.5rem); line-height: 1.4; }
+ul.presenter-notes li { margin-bottom: 0.8em; }
+ul.presenter-notes li::marker { color: var(--c-accent); }
+.presenter-side { display: flex; flex-direction: column; gap: 0.4rem; padding-left: 2rem; border-left: 1px solid var(--line); }
+.presenter-next { margin: 0 0 1.5rem; font: 700 1.3rem / 1.2 'Outfit Variable', var(--font-sans); color: var(--muted); text-wrap: balance; }
+.presenter-buttons { display: flex; gap: 0.75rem; margin-top: auto; }
+.presenter-buttons button {
+  flex: 1;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--fg);
+  font: 600 1rem/1 var(--font-mono);
+  cursor: pointer;
+}
+.presenter-buttons button:hover { border-color: var(--fg); }
+.presenter-buttons button:focus-visible { outline: 2px solid var(--c-accent); outline-offset: 2px; }
+.presenter-buttons .presenter-primary { border-color: var(--c-accent); background: var(--c-accent); color: #f2f4ff; }
+.presenter-hint { margin: 0.75rem 0 0; font-size: 0.75rem; color: var(--muted); }
+@media (max-width: 760px) {
+  .presenter { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr) auto; }
+  .presenter-side { padding-left: 0; border-left: 0; }
 }
 
 /* ---- debug layer (development only) ---------------------------------- */

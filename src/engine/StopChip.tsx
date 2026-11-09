@@ -16,7 +16,8 @@ import { usePlayhead } from './context'
 import { Stage } from './Stage'
 
 const EPS = 1e-4
-const CLOCK_KEY = 'keynote.clock.start'
+/** Where the talk clock keeps its start time. The presenter window reads it too. */
+export const CLOCK_KEY = 'keynote.clock.start'
 
 const pad = (n: number) => String(n).padStart(2, '0')
 

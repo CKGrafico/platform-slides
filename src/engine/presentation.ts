@@ -107,6 +107,7 @@ export class Presentation {
   private snapshot: Snapshot
   private listeners = new Set<() => void>()
   private frameListeners = new Set<(position: number) => void>()
+  private targetListeners = new Set<() => void>()
   private started = false
 
   constructor(show: ShowDef) {
@@ -148,6 +149,11 @@ export class Presentation {
     return this.tween === null
   }
 
+  /** Index of the current stop in model.stops: 0 is the start of the show. */
+  stopIndex(): number {
+    return stopIndexAtOrBefore(this.model, this.target)
+  }
+
   // ---- React store (changes only when the active scene changes) ----------
 
   subscribe = (fn: () => void): (() => void) => {
@@ -161,6 +167,16 @@ export class Presentation {
   onFrame(fn: (position: number) => void): () => void {
     this.frameListeners.add(fn)
     return () => this.frameListeners.delete(fn)
+  }
+
+  /** Runs when the target changes or the playhead settles. For mirrors of the presenter's place, like the presenter window. */
+  onTarget(fn: () => void): () => void {
+    this.targetListeners.add(fn)
+    return () => this.targetListeners.delete(fn)
+  }
+
+  private emitTarget(): void {
+    for (const fn of this.targetListeners) fn()
   }
 
   // ---- commands ------------------------------------------------------------
@@ -184,6 +200,12 @@ export class Presentation {
 
   last(): void {
     this.moveTo(this.model.total, JUMP_DURATION)
+  }
+
+  /** Go to a stop by its index in model.stops. */
+  goToStop(index: number): void {
+    const stop = this.model.stops[Math.min(Math.max(index, 0), this.model.stops.length - 1)]
+    if (stop) this.moveTo(stop.position, JUMP_DURATION)
   }
 
   /** Go to a stop of a scene by key ("chapter/scene"). */
@@ -225,6 +247,7 @@ export class Presentation {
     this.direction = p > this.playhead.position ? 1 : p < this.playhead.position ? -1 : this.direction
     this.target = p
     this.playhead.position = p
+    this.emitTarget()
   }
 
   /** Restore from a "#/chapter/scene/stop" hash. Returns false when the hash is unknown. */
@@ -246,6 +269,7 @@ export class Presentation {
       this.tween = null
       this.playhead.position = p
       this.writeHash()
+      this.emitTarget()
       return
     }
     // Retargeting starts a new tween from the current playhead, so rapid
@@ -258,8 +282,10 @@ export class Presentation {
       onComplete: () => {
         this.tween = null
         this.writeHash()
+        this.emitTarget()
       },
     })
+    this.emitTarget()
   }
 
   private writeHash(): void {
