@@ -26,7 +26,7 @@ Say: This talk follows one Issue from an engineer's PC to production, through th
 
 On screen: local, state 0. The composition holds the current subject.
 
-Slide: Let's see how we built *Platform* around GitHub Agentic Workflows.
+Slide: Let's see how we built *Platform*, one piece at a time.
 
 Speaker notes: This is the turn of the talk. Anyone can make the demo work in an afternoon. Making it safe on real repositories, with real teams, is where the months went: conventions the agent can follow, an environment that holds it, routes with gates that decide, runners that cost little, and numbers that show what works. The rest of the talk is those bases, in the order we built them. First, where AI is going, and where teams are.
 

@@ -94,7 +94,7 @@ export const sections = [
     intro: { heading: 'show.cover', command: 'show.subtitle', picture: 'cover', step: 0, labels: [], layout: 'cover' },
     beats: [
       B('local', ['Getting the bases and the way\nof working right took us months.', 'Preparar las bases y la forma\nde trabajar nos ha llevado meses.'],
-      ['Let\'s see how we built *Platform* around GitHub Agentic Workflows.', 'Veamos cómo construimos *Plataforma* alrededor de GitHub Agentic Workflows.'], 'local', 0, [],
+      ['Let\'s see how we built *Platform*, one piece at a time.', 'Veamos cómo construimos *Plataforma*, pieza a pieza.'], 'local', 0, [],
       'This is the turn of the talk. Anyone can make the demo work in an afternoon. Making it safe on real repositories, with real teams, is where the months went: conventions the agent can follow, an environment that holds it, routes with gates that decide, runners that cost little, and numbers that show what works. The rest of the talk is those bases, in the order we built them. First, where AI is going, and where teams are.', ['the hard part', 'lo difícil'], 'statement')] },
   { id: '03-evolution', scene: 'layers', title: 'The evolution of AI', name: 'evolution', source: '../knowledge/talk-notes.md', beats: [
     B('evolution.timeline', ['At *Platform*, we first looked\nat how AI evolved.', 'En *Plataforma*, primero pensamos\ncómo evolucionó la IA.'],

@@ -487,7 +487,7 @@
   "talk.label.split": "Split · child Issues",
   "talk.maturity.line": "No AI → Exploratory → Structured → Scaled → Governed & Optimized",
   "talk.local.title": "Getting the bases and the way\nof working right took us months.",
-  "talk.local.body": "Let's see how we built *Platform* around GitHub Agentic Workflows.",
+  "talk.local.body": "Let's see how we built *Platform*, one piece at a time.",
   "talk.local.command": "the hard part",
   "talk.evolution.timeline.title": "At *Platform*, we first looked\nat how AI evolved.",
   "talk.evolution.timeline.command": "models → prompts → skills → agents → loops",
