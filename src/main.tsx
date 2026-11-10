@@ -8,6 +8,7 @@ import { applyPaletteCssVars } from '@/art/palette'
 import { EnvironmentProvider } from '@/engine/environment'
 import { I18nProvider } from '@/i18n'
 import { Keynote } from '@/engine/Keynote'
+import { isPresenterWindow } from '@/engine/presenter-sync'
 import { actors, choreographies, show } from '@/show'
 import { AsciiRuntime } from '@/show/AsciiRuntime'
 import '@/show/ascii.css'
@@ -26,7 +27,20 @@ async function fontsReady(): Promise<void> {
   await Promise.race([Promise.all(faces.map((f) => document.fonts.load(f))).then(() => undefined), timeout])
 }
 
+/** The presenter window (P in the show) loads its view and the speaker notes, and never mounts the world. */
+async function renderPresenter(): Promise<void> {
+  const [{ PresenterView }, { notes }] = await Promise.all([import('@/engine/PresenterView'), import('@/show/notes')])
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <I18nProvider>
+        <PresenterView notes={notes} />
+      </I18nProvider>
+    </StrictMode>,
+  )
+}
+
 void fontsReady().then(() => {
+  if (isPresenterWindow()) return renderPresenter()
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <EnvironmentProvider>

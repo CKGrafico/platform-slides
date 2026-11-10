@@ -4,7 +4,9 @@ These notes come from an earlier working session with another AI. The user wrote
 
 ## Working title
 
-**From issue to production with GitHub Agentic Workflows**
+**From an Issue to production with autonomous agents: the full system**
+
+In Spanish: "De una issue a producción con agentes autónomos: el sistema completo". The old title named GitHub Agentic Workflows. GitHub and OpenCode are tools we use, and the talk mentions them, but the focus is the system.
 
 The talk is about the move from GitHub Actions and agents as separate pieces to a system that works in a way that is agentic, autonomous, asynchronous, and in the cloud. Human work goes down to a minimum. AI is used only where reasoning is necessary.
 
@@ -342,7 +344,7 @@ Two of four pillars are defined. Two more are missing. After the four pillars, t
 Issue -> Autonomous system -> Production
 ```
 
-The ending can return visually to the title, "From issue to production with GitHub Agentic Workflows", and make clear that GitHub Agentic Workflows is the entry point and the enabling infrastructure, not the whole solution. The real solution is the whole system built around it.
+The ending can return visually to the title, "From an Issue to production with autonomous agents", and make clear that GitHub Agentic Workflows is the entry point and the enabling infrastructure, not the whole solution. The real solution is the whole system built around it.
 
 ## Links to what the repos show
 

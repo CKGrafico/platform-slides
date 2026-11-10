@@ -14,15 +14,28 @@
 | `L` | switch between English and Spanish |
 | `T` | switch between the dark and the light theme |
 | `M` | switch between the live and the calm mode |
+| `P` | open the presenter window |
 | mouse wheel, trackpad | one stop per gesture. The wheel must be quiet for 350 ms before the next step |
 
 Most presentation clickers send `PageDown` and `PageUp`, so they work with no setup.
+
+## Presenter window
+
+Press `P` in the show to open the presenter window. Put the show on the projector and the presenter window on the laptop screen. It shows:
+
+- the stop number and the talk clock, the same as the stop chip
+- the title of the current stop and the speaker's bullets: its core messages, in the show's language
+- the title of the next stop
+
+The keys of the table above work in the presenter window too, and so do its two buttons. Each one moves the show. The show window owns the playhead: the presenter window only mirrors it, so either window can drive the talk. The two windows talk over a `BroadcastChannel`, so they must be in the same browser, on the same address. If you reload the show, the presenter window finds it again. You can also open it by hand with `?presenter` in the URL.
+
+The presenter window follows the language of the show. The bullets live in `scripts/speaker-points.mjs`, in English and Spanish, three to five per stop. `node scripts/rebuild-show.mjs` writes them to the locales as `notes.*` and fails if a stop has none. The full speaker notes stay in [the script](script/script.md). The code is in `src/engine/PresenterView.tsx` and `src/engine/presenter-sync.ts`.
 
 The start screen also shows the language, theme and mode buttons in the top right corner. They hide as soon as the show moves. The browser keeps each choice for the next visit. `?lang=es`, `?theme=light` and `?mode=calm` in the URL set them too.
 
 The light theme puts the show on a warm off-white. Text is dark grey, not black, and the blue is the same corporate blue as in the dark theme. Photos do not change. Use it in a bright room or on a screen that washes out dark slides. The DOM colors are tokens at the top of `src/show/ascii.css`. The world takes its light colors from `lightPalette` in `src/art/palette.ts`.
 
-Calm mode is the same deck with less noise, for example for a link sent to a client. The forms draw as solid matte facets instead of ASCII marks, the motion is quieter, and the footer shows "02 / 25" instead of the clock. The moves and the diagrams play as in Live. To share it, send a link that sets everything, for example `https://platform.ckgrafico.com/?mode=calm&theme=light&lang=es`. [art/art-direction.md](art/art-direction.md#themes-and-modes) lists every change.
+Calm mode is the same deck with less noise, for example for a link sent to a client. The forms draw as solid matte facets instead of ASCII marks, the motion is quieter, and the footer shows "02 / 24" instead of the clock. The moves and the diagrams play as in Live. To share it, send a link that sets everything, for example `https://platform.ckgrafico.com/?mode=calm&theme=light&lang=es`. [art/art-direction.md](art/art-direction.md#themes-and-modes) lists every change.
 
 In fullscreen, the browser UI is hidden. The cursor hides after 2 seconds without movement. Text cannot be selected, and the page has no scrollbars.
 
