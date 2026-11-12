@@ -8,6 +8,19 @@
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <title>Keynote</title>
+    <!-- Consent default: denied until the banner records a choice. See src/engine/consent.ts. -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        window.dataLayer.push(arguments);
+      }
+      gtag('consent', 'default', {
+        analytics_storage: 'denied',
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+      });
+    </script>
     <!-- Google Tag Manager -->
     <script>
       (function (w, d, s, l, i) {

@@ -129,6 +129,52 @@ html.cursor-hidden * {
   stroke-linejoin: round;
 }
 
+/* Cookie consent banner, top right under the start controls, until the visitor answers it. */
+.consent-banner {
+  position: absolute;
+  top: calc(var(--su) * 9);
+  right: calc(var(--su) * 2);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(var(--su) * 1);
+  width: min(86vw, 22rem);
+  padding: calc(var(--su) * 1) calc(var(--su) * 1.25);
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
+  color: var(--fg);
+  font: 400 0.8rem/1.4 var(--font-mono);
+  pointer-events: auto;
+}
+
+.consent-banner-text {
+  margin: 0;
+  text-align: left;
+}
+
+.consent-banner-actions {
+  display: flex;
+  flex: none;
+  gap: calc(var(--su) * 0.75);
+}
+
+.consent-banner-actions button {
+  font: inherit;
+  color: inherit;
+  padding: 0.35em 0.9em;
+  border: 1px solid var(--line);
+  border-radius: 0.35rem;
+  background: transparent;
+  cursor: pointer;
+}
+
+.consent-banner-actions button.consent-banner-accept {
+  border-color: var(--c-accent);
+  background: var(--c-accent);
+  color: #fff;
+}
+
 /* The light theme. Its colors are in src/show/ascii.css. See src/engine/theme.ts. */
 html[data-theme='light'] {
   --bg: #f1f1ee;

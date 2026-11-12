@@ -12,6 +12,7 @@ import { PresentationProvider } from './context'
 import { DomSceneHost } from './DomSceneHost'
 import { useEnvironment } from './environment'
 import { autoHideCursor } from './fullscreen'
+import { ConsentBanner } from './ConsentBanner'
 import { bindInput } from './input'
 import { Layer } from './layers-component'
 import { toggleMode } from './mode'
@@ -151,6 +152,7 @@ export function Keynote({ show, actors, choreographies, world, overlay, grain }:
           {overlay}
           <StartControls />
           <StopChip />
+          <ConsentBanner />
         </Layer>
         {grain ? <Layer name="grain">{grain}</Layer> : null}
         {DebugPanel && debugOpen ? (
