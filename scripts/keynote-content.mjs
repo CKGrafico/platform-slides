@@ -231,5 +231,5 @@ for (const section of sections) for (const beat of section.beats) {
   if (beat.key === 'health.intro') beat.link = { href: 'https://health.platform.plainconcepts.dev', label: 'talk.link.healthSite' }
   const tab = { 'health.engineering': '', 'health.delivery': '#delivery', 'health.agentic': '#agentic' }[beat.key]
   if (tab !== undefined) beat.link = { href: `https://pulse.platform.plainconcepts.dev/projects/numa/${tab}`, label: 'talk.link.healthLive' }
-  if (beat.key === 'health.roadmap') beat.link = { href: 'https://pulse.platform.plainconcepts.dev/projects/numa/#roadmap/750', label: 'talk.link.health750' }
+  if (beat.key === 'health.roadmap') beat.link = { href: 'https://pulse.platform.plainconcepts.dev/projects/numa/2026-10/#roadmap/750', label: 'talk.link.health750' }
 }

@@ -86,7 +86,7 @@ export const part: Part = {
       "labels": [],
       "layout": "wide",
       "link": {
-        "href": "https://pulse.platform.plainconcepts.dev/projects/numa/#roadmap/750",
+        "href": "https://pulse.platform.plainconcepts.dev/projects/numa/2026-10/#roadmap/750",
         "label": "talk.link.health750"
       },
       "dim": true,
