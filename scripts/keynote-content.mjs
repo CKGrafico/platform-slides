@@ -21,6 +21,9 @@ export const sharedCopy = {
   'show.controls.mode': ['Mode', 'Modo'],
   'show.mode.live': ['Live', 'Vivo'],
   'show.mode.calm': ['Calm', 'Calma'],
+  'show.consent.message': ["This site uses cookies to measure visits.", "Este sitio usa cookies para medir las visitas."],
+  'show.consent.accept': ["Accept", "Aceptar"],
+  'show.consent.reject': ["Reject", "Rechazar"],
   'presenter.title': ['Presenter', 'Presentador'],
   'presenter.stop': ['Stop {n} of {total}', 'Parada {n} de {total}'],
   'presenter.moving': ['moving', 'en curso'],
@@ -228,5 +231,5 @@ for (const section of sections) for (const beat of section.beats) {
   if (beat.key === 'health.intro') beat.link = { href: 'https://health.platform.plainconcepts.dev', label: 'talk.link.healthSite' }
   const tab = { 'health.engineering': '', 'health.delivery': '#delivery', 'health.agentic': '#agentic' }[beat.key]
   if (tab !== undefined) beat.link = { href: `https://pulse.platform.plainconcepts.dev/projects/numa/${tab}`, label: 'talk.link.healthLive' }
-  if (beat.key === 'health.roadmap') beat.link = { href: 'https://pulse.platform.plainconcepts.dev/projects/numa/#roadmap/750', label: 'talk.link.health750' }
+  if (beat.key === 'health.roadmap') beat.link = { href: 'https://pulse.platform.plainconcepts.dev/projects/numa/2026-10/#roadmap/750', label: 'talk.link.health750' }
 }
