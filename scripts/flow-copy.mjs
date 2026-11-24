@@ -264,6 +264,13 @@ const board = {
   'board.tree.file': ['your-repo/ · after the install', 'your-repo/ · after the install'],
   'board.tree.code': [TREE, TREE],
   'board.quote.source':['x.com/unclebobmartin · original', 'x.com/unclebobmartin · traducido'],
+  // Paul Roetzer on The Artificial Intelligence Show, episode 251, at 00:20:38, checked against the published transcript on 2026-11-24.
+  // English is verbatim, with the spoken "That, that" cut to "That". Spanish is a literal translation, marked as such.
+  'board.prediction.initials': ['PR', 'PR'],
+  'board.prediction.name': ['Paul Roetzer', 'Paul Roetzer'],
+  'board.prediction.handle': ['The Artificial Intelligence Show · ep. 251 · 12 Nov 2026', 'The Artificial Intelligence Show · ep. 251 · 12 nov 2026'],
+  'board.prediction.text': ['Imagine that every role in the company has proactive agents that are\njust watching the data and then coming to you with recommendations.\nThat is the unlock that hasn\'t happened in corporate yet, but I believe\nit\'s coming in the next six months.', 'Imagina que cada rol de la empresa tiene agentes proactivos que solo\nestán mirando los datos y luego vienen a ti con recomendaciones.\nEsa es la clave que aún no ha pasado en las empresas, pero creo\nque llegará en los próximos seis meses.'],
+  'board.prediction.source': ['podcast.smarterx.ai/shownotes/251 · transcript', 'podcast.smarterx.ai/shownotes/251 · traducido'],
 }
 
 // The Project Health boards copy one real project's dashboard of 19 Oct 2026 (docs/knowledge/platform.md).

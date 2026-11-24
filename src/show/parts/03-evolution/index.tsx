@@ -69,6 +69,16 @@ export const part: Part = {
         }
       ],
       "layout": "wide"
+    },
+    {
+      "heading": "talk.evolution.future.title",
+      "command": "talk.evolution.future.command",
+      "picture": "evolution",
+      "step": 0,
+      "labels": [],
+      "layout": "wide",
+      "dim": true,
+      "board": "prediction"
     }
   ]
 },

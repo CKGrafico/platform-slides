@@ -14,6 +14,10 @@ export const speakerPoints = {
     ['Models → prompts → skills → agents.', 'Agents need guardrails: instructions do not stop a bad tool call.', 'A Harness puts model, tools, skills and rules in one place.', 'Loops run after you leave the PC. We cover the last three steps.'],
     ['Modelos → prompts → skills → agentes.', 'Los agentes necesitan guardrails: instrucciones no paran una mala tool call.', 'Un Harness junta modelo, tools, skills y reglas.', 'Los loops siguen sin ti. Cubrimos los tres últimos pasos.'],
   ],
+  'evolution.future': [
+    ['One guess for the next step.', 'Roetzer: proactive agents for every role, watching the data.', 'Not in companies yet. He expects it within six months.', 'Engineering already runs a first version.'],
+    ['Una apuesta para el siguiente paso.', 'Roetzer: agentes proactivos por rol, mirando los datos.', 'Aún no en empresas. Lo espera en seis meses.', 'Ingeniería ya tiene una primera versión.'],
+  ],
   'maturity.levels': [
     ['Five levels: No AI, Exploratory, Structured, Scaled, Governed & Optimized.', 'Each team is at a different point.', 'A new tool is not maturity.'],
     ['Cinco niveles: No AI, Exploratory, Structured, Scaled, Governed & Optimized.', 'Cada equipo está en un punto distinto.', 'Una herramienta nueva no es madurez.'],

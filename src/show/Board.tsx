@@ -1,7 +1,7 @@
 /**
  * The boards, drawn in stage units over the dimmed world.
  * `engineering`, `delivery`, `agentic` and `roadmap` copy the four tabs of one real Project Health dashboard.
- * `quote`, `tree`, `site`, `skills`, `tiers` and `gateway` are single cards.
+ * `quote`, `prediction`, `tree`, `site`, `skills`, `tiers` and `gateway` are single cards.
  * Each card or row appears in order as `--flow-reveal` goes from 0 to 1.
  */
 import { asset } from '@/assets'
@@ -9,7 +9,7 @@ import { useEnvironment } from '@/engine/environment'
 import { useTheme } from '@/engine/theme'
 import { useT, type MessageKey } from '@/i18n'
 
-export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'tree' | 'site' | 'skills' | 'tiers' | 'gateway'
+export type BoardId = 'engineering' | 'delivery' | 'agentic' | 'roadmap' | 'quote' | 'prediction' | 'tree' | 'site' | 'skills' | 'tiers' | 'gateway'
 
 const STAGE_W = 177.78
 const STAGE_H = 100
@@ -325,36 +325,51 @@ function Lines({ k, x, y, step, className }: { k: MessageKey; x: number; y: numb
 }
 
 /**
- * An attributed quote as a card: the author's avatar, the name and handle, the full quoted post, and the source.
+ * An attributed quote as a card: the author's avatar, the name and handle, the quoted words, and the source.
  * It is our card, in the keynote's own style. It does not copy the look of the network the quote came from.
+ * The messages are `<prefix>.name`, `.handle`, `.text` and `.source`. Without a photo, the avatar shows `<prefix>.initials`.
  */
-/** Saved locally from the author's public profile, so the talk works offline. */
-const QUOTE_AVATAR = asset('quotes', 'unclebobmartin.jpg')
-
-function Quote() {
-  const t = useT()
+function QuoteCard({ prefix, avatar, h }: { prefix: 'board.quote' | 'board.prediction'; avatar?: string; h: number }) {
+  const key = (suffix: string) => `${prefix}.${suffix}` as MessageKey
   const x = 24
   const y = 28
   const w = STAGE_W - x * 2
-  const h = 59
+  const clip = `${prefix.replace('.', '-')}-avatar`
   return (
     <>
       <g className="board-card" style={reveal(0, 3)}>
         <rect x={x} y={y} width={w} height={h} rx={1.2} className="board-card-frame" />
-        <clipPath id="board-quote-avatar"><circle cx={x + 8} cy={y + 8} r={4} /></clipPath>
-        <image href={QUOTE_AVATAR} x={x + 4} y={y + 4} width={8} height={8} clipPath="url(#board-quote-avatar)" preserveAspectRatio="xMidYMid slice" />
+        {avatar ? (
+          <>
+            <clipPath id={clip}><circle cx={x + 8} cy={y + 8} r={4} /></clipPath>
+            <image href={avatar} x={x + 4} y={y + 4} width={8} height={8} clipPath={`url(#${clip})`} preserveAspectRatio="xMidYMid slice" />
+          </>
+        ) : <Txt k={key('initials')} x={x + 8} y={y + 9} className="board-avatar-initials" />}
         <circle cx={x + 8} cy={y + 8} r={4} className="board-avatar-ring" />
-        <text x={x + 15} y={y + 7.4} className="board-name" data-i18n="board.quote.name">{t('board.quote.name')}</text>
-        <text x={x + 15} y={y + 10.8} className="board-repo" data-i18n="board.quote.handle">{t('board.quote.handle')}</text>
+        <Txt k={key('name')} x={x + 15} y={y + 7.4} className="board-name" />
+        <Txt k={key('handle')} x={x + 15} y={y + 10.8} className="board-repo" />
       </g>
       <g className="board-card" style={reveal(1, 3)}>
-        <Lines k="board.quote.text" x={x + 8} y={y + 19.5} step={3.9} className="board-quote" />
+        <Lines k={key('text')} x={x + 8} y={y + 19.5} step={3.9} className="board-quote" />
       </g>
       <g className="board-card" style={reveal(2, 3)}>
-        <text x={x + 8} y={y + h - 4} className="board-tag board-tag--start" data-i18n="board.quote.source">{t('board.quote.source')}</text>
+        <Txt k={key('source')} x={x + 8} y={y + h - 4} className="board-tag board-tag--start" />
       </g>
     </>
   )
+}
+
+/** Saved locally from the author's public profile, so the talk works offline. */
+const QUOTE_AVATAR = asset('quotes', 'unclebobmartin.jpg')
+
+/** Uncle Bob Martin on what engineers still do. */
+function Quote() {
+  return <QuoteCard prefix="board.quote" avatar={QUOTE_AVATAR} h={59} />
+}
+
+/** Paul Roetzer's guess at the next step: proactive agents for every role. Four lines of text, so a shorter card. */
+function Prediction() {
+  return <QuoteCard prefix="board.prediction" h={43} />
 }
 
 /**
@@ -628,7 +643,7 @@ function Tree() {
   )
 }
 
-const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, tree: Tree, site: Site, skills: Skills, tiers: Tiers, gateway: Gateway }
+const BOARDS: Record<BoardId, () => React.JSX.Element> = { engineering: Engineering, delivery: Delivery, agentic: Agentic, roadmap: Roadmap, quote: Quote, prediction: Prediction, tree: Tree, site: Site, skills: Skills, tiers: Tiers, gateway: Gateway }
 
 export function Board({ id }: { id: BoardId }) {
   const View = BOARDS[id]

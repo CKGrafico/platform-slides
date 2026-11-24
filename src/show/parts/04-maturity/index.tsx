@@ -49,6 +49,6 @@ export const part: Part = {
     }
   ]
 },
-  before: picture('evolution', 0),
+  before: picture('evolution', 0, true),
 }
 export const assessment = makePart(part)

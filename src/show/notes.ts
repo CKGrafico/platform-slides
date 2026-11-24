@@ -16,6 +16,10 @@ export const notes: StopNote[] = [
     "points": "notes.evolution.timeline"
   },
   {
+    "heading": "talk.evolution.future.title",
+    "points": "notes.evolution.future"
+  },
+  {
     "heading": "talk.maturity.levels.title",
     "points": "notes.maturity.levels"
   },
